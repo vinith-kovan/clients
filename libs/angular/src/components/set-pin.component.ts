@@ -33,6 +33,7 @@ export class SetPinComponent implements OnInit {
   async submit() {
     if (Utils.isNullOrWhitespace(this.pin)) {
       this.modalRef.close(false);
+      return;
     }
 
     const kdf = await this.stateService.getKdfType();

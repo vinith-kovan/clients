@@ -61,6 +61,31 @@ export const WithContent: Story = {
           <bit-nav-divider></bit-nav-divider>
           <bit-nav-item text="Item C"></bit-nav-item>
           <bit-nav-item text="Item D" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-item text="Item A" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-item text="Item B" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-divider></bit-nav-divider>
+          <bit-nav-item text="Item C"></bit-nav-item>
+          <bit-nav-item text="Item D" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-item text="Item A" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-item text="Item B" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-divider></bit-nav-divider>
+          <bit-nav-item text="Item C"></bit-nav-item>
+          <bit-nav-item text="Item D" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-item text="Item A" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-item text="Item B" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-divider></bit-nav-divider>
+          <bit-nav-item text="Item C"></bit-nav-item>
+          <bit-nav-item text="Item D" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-item text="Item A" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-item text="Item B" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-divider></bit-nav-divider>
+          <bit-nav-item text="Item C"></bit-nav-item>
+          <bit-nav-item text="Item D" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-item text="Item A" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-item text="Item B" icon="bwi-collection"></bit-nav-item>
+          <bit-nav-divider></bit-nav-divider>
+          <bit-nav-item text="Item C"></bit-nav-item>
+          <bit-nav-item text="Item D" icon="bwi-collection"></bit-nav-item>
         </nav>
         <bit-callout title="Foobar"> Hello world! </bit-callout>
       </bit-layout>

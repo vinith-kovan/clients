@@ -36,6 +36,9 @@ export default {
       ],
     }),
   ],
+  parameters: {
+    chromatic: { viewports: [640, 1280] },
+  },
 } as Meta;
 
 type Story = StoryObj<LayoutComponent>;

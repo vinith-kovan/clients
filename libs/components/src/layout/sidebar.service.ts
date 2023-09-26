@@ -16,10 +16,6 @@ export class SidebarService {
     return this._open$.getValue();
   }
 
-  get isOverlay() {
-    return this.open && window.matchMedia("(max-width: 768px)");
-  }
-
   setOpen() {
     this._open$.next(true);
   }

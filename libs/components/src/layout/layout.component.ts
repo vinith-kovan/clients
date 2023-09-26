@@ -18,7 +18,7 @@ export class LayoutComponent {
   constructor(protected sidebarService: SidebarService) {}
 
   protected handleKeyDown = (event: KeyboardEvent) => {
-    if (this.sidebarService.isOverlay && event.key === "Escape") {
+    if (event.key === "Escape") {
       this.sidebarService.setClose();
       document.getElementById("bit-sidebar-toggle-button").focus();
       return false;

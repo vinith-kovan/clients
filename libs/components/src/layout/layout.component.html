@@ -6,14 +6,19 @@
 >
   <div class="tw-group tw-flex tw-w-full" [ngClass]="data.open ? 'sidebar-open' : 'sidebar-closed'">
     <aside
+      id="bit-sidebar"
       class="tw-fixed tw-inset-y-0 tw-left-0 tw-z-20 tw-flex tw-h-screen tw-flex-col tw-overflow-auto tw-bg-background-alt3 tw-pt-7 group-[.sidebar-open]:tw-w-60 md:tw-sticky"
       [cdkTrapFocus]="data.isOverlay"
+      [attr.role]="data.isOverlay ? 'dialog' : null"
+      [attr.aria-modal]="data.isOverlay"
     >
       <ng-content select="[slot=sidebar]"></ng-content>
       <bit-nav-item
         class="tw-mt-auto"
         [icon]="data.open ? 'bwi-angle-left' : 'bwi-angle-right'"
         (mainContentClicked)="sidebarService.toggle()"
+        [attr.aria-expanded]="data.open"
+        aria-controls="bit-sidebar"
       ></bit-nav-item>
     </aside>
     <main

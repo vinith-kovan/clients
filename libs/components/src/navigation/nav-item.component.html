@@ -39,7 +39,11 @@
 
     <!-- Main content of `NavItem` -->
     <ng-template #anchorAndButtonContent>
-      <i class="bwi bwi-fw tw-text-alt2 tw-mx-1 {{ icon }}"></i
+      <i
+        class="bwi bwi-fw tw-text-alt2 tw-mx-1 {{ icon }}"
+        [attr.aria-hidden]="sidebarService.open$ | async"
+        [attr.aria-label]="text"
+      ></i
       ><span
         *ngIf="sidebarService.open$ | async"
         [ngClass]="showActiveStyles ? 'tw-font-bold' : 'tw-font-semibold'"

@@ -7,13 +7,13 @@
   <div class="tw-group tw-flex tw-w-full" [ngClass]="data.open ? 'sidebar-open' : 'sidebar-closed'">
     <aside
       id="bit-sidebar"
-      class="tw-fixed tw-inset-y-0 tw-left-0 tw-z-20 tw-flex tw-h-screen tw-flex-col tw-overflow-auto tw-border-2 tw-border-solid tw-border-background-alt3 tw-bg-background-alt3 tw-pt-7 group-[.sidebar-open]:tw-w-60 md:tw-sticky"
+      class="tw-fixed tw-inset-y-0 tw-left-0 tw-z-20 tw-flex tw-h-screen tw-flex-col tw-overflow-auto tw-bg-background-alt3 tw-pt-7 group-[.sidebar-open]:tw-w-60 md:tw-sticky"
       [cdkTrapFocus]="data.isOverlay"
       [attr.role]="data.isOverlay ? 'dialog' : null"
       [attr.aria-modal]="data.isOverlay"
     >
       <ng-content select="[slot=sidebar]"></ng-content>
-      <div class="tw-my-4 tw-mt-auto tw-w-[3.75rem]">
+      <div class="tw-mx-0.5 tw-my-4 tw-mt-auto tw-w-[3.75rem]">
         <button
           type="button"
           class="tw-mx-auto tw-block tw-max-w-fit"

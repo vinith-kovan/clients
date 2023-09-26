@@ -28,7 +28,9 @@ export default {
         {
           provide: I18nService,
           useFactory: () => {
-            return new I18nMockService({});
+            return new I18nMockService({
+              toggleSideNavigation: "Toggle side navigation",
+            });
           },
         },
       ],

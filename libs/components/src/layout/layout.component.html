@@ -13,13 +13,19 @@
       [attr.aria-modal]="data.isOverlay"
     >
       <ng-content select="[slot=sidebar]"></ng-content>
-      <bit-nav-item
-        class="tw-mt-auto"
-        [icon]="data.open ? 'bwi-angle-left' : 'bwi-angle-right'"
-        (mainContentClicked)="sidebarService.toggle()"
-        [attr.aria-expanded]="data.open"
-        aria-controls="bit-sidebar"
-      ></bit-nav-item>
+      <div class="tw-my-4 tw-mt-auto tw-w-[3.75rem]">
+        <button
+          type="button"
+          class="tw-mx-auto tw-block tw-max-w-fit"
+          [bitIconButton]="data.open ? 'bwi-angle-left' : 'bwi-angle-right'"
+          buttonType="light"
+          size="small"
+          (click)="sidebarService.toggle()"
+          [attr.aria-label]="'toggleSideNavigation' | i18n"
+          [attr.aria-expanded]="data.open"
+          aria-controls="bit-sidebar"
+        ></button>
+      </div>
     </aside>
     <main
       class="tw-ml-14 tw-h-screen tw-min-w-0 tw-flex-1 tw-overflow-auto tw-bg-background tw-p-6 md:tw-ml-0"

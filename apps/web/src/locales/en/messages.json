@@ -7171,5 +7171,8 @@
   },
   "alreadyHaveAccount": {
     "message": "Already have an account?"
+  },
+  "toggleSideNavigation": {
+    "message": "Toggle side navigation"
   }
 }

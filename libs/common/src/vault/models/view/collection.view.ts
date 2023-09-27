@@ -14,7 +14,6 @@ export class CollectionView implements View, ITreeNodeObject {
   // readOnly applies to the items within a collection
   readOnly: boolean = null;
   hidePasswords: boolean = null;
-  manage: boolean = null;
 
   constructor(c?: Collection | CollectionAccessDetailsResponse) {
     if (!c) {
@@ -27,7 +26,6 @@ export class CollectionView implements View, ITreeNodeObject {
     if (c instanceof Collection) {
       this.readOnly = c.readOnly;
       this.hidePasswords = c.hidePasswords;
-      this.manage = c.manage;
     }
   }
 

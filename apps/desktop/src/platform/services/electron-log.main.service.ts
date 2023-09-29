@@ -1,22 +1,19 @@
 import * as path from "path";
 
-import log from "electron-log";
+import log from "electron-log/main";
 
 import { LogLevelType } from "@bitwarden/common/enums";
 import { ConsoleLogService as BaseLogService } from "@bitwarden/common/platform/services/console-log.service";
 
 import { isDev } from "../../utils";
 
-export class ElectronLogService extends BaseLogService {
+export class ElectronLogMainService extends BaseLogService {
   constructor(
     protected filter: (level: LogLevelType) => boolean = null,
     private logDir: string = null
   ) {
     super(isDev(), filter);
-  }
 
-  // Initialize the log file transport. Only needs to be done once in the main process.
-  init() {
     if (log.transports == null) {
       return;
     }

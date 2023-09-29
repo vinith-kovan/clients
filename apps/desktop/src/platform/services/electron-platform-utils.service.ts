@@ -6,7 +6,7 @@ import {
   PlatformUtilsService,
 } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
-import { isMacAppStore } from "../../utils";
+import { isDev, isMacAppStore } from "../../utils";
 import { ClipboardWriteMessage } from "../types/clipboard";
 
 export class ElectronPlatformUtilsService implements PlatformUtilsService {
@@ -94,7 +94,7 @@ export class ElectronPlatformUtilsService implements PlatformUtilsService {
   }
 
   isDev(): boolean {
-    return ipc.platform.isDev;
+    return isDev();
   }
 
   isSelfHost(): boolean {

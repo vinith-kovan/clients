@@ -25,6 +25,7 @@ export * from "./search";
 export * from "./select";
 export * from "./table";
 export * from "./tabs";
+export * from "./toast";
 export * from "./toggle-group";
 export * from "./typography";
 export * from "./utils/i18n-mock.service";

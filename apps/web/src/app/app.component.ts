@@ -315,6 +315,10 @@ export class AppComponent implements OnDestroy, OnInit {
       }
     }
 
+    options.payload = {
+      type: msg.type,
+    };
+
     this.toastrService.show(message, msg.title, options, "toast-" + msg.type);
   }
 

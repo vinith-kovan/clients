@@ -1,14 +1,14 @@
-<main class="tw-flex tw-min-h-screen tw-flex-col tw-gap-12 tw-pb-4 tw-pt-14">
+<main class="tw-flex tw-min-h-screen tw-flex-col tw-gap-12 tw-px-4 tw-pb-4 tw-pt-14">
   <div class="tw-text-center">
     <div class="tw-text-3xl tw-font-bold tw-text-primary-500">BITWARDEN LOGO</div>
-    <h1 class="tw-mt-4 tw-text-2xl tw-font-semibold">{{ title }}</h1>
+    <h1 class="tw-mt-4 tw-text-2xl tw-font-semibold tw-text-main">{{ title }}</h1>
   </div>
   <div
-    class="tw-mx-auto tw-mb-auto tw-max-w-md tw-rounded-xl tw-border tw-border-primary-300 tw-bg-background tw-p-8 tw-shadow"
+    class="tw-mx-auto tw-mb-auto tw-max-w-md tw-rounded-xl tw-border tw-border-primary-300 tw-bg-background tw-p-6 tw-text-main tw-shadow sm:tw-p-8"
   >
     <ng-content></ng-content>
   </div>
-  <footer class="tw-text-center">
+  <footer class="tw-text-center tw-text-main">
     <div>&copy; {{ year }} Bitwarden Inc.</div>
     <div>{{ version }}</div>
   </footer>

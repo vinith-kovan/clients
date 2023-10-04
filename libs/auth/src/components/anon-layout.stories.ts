@@ -29,10 +29,22 @@ export const Default: Story = {
     props: args,
     template: /* HTML */ `
       <anon-layout title="Page Title">
-        <div
-          class="tw-flex tw-h-96 tw-w-96 tw-flex-col tw-items-center tw-justify-center tw-bg-secondary-100"
-        >
-          Content
+        <div class="tw-flex tw-flex-col tw-gap-4 tw-bg-secondary-100 tw-p-6">
+          <div>
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam explicabo, beatae saepe
+            odit, omnis optio molestias voluptate accusantium reprehenderit illo quas distinctio
+            nostrum similique iusto animi. Est possimus soluta animi!
+          </div>
+          <div>
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam explicabo, beatae saepe
+            odit, omnis optio molestias voluptate accusantium reprehenderit illo quas distinctio
+            nostrum similique iusto animi. Est possimus soluta animi!
+          </div>
+          <div>
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam explicabo, beatae saepe
+            odit, omnis optio molestias voluptate accusantium reprehenderit illo quas distinctio
+            nostrum similique iusto animi. Est possimus soluta animi!
+          </div>
         </div>
       </anon-layout>
     `,

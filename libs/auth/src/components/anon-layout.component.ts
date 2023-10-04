@@ -3,7 +3,8 @@ import { Component } from "@angular/core";
 // import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
 @Component({
-  selector: "app-anon-layout",
+  standalone: true,
+  selector: "anon-layout",
   templateUrl: "./anon-layout.component.html",
 })
 export class AnonLayoutComponent {

@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 
-// import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
 @Component({
   standalone: true,
@@ -15,10 +15,10 @@ export class AnonLayoutComponent {
   version: string;
   year = "2023";
 
-  // constructor(private platformUtilsService: PlatformUtilsService) {}
+  constructor(private platformUtilsService: PlatformUtilsService) {}
 
   async ngOnInit() {
     this.year = new Date().getFullYear().toString();
-    // this.version = await this.platformUtilsService.getApplicationVersion();
+    this.version = await this.platformUtilsService.getApplicationVersion();
   }
 }

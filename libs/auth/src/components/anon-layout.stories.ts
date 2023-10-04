@@ -1,6 +1,12 @@
 import { Meta, StoryObj, componentWrapperDecorator, moduleMetadata } from "@storybook/angular";
 
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+
 import { AnonLayoutComponent } from "./anon-layout.component";
+
+class MockPlatformUtilsService implements Partial<PlatformUtilsService> {
+  getApplicationVersion = () => Promise.resolve("Version 2023.1.1");
+}
 
 export default {
   title: "Web/Anon Layout",
@@ -16,8 +22,12 @@ export default {
       </div>`
     ),
     moduleMetadata({
-      imports: [],
-      declarations: [],
+      providers: [
+        {
+          provide: PlatformUtilsService,
+          useClass: MockPlatformUtilsService,
+        },
+      ],
     }),
   ],
 } as Meta;

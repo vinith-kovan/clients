@@ -40,6 +40,7 @@ export const Default: Story = {
     template: /* HTML */ `
       <anon-layout title="Page Title">
         <div class="tw-flex tw-flex-col tw-gap-4 tw-bg-secondary-100 tw-p-6">
+          <div>Custom content goes here</div>
           <div>
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam explicabo, beatae saepe
             odit, omnis optio molestias voluptate accusantium reprehenderit illo quas distinctio

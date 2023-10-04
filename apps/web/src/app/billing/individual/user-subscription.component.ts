@@ -12,7 +12,6 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { DialogService } from "@bitwarden/components";
 
 @Component({
-  selector: "app-user-subscription",
   templateUrl: "user-subscription.component.html",
 })
 export class UserSubscriptionComponent implements OnInit {
@@ -53,6 +52,7 @@ export class UserSubscriptionComponent implements OnInit {
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     if (this.stateService.getHasPremiumPersonally()) {
       this.loading = true;
       this.sub = await this.apiService.getUserSubscription();
@@ -203,6 +203,10 @@ export class UserSubscriptionComponent implements OnInit {
 
   get nextInvoice() {
     return this.sub != null ? this.sub.upcomingInvoice : null;
+  }
+
+  get discount() {
+    return this.sub != null ? this.sub.discount : null;
   }
 
   get storagePercentage() {

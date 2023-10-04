@@ -1,14 +1,19 @@
-<main class="tw-flex tw-min-h-screen tw-flex-col tw-gap-12 tw-px-4 tw-pb-4 tw-pt-14">
+<main class="tw-flex tw-min-h-screen tw-flex-col tw-gap-12 tw-px-4 tw-pb-4 tw-pt-14 tw-text-main">
   <div class="tw-text-center">
     <img class="logo" alt="Bitwarden" />
-    <h1 class="tw-mt-4 tw-text-2xl tw-font-semibold tw-text-main">{{ title }}</h1>
+    <h1 class="tw-mt-4 tw-text-2xl tw-font-semibold">{{ title }}</h1>
   </div>
-  <div
-    class="tw-mx-auto tw-mb-auto tw-max-w-md tw-rounded-xl tw-bg-background tw-text-main sm:tw-border sm:tw-border-solid sm:tw-border-secondary-300 sm:tw-p-8"
-  >
-    <ng-content></ng-content>
+  <div class="tw-mb-auto">
+    <div
+      class="tw-mx-auto tw-max-w-md tw-rounded-xl tw-bg-background sm:tw-border sm:tw-border-solid sm:tw-border-secondary-300 sm:tw-p-8"
+    >
+      <ng-content></ng-content>
+    </div>
+    <div class="tw-mx-auto tw-mt-12 tw-max-w-md tw-text-center">
+      <ng-content select="[slot=secondary]"></ng-content>
+    </div>
   </div>
-  <footer class="tw-text-center tw-text-main">
+  <footer class="tw-text-center">
     <div>&copy; {{ year }} Bitwarden Inc.</div>
     <div>{{ version }}</div>
   </footer>

@@ -2,6 +2,8 @@ import { Meta, StoryObj, componentWrapperDecorator, moduleMetadata } from "@stor
 
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
+import { ButtonModule } from "../../../components/src/button";
+
 import { AnonLayoutComponent } from "./anon-layout.component";
 
 class MockPlatformUtilsService implements Partial<PlatformUtilsService> {
@@ -22,6 +24,7 @@ export default {
       </div>`
     ),
     moduleMetadata({
+      imports: [ButtonModule],
       providers: [
         {
           provide: PlatformUtilsService,
@@ -51,11 +54,10 @@ export const Default: Story = {
             odit, omnis optio molestias voluptate accusantium reprehenderit illo quas distinctio
             nostrum similique iusto animi. Est possimus soluta animi!
           </div>
-          <div>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam explicabo, beatae saepe
-            odit, omnis optio molestias voluptate accusantium reprehenderit illo quas distinctio
-            nostrum similique iusto animi. Est possimus soluta animi!
-          </div>
+        </div>
+        <div slot="secondary">
+          <h3 class="tw-mb-3 tw-text-2xl tw-font-semibold">Secondary Content</h3>
+          <button bitButton>Perform Action</button>
         </div>
       </anon-layout>
     `,

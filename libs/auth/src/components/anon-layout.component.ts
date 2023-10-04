@@ -6,6 +6,7 @@ import { Component, Input } from "@angular/core";
   standalone: true,
   selector: "anon-layout",
   templateUrl: "./anon-layout.component.html",
+  styleUrls: ["./anon-layout.component.css"],
 })
 export class AnonLayoutComponent {
   @Input()

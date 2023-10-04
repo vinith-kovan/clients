@@ -1,0 +1,6 @@
+img.logo {
+  display: block;
+  margin: 0 auto;
+  max-width: 290px;
+  content: url("./logo.svg");
+}

@@ -24,18 +24,11 @@ export default {
 
 type Story = StoryObj<AnonLayoutComponent>;
 
-export const Empty: Story = {
-  render: (args) => ({
-    props: args,
-    template: /* HTML */ `<anon-layout></anon-layout>`,
-  }),
-};
-
-export const WithContent: Story = {
+export const Default: Story = {
   render: (args) => ({
     props: args,
     template: /* HTML */ `
-      <anon-layout>
+      <anon-layout title="Page Title">
         <div
           class="tw-flex tw-h-96 tw-w-96 tw-flex-col tw-items-center tw-justify-center tw-bg-secondary-100"
         >

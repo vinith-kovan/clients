@@ -11,7 +11,7 @@ export class OrganizationSubscriptionResponse extends OrganizationResponse {
   storageGb: number;
   subscription: BillingSubscriptionResponse;
   upcomingInvoice: BillingSubscriptionUpcomingInvoiceResponse;
-  discount: BillingCustomerDiscount;
+  customerDiscount: BillingCustomerDiscount;
   expiration: string;
   expirationWithoutGracePeriod: string;
   secretsManagerBeta: boolean;
@@ -27,8 +27,9 @@ export class OrganizationSubscriptionResponse extends OrganizationResponse {
       upcomingInvoice == null
         ? null
         : new BillingSubscriptionUpcomingInvoiceResponse(upcomingInvoice);
-    const discount = this.getResponseProperty("Discount");
-    this.discount = discount == null ? null : new BillingCustomerDiscount(discount);
+    const customerDiscount = this.getResponseProperty("CustomerDiscount");
+    this.customerDiscount =
+      customerDiscount == null ? null : new BillingCustomerDiscount(customerDiscount);
     this.expiration = this.getResponseProperty("Expiration");
     this.expirationWithoutGracePeriod = this.getResponseProperty("ExpirationWithoutGracePeriod");
     this.secretsManagerBeta = this.getResponseProperty("SecretsManagerBeta");

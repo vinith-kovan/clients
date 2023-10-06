@@ -39,7 +39,6 @@ import { SendTypeComponent } from "../tools/popup/send/send-type.component";
 import { ExportComponent } from "../tools/popup/settings/export.component";
 import { ActionButtonsComponent } from "../vault/popup/components/action-buttons.component";
 import { CipherRowComponent } from "../vault/popup/components/cipher-row.component";
-import { PasswordRepromptComponent } from "../vault/popup/components/password-reprompt.component";
 import { AddEditCustomFieldsComponent } from "../vault/popup/components/vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../vault/popup/components/vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/popup/components/vault/attachments.component";
@@ -61,7 +60,6 @@ import { PrivateModeWarningComponent } from "./components/private-mode-warning.c
 import { SetPinComponent } from "./components/set-pin.component";
 import { UserVerificationComponent } from "./components/user-verification.component";
 import { ServicesModule } from "./services/services.module";
-import { AboutComponent } from "./settings/about.component";
 import { AutofillComponent } from "./settings/autofill.component";
 import { ExcludedDomainsComponent } from "./settings/excluded-domains.component";
 import { FoldersComponent } from "./settings/folders.component";
@@ -126,7 +124,6 @@ import "../platform/popup/locales";
     GeneratorComponent,
     PasswordGeneratorHistoryComponent,
     PasswordHistoryComponent,
-    PasswordRepromptComponent,
     PopOutComponent,
     PremiumComponent,
     PrivateModeWarningComponent,
@@ -151,7 +148,6 @@ import "../platform/popup/locales";
     ViewCustomFieldsComponent,
     RemovePasswordComponent,
     VaultSelectComponent,
-    AboutComponent,
     HelpAndFeedbackComponent,
     AutofillComponent,
     EnvironmentSelectorComponent,

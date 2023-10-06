@@ -75,7 +75,7 @@ describe("AutofillService", () => {
     const autofillV1Script = "autofill.js";
     const autofillV2Script = "autofill-init.js";
     const defaultAutofillScripts = ["autofiller.js", "notificationBar.js", "contextMenuHandler.js"];
-    const defaultExecuteScriptOptions = { allFrames: true, runAt: "document_start" };
+    const defaultExecuteScriptOptions = { runAt: "document_start" };
     let tabMock: chrome.tabs.Tab;
     let sender: chrome.runtime.MessageSender;
 
@@ -91,11 +91,13 @@ describe("AutofillService", () => {
       [autofillV1Script, ...defaultAutofillScripts].forEach((scriptName) => {
         expect(BrowserApi.executeScriptInTab).toHaveBeenCalledWith(tabMock.id, {
           file: `content/${scriptName}`,
+          frameId: sender.frameId,
           ...defaultExecuteScriptOptions,
         });
       });
       expect(BrowserApi.executeScriptInTab).not.toHaveBeenCalledWith(tabMock.id, {
         file: `content/${autofillV2Script}`,
+        frameId: sender.frameId,
         ...defaultExecuteScriptOptions,
       });
     });
@@ -776,6 +778,18 @@ describe("AutofillService", () => {
           }),
         },
       ];
+    });
+
+    it("returns a null vault without doing autofill if the page details does not contain fields ", async () => {
+      pageDetails[0].details.fields = [];
+      jest.spyOn(autofillService as any, "getActiveTab");
+      jest.spyOn(autofillService, "doAutoFill");
+
+      const result = await autofillService.doAutoFillActiveTab(pageDetails, false);
+
+      expect(autofillService["getActiveTab"]).not.toHaveBeenCalled();
+      expect(autofillService.doAutoFill).not.toHaveBeenCalled();
+      expect(result).toBeNull();
     });
 
     it("returns a null value without doing autofill if the active tab cannot be found", async () => {

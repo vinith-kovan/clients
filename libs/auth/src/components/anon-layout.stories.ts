@@ -37,24 +37,46 @@ export default {
 
 type Story = StoryObj<AnonLayoutComponent>;
 
-export const Default: Story = {
+export const Empty: Story = {
   render: (args) => ({
     props: args,
-    template: /* HTML */ `
+    template: /* HTML */ ` <anon-layout title="Page Title"> </anon-layout> `,
+  }),
+};
+
+export const WithContent: Story = {
+  render: (args) => ({
+    props: args,
+    template:
+      /**
+       * The projected content (i.e. the <div> ) and styling below is just a
+       * sample and could be replaced with any content and styling
+       */
+      `
       <anon-layout title="Page Title">
-        <div class="tw-flex tw-flex-col tw-gap-4 tw-bg-secondary-100 tw-p-6">
-          <div>Custom content goes here</div>
-          <div>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam explicabo, beatae saepe
-            odit, omnis optio molestias voluptate accusantium reprehenderit illo quas distinctio
-            nostrum similique iusto animi. Est possimus soluta animi!
-          </div>
-          <div>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam explicabo, beatae saepe
-            odit, omnis optio molestias voluptate accusantium reprehenderit illo quas distinctio
-            nostrum similique iusto animi. Est possimus soluta animi!
-          </div>
+        <div
+          class="tw-flex tw-h-80 tw-flex-col tw-items-center tw-justify-center tw-bg-secondary-100"
+        >
+          Sample Projected Content
         </div>
+      </anon-layout>
+    `,
+  }),
+};
+
+export const WithSecondaryContent: Story = {
+  render: (args) => ({
+    props: args,
+    template:
+      // Notice that slot="secondary" is requred to project any secondary content:
+      `
+      <anon-layout title="Page Title">
+        <div
+          class="tw-flex tw-h-80 tw-flex-col tw-items-center tw-justify-center tw-bg-secondary-100"
+        >
+          Sample Projected Content
+        </div>
+
         <div slot="secondary">
           <h3 class="tw-mb-3 tw-text-2xl tw-font-semibold">Secondary Content</h3>
           <button bitButton>Perform Action</button>

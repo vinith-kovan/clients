@@ -78,7 +78,7 @@ export const WithSecondaryContent: Story = {
         </div>
 
         <div slot="secondary">
-          <h3 class="tw-mb-3 tw-text-2xl tw-font-semibold">Secondary Content</h3>
+          <h3 class="tw-mb-3 tw-text-xl sm:tw-text-2xl tw-font-semibold">Secondary Content</h3>
           <button bitButton>Perform Action</button>
         </div>
       </anon-layout>

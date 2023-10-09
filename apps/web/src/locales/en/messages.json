@@ -7204,5 +7204,8 @@
   },
   "customBillingEnd": {
     "message": " page for latest invoicing."
+  },
+  "managePermissionRequired": {
+    "message": "At least one member or group must have can manage permission."
   }
 }

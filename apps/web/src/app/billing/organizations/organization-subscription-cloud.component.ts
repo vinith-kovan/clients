@@ -139,21 +139,25 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     return this.sub != null ? this.sub.customerDiscount : null;
   }
 
+  discountLineItem(lineItem: BillingSubscriptionItemResponse, percentOff: number) {
+    const discount = lineItem.amount * (percentOff / 100);
+    return {
+      name: lineItem.name,
+      amount: lineItem.amount - discount,
+      quantity: lineItem.quantity,
+      interval: lineItem.interval,
+      sponsoredSubscriptionItem: lineItem.sponsoredSubscriptionItem,
+      addonSubscriptionItem: lineItem.addonSubscriptionItem,
+      bitwardenProduct: lineItem.bitwardenProduct,
+    };
+  }
+
   get subscriptionLineItems() {
     return !this.customerDiscount?.percentOff
       ? this.lineItems
-      : this.lineItems.map((lineItem: BillingSubscriptionItemResponse) => {
-          const discount = lineItem.amount * (this.customerDiscount.percentOff / 100);
-          return {
-            name: lineItem.name,
-            amount: lineItem.amount - discount,
-            quantity: lineItem.quantity,
-            interval: lineItem.interval,
-            sponsoredSubscriptionItem: lineItem.sponsoredSubscriptionItem,
-            addonSubscriptionItem: lineItem.addonSubscriptionItem,
-            bitwardenProduct: lineItem.bitwardenProduct,
-          };
-        });
+      : this.lineItems.map((lineItem: BillingSubscriptionItemResponse) =>
+          this.discountLineItem(lineItem, this.customerDiscount.percentOff)
+        );
   }
 
   get isExpired() {

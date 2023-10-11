@@ -1,14 +1,14 @@
 import { NgModule } from "@angular/core";
 
+import { SearchModule } from "@bitwarden/components";
+
 import { SharedModule } from "../../../shared/shared.module";
 
 import { AccessSelectorModule } from "./components/access-selector/access-selector.module";
-import { CollectionDialogModule } from "./components/collection-dialog";
-import { SearchInputComponent } from "./components/search-input/search-input.component";
 
 @NgModule({
-  imports: [SharedModule, CollectionDialogModule, AccessSelectorModule],
-  declarations: [SearchInputComponent],
-  exports: [SharedModule, CollectionDialogModule, AccessSelectorModule, SearchInputComponent],
+  imports: [SharedModule, AccessSelectorModule, SearchModule],
+  declarations: [],
+  exports: [SharedModule, AccessSelectorModule, SearchModule],
 })
 export class SharedOrganizationModule {}

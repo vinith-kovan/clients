@@ -475,8 +475,8 @@
   "maxFileSize": {
     "message": "ಗರಿಷ್ಠ ಫೈಲ್ ಗಾತ್ರ 500 ಎಂಬಿ."
   },
-  "updateKey": {
-    "message": "ನಿಮ್ಮ ಎನ್‌ಕ್ರಿಪ್ಶನ್ ಕೀಲಿಯನ್ನು ನವೀಕರಿಸುವವರೆಗೆ ನೀವು ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲಾಗುವುದಿಲ್ಲ."
+  "encryptionKeyMigrationRequired": {
+    "message": "Encryption key migration required. Please login through the web vault to update your encryption key."
   },
   "editedFolder": {
     "message": "ಫೋಲ್ಡರ್ ತಿದ್ದಲಾಗಿದೆ"
@@ -1077,8 +1077,8 @@
   "premiumSignUpStorage": {
     "message": "ಫೈಲ್ ಲಗತ್ತುಗಳಿಗಾಗಿ 1 ಜಿಬಿ ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಿದ ಸಂಗ್ರಹ."
   },
-  "premiumSignUpTwoStep": {
-    "message": "ಹೆಚ್ಚುವರಿ ಎರಡು-ಹಂತದ ಲಾಗಿನ್ ಆಯ್ಕೆಗಳಾದ ಯೂಬಿಕೆ, ಎಫ್‌ಐಡಿಒ ಯು 2 ಎಫ್, ಮತ್ತು ಡ್ಯುವೋ."
+  "premiumSignUpTwoStepOptions": {
+    "message": "Proprietary two-step login options such as YubiKey and Duo."
   },
   "premiumSignUpReports": {
     "message": "ನಿಮ್ಮ ವಾಲ್ಟ್ ಅನ್ನು ಸುರಕ್ಷಿತವಾಗಿರಿಸಲು ಪಾಸ್ವರ್ಡ್ ನೈರ್ಮಲ್ಯ, ಖಾತೆ ಆರೋಗ್ಯ ಮತ್ತು ಡೇಟಾ ಉಲ್ಲಂಘನೆ ವರದಿಗಳು."
@@ -1392,20 +1392,32 @@
   "unlockWithWindowsHello": {
     "message": "ವಿಂಡೋಸ್ ಹಲೋನೊಂದಿಗೆ ಅನ್ಲಾಕ್ ಮಾಡಿ"
   },
+  "additionalWindowsHelloSettings": {
+    "message": "Additional Windows Hello settings"
+  },
   "windowsHelloConsentMessage": {
     "message": "ಬಿಟ್‌ವಾರ್ಡೆನ್‌ಗಾಗಿ ಪರಿಶೀಲಿಸಿ."
   },
   "unlockWithTouchId": {
     "message": "ಟಚ್ ಐಡಿ ಯೊಂದಿಗೆ ಅನ್ಲಾಕ್ ಮಾಡಿ"
   },
+  "additionalTouchIdSettings": {
+    "message": "Additional Touch ID settings"
+  },
   "touchIdConsentMessage": {
     "message": "ನಿಮ್ಮ ವಾಲ್ಟ್ ಅನ್ನು ಅನ್ಲಾಕ್ ಮಾಡಿ"
   },
   "autoPromptWindowsHello": {
-    "message": "Ask for Windows Hello on launch"
+    "message": "Ask for Windows Hello on app start"
   },
   "autoPromptTouchId": {
-    "message": "Ask for Touch ID on launch"
+    "message": "Ask for Touch ID on app start"
+  },
+  "requirePasswordOnStart": {
+    "message": "Require password or PIN on app start"
+  },
+  "recommendedForSecurity": {
+    "message": "Recommended for security."
   },
   "lockWithMasterPassOnRestart": {
     "message": "ಮರುಪ್ರಾರಂಭಿಸಿದಾಗ ಮಾಸ್ಟರ್ ಪಾಸ್‌ವರ್ಡ್‌ನೊಂದಿಗೆ ಲಾಕ್ ಮಾಡಿ"
@@ -1480,6 +1492,9 @@
   "vaultTimeoutActionLogOutDesc": {
     "message": "ಲಾಗ್ out ಟ್ ವಾಲ್ಟ್‌ಗೆ ನೀವು ಅದನ್ನು ಮತ್ತೆ ಪ್ರವೇಶಿಸಲು ಮರು ದೃಢೀಕರಿಸುವ ಅಗತ್ಯವಿದೆ."
   },
+  "unlockMethodNeededToChangeTimeoutActionDesc": {
+    "message": "Set up an unlock method to change your vault timeout action."
+  },
   "lock": {
     "message": "ಲಾಕ್‌",
     "description": "Verb form: to make secure or inaccesible by"
@@ -1499,12 +1514,6 @@
   },
   "permanentlyDeletedItem": {
     "message": "ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲಾದ ಐಟಂ"
-  },
-  "restoreItem": {
-    "message": "ಐಟಂ ಅನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"
-  },
-  "restoreItemConfirmation": {
-    "message": "ಈ ಐಟಂ ಅನ್ನು ಮರುಸ್ಥಾಪಿಸಲು ನೀವು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?"
   },
   "restoredItem": {
     "message": "ಐಟಂ ಅನ್ನು ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ"
@@ -1526,6 +1535,9 @@
   },
   "ssoCompleteRegistration": {
     "message": "ಎಸ್‌ಎಸ್‌ಒನೊಂದಿಗೆ ಲಾಗಿನ್ ಆಗುವುದನ್ನು ಪೂರ್ಣಗೊಳಿಸಲು, ದಯವಿಟ್ಟು ನಿಮ್ಮ ವಾಲ್ಟ್ ಅನ್ನು ಪ್ರವೇಶಿಸಲು ಮತ್ತು ರಕ್ಷಿಸಲು ಮಾಸ್ಟರ್ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಹೊಂದಿಸಿ."
+  },
+  "currentMasterPass": {
+    "message": "Current master password"
   },
   "newMasterPass": {
     "message": "ಹೊಸ ಮಾಸ್ಟರ್ ಪಾಸ್‌ವರ್ಡ್"
@@ -1843,6 +1855,9 @@
   "updateMasterPasswordWarning": {
     "message": "Your master password was recently changed by an administrator in your organization. In order to access the vault, you must update it now. Proceeding will log you out of your current session, requiring you to log back in. Active sessions on other devices may continue to remain active for up to one hour."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Your master password does not meet one or more of your organization policies. In order to access the vault, you must update your master password now. Proceeding will log you out of your current session, requiring you to log back in. Active sessions on other devices may continue to remain active for up to one hour."
+  },
   "hours": {
     "message": "Hours"
   },
@@ -1850,7 +1865,7 @@
     "message": "Minutes"
   },
   "vaultTimeoutPolicyInEffect": {
-    "message": "Your organization policies are affecting your vault timeout. Maximum allowed vault timeout is $HOURS$ hour(s) and $MINUTES$ minute(s)",
+    "message": "Your organization policies have set your maximum allowed vault timeout to $HOURS$ hour(s) and $MINUTES$ minute(s).",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -1859,6 +1874,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Your organization policies are affecting your vault timeout. Maximum allowed vault timeout is $HOURS$ hour(s) and $MINUTES$ minute(s). Your vault timeout action is set to $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Your organization policies have set your vault timeout action to $ACTION$.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -1943,8 +1984,8 @@
   "exportingPersonalVaultTitle": {
     "message": "Exporting individual vault"
   },
-  "exportingPersonalVaultDescription": {
-    "message": "Only the individual vault items associated with $EMAIL$ will be exported. Organization vault items will not be included.",
+  "exportingIndividualVaultDescription": {
+    "message": "Only the individual vault items associated with $EMAIL$ will be exported. Organization vault items will not be included. Only vault item information will be exported and will not include associated attachments.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -2068,8 +2109,8 @@
   "logInWithAnotherDevice": {
     "message": "Log in with another device"
   },
-  "logInInitiated": {
-    "message": "Log in initiated"
+  "loginInitiated": {
+    "message": "Login initiated"
   },
   "notificationSentDevice": {
     "message": "A notification has been sent to your device."
@@ -2201,5 +2242,181 @@
         "example": "14"
       }
     }
+  },
+  "windowsBiometricUpdateWarning": {
+    "message": "Bitwarden recommends updating your biometric settings to require your master password (or PIN) on the first unlock. Would you like to update your settings now?"
+  },
+  "windowsBiometricUpdateWarningTitle": {
+    "message": "Recommended Settings Update"
+  },
+  "deviceApprovalRequired": {
+    "message": "Device approval required. Select an approval option below:"
+  },
+  "rememberThisDevice": {
+    "message": "Remember this device"
+  },
+  "uncheckIfPublicDevice": {
+    "message": "Uncheck if using a public device"
+  },
+  "approveFromYourOtherDevice": {
+    "message": "Approve from your other device"
+  },
+  "requestAdminApproval": {
+    "message": "Request admin approval"
+  },
+  "approveWithMasterPassword": {
+    "message": "Approve with master password"
+  },
+  "region": {
+    "message": "Region"
+  },
+  "ssoIdentifierRequired": {
+    "message": "Organization SSO identifier is required."
+  },
+  "eu": {
+    "message": "EU",
+    "description": "European Union"
+  },
+  "loggingInOn": {
+    "message": "Logging in on"
+  },
+  "usDomain": {
+    "message": "bitwarden.com"
+  },
+  "euDomain": {
+    "message": "bitwarden.eu"
+  },
+  "selfHostedServer": {
+    "message": "self-hosted"
+  },
+  "accessDenied": {
+    "message": "Access denied. You do not have permission to view this page."
+  },
+  "accountSuccessfullyCreated": {
+    "message": "Account successfully created!"
+  },
+  "adminApprovalRequested": {
+    "message": "Admin approval requested"
+  },
+  "adminApprovalRequestSentToAdmins": {
+    "message": "Your request has been sent to your admin."
+  },
+  "youWillBeNotifiedOnceApproved": {
+    "message": "You will be notified once approved."
+  },
+  "troubleLoggingIn": {
+    "message": "Trouble logging in?"
+  },
+  "loginApproved": {
+    "message": "Login approved"
+  },
+  "userEmailMissing": {
+    "message": "User email missing"
+  },
+  "deviceTrusted": {
+    "message": "Device trusted"
+  },
+  "inputRequired": {
+    "message": "Input is required."
+  },
+  "required": {
+    "message": "required"
+  },
+  "search": {
+    "message": "Search"
+  },
+  "inputMinLength": {
+    "message": "Input must be at least $COUNT$ characters long.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxLength": {
+    "message": "Input must not exceed $COUNT$ characters in length.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
+  "inputForbiddenCharacters": {
+    "message": "The following characters are not allowed: $CHARACTERS$",
+    "placeholders": {
+      "characters": {
+        "content": "$1",
+        "example": "@, #, $, %"
+      }
+    }
+  },
+  "inputMinValue": {
+    "message": "Input value must be at least $MIN$.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "Input value must not exceed $MAX$.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "multipleInputEmails": {
+    "message": "1 or more emails are invalid"
+  },
+  "inputTrimValidator": {
+    "message": "Input must not contain only whitespace.",
+    "description": "Notification to inform the user that a form's input can't contain only whitespace."
+  },
+  "inputEmail": {
+    "message": "Input is not an email address."
+  },
+  "fieldsNeedAttention": {
+    "message": "$COUNT$ field(s) above need your attention.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "selectPlaceholder": {
+    "message": "-- Select --"
+  },
+  "multiSelectPlaceholder": {
+    "message": "-- Type to filter --"
+  },
+  "multiSelectLoading": {
+    "message": "Retrieving options..."
+  },
+  "multiSelectNotFound": {
+    "message": "No items found"
+  },
+  "multiSelectClearAll": {
+    "message": "Clear all"
+  },
+  "plusNMore": {
+    "message": "+ $QUANTITY$ more",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "submenu": {
+    "message": "Submenu"
+  },
+  "aliasDomain": {
+    "message": "Alias domain"
   }
 }

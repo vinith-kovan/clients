@@ -91,6 +91,15 @@
   "autoFill": {
     "message": "Autouzupełnianie"
   },
+  "autoFillLogin": {
+    "message": "Autouzupełnianie logowania"
+  },
+  "autoFillCard": {
+    "message": "Autouzupełnianie karty"
+  },
+  "autoFillIdentity": {
+    "message": "Autouzupełnianie tożsamości"
+  },
   "generatePasswordCopied": {
     "message": "Wygeneruj hasło (do schowka)"
   },
@@ -99,6 +108,21 @@
   },
   "noMatchingLogins": {
     "message": "Brak pasujących danych logowania"
+  },
+  "noCards": {
+    "message": "Brak kart"
+  },
+  "noIdentities": {
+    "message": "Brak tożsamości"
+  },
+  "addLoginMenu": {
+    "message": "Dodaj dane logowania"
+  },
+  "addCardMenu": {
+    "message": "Dodaj kartę"
+  },
+  "addIdentityMenu": {
+    "message": "Dodaj tożsamość"
   },
   "unlockVaultMenu": {
     "message": "Odblokuj sejf"
@@ -337,6 +361,9 @@
   },
   "other": {
     "message": "Inne"
+  },
+  "unlockMethodNeededToChangeTimeoutActionDesc": {
+    "message": "Ustaw metodę odblokowania, aby zmienić czas blokowania sejfu."
   },
   "rateExtension": {
     "message": "Oceń rozszerzenie"
@@ -630,6 +657,12 @@
   "notificationChangeSave": {
     "message": "Zaktualizuj"
   },
+  "notificationUnlockDesc": {
+    "message": "Odblokuj swój sejf Bitwarden, aby ukończyć żądanie autouzupełniania."
+  },
+  "notificationUnlock": {
+    "message": "Odblokuj"
+  },
   "enableContextMenuItem": {
     "message": "Pokaż opcje menu kontekstowego"
   },
@@ -762,8 +795,8 @@
   "featureUnavailable": {
     "message": "Funkcja jest niedostępna"
   },
-  "updateKey": {
-    "message": "Nie możesz używać tej funkcji, dopóki nie zaktualizujesz klucza szyfrowania."
+  "encryptionKeyMigrationRequired": {
+    "message": "Wymagana jest migracja klucza szyfrowania. Zaloguj się przez sejf internetowy, aby zaktualizować klucz szyfrowania."
   },
   "premiumMembership": {
     "message": "Konto Premium"
@@ -786,8 +819,8 @@
   "ppremiumSignUpStorage": {
     "message": "1 GB miejsca na zaszyfrowane załączniki."
   },
-  "ppremiumSignUpTwoStep": {
-    "message": "Dodatkowe opcje logowania dwustopniowego, takie jak klucze YubiKey, FIDO U2F oraz Duo."
+  "premiumSignUpTwoStepOptions": {
+    "message": "Własnościowe opcje logowania dwuetapowego, takie jak YubiKey i Duo."
   },
   "ppremiumSignUpReports": {
     "message": "Raporty bezpieczeństwa haseł, stanu konta i raporty wycieków danych, aby Twoje dane były bezpieczne."
@@ -1440,9 +1473,6 @@
   "restoreItem": {
     "message": "Przywróć element"
   },
-  "restoreItemConfirmation": {
-    "message": "Czy na pewno chcesz przywrócić ten element?"
-  },
   "restoredItem": {
     "message": "Element został przywrócony"
   },
@@ -1461,8 +1491,35 @@
   "autoFillSuccess": {
     "message": "Element został automatycznie uzupełniony"
   },
+  "insecurePageWarning": {
+    "message": "Ostrzeżenie: Jest to niezabezpieczona strona HTTP i wszelkie przekazane informacje mogą być potencjalnie widoczne i zmienione przez innych. Ten login został pierwotnie zapisany na stronie bezpiecznej (HTTPS)."
+  },
+  "insecurePageWarningFillPrompt": {
+    "message": "Nadal chcesz uzupełnić ten login?"
+  },
+  "autofillIframeWarning": {
+    "message": "Formularz jest hostowany przez inną domenę niż zapisany adres URI dla tego loginu. Wybierz OK, aby i tak automatycznie wypełnić lub anuluj aby zatrzymać."
+  },
+  "autofillIframeWarningTip": {
+    "message": "Aby zapobiec temu ostrzeżeniu w przyszłości, zapisz ten URI, $HOSTNAME$, dla tej witryny.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "www.example.com"
+      }
+    }
+  },
   "setMasterPassword": {
     "message": "Ustaw hasło główne"
+  },
+  "currentMasterPass": {
+    "message": "Aktualne hasło główne"
+  },
+  "newMasterPass": {
+    "message": "Nowe hasło główne"
+  },
+  "confirmNewMasterPass": {
+    "message": "Potwierdź nowe hasło główne"
   },
   "masterPasswordPolicyInEffect": {
     "message": "Co najmniej jedna zasada organizacji wymaga, aby hasło główne spełniało następujące wymagania:"
@@ -1571,6 +1628,12 @@
   },
   "biometricsNotSupportedDesc": {
     "message": "Dane biometryczne przeglądarki nie są obsługiwane na tym urządzeniu."
+  },
+  "biometricsFailedTitle": {
+    "message": "Dane biometryczne są błędne"
+  },
+  "biometricsFailedDesc": {
+    "message": "Dane biometryczne nie mogę być użyte, rozważ użycie hasła głównego lub wylogowanie. Jeśli się to powtarza, skontaktuj się z pomocą techniczną Bitwarden."
   },
   "nativeMessaginPermissionErrorTitle": {
     "message": "Uprawnienie nie zostało przyznane"
@@ -1844,6 +1907,9 @@
   "updateMasterPasswordWarning": {
     "message": "Hasło główne zostało zmienione przez administratora Twojej organizacji. Musisz je zaktualizować, aby uzyskać dostęp do sejfu. Ta czynność spowoduje wylogowanie z bieżącej sesji, przez co konieczne będzie ponowne zalogowanie się. Aktywne sesje na innych urządzeniach mogą pozostać aktywne przez maksymalnie godzinę."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Twoje hasło główne nie spełnia jednej lub kilku zasad organizacji. Aby uzyskać dostęp do sejfu, musisz teraz zaktualizować swoje hasło główne. Kontynuacja wyloguje Cię z bieżącej sesji, wymagając zalogowania się ponownie. Aktywne sesje na innych urządzeniach mogą pozostać aktywne przez maksymalnie jedną godzinę."
+  },
   "resetPasswordPolicyAutoEnroll": {
     "message": "Automatyczne rejestrowanie użytkowników"
   },
@@ -1872,6 +1938,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Zasady organizacji mają wpływ na czas blokowania sejfu. Maksymalny dozwolony czas wynosi $HOURS$ godz. i $MINUTES$ min. Twój czas blokowania sejfu to $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Zasady organizacji ustawiły czas blokowania sejfu na $ACTION$.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -1923,8 +2015,8 @@
   "exportingPersonalVaultTitle": {
     "message": "Eksportowanie osobistego sejfu"
   },
-  "exportingPersonalVaultDescription": {
-    "message": "Tylko osobiste elementy sejfu powiązane z adresem $EMAIL$ zostaną wyeksportowane. Elementy sejfu należące do organizacji nie będą uwzględnione.",
+  "exportingIndividualVaultDescription": {
+    "message": "Z sejfu zostaną wyeksportowane tylko elementy powiązane z $EMAIL$. Elementy z sejfu organizacji nie będą uwzględnione. Tylko informacje o elemencie zostaną wyeksportowane i nie będą zawierać powiązanych załączników.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -2024,8 +2116,8 @@
   "serverVersion": {
     "message": "Wersja serwera"
   },
-  "selfHosted": {
-    "message": "Samodzielnie hostowany"
+  "selfHostedServer": {
+    "message": "samodzielnie hostowany"
   },
   "thirdParty": {
     "message": "Inny dostawca"
@@ -2084,7 +2176,7 @@
   "notificationSentDevice": {
     "message": "Powiadomienie zostało wysłane na urządzenie."
   },
-  "logInInitiated": {
+  "loginInitiated": {
     "message": "Logowanie rozpoczęte"
   },
   "exposedMasterPassword": {
@@ -2164,5 +2256,194 @@
         "example": "CTRL+Shift+L"
       }
     }
+  },
+  "loggingInOn": {
+    "message": "Logowanie do"
+  },
+  "opensInANewWindow": {
+    "message": "Otwiera w nowym oknie"
+  },
+  "deviceApprovalRequired": {
+    "message": "Wymagane zatwierdzenie urządzenia. Wybierz opcję zatwierdzenia poniżej:"
+  },
+  "rememberThisDevice": {
+    "message": "Zapamiętaj to urządzenie"
+  },
+  "uncheckIfPublicDevice": {
+    "message": "Odznacz jeśli używasz publicznego urządzenia"
+  },
+  "approveFromYourOtherDevice": {
+    "message": "Zatwierdź z innego twojego urządzenia"
+  },
+  "requestAdminApproval": {
+    "message": "Poproś administratora o zatwierdzenie"
+  },
+  "approveWithMasterPassword": {
+    "message": "Zatwierdź przy użyciu hasła głównego"
+  },
+  "ssoIdentifierRequired": {
+    "message": "Identyfikator organizacji jest wymagany."
+  },
+  "eu": {
+    "message": "UE",
+    "description": "European Union"
+  },
+  "usDomain": {
+    "message": "bitwarden.com"
+  },
+  "euDomain": {
+    "message": "bitwarden.eu"
+  },
+  "accessDenied": {
+    "message": "Odmowa dostępu. Nie masz uprawnień do przeglądania tej strony."
+  },
+  "general": {
+    "message": "Ogólne"
+  },
+  "display": {
+    "message": "Wyświetl"
+  },
+  "accountSuccessfullyCreated": {
+    "message": "Konto pomyślnie utworzone!"
+  },
+  "adminApprovalRequested": {
+    "message": "Poproszono administratora o zatwierdzenie"
+  },
+  "adminApprovalRequestSentToAdmins": {
+    "message": "Twoja prośba została wysłana do Twojego administratora."
+  },
+  "youWillBeNotifiedOnceApproved": {
+    "message": "Zostaniesz powiadomiony po zatwierdzeniu."
+  },
+  "troubleLoggingIn": {
+    "message": "Problem z zalogowaniem?"
+  },
+  "loginApproved": {
+    "message": "Logowanie zatwierdzone"
+  },
+  "userEmailMissing": {
+    "message": "Brak adresu e-mail użytkownika"
+  },
+  "deviceTrusted": {
+    "message": "Zaufano urządzeniu"
+  },
+  "inputRequired": {
+    "message": "Dane wejściowe są wymagane."
+  },
+  "required": {
+    "message": "wymagane"
+  },
+  "search": {
+    "message": "Szukaj"
+  },
+  "inputMinLength": {
+    "message": "Dane wejściowe muszą zawierać co najmniej $COUNT$ znaki(-ów).",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxLength": {
+    "message": "Dane wejściowe nie mogą przekraczać długości $COUNT$ znaków.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
+  "inputForbiddenCharacters": {
+    "message": "Następujące znaki są niedozwolone: $CHARACTERS$",
+    "placeholders": {
+      "characters": {
+        "content": "$1",
+        "example": "@, #, $, %"
+      }
+    }
+  },
+  "inputMinValue": {
+    "message": "Wartość wejściowa musi wynosić co najmniej $MIN$.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "Wartość wejściowa nie może przekraczać $MAX$.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "multipleInputEmails": {
+    "message": "Co najmniej 1 e-mail jest nieprawidłowy"
+  },
+  "inputTrimValidator": {
+    "message": "Tekst nie może zawierać tylko spacji.",
+    "description": "Notification to inform the user that a form's input can't contain only whitespace."
+  },
+  "inputEmail": {
+    "message": "Dane wejściowe nie są adresem e-mail."
+  },
+  "fieldsNeedAttention": {
+    "message": "Pola powyżej wymagające Twojej uwagi: $COUNT$.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "selectPlaceholder": {
+    "message": "-- Wybierz --"
+  },
+  "multiSelectPlaceholder": {
+    "message": "-- Pisz, aby filtrować --"
+  },
+  "multiSelectLoading": {
+    "message": "Pobieranie opcji..."
+  },
+  "multiSelectNotFound": {
+    "message": "Nie znaleziono żadnych pozycji"
+  },
+  "multiSelectClearAll": {
+    "message": "Wyczyść wszystko"
+  },
+  "plusNMore": {
+    "message": "+ $QUANTITY$ więcej",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "submenu": {
+    "message": "Podmenu"
+  },
+  "toggleCollapse": {
+    "message": "Zwiń/rozwiń",
+    "description": "Toggling an expand/collapse state."
+  },
+  "aliasDomain": {
+    "message": "Domena aliasu"
+  },
+  "passwordRepromptDisabledAutofillOnPageLoad": {
+    "message": "Elementy z pytaniem o hasło głównege nie mogą być automatycznie wypełniane przy wczytywaniu strony. Automatyczne wypełnianie po wczytywania strony zostało wyłączone.",
+    "description": "Toast message for describing that master password re-prompt cannot be auto-filled on page load."
+  },
+  "autofillOnPageLoadSetToDefault": {
+    "message": "Automatyczne wypełnianie przy wczytywaniu strony zostało ustawione, aby używać ustawień domyślnych.",
+    "description": "Toast message for informing the user that auto-fill on page load has been set to the default setting."
+  },
+  "turnOffMasterPasswordPromptToEditField": {
+    "message": "Wyłącz prośbę o podanie hasła głównego, aby edytować to pole",
+    "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
   }
 }

@@ -11,7 +11,7 @@
     "description": "Extension description"
   },
   "loginOrCreateNewAccount": {
-    "message": "Du musst dich anmelden oder einen neuen Account erstellen, um auf den Tresor zugreifen zu können."
+    "message": "Melde dich an oder erstelle ein neues Konto, um auf deinen Tresor zuzugreifen."
   },
   "createAccount": {
     "message": "Konto erstellen"
@@ -91,6 +91,15 @@
   "autoFill": {
     "message": "Auto-Ausfüllen"
   },
+  "autoFillLogin": {
+    "message": "Zugangsdaten automatisch ausfüllen"
+  },
+  "autoFillCard": {
+    "message": "Karte automatisch ausfüllen"
+  },
+  "autoFillIdentity": {
+    "message": "Identität automatisch ausfüllen"
+  },
   "generatePasswordCopied": {
     "message": "Passwort generieren (kopiert)"
   },
@@ -99,6 +108,21 @@
   },
   "noMatchingLogins": {
     "message": "Keine passenden Zugangsdaten"
+  },
+  "noCards": {
+    "message": "Keine Karten"
+  },
+  "noIdentities": {
+    "message": "Keine Identitäten"
+  },
+  "addLoginMenu": {
+    "message": "Zugangsdaten hinzufügen"
+  },
+  "addCardMenu": {
+    "message": "Karte hinzufügen"
+  },
+  "addIdentityMenu": {
+    "message": "Identität hinzufügen"
   },
   "unlockVaultMenu": {
     "message": "Entsperre deinen Tresor"
@@ -294,7 +318,7 @@
     "message": "Eintragsinformationen"
   },
   "username": {
-    "message": "Nutzername"
+    "message": "Benutzername"
   },
   "password": {
     "message": "Passwort"
@@ -338,6 +362,9 @@
   "other": {
     "message": "Sonstige"
   },
+  "unlockMethodNeededToChangeTimeoutActionDesc": {
+    "message": "Richte eine Entsperrmethode ein, um deine Aktion bei Timeout-Timeout zu ändern."
+  },
   "rateExtension": {
     "message": "Erweiterung bewerten"
   },
@@ -357,7 +384,7 @@
     "message": "Entsperren"
   },
   "loggedInAsOn": {
-    "message": "Eingeloggt als $EMAIL$ auf $HOSTNAME$.",
+    "message": "Angemeldet als $EMAIL$ auf $HOSTNAME$.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -409,7 +436,7 @@
     "message": "1 Stunde"
   },
   "fourHours": {
-    "message": "4 Stunde"
+    "message": "4 Stunden"
   },
   "onLocked": {
     "message": "Wenn System gesperrt"
@@ -596,13 +623,13 @@
     "message": "Karten auf Tab Seite anzeigen"
   },
   "showCardsCurrentTabDesc": {
-    "message": "Karten-Einträge auf der Tab Seite anzeigen, um das automatische Ausfüllen zu vereinfachen."
+    "message": "Karten-Einträge auf der Tab Seite anzeigen, um das Auto-Ausfüllen zu vereinfachen."
   },
   "showIdentitiesCurrentTab": {
     "message": "Identitäten auf Tab Seite anzeigen"
   },
   "showIdentitiesCurrentTabDesc": {
-    "message": "Identitäten-Einträge auf der Tab Seite anzeigen, um das automatische Ausfüllen zu vereinfachen."
+    "message": "Identitäten-Einträge auf der Tab Seite anzeigen, um das Auto-Ausfüllen zu vereinfachen."
   },
   "clearClipboard": {
     "message": "Zwischenablage leeren",
@@ -630,11 +657,17 @@
   "notificationChangeSave": {
     "message": "Aktualisieren"
   },
+  "notificationUnlockDesc": {
+    "message": "Entsperre deinen Bitwarden Tresor, um die Auto-Ausfüllen-Anfrage abzuschließen."
+  },
+  "notificationUnlock": {
+    "message": "Entsperren"
+  },
   "enableContextMenuItem": {
     "message": "Kontextmenüoptionen anzeigen"
   },
   "contextMenuItemDesc": {
-    "message": "Verwende einen zweiten Klick, um auf die Erstellung von Passwörtern und passende Zugangsdaten für die Webseite zuzugreifen. "
+    "message": "Greife über einen Rechtsklick auf die Erstellung von Passwörtern und passende Zugangsdaten für die Website zu."
   },
   "defaultUriMatchDetection": {
     "message": "Standard URI-Übereinstimmungserkennung",
@@ -762,8 +795,8 @@
   "featureUnavailable": {
     "message": "Funktion nicht verfügbar"
   },
-  "updateKey": {
-    "message": "Du kannst diese Funktion nicht nutzen, solange du deinen Verschlüsselungsschlüssel nicht aktualisiert hast."
+  "encryptionKeyMigrationRequired": {
+    "message": "Encryption key migration required. Please login through the web vault to update your encryption key."
   },
   "premiumMembership": {
     "message": "Premium-Mitgliedschaft"
@@ -786,8 +819,8 @@
   "ppremiumSignUpStorage": {
     "message": "1 GB verschlüsselter Speicherplatz für Dateianhänge."
   },
-  "ppremiumSignUpTwoStep": {
-    "message": "Zusätzliche Zweifaktor-Anmeldung über YubiKey, FIDO U2F, und Duo."
+  "premiumSignUpTwoStepOptions": {
+    "message": "Proprietäre Optionen für die Zwei-Faktor Authentifizierung wie YubiKey und Duo."
   },
   "ppremiumSignUpReports": {
     "message": "Berichte über Kennworthygiene, Kontostatus und Datenschutzverletzungen, um deinen Tresor sicher zu halten."
@@ -952,7 +985,7 @@
     "message": "Server URL"
   },
   "apiUrl": {
-    "message": "API Server URL"
+    "message": "API Server-URL"
   },
   "webVaultUrl": {
     "message": "URL des Web-Tresor-Servers"
@@ -1170,7 +1203,7 @@
     "message": "Reisepassnummer"
   },
   "licenseNumber": {
-    "message": "Führerscheinnummer"
+    "message": "Lizenznummer"
   },
   "email": {
     "message": "E-Mail"
@@ -1440,9 +1473,6 @@
   "restoreItem": {
     "message": "Eintrag wiederherstellen"
   },
-  "restoreItemConfirmation": {
-    "message": "Soll dieser Eintrag wirklich wiederhergestellt werden?"
-  },
   "restoredItem": {
     "message": "Eintrag wiederhergestellt"
   },
@@ -1461,8 +1491,35 @@
   "autoFillSuccess": {
     "message": "Eintrag automatisch ausgefüllt "
   },
+  "insecurePageWarning": {
+    "message": "Warnung: Dies ist eine ungesicherte HTTP-Seite und alle Informationen, die du absendest, können möglicherweise von anderen gesehen und geändert werden. Diese Zugangsdaten wurden ursprünglich auf einer sicheren (HTTPS-)Seite gespeichert."
+  },
+  "insecurePageWarningFillPrompt": {
+    "message": "Möchtest du diese Zugangsdaten trotzdem ausfüllen?"
+  },
+  "autofillIframeWarning": {
+    "message": "Das Formular wird von einer anderen Domain als der URI deines gespeicherten Logins gehostet. Wähle OK, um trotzdem automatisch auszufüllen, oder Abbrechen, um aufzuhören."
+  },
+  "autofillIframeWarningTip": {
+    "message": "Um diese Warnung in Zukunft zu verhindern, speichere diese URI, $HOSTNAME$, in deinem Bitwarden Zugangsdaten-Eintrag für diese Seite.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "www.example.com"
+      }
+    }
+  },
   "setMasterPassword": {
     "message": "Master-Passwort festlegen"
+  },
+  "currentMasterPass": {
+    "message": "Aktuelles Master-Passwort"
+  },
+  "newMasterPass": {
+    "message": "Neues Master-Passwort"
+  },
+  "confirmNewMasterPass": {
+    "message": "Neues Master-Passwort bestätigen"
   },
   "masterPasswordPolicyInEffect": {
     "message": "Eine oder mehrere Organisationsrichtlinien erfordern, dass dein Masterpasswort die folgenden Anforderungen erfüllt:"
@@ -1555,7 +1612,7 @@
     "message": "Desktop-Kommunikation unterbrochen"
   },
   "nativeMessagingWrongUserDesc": {
-    "message": "Die Desktop-Anwendung ist in ein anderes Konto eingeloggt. Bitte stelle sicher, dass beide Anwendungen mit demselben Konto angemeldet sind."
+    "message": "Die Desktop-Anwendung ist in einem anderen Konto angemeldet. Bitte stelle sicher, dass beide Anwendungen mit demselben Konto angemeldet sind."
   },
   "nativeMessagingWrongUserTitle": {
     "message": "Konten stimmen nicht überein"
@@ -1571,6 +1628,12 @@
   },
   "biometricsNotSupportedDesc": {
     "message": "Biometrie im Browser wird auf diesem Gerät nicht unterstützt."
+  },
+  "biometricsFailedTitle": {
+    "message": "Biometrie fehlgeschlagen"
+  },
+  "biometricsFailedDesc": {
+    "message": "Die biometrische Verifizierung kann nicht abgeschlossen werden. Versuch es mit dem Master-Passwort oder melde dich ab. Sollte das Problem weiterhin bestehen, kontaktiere bitte den Bitwarden-Support."
   },
   "nativeMessaginPermissionErrorTitle": {
     "message": "Berechtigung nicht erteilt"
@@ -1844,6 +1907,9 @@
   "updateMasterPasswordWarning": {
     "message": "Dein Master-Passwort wurde kürzlich von einem Administrator deiner Organisation geändert. Um auf den Tresor zuzugreifen, musst du es jetzt aktualisieren. Wenn du fortfährst, wirst du aus der aktuellen Sitzung abgemeldet und musst dich erneut anmelden. Aktive Sitzungen auf anderen Geräten können bis zu einer Stunde weiterhin aktiv bleiben."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Dein Master-Passwort entspricht nicht einer oder mehreren Richtlinien deiner Organisation. Um auf den Tresor zugreifen zu können, musst du dein Master-Passwort jetzt aktualisieren. Wenn du fortfährst, wirst du von deiner aktuellen Sitzung abgemeldet und musst dich erneut anmelden. Aktive Sitzungen auf anderen Geräten können noch bis zu einer Stunde lang aktiv bleiben."
+  },
   "resetPasswordPolicyAutoEnroll": {
     "message": "Automatische Registrierung"
   },
@@ -1863,7 +1929,7 @@
     "message": "Minuten"
   },
   "vaultTimeoutPolicyInEffect": {
-    "message": "Deine Unternehmensrichtlinien beeinflussen dein Tresor-Timeout. Das maximal zulässige Tresor-Timeout ist $HOURS$ Stunde(n) und $MINUTES$ Minute(n)",
+    "message": "Deine Unternehmensrichtlinien haben das maximal zulässige Tresor-Timeout auf $HOURS$ Stunde(n) und $MINUTES$ Minute(n) festgelegt.",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -1872,6 +1938,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Deine Organisationsrichtlinien beeinflussen dein Tresor-Timeout. Das maximal zulässige Tresor-Timeout beträgt $HOURS$ Stunde(n) und $MINUTES$ Minute(n). Deine Tresor-Timeout-Aktion ist auf $ACTION$ gesetzt.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Durch deine Organisationsrichtlinien wurde deine Tresor-Timeout-Aktion auf $ACTION$ gesetzt.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -1923,8 +2015,8 @@
   "exportingPersonalVaultTitle": {
     "message": "Persönlicher Tresor wird exportiert"
   },
-  "exportingPersonalVaultDescription": {
-    "message": "Nur die einzelnen Tresor-Einträge, die mit $EMAIL$ verbunden sind, werden exportiert. Tresor-Einträge der Organisation werden nicht berücksichtigt.",
+  "exportingIndividualVaultDescription": {
+    "message": "Es werden nur persönliche Tresoreinträge exportiert, die mit $EMAIL$ verbunden sind. Tresoreinträge der Organisation werden nicht berücksichtigt. Es werden nur Informationen der Tresoreinträge exportiert. Diese enthalten nicht die zugehörigen Anhänge.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -2024,8 +2116,8 @@
   "serverVersion": {
     "message": "Server-Version"
   },
-  "selfHosted": {
-    "message": "Selbst gehostet"
+  "selfHostedServer": {
+    "message": "selbst gehostet"
   },
   "thirdParty": {
     "message": "Drittanbieter"
@@ -2084,7 +2176,7 @@
   "notificationSentDevice": {
     "message": "Eine Benachrichtigung wurde an dein Gerät gesendet."
   },
-  "logInInitiated": {
+  "loginInitiated": {
     "message": "Anmeldung eingeleitet"
   },
   "exposedMasterPassword": {
@@ -2164,5 +2256,194 @@
         "example": "CTRL+Shift+L"
       }
     }
+  },
+  "loggingInOn": {
+    "message": "Anmelden bei"
+  },
+  "opensInANewWindow": {
+    "message": "Wird in einem neuen Fenster geöffnet"
+  },
+  "deviceApprovalRequired": {
+    "message": "Geräte-Genehmigung erforderlich. Wähle unten eine Genehmigungsoption aus:"
+  },
+  "rememberThisDevice": {
+    "message": "Dieses Gerät merken"
+  },
+  "uncheckIfPublicDevice": {
+    "message": "Deaktivieren, wenn ein öffentliches Gerät verwendet wird"
+  },
+  "approveFromYourOtherDevice": {
+    "message": "Von deinem anderen Gerät genehmigen"
+  },
+  "requestAdminApproval": {
+    "message": "Admin-Genehmigung anfragen"
+  },
+  "approveWithMasterPassword": {
+    "message": "Mit Master-Passwort genehmigen"
+  },
+  "ssoIdentifierRequired": {
+    "message": "SSO-Kennung der Organisation erforderlich."
+  },
+  "eu": {
+    "message": "EU",
+    "description": "European Union"
+  },
+  "usDomain": {
+    "message": "bitwarden.com"
+  },
+  "euDomain": {
+    "message": "bitwarden.eu"
+  },
+  "accessDenied": {
+    "message": "Zugriff verweigert. Du hast keine Berechtigung, diese Seite anzuzeigen."
+  },
+  "general": {
+    "message": "Allgemein"
+  },
+  "display": {
+    "message": "Anzeige"
+  },
+  "accountSuccessfullyCreated": {
+    "message": "Konto erfolgreich erstellt!"
+  },
+  "adminApprovalRequested": {
+    "message": "Admin-Genehmigung angefragt"
+  },
+  "adminApprovalRequestSentToAdmins": {
+    "message": "Deine Anfrage wurde an deinen Administrator gesendet."
+  },
+  "youWillBeNotifiedOnceApproved": {
+    "message": "Nach einer Genehmigung wirst du benachrichtigt."
+  },
+  "troubleLoggingIn": {
+    "message": "Probleme beim Anmelden?"
+  },
+  "loginApproved": {
+    "message": "Anmeldung genehmigt"
+  },
+  "userEmailMissing": {
+    "message": "E-Mail-Adresse des Benutzers fehlt"
+  },
+  "deviceTrusted": {
+    "message": "Gerät wird vertraut"
+  },
+  "inputRequired": {
+    "message": "Eingabe ist erforderlich."
+  },
+  "required": {
+    "message": "Erforderlich"
+  },
+  "search": {
+    "message": "Suche"
+  },
+  "inputMinLength": {
+    "message": "Die Eingabe muss mindestens $COUNT$ Zeichen lang sein.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxLength": {
+    "message": "Die Eingabe darf $COUNT$ Zeichen nicht überschreiten.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
+  "inputForbiddenCharacters": {
+    "message": "Die folgenden Zeichen sind nicht erlaubt: $CHARACTERS$",
+    "placeholders": {
+      "characters": {
+        "content": "$1",
+        "example": "@, #, $, %"
+      }
+    }
+  },
+  "inputMinValue": {
+    "message": "Der Eingabewert muss mindestens $MIN$ betragen.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "Der Eingabewert darf $MAX$ nicht überschreiten.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "multipleInputEmails": {
+    "message": "Mindestens 1 E-Mail-Adresse ist ungültig"
+  },
+  "inputTrimValidator": {
+    "message": "Die Eingabe darf nicht nur Leerzeichen enthalten.",
+    "description": "Notification to inform the user that a form's input can't contain only whitespace."
+  },
+  "inputEmail": {
+    "message": "Die Eingabe ist keine E-Mail-Adresse."
+  },
+  "fieldsNeedAttention": {
+    "message": "$COUNT$ Feld(er) oben benötigen deine Aufmerksamkeit.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "selectPlaceholder": {
+    "message": "-- Auswählen --"
+  },
+  "multiSelectPlaceholder": {
+    "message": "-- Schreiben zum Filtern --"
+  },
+  "multiSelectLoading": {
+    "message": "Optionen werden abgerufen..."
+  },
+  "multiSelectNotFound": {
+    "message": "Keine Einträge gefunden"
+  },
+  "multiSelectClearAll": {
+    "message": "Alles löschen"
+  },
+  "plusNMore": {
+    "message": "+ $QUANTITY$ mehr",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "submenu": {
+    "message": "Untermenü"
+  },
+  "toggleCollapse": {
+    "message": "Ein-/ausklappen",
+    "description": "Toggling an expand/collapse state."
+  },
+  "aliasDomain": {
+    "message": "Alias-Domain"
+  },
+  "passwordRepromptDisabledAutofillOnPageLoad": {
+    "message": "Einträge, die eine erneuten Abfrage des Master-Passworts verlangen, können nicht beim Laden einer Seite automatisch ausgefüllt werden. Auto-Ausfüllen beim Laden einer Seite deaktiviert.",
+    "description": "Toast message for describing that master password re-prompt cannot be auto-filled on page load."
+  },
+  "autofillOnPageLoadSetToDefault": {
+    "message": "Auto-Ausfüllen beim Lader einer Seite wurde auf die Standardeinstellung gesetzt.",
+    "description": "Toast message for informing the user that auto-fill on page load has been set to the default setting."
+  },
+  "turnOffMasterPasswordPromptToEditField": {
+    "message": "Deaktiviere die erneute Abfrage des Master-Passworts, um dieses Feld zu bearbeiten",
+    "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
   }
 }

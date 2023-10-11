@@ -475,8 +475,8 @@
   "maxFileSize": {
     "message": "最大ファイルサイズは500MBです。"
   },
-  "updateKey": {
-    "message": "暗号キーを更新するまでこの機能は使用できません。"
+  "encryptionKeyMigrationRequired": {
+    "message": "暗号化キーの移行が必要です。暗号化キーを更新するには、ウェブ保管庫からログインしてください。"
   },
   "editedFolder": {
     "message": "フォルダーを編集しました"
@@ -1077,8 +1077,8 @@
   "premiumSignUpStorage": {
     "message": "1GB の暗号化されたファイルストレージ。"
   },
-  "premiumSignUpTwoStep": {
-    "message": "YubiKey、FIDO U2F、Duoなどの追加の2段階認証ログインオプション"
+  "premiumSignUpTwoStepOptions": {
+    "message": "YubiKey、Duo などのプロプライエタリな2段階認証オプション。"
   },
   "premiumSignUpReports": {
     "message": "保管庫を安全に保つための、パスワードやアカウントの健全性、データ侵害に関するレポート。"
@@ -1392,11 +1392,17 @@
   "unlockWithWindowsHello": {
     "message": "Windows Hello でロック解除"
   },
+  "additionalWindowsHelloSettings": {
+    "message": "追加の Windows Hello 設定"
+  },
   "windowsHelloConsentMessage": {
     "message": "Bitwarden の認証を行います。"
   },
   "unlockWithTouchId": {
     "message": "Touch ID でロック解除"
+  },
+  "additionalTouchIdSettings": {
+    "message": "追加の Touch ID 設定"
   },
   "touchIdConsentMessage": {
     "message": "Bitwarden の認証を行います。"
@@ -1406,6 +1412,12 @@
   },
   "autoPromptTouchId": {
     "message": "起動時に Touch ID を要求する"
+  },
+  "requirePasswordOnStart": {
+    "message": "アプリ起動時にパスワードまたは PIN を要求"
+  },
+  "recommendedForSecurity": {
+    "message": "セキュリティ向上のためおすすめします。"
   },
   "lockWithMasterPassOnRestart": {
     "message": "再起動時にマスターパスワードでロック"
@@ -1480,6 +1492,9 @@
   "vaultTimeoutActionLogOutDesc": {
     "message": "ログアウトした保管庫にアクセスするには、再認証してください。"
   },
+  "unlockMethodNeededToChangeTimeoutActionDesc": {
+    "message": "保管庫のタイムアウト動作を変更するには、ロック解除方法を設定してください。"
+  },
   "lock": {
     "message": "ロック",
     "description": "Verb form: to make secure or inaccesible by"
@@ -1499,12 +1514,6 @@
   },
   "permanentlyDeletedItem": {
     "message": "完全に削除されたアイテム"
-  },
-  "restoreItem": {
-    "message": "アイテムをリストア"
-  },
-  "restoreItemConfirmation": {
-    "message": "このアイテムをリストアしますか？"
   },
   "restoredItem": {
     "message": "リストアされたアイテム"
@@ -1526,6 +1535,9 @@
   },
   "ssoCompleteRegistration": {
     "message": "SSO ログインを完了するには、保管庫にアクセス・保護するためのマスターパスワードを設定してください。"
+  },
+  "currentMasterPass": {
+    "message": "現在のマスターパスワード"
   },
   "newMasterPass": {
     "message": "新しいマスターパスワード"
@@ -1669,7 +1681,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "myVault": {
-    "message": "保管庫"
+    "message": "自分の保管庫"
   },
   "text": {
     "message": "テキスト"
@@ -1843,6 +1855,9 @@
   "updateMasterPasswordWarning": {
     "message": "マスターパスワードは最近組織の管理者によって変更されました。保管庫にアクセスするには、今すぐ更新する必要があります。 続行すると現在のセッションからログアウトし、再度ログインする必要があります。 他のデバイスでのアクティブなセッションは、最大1時間アクティブになり続けることがあります。"
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "マスターパスワードが組織のポリシーに適合していません。保管庫にアクセスするには、今すぐマスターパスワードを更新しなければなりません。続行すると現在のセッションからログアウトし、再度ログインする必要があります。 他のデバイス上のアクティブなセッションは、最大1時間アクティブであり続けることがあります。"
+  },
   "hours": {
     "message": "時間"
   },
@@ -1859,6 +1874,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "組織のポリシーがデータ保管庫のタイムアウトに影響しています。保管庫のタイムアウトの最大許容値は、$HOURS$時間$MINUTES$分です。保管庫タイムアウト時のアクションは、$ACTION$に設定されています。",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "組織のポリシーで、保管庫のタイムアウトアクションが$ACTION$に設定されています。",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -1943,8 +1984,8 @@
   "exportingPersonalVaultTitle": {
     "message": "個人保管庫のエクスポート"
   },
-  "exportingPersonalVaultDescription": {
-    "message": "$EMAIL$ に関連付けられた個人用保管庫アイテムのみがエクスポートされます。組織用保管庫アイテムは含まれません。",
+  "exportingIndividualVaultDescription": {
+    "message": "$EMAIL$ に関連付けられた個人の保管庫アイテムのみがエクスポートされます。組織の保管庫アイテムは含まれません。 保管庫アイテム情報のみがエクスポートされ、関連する添付ファイルはエクスポートされません。",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -2008,7 +2049,7 @@
     "message": "組織の検索"
   },
   "searchMyVault": {
-    "message": "保管庫を検索"
+    "message": "自分の保管庫内を検索"
   },
   "forwardedEmail": {
     "message": "転送されたメールエイリアス"
@@ -2068,7 +2109,7 @@
   "logInWithAnotherDevice": {
     "message": "別のデバイスでログイン"
   },
-  "logInInitiated": {
+  "loginInitiated": {
     "message": "ログイン開始"
   },
   "notificationSentDevice": {
@@ -2201,5 +2242,181 @@
         "example": "14"
       }
     }
+  },
+  "windowsBiometricUpdateWarning": {
+    "message": "Bitwarden は最初のロック解除時にマスターパスワード（または PIN）を要求するよう生体認証設定を更新することをおすすめします。今すぐ設定を更新しますか？"
+  },
+  "windowsBiometricUpdateWarningTitle": {
+    "message": "設定の更新を推奨"
+  },
+  "deviceApprovalRequired": {
+    "message": "デバイスの承認が必要です。以下から承認オプションを選択してください:"
+  },
+  "rememberThisDevice": {
+    "message": "このデバイスを記憶する"
+  },
+  "uncheckIfPublicDevice": {
+    "message": "パブリックデバイスを使用している場合はチェックしないでください"
+  },
+  "approveFromYourOtherDevice": {
+    "message": "他のデバイスから承認する"
+  },
+  "requestAdminApproval": {
+    "message": "管理者の承認を要求する"
+  },
+  "approveWithMasterPassword": {
+    "message": "マスターパスワードで承認する"
+  },
+  "region": {
+    "message": "リージョン"
+  },
+  "ssoIdentifierRequired": {
+    "message": "組織の SSO ID が必要です。"
+  },
+  "eu": {
+    "message": "EU",
+    "description": "European Union"
+  },
+  "loggingInOn": {
+    "message": "ログイン先"
+  },
+  "usDomain": {
+    "message": "bitwarden.com"
+  },
+  "euDomain": {
+    "message": "bitwarden.eu"
+  },
+  "selfHostedServer": {
+    "message": "自己ホスト型"
+  },
+  "accessDenied": {
+    "message": "アクセスが拒否されました。このページを表示する権限がありません。"
+  },
+  "accountSuccessfullyCreated": {
+    "message": "アカウントを正常に作成しました！"
+  },
+  "adminApprovalRequested": {
+    "message": "管理者の承認を要求しました"
+  },
+  "adminApprovalRequestSentToAdmins": {
+    "message": "要求を管理者に送信しました。"
+  },
+  "youWillBeNotifiedOnceApproved": {
+    "message": "承認されると通知されます。 "
+  },
+  "troubleLoggingIn": {
+    "message": "ログインできない場合"
+  },
+  "loginApproved": {
+    "message": "ログインが承認されました"
+  },
+  "userEmailMissing": {
+    "message": "ユーザーのメールアドレスがありません"
+  },
+  "deviceTrusted": {
+    "message": "信頼されたデバイス"
+  },
+  "inputRequired": {
+    "message": "入力が必要です。"
+  },
+  "required": {
+    "message": "必須"
+  },
+  "search": {
+    "message": "検索"
+  },
+  "inputMinLength": {
+    "message": "$COUNT$ 文字以上でなければなりません。",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxLength": {
+    "message": "$COUNT$ 文字を超えてはいけません。",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
+  "inputForbiddenCharacters": {
+    "message": "次の文字は許可されていません: $CHARACTERS$",
+    "placeholders": {
+      "characters": {
+        "content": "$1",
+        "example": "@, #, $, %"
+      }
+    }
+  },
+  "inputMinValue": {
+    "message": "入力値は少なくとも$MIN$桁でなければなりません。",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "入力値は$MAX$桁を超えてはいけません。",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "multipleInputEmails": {
+    "message": "1つ以上のメールアドレスが無効です"
+  },
+  "inputTrimValidator": {
+    "message": "値を空白のみにしないでください。",
+    "description": "Notification to inform the user that a form's input can't contain only whitespace."
+  },
+  "inputEmail": {
+    "message": "入力したものはメールアドレスではありません。"
+  },
+  "fieldsNeedAttention": {
+    "message": "上記の $COUNT$ 点を確認してください。",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "selectPlaceholder": {
+    "message": "-- 選択 --"
+  },
+  "multiSelectPlaceholder": {
+    "message": "-- 入力して絞り込み --"
+  },
+  "multiSelectLoading": {
+    "message": "オプションを取得中..."
+  },
+  "multiSelectNotFound": {
+    "message": "アイテムが見つかりません"
+  },
+  "multiSelectClearAll": {
+    "message": "すべてクリア"
+  },
+  "plusNMore": {
+    "message": "+ $QUANTITY$ 個以上",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "submenu": {
+    "message": "サブメニュー"
+  },
+  "aliasDomain": {
+    "message": "エイリアスドメイン"
   }
 }

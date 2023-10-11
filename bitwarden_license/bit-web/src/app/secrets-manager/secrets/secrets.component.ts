@@ -2,8 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService } from "@bitwarden/components";
 
 import { SecretListView } from "../models/view/secret-list.view";
@@ -95,5 +95,9 @@ export class SecretsComponent implements OnInit {
       this.i18nService,
       this.secretService
     );
+  }
+
+  copySecretUuid(id: string) {
+    SecretsListComponent.copySecretUuid(id, this.platformUtilsService, this.i18nService);
   }
 }

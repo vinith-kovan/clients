@@ -91,6 +91,15 @@
   "autoFill": {
     "message": "Auto-invullen"
   },
+  "autoFillLogin": {
+    "message": "Login automatisch invullen"
+  },
+  "autoFillCard": {
+    "message": "Kaart automatisch invullen"
+  },
+  "autoFillIdentity": {
+    "message": "Identiteit automatisch invullen"
+  },
   "generatePasswordCopied": {
     "message": "Wachtwoord genereren (op klembord)"
   },
@@ -99,6 +108,21 @@
   },
   "noMatchingLogins": {
     "message": "Geen overeenkomstige logins."
+  },
+  "noCards": {
+    "message": "Geen kaarten"
+  },
+  "noIdentities": {
+    "message": "Geen identiteiten"
+  },
+  "addLoginMenu": {
+    "message": "Login toevoegen"
+  },
+  "addCardMenu": {
+    "message": "Kaart toevoegen"
+  },
+  "addIdentityMenu": {
+    "message": "Identiteit toevoegen"
   },
   "unlockVaultMenu": {
     "message": "Ontgrendel je kluis"
@@ -337,6 +361,9 @@
   },
   "other": {
     "message": "Overig"
+  },
+  "unlockMethodNeededToChangeTimeoutActionDesc": {
+    "message": "Stel een ontgrendelingsmethode in om je kluis time-out actie te wijzigen."
   },
   "rateExtension": {
     "message": "Deze extensie beoordelen"
@@ -630,6 +657,12 @@
   "notificationChangeSave": {
     "message": "Ja, nu bijwerken"
   },
+  "notificationUnlockDesc": {
+    "message": "Ontgrendel je Bitwarden-kluis om het auto-invulverzoek te voltooien."
+  },
+  "notificationUnlock": {
+    "message": "Ontgrendelen"
+  },
   "enableContextMenuItem": {
     "message": "Contextmenu-opties weergeven"
   },
@@ -762,8 +795,8 @@
   "featureUnavailable": {
     "message": "Functionaliteit niet beschikbaar"
   },
-  "updateKey": {
-    "message": "Je kunt deze functie pas gebruiken als je je encryptiesleutel bijwerkt."
+  "encryptionKeyMigrationRequired": {
+    "message": "Migratie van de encryptiesleutel vereist. Login via de website om je sleutel te bij te werken."
   },
   "premiumMembership": {
     "message": "Premium-abonnement"
@@ -786,8 +819,8 @@
   "ppremiumSignUpStorage": {
     "message": "1 GB versleutelde opslag voor bijlagen."
   },
-  "ppremiumSignUpTwoStep": {
-    "message": "Extra opties voor tweestapsaanmelding zoals YubiKey, FIDO U2F en Duo."
+  "premiumSignUpTwoStepOptions": {
+    "message": "Eigen opties voor tweestapsaanmelding zoals YubiKey en Duo."
   },
   "ppremiumSignUpReports": {
     "message": "Wachtwoordhygiëne, gezondheid van je account en datalekken om je kluis veilig te houden."
@@ -1440,9 +1473,6 @@
   "restoreItem": {
     "message": "Item herstellen"
   },
-  "restoreItemConfirmation": {
-    "message": "Weet je zeker dat je dit item wilt herstellen?"
-  },
   "restoredItem": {
     "message": "Hersteld item"
   },
@@ -1461,8 +1491,35 @@
   "autoFillSuccess": {
     "message": "Automatisch gevuld item"
   },
+  "insecurePageWarning": {
+    "message": "Waarschuwing: Dit is een onbeveiligde HTTP-pagina waardoor anderen alle informatie die je verstuurt kunnen zien en wijzigen. Deze login is oorspronkelijk opgeslagen op een beveiligde (HTTPS) pagina."
+  },
+  "insecurePageWarningFillPrompt": {
+    "message": "Wil je je inloggegevens nog steeds invullen?"
+  },
+  "autofillIframeWarning": {
+    "message": "Dit formulier wordt door een ander domein gehost dan de URI van jouw opgeslagen login. Kies OK voor toch automatisch invullen, of Annuleren om te stoppen."
+  },
+  "autofillIframeWarningTip": {
+    "message": "Om deze waarschuwing in de toekomst te voorkomen, bewaar je deze URI, $HOSTNAME$, bij je Bitwarden-login voor deze site.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "www.example.com"
+      }
+    }
+  },
   "setMasterPassword": {
     "message": "Hoofdwachtwoord instellen"
+  },
+  "currentMasterPass": {
+    "message": "Huidig hoofdwachtwoord"
+  },
+  "newMasterPass": {
+    "message": "Nieuw hoofdwachtwoord"
+  },
+  "confirmNewMasterPass": {
+    "message": "Nieuw hoofdwachtwoord bevestigen"
   },
   "masterPasswordPolicyInEffect": {
     "message": "Een of meer organisatiebeleidseisen verlangen dat je hoofdwachtwoord voldoet aan:"
@@ -1571,6 +1628,12 @@
   },
   "biometricsNotSupportedDesc": {
     "message": "Dit apparaat ondersteunt geen browserbiometrie."
+  },
+  "biometricsFailedTitle": {
+    "message": "Biometrie mislukt"
+  },
+  "biometricsFailedDesc": {
+    "message": "Kan biometrische authenticatie niet voltooien, gebruik een hoofdwachtwoord of log uit. Neem contact op met de ondersteuning van Bitwarden als dit blijft aanhouden."
   },
   "nativeMessaginPermissionErrorTitle": {
     "message": "Toestemming niet verleend"
@@ -1844,6 +1907,9 @@
   "updateMasterPasswordWarning": {
     "message": "Je hoofdwachtwoord is onlangs veranderd door een beheerder in jouw organisatie. Om toegang te krijgen tot de kluis, moet je deze nu bijwerken. Doorgaan zal je huidige sessie uitloggen, waarna je opnieuw moet inloggen. Actieve sessies op andere apparaten blijven mogelijk nog een uur actief."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Je hoofdwachtwoord voldoet niet aan en of meerdere oganisatiebeleidsonderdelen. Om toegang te krijgen tot de kluis, moet je je hoofdwachtwoord nu bijwerken. Doorgaan zal je huidige sessie uitloggen, waarna je opnieuw moet inloggen. Actieve sessies op andere apparaten blijven mogelijk nog een uur actief."
+  },
   "resetPasswordPolicyAutoEnroll": {
     "message": "Automatische inschrijving"
   },
@@ -1872,6 +1938,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "De beleidsinstellingen van je organisatie hebben invloed op de time-out van je kluis. De maximale toegestane kluis time-out is $HOURS$ uur en $MINUTES$ minuten. Jouw time-out is ingesteld op $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "De beleidsinstellingen van je organisatie hebben je kluis time-out ingesteld op $ACTION$.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -1923,8 +2015,8 @@
   "exportingPersonalVaultTitle": {
     "message": "Persoonlijke kluis exporteren"
   },
-  "exportingPersonalVaultDescription": {
-    "message": "Exporteert alleen de persoonlijke kluis-items gerelateerd aan $EMAIL$. Geen kluis-items van de organisatie.",
+  "exportingIndividualVaultDescription": {
+    "message": "Only the individual vault items associated with $EMAIL$ will be exported. Organization vault items will not be included. Only vault item information will be exported and will not include associated attachments.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -2024,8 +2116,8 @@
   "serverVersion": {
     "message": "Serverversie"
   },
-  "selfHosted": {
-    "message": "Zelfgehost"
+  "selfHostedServer": {
+    "message": "zelfgehost"
   },
   "thirdParty": {
     "message": "van derden"
@@ -2084,7 +2176,7 @@
   "notificationSentDevice": {
     "message": "Er is een melding naar je apparaat verzonden."
   },
-  "logInInitiated": {
+  "loginInitiated": {
     "message": "Inloggen gestart"
   },
   "exposedMasterPassword": {
@@ -2164,5 +2256,194 @@
         "example": "CTRL+Shift+L"
       }
     }
+  },
+  "loggingInOn": {
+    "message": "Inloggen op"
+  },
+  "opensInANewWindow": {
+    "message": "Opent in een nieuw venster"
+  },
+  "deviceApprovalRequired": {
+    "message": "Apparaattoestemming vereist. Kies een goedkeuringsoptie hieronder:"
+  },
+  "rememberThisDevice": {
+    "message": "Dit apparaat onthouden"
+  },
+  "uncheckIfPublicDevice": {
+    "message": "Uitschakelen als je openbaar apparaat gebruikt"
+  },
+  "approveFromYourOtherDevice": {
+    "message": "Goedkeuren vanaf je andere apparaat"
+  },
+  "requestAdminApproval": {
+    "message": "Goedkeuring van beheerder vragen"
+  },
+  "approveWithMasterPassword": {
+    "message": "Goedkeuren met hoofdwachtwoord"
+  },
+  "ssoIdentifierRequired": {
+    "message": "Organisatie SSO-identificatie vereist."
+  },
+  "eu": {
+    "message": "EU",
+    "description": "European Union"
+  },
+  "usDomain": {
+    "message": "bitwarden.com"
+  },
+  "euDomain": {
+    "message": "bitwarden.eu"
+  },
+  "accessDenied": {
+    "message": "Toegang geweigerd. Je hebt geen toestemming om deze pagina te bekijken."
+  },
+  "general": {
+    "message": "General"
+  },
+  "display": {
+    "message": "Display"
+  },
+  "accountSuccessfullyCreated": {
+    "message": "Account succesvol aangemaakt!"
+  },
+  "adminApprovalRequested": {
+    "message": "Goedkeuring van beheerder aangevraagd"
+  },
+  "adminApprovalRequestSentToAdmins": {
+    "message": "Je verzoek is naar je beheerder verstuurd."
+  },
+  "youWillBeNotifiedOnceApproved": {
+    "message": "Je krijgt een melding zodra je bent goedgekeurd."
+  },
+  "troubleLoggingIn": {
+    "message": "Problemen met inloggen?"
+  },
+  "loginApproved": {
+    "message": "Inloggen goedgekeurd"
+  },
+  "userEmailMissing": {
+    "message": "Gebruikerse-mailadres ontbreekt"
+  },
+  "deviceTrusted": {
+    "message": "Vertrouwd apparaat"
+  },
+  "inputRequired": {
+    "message": "Invoer vereist."
+  },
+  "required": {
+    "message": "vereist"
+  },
+  "search": {
+    "message": "Zoeken"
+  },
+  "inputMinLength": {
+    "message": "Invoer moet minimaal $COUNT$ tekens lang zijn.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxLength": {
+    "message": "Invoer mag niet meer dan $COUNT$ tekens lang zijn.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
+  "inputForbiddenCharacters": {
+    "message": "De volgende tekens zijn niet toegestaan: $CHARACTERS$",
+    "placeholders": {
+      "characters": {
+        "content": "$1",
+        "example": "@, #, $, %"
+      }
+    }
+  },
+  "inputMinValue": {
+    "message": "Invoer moet minimaal $MIN$ zijn.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "Invoer mag niet hoger zijn dan $MAX$.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "multipleInputEmails": {
+    "message": "Een of meer e-mailadressen zijn ongeldig"
+  },
+  "inputTrimValidator": {
+    "message": "Invoer mag niet alleen witruimte bevatten.",
+    "description": "Notification to inform the user that a form's input can't contain only whitespace."
+  },
+  "inputEmail": {
+    "message": "Invoer is geen e-mailadres."
+  },
+  "fieldsNeedAttention": {
+    "message": "$COUNT$ veld(en) hierboven hebben je aandacht nodig.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "selectPlaceholder": {
+    "message": "-- Selecteer --"
+  },
+  "multiSelectPlaceholder": {
+    "message": "-- Type om te filteren --"
+  },
+  "multiSelectLoading": {
+    "message": "Opties ophalen..."
+  },
+  "multiSelectNotFound": {
+    "message": "Geen items gevonden"
+  },
+  "multiSelectClearAll": {
+    "message": "Alles wissen"
+  },
+  "plusNMore": {
+    "message": "+ $QUANTITY$ meer",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "submenu": {
+    "message": "Submenu"
+  },
+  "toggleCollapse": {
+    "message": "In-/Uitklappen",
+    "description": "Toggling an expand/collapse state."
+  },
+  "aliasDomain": {
+    "message": "Aliasdomein"
+  },
+  "passwordRepromptDisabledAutofillOnPageLoad": {
+    "message": "Items with master password re-prompt cannot be auto-filled on page load. Auto-fill on page load turned off.",
+    "description": "Toast message for describing that master password re-prompt cannot be auto-filled on page load."
+  },
+  "autofillOnPageLoadSetToDefault": {
+    "message": "Auto-fill on page load set to use default setting.",
+    "description": "Toast message for informing the user that auto-fill on page load has been set to the default setting."
+  },
+  "turnOffMasterPasswordPromptToEditField": {
+    "message": "Turn off master password re-prompt to edit this field",
+    "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
   }
 }

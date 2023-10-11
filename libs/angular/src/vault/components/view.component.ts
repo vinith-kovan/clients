@@ -12,28 +12,29 @@ import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
-import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { EventType, FieldType } from "@bitwarden/common/enums";
-import { EncArrayBuffer } from "@bitwarden/common/models/domain/enc-array-buffer";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
+import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { EncArrayBuffer } from "@bitwarden/common/platform/models/domain/enc-array-buffer";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
+import { DialogService } from "@bitwarden/components";
+import { PasswordRepromptService } from "@bitwarden/vault";
 
 const BroadcasterSubscriptionId = "ViewComponent";
 
@@ -84,7 +85,8 @@ export class ViewComponent implements OnDestroy, OnInit {
     protected passwordRepromptService: PasswordRepromptService,
     private logService: LogService,
     protected stateService: StateService,
-    protected fileDownloadService: FileDownloadService
+    protected fileDownloadService: FileDownloadService,
+    protected dialogService: DialogService
   ) {}
 
   ngOnInit() {
@@ -111,7 +113,9 @@ export class ViewComponent implements OnDestroy, OnInit {
     this.cleanUp();
 
     const cipher = await this.cipherService.get(this.cipherId);
-    this.cipher = await cipher.decrypt();
+    this.cipher = await cipher.decrypt(
+      await this.cipherService.getKeyForCipherKeyDecryption(cipher)
+    );
     this.canAccessPremium = await this.stateService.getCanAccessPremium();
     this.showPremiumRequiredTotp =
       this.cipher.login.totp && !this.canAccessPremium && !this.cipher.organizationUseTotp;
@@ -174,15 +178,14 @@ export class ViewComponent implements OnDestroy, OnInit {
       return;
     }
 
-    const confirmed = await this.platformUtilsService.showDialog(
-      this.i18nService.t(
-        this.cipher.isDeleted ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation"
-      ),
-      this.i18nService.t("deleteItem"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      "warning"
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "deleteItem" },
+      content: {
+        key: this.cipher.isDeleted ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation",
+      },
+      type: "warning",
+    });
+
     if (!confirmed) {
       return false;
     }
@@ -204,17 +207,6 @@ export class ViewComponent implements OnDestroy, OnInit {
 
   async restore(): Promise<boolean> {
     if (!this.cipher.isDeleted) {
-      return false;
-    }
-
-    const confirmed = await this.platformUtilsService.showDialog(
-      this.i18nService.t("restoreItemConfirmation"),
-      this.i18nService.t("restoreItem"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      "warning"
-    );
-    if (!confirmed) {
       return false;
     }
 
@@ -315,16 +307,16 @@ export class ViewComponent implements OnDestroy, OnInit {
     this.platformUtilsService.launchUri(uri.launchUri);
   }
 
-  async copy(value: string, typeI18nKey: string, aType: string) {
+  async copy(value: string, typeI18nKey: string, aType: string): Promise<boolean> {
     if (value == null) {
-      return;
+      return false;
     }
 
     if (
       this.passwordRepromptService.protectedFields().includes(aType) &&
       !(await this.promptPassword())
     ) {
-      return;
+      return false;
     }
 
     const copyOptions = this.win != null ? { window: this.win } : null;
@@ -336,15 +328,14 @@ export class ViewComponent implements OnDestroy, OnInit {
     );
 
     if (typeI18nKey === "password") {
-      this.eventCollectionService.collect(
-        EventType.Cipher_ClientToggledHiddenFieldVisible,
-        this.cipherId
-      );
+      this.eventCollectionService.collect(EventType.Cipher_ClientCopiedPassword, this.cipherId);
     } else if (typeI18nKey === "securityCode") {
       this.eventCollectionService.collect(EventType.Cipher_ClientCopiedCardCode, this.cipherId);
     } else if (aType === "H_Field") {
       this.eventCollectionService.collect(EventType.Cipher_ClientCopiedHiddenField, this.cipherId);
     }
+
+    return true;
   }
 
   setTextDataOnDrag(event: DragEvent, data: string) {

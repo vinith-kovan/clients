@@ -8,8 +8,8 @@ import {
   AbstractControl,
 } from "@angular/forms";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService } from "@bitwarden/components";
 
 import { ProjectListView } from "../../models/view/project-list.view";
@@ -25,7 +25,6 @@ export interface ProjectDeleteOperation {
 }
 
 @Component({
-  selector: "sm-project-delete-dialog",
   templateUrl: "./project-delete-dialog.component.html",
 })
 export class ProjectDeleteDialogComponent implements OnInit {

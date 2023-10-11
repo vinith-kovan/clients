@@ -3,6 +3,7 @@ export class ForwarderOptions {
   website: string;
   fastmail = new FastmailForwarderOptions();
   anonaddy = new AnonAddyForwarderOptions();
+  forwardemail = new ForwardEmailForwarderOptions();
 }
 
 export class FastmailForwarderOptions {
@@ -10,5 +11,10 @@ export class FastmailForwarderOptions {
 }
 
 export class AnonAddyForwarderOptions {
+  domain: string;
+  baseUrl: string;
+}
+
+export class ForwardEmailForwarderOptions {
   domain: string;
 }

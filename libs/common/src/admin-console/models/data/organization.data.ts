@@ -1,4 +1,4 @@
-import { ProductType } from "../../../enums";
+import { ProductType, ProviderType } from "../../../enums";
 import { OrganizationUserStatusType, OrganizationUserType } from "../../enums";
 import { PermissionsApi } from "../api/permissions.api";
 import { ProfileOrganizationResponse } from "../response/profile-organization.response";
@@ -22,6 +22,7 @@ export class OrganizationData {
   useCustomPermissions: boolean;
   useResetPassword: boolean;
   useSecretsManager: boolean;
+  usePasswordManager: boolean;
   useActivateAutofillPolicy: boolean;
   selfHost: boolean;
   usersGetPremium: boolean;
@@ -36,7 +37,9 @@ export class OrganizationData {
   hasPublicAndPrivateKeys: boolean;
   providerId: string;
   providerName: string;
+  providerType?: ProviderType;
   isProviderUser: boolean;
+  isMember: boolean;
   familySponsorshipFriendlyName: string;
   familySponsorshipAvailable: boolean;
   planProductType: ProductType;
@@ -47,7 +50,13 @@ export class OrganizationData {
   familySponsorshipToDelete?: boolean;
   accessSecretsManager: boolean;
 
-  constructor(response: ProfileOrganizationResponse) {
+  constructor(
+    response: ProfileOrganizationResponse,
+    options: {
+      isMember: boolean;
+      isProviderUser: boolean;
+    }
+  ) {
     this.id = response.id;
     this.name = response.name;
     this.status = response.status;
@@ -66,6 +75,7 @@ export class OrganizationData {
     this.useCustomPermissions = response.useCustomPermissions;
     this.useResetPassword = response.useResetPassword;
     this.useSecretsManager = response.useSecretsManager;
+    this.usePasswordManager = response.usePasswordManager;
     this.useActivateAutofillPolicy = response.useActivateAutofillPolicy;
     this.selfHost = response.selfHost;
     this.usersGetPremium = response.usersGetPremium;
@@ -80,6 +90,7 @@ export class OrganizationData {
     this.hasPublicAndPrivateKeys = response.hasPublicAndPrivateKeys;
     this.providerId = response.providerId;
     this.providerName = response.providerName;
+    this.providerType = response.providerType;
     this.familySponsorshipFriendlyName = response.familySponsorshipFriendlyName;
     this.familySponsorshipAvailable = response.familySponsorshipAvailable;
     this.planProductType = response.planProductType;
@@ -89,5 +100,8 @@ export class OrganizationData {
     this.familySponsorshipValidUntil = response.familySponsorshipValidUntil;
     this.familySponsorshipToDelete = response.familySponsorshipToDelete;
     this.accessSecretsManager = response.accessSecretsManager;
+
+    this.isMember = options.isMember;
+    this.isProviderUser = options.isProviderUser;
   }
 }

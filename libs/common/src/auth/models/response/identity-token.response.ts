@@ -1,6 +1,9 @@
 import { KdfType } from "../../../enums";
 import { BaseResponse } from "../../../models/response/base.response";
 
+import { MasterPasswordPolicyResponse } from "./master-password-policy.response";
+import { UserDecryptionOptionsResponse } from "./user-decryption-options/user-decryption-options.response";
+
 export class IdentityTokenResponse extends BaseResponse {
   accessToken: string;
   expiresIn: number;
@@ -16,8 +19,11 @@ export class IdentityTokenResponse extends BaseResponse {
   kdfMemory?: number;
   kdfParallelism?: number;
   forcePasswordReset: boolean;
+  masterPasswordPolicy: MasterPasswordPolicyResponse;
   apiUseKeyConnector: boolean;
   keyConnectorUrl: string;
+
+  userDecryptionOptions: UserDecryptionOptionsResponse;
 
   constructor(response: any) {
     super(response);
@@ -37,5 +43,14 @@ export class IdentityTokenResponse extends BaseResponse {
     this.forcePasswordReset = this.getResponseProperty("ForcePasswordReset");
     this.apiUseKeyConnector = this.getResponseProperty("ApiUseKeyConnector");
     this.keyConnectorUrl = this.getResponseProperty("KeyConnectorUrl");
+    this.masterPasswordPolicy = new MasterPasswordPolicyResponse(
+      this.getResponseProperty("MasterPasswordPolicy")
+    );
+
+    if (response.UserDecryptionOptions) {
+      this.userDecryptionOptions = new UserDecryptionOptionsResponse(
+        this.getResponseProperty("UserDecryptionOptions")
+      );
+    }
   }
 }

@@ -8,8 +8,8 @@ import {
   AbstractControl,
 } from "@angular/forms";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService } from "@bitwarden/components";
 
 import { ServiceAccountView } from "../../models/view/service-account.view";
@@ -25,7 +25,6 @@ export interface ServiceAccountDeleteOperation {
 }
 
 @Component({
-  selector: "sm-service-account-delete-dialog",
   templateUrl: "./service-account-delete-dialog.component.html",
 })
 export class ServiceAccountDeleteDialogComponent {

@@ -6,6 +6,12 @@
   margin: 0;
 }
 
+html {
+  &.cdk-global-scrollblock {
+    position: unset;
+  }
+}
+
 html,
 body {
   font-family: $font-family-sans-serif;
@@ -240,6 +246,7 @@ header {
     &[disabled] {
       opacity: 0.65;
       cursor: default !important;
+      background-color: inherit !important;
     }
 
     i + span {
@@ -288,6 +295,14 @@ header {
         color: themed("headerInputColor");
       }
 
+      &::selection {
+        @include themify($themes) {
+          // explicitly set text selection to invert foreground/background
+          background-color: themed("headerInputColor");
+          color: themed("headerInputBackgroundColor");
+        }
+      }
+
       &:focus {
         border-radius: $border-radius;
         outline: none;
@@ -300,6 +315,19 @@ header {
       &::-webkit-input-placeholder {
         @include themify($themes) {
           color: themed("headerInputPlaceholderColor");
+        }
+      }
+      /** make the cancel button visible in both dark/light themes **/
+      &[type="search"]::-webkit-search-cancel-button {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 15px;
+        width: 15px;
+        background-repeat: no-repeat;
+        mask-image: url("../images/close-button-white.svg");
+        -webkit-mask-image: url("../images/close-button-white.svg");
+        @include themify($themes) {
+          background-color: themed("headerInputColor");
         }
       }
     }
@@ -448,19 +476,6 @@ main {
 .tab-page {
   main {
     bottom: 55px;
-  }
-
-  [type="search"]::-webkit-search-cancel-button {
-    -webkit-appearance: none;
-    appearance: none;
-    height: 15px;
-    width: 15px;
-    background-repeat: no-repeat;
-    mask-image: url("../images/close-button-white.svg");
-    -webkit-mask-image: url("../images/close-button-white.svg");
-    @include themify($themes) {
-      background-color: themed("headerInputColor");
-    }
   }
 }
 
@@ -635,5 +650,39 @@ main {
       padding-top: 1rem;
       display: block;
     }
+  }
+}
+
+#login-initiated {
+  .margin-auto {
+    margin: auto;
+  }
+  .mb-20px {
+    margin-bottom: 20px;
+  }
+
+  .mx-5px {
+    margin-left: 5px !important;
+    margin-right: 5px !important;
+  }
+
+  .muted-hr {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .standard-x-margin {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .btn-top-margin {
+    margin-top: 12px;
+  }
+
+  #rememberThisDeviceHintText {
+    font-size: $font-size-small;
+    color: $text-muted;
   }
 }

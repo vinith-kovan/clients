@@ -1,8 +1,9 @@
 import "zone.js";
 
 // Register the locales for the application
-import "./locales";
+import "../platform/app/locales";
 
+import { DialogModule } from "@angular/cdk/dialog";
 import { NgModule } from "@angular/core";
 
 import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
@@ -23,7 +24,6 @@ import { TwoFactorOptionsComponent } from "../auth/two-factor-options.component"
 import { TwoFactorComponent } from "../auth/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/update-temp-password.component";
 import { PremiumComponent } from "../vault/app/accounts/premium.component";
-import { PasswordRepromptComponent } from "../vault/app/components/password-reprompt.component";
 import { AddEditCustomFieldsComponent } from "../vault/app/vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../vault/app/vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/app/vault/attachments.component";
@@ -48,15 +48,14 @@ import { HeaderComponent } from "./layout/header.component";
 import { NavComponent } from "./layout/nav.component";
 import { SearchComponent } from "./layout/search/search.component";
 import { SharedModule } from "./shared/shared.module";
+import { ExportComponent } from "./tools/export/export.component";
 import { GeneratorComponent } from "./tools/generator.component";
 import { PasswordGeneratorHistoryComponent } from "./tools/password-generator-history.component";
 import { AddEditComponent as SendAddEditComponent } from "./tools/send/add-edit.component";
-import { EffluxDatesComponent as SendEffluxDatesComponent } from "./tools/send/efflux-dates.component";
 import { SendComponent } from "./tools/send/send.component";
-import { ExportComponent } from "./vault/export.component";
 
 @NgModule({
-  imports: [SharedModule, AppRoutingModule, VaultFilterModule, LoginModule],
+  imports: [SharedModule, DialogModule, AppRoutingModule, VaultFilterModule, LoginModule],
   declarations: [
     AccessibilityCookieComponent,
     AccountSwitcherComponent,
@@ -79,14 +78,12 @@ import { ExportComponent } from "./vault/export.component";
     GeneratorComponent,
     PasswordGeneratorHistoryComponent,
     PasswordHistoryComponent,
-    PasswordRepromptComponent,
     PremiumComponent,
     RegisterComponent,
     RemovePasswordComponent,
     SearchComponent,
     SendAddEditComponent,
     SendComponent,
-    SendEffluxDatesComponent,
     SetPasswordComponent,
     SetPinComponent,
     SettingsComponent,

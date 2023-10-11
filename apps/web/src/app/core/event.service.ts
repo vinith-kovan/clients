@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { DeviceType, EventType } from "@bitwarden/common/enums";
 import { EventResponse } from "@bitwarden/common/models/response/event.response";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 @Injectable()
 export class EventService {
@@ -75,10 +75,13 @@ export class EventService {
         msg = humanReadableMsg = this.i18nService.t("exportedVault");
         break;
       case EventType.User_UpdatedTempPassword:
-        msg = humanReadableMsg = this.i18nService.t("updatedMasterPassword");
+        msg = humanReadableMsg = this.i18nService.t("updatedTempPassword");
         break;
       case EventType.User_MigratedKeyToKeyConnector:
         msg = humanReadableMsg = this.i18nService.t("migratedKeyConnector");
+        break;
+      case EventType.User_RequestedDeviceApproval:
+        msg = humanReadableMsg = this.i18nService.t("requestedDeviceApproval");
         break;
       // Cipher
       case EventType.Cipher_Created:
@@ -259,16 +262,16 @@ export class EventService {
         );
         break;
       case EventType.OrganizationUser_ResetPassword_Enroll:
-        msg = this.i18nService.t("eventEnrollPasswordReset", this.formatOrgUserId(ev));
+        msg = this.i18nService.t("eventEnrollAccountRecovery", this.formatOrgUserId(ev));
         humanReadableMsg = this.i18nService.t(
-          "eventEnrollPasswordReset",
+          "eventEnrollAccountRecovery",
           this.getShortId(ev.organizationUserId)
         );
         break;
       case EventType.OrganizationUser_ResetPassword_Withdraw:
-        msg = this.i18nService.t("eventWithdrawPasswordReset", this.formatOrgUserId(ev));
+        msg = this.i18nService.t("eventWithdrawAccountRecovery", this.formatOrgUserId(ev));
         humanReadableMsg = this.i18nService.t(
-          "eventWithdrawPasswordReset",
+          "eventWithdrawAccountRecovery",
           this.getShortId(ev.organizationUserId)
         );
         break;
@@ -304,6 +307,20 @@ export class EventService {
         msg = this.i18nService.t("restoredUserId", this.formatOrgUserId(ev));
         humanReadableMsg = this.i18nService.t(
           "restoredUserId",
+          this.getShortId(ev.organizationUserId)
+        );
+        break;
+      case EventType.OrganizationUser_ApprovedAuthRequest:
+        msg = this.i18nService.t("approvedAuthRequest", this.formatOrgUserId(ev));
+        humanReadableMsg = this.i18nService.t(
+          "approvedAuthRequest",
+          this.getShortId(ev.organizationUserId)
+        );
+        break;
+      case EventType.OrganizationUser_RejectedAuthRequest:
+        msg = this.i18nService.t("rejectedAuthRequest", this.formatOrgUserId(ev));
+        humanReadableMsg = this.i18nService.t(
+          "rejectedAuthRequest",
           this.getShortId(ev.organizationUserId)
         );
         break;
@@ -487,12 +504,7 @@ export class EventService {
     const a = this.makeAnchor(shortId);
     a.setAttribute(
       "href",
-      "#/organizations/" +
-        ev.organizationId +
-        "/vault?search=" +
-        shortId +
-        "&viewEvents=" +
-        ev.cipherId
+      `#/organizations/${ev.organizationId}/vault?search=${shortId}&viewEvents=${ev.cipherId}&type=all`
     );
     return a.outerHTML;
   }
@@ -507,10 +519,9 @@ export class EventService {
   private formatCollectionId(ev: EventResponse) {
     const shortId = this.getShortId(ev.collectionId);
     const a = this.makeAnchor(shortId);
-    // TODO: Update view/edit collection link after EC-14 is completed
     a.setAttribute(
       "href",
-      "#/organizations/" + ev.organizationId + "/manage/collections?search=" + shortId
+      `#/organizations/${ev.organizationId}/vault?collectionId=${ev.collectionId}`
     );
     return a.outerHTML;
   }
@@ -557,7 +568,7 @@ export class EventService {
     const a = this.makeAnchor(shortId);
     a.setAttribute(
       "href",
-      "#/organizations/" + ev.organizationId + "/manage/policies?policyId=" + ev.policyId
+      "#/organizations/" + ev.organizationId + "/settings/policies?policyId=" + ev.policyId
     );
     return a.outerHTML;
   }

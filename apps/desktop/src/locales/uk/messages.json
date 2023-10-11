@@ -67,7 +67,7 @@
     "message": "Вкладення"
   },
   "viewItem": {
-    "message": "Перегляд запису"
+    "message": "Переглянути запис"
   },
   "name": {
     "message": "Назва"
@@ -475,8 +475,8 @@
   "maxFileSize": {
     "message": "Максимальний розмір файлу 500 Мб."
   },
-  "updateKey": {
-    "message": "Ви не можете використовувати цю функцію доки не оновите свій ключ шифрування."
+  "encryptionKeyMigrationRequired": {
+    "message": "Потрібно перенести ключ шифрування. Увійдіть у вебсховище та оновіть свій ключ шифрування."
   },
   "editedFolder": {
     "message": "Теку збережено"
@@ -753,7 +753,7 @@
     "message": "Нова тека"
   },
   "view": {
-    "message": "Перегляд"
+    "message": "Переглянути"
   },
   "account": {
     "message": "Обліковий запис"
@@ -1077,8 +1077,8 @@
   "premiumSignUpStorage": {
     "message": "1 ГБ зашифрованого сховища для файлів."
   },
-  "premiumSignUpTwoStep": {
-    "message": "Додаткові можливості двоетапної перевірки, наприклад, YubiKey, FIDO U2F та Duo."
+  "premiumSignUpTwoStepOptions": {
+    "message": "Додаткові можливості двоетапної авторизації, як-от YubiKey та Duo."
   },
   "premiumSignUpReports": {
     "message": "Гігієна паролів, здоров'я облікового запису, а також звіти про вразливості даних, щоб зберігати ваше сховище в безпеці."
@@ -1335,7 +1335,7 @@
     "message": "Підтвердити експорт сховища"
   },
   "exportWarningDesc": {
-    "message": "Експортовані дані вашого сховища знаходяться в незашифрованому вигляді. Вам не слід зберігати чи надсилати їх через незахищені канали (наприклад, е-поштою). Після використання негайно видаліть їх."
+    "message": "Ваші експортовані дані сховища незашифровані. Не зберігайте і не надсилайте їх незахищеними каналами (як-от електронна пошта). Після використання негайно видаліть їх."
   },
   "encExportKeyWarningDesc": {
     "message": "Цей експорт шифрує ваші дані за допомогою ключа шифрування облікового запису. Якщо ви коли-небудь оновите ключ шифрування облікового запису, необхідно виконати експорт знову, оскільки не зможете розшифрувати цей файл експорту."
@@ -1392,20 +1392,32 @@
   "unlockWithWindowsHello": {
     "message": "Розблокувати з Windows Hello"
   },
+  "additionalWindowsHelloSettings": {
+    "message": "Додаткові налаштування Windows Hello"
+  },
   "windowsHelloConsentMessage": {
     "message": "Перевірити на Bitwarden."
   },
   "unlockWithTouchId": {
     "message": "Розблокувати з Touch ID"
   },
+  "additionalTouchIdSettings": {
+    "message": "Додаткові налаштування Touch ID"
+  },
   "touchIdConsentMessage": {
     "message": "розблокувати сховище"
   },
   "autoPromptWindowsHello": {
-    "message": "Ініціювати Windows Hello під час запуску"
+    "message": "Запитувати Windows Hello під час запуску"
   },
   "autoPromptTouchId": {
-    "message": "Ініціювати Touch ID під час запуску"
+    "message": "Запитувати Touch ID під час запуску"
+  },
+  "requirePasswordOnStart": {
+    "message": "Вимагати пароль чи PIN під час запуску"
+  },
+  "recommendedForSecurity": {
+    "message": "Рекомендовано для безпеки."
   },
   "lockWithMasterPassOnRestart": {
     "message": "Блокувати головним паролем при перезапуску"
@@ -1480,6 +1492,9 @@
   "vaultTimeoutActionLogOutDesc": {
     "message": "Щоб відновити доступ до сховища, необхідно повторно авторизуватись."
   },
+  "unlockMethodNeededToChangeTimeoutActionDesc": {
+    "message": "Налаштуйте спосіб розблокування, щоб змінити час очікування сховища."
+  },
   "lock": {
     "message": "Блокувати",
     "description": "Verb form: to make secure or inaccesible by"
@@ -1499,12 +1514,6 @@
   },
   "permanentlyDeletedItem": {
     "message": "Запис остаточно видалено"
-  },
-  "restoreItem": {
-    "message": "Відновити запис"
-  },
-  "restoreItemConfirmation": {
-    "message": "Ви дійсно хочете відновити цей запис?"
   },
   "restoredItem": {
     "message": "Запис відновлено"
@@ -1526,6 +1535,9 @@
   },
   "ssoCompleteRegistration": {
     "message": "Щоб завершити налаштування входу з SSO, встановіть головний пароль для доступу і захисту сховища."
+  },
+  "currentMasterPass": {
+    "message": "Поточний головний пароль"
   },
   "newMasterPass": {
     "message": "Новий головний пароль"
@@ -1843,6 +1855,9 @@
   "updateMasterPasswordWarning": {
     "message": "Ваш головний пароль нещодавно був змінений адміністратором організації. Щоб отримати доступ до сховища, вам необхідно оновити його зараз. Продовживши, ви вийдете з поточного сеансу, після чого потрібно буде повторно виконати вхід. Сеанси на інших пристроях можуть залишатися активними протягом однієї години."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Ваш головний пароль не відповідає одній або більше політикам вашої організації. Щоб отримати доступ до сховища, вам необхідно оновити свій головний пароль зараз. Продовживши, ви вийдете з поточного сеансу, після чого потрібно буде повторно виконати вхід. Сеанси на інших пристроях можуть залишатися активними протягом однієї години."
+  },
   "hours": {
     "message": "Годин"
   },
@@ -1850,7 +1865,7 @@
     "message": "Хвилин"
   },
   "vaultTimeoutPolicyInEffect": {
-    "message": "Політики вашої організації впливають на час очікування сховища. Максимальний дозволений час очікування сховища $HOURS$ годин, $MINUTES$ хвилин",
+    "message": "Політикою вашої організації встановлено максимальний дозволений час очікування сховища $HOURS$ годин, $MINUTES$ хвилин.",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -1859,6 +1874,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Політики вашої організації впливають на час очікування сховища. Максимальний дозволений час очікування сховища $HOURS$ годин, $MINUTES$ хвилин. Для часу очікування вашого сховища встановлена дія $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Політикою вашої організації встановлено дію для часу очікування сховища $ACTION$.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -1943,8 +1984,8 @@
   "exportingPersonalVaultTitle": {
     "message": "Експортування особистого сховища"
   },
-  "exportingPersonalVaultDescription": {
-    "message": "Будуть експортовані лише записи особистого сховища, пов'язані з $EMAIL$. Записи сховища організації не буде включено.",
+  "exportingIndividualVaultDescription": {
+    "message": "Будуть експортовані лише записи особистого сховища, пов'язані з $EMAIL$. Записи сховища організації не буде включено. Експортуються лише дані записів сховища без пов'язаних вкладень.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -2068,7 +2109,7 @@
   "logInWithAnotherDevice": {
     "message": "Увійти з іншого пристрою"
   },
-  "logInInitiated": {
+  "loginInitiated": {
     "message": "Ініційовано вхід"
   },
   "notificationSentDevice": {
@@ -2201,5 +2242,181 @@
         "example": "14"
       }
     }
+  },
+  "windowsBiometricUpdateWarning": {
+    "message": "Bitwarden рекомендує оновити ваші біометричні налаштування, щоб вимагати головний пароль (або PIN) під час першого розблокування. Чи бажаєте оновити налаштування зараз?"
+  },
+  "windowsBiometricUpdateWarningTitle": {
+    "message": "Оновлення рекомендованих налаштувань"
+  },
+  "deviceApprovalRequired": {
+    "message": "Необхідне підтвердження пристрою. Виберіть варіант підтвердження нижче:"
+  },
+  "rememberThisDevice": {
+    "message": "Запам'ятати цей пристрій"
+  },
+  "uncheckIfPublicDevice": {
+    "message": "Зніміть позначку, якщо використовуєте загальнодоступний пристрій"
+  },
+  "approveFromYourOtherDevice": {
+    "message": "Затвердіть з іншого пристрою"
+  },
+  "requestAdminApproval": {
+    "message": "Запит підтвердження адміністратора"
+  },
+  "approveWithMasterPassword": {
+    "message": "Затвердити з головним паролем"
+  },
+  "region": {
+    "message": "Регіон"
+  },
+  "ssoIdentifierRequired": {
+    "message": "Потрібен SSO-ідентифікатор організації."
+  },
+  "eu": {
+    "message": "ЄС",
+    "description": "European Union"
+  },
+  "loggingInOn": {
+    "message": "Увійти на"
+  },
+  "usDomain": {
+    "message": "bitwarden.com"
+  },
+  "euDomain": {
+    "message": "bitwarden.eu"
+  },
+  "selfHostedServer": {
+    "message": "власне розміщення"
+  },
+  "accessDenied": {
+    "message": "Доступ заборонено. У вас немає дозволу на перегляд цієї сторінки."
+  },
+  "accountSuccessfullyCreated": {
+    "message": "Обліковий запис успішно створено!"
+  },
+  "adminApprovalRequested": {
+    "message": "Запитано затвердження адміністратором"
+  },
+  "adminApprovalRequestSentToAdmins": {
+    "message": "Ваш запит відправлено адміністратору."
+  },
+  "youWillBeNotifiedOnceApproved": {
+    "message": "Ви отримаєте сповіщення після затвердження."
+  },
+  "troubleLoggingIn": {
+    "message": "Проблема під час входу?"
+  },
+  "loginApproved": {
+    "message": "Вхід затверджено"
+  },
+  "userEmailMissing": {
+    "message": "Немає адреси електронної пошти"
+  },
+  "deviceTrusted": {
+    "message": "Довірений пристрій"
+  },
+  "inputRequired": {
+    "message": "Необхідно ввести дані."
+  },
+  "required": {
+    "message": "обов'язково"
+  },
+  "search": {
+    "message": "Пошук"
+  },
+  "inputMinLength": {
+    "message": "Введені дані мають бути довжиною принаймні $COUNT$ символів.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxLength": {
+    "message": "Вхідне значення не повинно перевищувати $COUNT$ символів.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
+  "inputForbiddenCharacters": {
+    "message": "Вказані символи заборонені: $CHARACTERS$",
+    "placeholders": {
+      "characters": {
+        "content": "$1",
+        "example": "@, #, $, %"
+      }
+    }
+  },
+  "inputMinValue": {
+    "message": "Значення має бути принаймні $MIN$.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "Значення не може перевищувати $MAX$.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "multipleInputEmails": {
+    "message": "1 або більше адрес е-пошти недійсні"
+  },
+  "inputTrimValidator": {
+    "message": "Введене значення не повинно містити лише пробіл.",
+    "description": "Notification to inform the user that a form's input can't contain only whitespace."
+  },
+  "inputEmail": {
+    "message": "Введені дані не є адресою е-пошти."
+  },
+  "fieldsNeedAttention": {
+    "message": "$COUNT$ поле (поля) вище потребують вашої уваги.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "selectPlaceholder": {
+    "message": "-- Оберіть--"
+  },
+  "multiSelectPlaceholder": {
+    "message": "-- Введіть для фільтрування --"
+  },
+  "multiSelectLoading": {
+    "message": "Параметри отримання..."
+  },
+  "multiSelectNotFound": {
+    "message": "Нічого не знайдено"
+  },
+  "multiSelectClearAll": {
+    "message": "Очистити все"
+  },
+  "plusNMore": {
+    "message": "+ ще $QUANTITY$",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "submenu": {
+    "message": "Підменю"
+  },
+  "aliasDomain": {
+    "message": "Псевдонім домену"
   }
 }

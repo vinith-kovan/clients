@@ -3,17 +3,18 @@ import { UntypedFormBuilder } from "@angular/forms";
 import { Router } from "@angular/router";
 
 import { RegisterComponent as BaseRegisterComponent } from "@bitwarden/angular/components/register.component";
+import { FormValidationErrorsService } from "@bitwarden/angular/platform/abstractions/form-validation-errors.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
-import { FormValidationErrorsService } from "@bitwarden/common/abstractions/formValidationErrors.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { DialogService } from "@bitwarden/components";
 
 @Component({
   selector: "app-register",
@@ -36,7 +37,8 @@ export class RegisterComponent extends BaseRegisterComponent {
     passwordGenerationService: PasswordGenerationServiceAbstraction,
     environmentService: EnvironmentService,
     logService: LogService,
-    auditService: AuditService
+    auditService: AuditService,
+    dialogService: DialogService
   ) {
     super(
       formValidationErrorService,
@@ -51,7 +53,8 @@ export class RegisterComponent extends BaseRegisterComponent {
       passwordGenerationService,
       environmentService,
       logService,
-      auditService
+      auditService,
+      dialogService
     );
   }
 }

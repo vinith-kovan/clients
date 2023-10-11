@@ -2,23 +2,16 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { ProductType } from "@bitwarden/common/enums";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
-import {
-  DialogService,
-  SimpleDialogCloseType,
-  SimpleDialogOptions,
-  SimpleDialogType,
-} from "@bitwarden/components";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { DialogService, SimpleDialogOptions } from "@bitwarden/components";
 
-import {
-  CollectionAdminService,
-  CollectionAdminView,
-} from "../../../admin-console/organizations/core";
-import { CollectionDialogTabType } from "../../../admin-console/organizations/shared";
+import { CollectionAdminView } from "../../../vault/core/views/collection-admin.view";
+import { CollectionDialogTabType } from "../../components/collection-dialog";
+import { CollectionAdminService } from "../../core/collection-admin.service";
 import {
   All,
   RoutedVaultFilterModel,
@@ -111,29 +104,29 @@ export class VaultHeaderComponent {
     const orgUpgradeSimpleDialogOpts: SimpleDialogOptions = {
       title: this.i18nService.t("upgradeOrganization"),
       content: this.i18nService.t(
-        this.organization.canManageBilling
+        this.organization.canEditSubscription
           ? "freeOrgMaxCollectionReachedManageBilling"
           : "freeOrgMaxCollectionReachedNoManageBilling",
         this.organization.maxCollections
       ),
-      type: SimpleDialogType.PRIMARY,
+      type: "primary",
     };
 
-    if (this.organization.canManageBilling) {
+    if (this.organization.canEditSubscription) {
       orgUpgradeSimpleDialogOpts.acceptButtonText = this.i18nService.t("upgrade");
     } else {
       orgUpgradeSimpleDialogOpts.acceptButtonText = this.i18nService.t("ok");
       orgUpgradeSimpleDialogOpts.cancelButtonText = null; // hide secondary btn
     }
 
-    const simpleDialog = this.dialogService.openSimpleDialog(orgUpgradeSimpleDialogOpts);
+    const simpleDialog = this.dialogService.openSimpleDialogRef(orgUpgradeSimpleDialogOpts);
 
-    firstValueFrom(simpleDialog.closed).then((result: SimpleDialogCloseType | undefined) => {
+    firstValueFrom(simpleDialog.closed).then((result: boolean | undefined) => {
       if (!result) {
         return;
       }
 
-      if (result == SimpleDialogCloseType.ACCEPT && this.organization.canManageBilling) {
+      if (result && this.organization.canEditSubscription) {
         this.router.navigate(["/organizations", this.organization.id, "billing", "subscription"], {
           queryParams: { upgrade: true },
         });
@@ -148,10 +141,7 @@ export class VaultHeaderComponent {
     }
 
     // Otherwise, check if we can edit the specified collection
-    return (
-      this.organization.canEditAnyCollection ||
-      (this.organization.canEditAssignedCollections && this.collection?.node.assigned)
-    );
+    return this.collection.node.canEdit(this.organization);
   }
 
   addCipher() {
@@ -181,10 +171,7 @@ export class VaultHeaderComponent {
     }
 
     // Otherwise, check if we can delete the specified collection
-    return (
-      this.organization?.canDeleteAnyCollection ||
-      (this.organization?.canDeleteAssignedCollections && this.collection.node.assigned)
-    );
+    return this.collection.node.canDelete(this.organization);
   }
 
   deleteCollection() {

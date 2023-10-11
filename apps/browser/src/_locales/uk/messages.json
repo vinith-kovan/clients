@@ -91,6 +91,15 @@
   "autoFill": {
     "message": "Автозаповнення"
   },
+  "autoFillLogin": {
+    "message": "Автозаповнення входу"
+  },
+  "autoFillCard": {
+    "message": "Автозаповнення картки"
+  },
+  "autoFillIdentity": {
+    "message": "Автозаповнення особистих даних"
+  },
   "generatePasswordCopied": {
     "message": "Генерувати пароль (з копіюванням)"
   },
@@ -99,6 +108,21 @@
   },
   "noMatchingLogins": {
     "message": "Немає відповідних записів"
+  },
+  "noCards": {
+    "message": "Немає карток"
+  },
+  "noIdentities": {
+    "message": "Немає особистих даних"
+  },
+  "addLoginMenu": {
+    "message": "Додати запис входу"
+  },
+  "addCardMenu": {
+    "message": "Додати картку"
+  },
+  "addIdentityMenu": {
+    "message": "Додати особисті дані"
   },
   "unlockVaultMenu": {
     "message": "Розблокуйте сховище"
@@ -285,7 +309,7 @@
     "message": "Змінити"
   },
   "view": {
-    "message": "Перегляд"
+    "message": "Переглянути"
   },
   "noItemsInList": {
     "message": "Немає записів."
@@ -321,7 +345,7 @@
     "message": "Видалити запис"
   },
   "viewItem": {
-    "message": "Перегляд запису"
+    "message": "Переглянути запис"
   },
   "launch": {
     "message": "Перейти"
@@ -337,6 +361,9 @@
   },
   "other": {
     "message": "Інше"
+  },
+  "unlockMethodNeededToChangeTimeoutActionDesc": {
+    "message": "Налаштуйте спосіб розблокування, щоб змінити час очікування сховища."
   },
   "rateExtension": {
     "message": "Оцінити розширення"
@@ -630,6 +657,12 @@
   "notificationChangeSave": {
     "message": "Оновити"
   },
+  "notificationUnlockDesc": {
+    "message": "Розблокуйте своє сховище Bitwarden, щоб завершити запит автозаповнення."
+  },
+  "notificationUnlock": {
+    "message": "Розблокувати"
+  },
   "enableContextMenuItem": {
     "message": "Показувати в контекстному меню"
   },
@@ -675,7 +708,7 @@
     "message": "Підтвердити експорт сховища"
   },
   "exportWarningDesc": {
-    "message": "Експортовані дані вашого сховища знаходяться в незашифрованому вигляді. Вам не слід зберігати чи надсилати їх через незахищені канали (наприклад, е-поштою). Після використання негайно видаліть їх."
+    "message": "Ваші експортовані дані сховища незашифровані. Не зберігайте і не надсилайте їх незахищеними каналами (як-от електронна пошта). Після використання негайно видаліть їх."
   },
   "encExportKeyWarningDesc": {
     "message": "Цей експорт шифрує ваші дані за допомогою ключа шифрування облікового запису. Якщо ви коли-небудь оновите ключ шифрування облікового запису, необхідно виконати експорт знову, оскільки не зможете розшифрувати цей файл експорту."
@@ -762,8 +795,8 @@
   "featureUnavailable": {
     "message": "Функція недоступна"
   },
-  "updateKey": {
-    "message": "Ви не можете використовувати цю функцію доки не оновите свій ключ шифрування."
+  "encryptionKeyMigrationRequired": {
+    "message": "Потрібно перенести ключ шифрування. Увійдіть у вебсховище та оновіть свій ключ шифрування."
   },
   "premiumMembership": {
     "message": "Преміум статус"
@@ -786,8 +819,8 @@
   "ppremiumSignUpStorage": {
     "message": "1 ГБ зашифрованого сховища для файлів."
   },
-  "ppremiumSignUpTwoStep": {
-    "message": "Додаткові можливості двоетапної перевірки, наприклад, YubiKey, FIDO U2F та Duo."
+  "premiumSignUpTwoStepOptions": {
+    "message": "Додаткові можливості двоетапної авторизації, як-от YubiKey та Duo."
   },
   "ppremiumSignUpReports": {
     "message": "Гігієна паролів, здоров'я облікового запису, а також звіти про вразливості даних, щоб зберігати ваше сховище в безпеці."
@@ -1440,9 +1473,6 @@
   "restoreItem": {
     "message": "Відновити запис"
   },
-  "restoreItemConfirmation": {
-    "message": "Ви дійсно хочете відновити цей запис?"
-  },
   "restoredItem": {
     "message": "Запис відновлено"
   },
@@ -1461,8 +1491,35 @@
   "autoFillSuccess": {
     "message": "Запис заповнено"
   },
+  "insecurePageWarning": {
+    "message": "Попередження: це незахищена сторінка HTTP, тому будь-яка інформація, яку ви передаєте, потенційно може бути переглянута чи змінена сторонніми. Ці облікові дані було збережено на безпечній сторінці (HTTPS)."
+  },
+  "insecurePageWarningFillPrompt": {
+    "message": "Ви все ще бажаєте заповнити поля для входу?"
+  },
+  "autofillIframeWarning": {
+    "message": "Домен форми входу відрізняється від URL-адреси, за якою його було збережено. Оберіть OK, якщо ви все одно хочете її заповнити, або Скасувати для зупинки."
+  },
+  "autofillIframeWarningTip": {
+    "message": "Щоб надалі не бачити таке попередження, збережіть цей URI, $HOSTNAME$ у записі входу Bitwarden для цього сайту.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "www.example.com"
+      }
+    }
+  },
   "setMasterPassword": {
     "message": "Встановити головний пароль"
+  },
+  "currentMasterPass": {
+    "message": "Поточний головний пароль"
+  },
+  "newMasterPass": {
+    "message": "Новий головний пароль"
+  },
+  "confirmNewMasterPass": {
+    "message": "Підтвердьте новий головний пароль"
   },
   "masterPasswordPolicyInEffect": {
     "message": "Одна або декілька політик організації вимагають дотримання таких вимог для головного пароля:"
@@ -1571,6 +1628,12 @@
   },
   "biometricsNotSupportedDesc": {
     "message": "Біометрія в браузері не підтримується на цьому пристрої."
+  },
+  "biometricsFailedTitle": {
+    "message": "Збій біометрії"
+  },
+  "biometricsFailedDesc": {
+    "message": "Неможливо виконати біометрію. Скористайтеся головним паролем або вийдіть із системи. Якщо проблема не зникне, зверніться до служби підтримки Bitwarden."
   },
   "nativeMessaginPermissionErrorTitle": {
     "message": "Дозвіл не надано"
@@ -1844,6 +1907,9 @@
   "updateMasterPasswordWarning": {
     "message": "Ваш головний пароль нещодавно був змінений адміністратором організації. Щоб отримати доступ до сховища, вам необхідно оновити його зараз. Продовживши, ви вийдете з поточного сеансу, після чого потрібно буде повторно виконати вхід. Сеанси на інших пристроях можуть залишатися активними протягом однієї години."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Ваш головний пароль не відповідає одній або більше політикам вашої організації. Щоб отримати доступ до сховища, вам необхідно оновити свій головний пароль зараз. Продовживши, ви вийдете з поточного сеансу, після чого потрібно буде повторно виконати вхід. Сеанси на інших пристроях можуть залишатися активними протягом однієї години."
+  },
   "resetPasswordPolicyAutoEnroll": {
     "message": "Автоматичне розгортання"
   },
@@ -1863,7 +1929,7 @@
     "message": "Хвилин"
   },
   "vaultTimeoutPolicyInEffect": {
-    "message": "Політики вашої організації впливають на час очікування сховища. Максимальний дозволений час очікування сховища $HOURS$ годин, $MINUTES$ хвилин",
+    "message": "Політикою вашої організації встановлено максимальний дозволений час очікування сховища $HOURS$ годин, $MINUTES$ хвилин.",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -1872,6 +1938,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Політики вашої організації впливають на час очікування сховища. Максимальний дозволений час очікування сховища $HOURS$ годин, $MINUTES$ хвилин. Для часу очікування вашого сховища встановлена дія $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Політикою вашої організації встановлено дію для часу очікування сховища $ACTION$.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -1923,8 +2015,8 @@
   "exportingPersonalVaultTitle": {
     "message": "Експортування особистого сховища"
   },
-  "exportingPersonalVaultDescription": {
-    "message": "Будуть експортовані лише записи особистого сховища, пов'язані з $EMAIL$. Записи сховища організації не буде включено.",
+  "exportingIndividualVaultDescription": {
+    "message": "Будуть експортовані лише записи особистого сховища, пов'язані з $EMAIL$. Записи сховища організації не буде включено. Експортуються лише дані записів сховища без пов'язаних вкладень.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -2024,8 +2116,8 @@
   "serverVersion": {
     "message": "Версія сервера"
   },
-  "selfHosted": {
-    "message": "Власне розміщення"
+  "selfHostedServer": {
+    "message": "власне розміщення"
   },
   "thirdParty": {
     "message": "Сторонній"
@@ -2084,7 +2176,7 @@
   "notificationSentDevice": {
     "message": "Сповіщення було надіслано на ваш пристрій."
   },
-  "logInInitiated": {
+  "loginInitiated": {
     "message": "Ініційовано вхід"
   },
   "exposedMasterPassword": {
@@ -2124,7 +2216,7 @@
     "message": "Як працює автозаповнення"
   },
   "autofillSelectInfoWithCommand": {
-    "message": "Виберіть елемент з цієї сторінки або використайте комбінацію клавіш: $COMMAND$",
+    "message": "Виберіть елемент із цієї сторінки або використайте комбінацію клавіш: $COMMAND$",
     "placeholders": {
       "command": {
         "content": "$1",
@@ -2133,7 +2225,7 @@
     }
   },
   "autofillSelectInfoWithoutCommand": {
-    "message": "Виберіть елемент з цієї сторінки або встановіть комбінацію клавіш у налаштуваннях."
+    "message": "Виберіть елемент із цієї сторінки або встановіть комбінацію клавіш у налаштуваннях."
   },
   "gotIt": {
     "message": "Зрозуміло"
@@ -2164,5 +2256,194 @@
         "example": "CTRL+Shift+L"
       }
     }
+  },
+  "loggingInOn": {
+    "message": "Увійти на"
+  },
+  "opensInANewWindow": {
+    "message": "Відкривається у новому вікні"
+  },
+  "deviceApprovalRequired": {
+    "message": "Необхідне підтвердження пристрою. Виберіть варіант підтвердження нижче:"
+  },
+  "rememberThisDevice": {
+    "message": "Запам'ятати цей пристрій"
+  },
+  "uncheckIfPublicDevice": {
+    "message": "Зніміть позначку, якщо використовуєте загальнодоступний пристрій"
+  },
+  "approveFromYourOtherDevice": {
+    "message": "Затвердіть з іншого пристрою"
+  },
+  "requestAdminApproval": {
+    "message": "Запит підтвердження адміністратора"
+  },
+  "approveWithMasterPassword": {
+    "message": "Затвердити з головним паролем"
+  },
+  "ssoIdentifierRequired": {
+    "message": "Потрібен SSO-ідентифікатор організації."
+  },
+  "eu": {
+    "message": "ЄС",
+    "description": "European Union"
+  },
+  "usDomain": {
+    "message": "bitwarden.com"
+  },
+  "euDomain": {
+    "message": "bitwarden.eu"
+  },
+  "accessDenied": {
+    "message": "Доступ заборонено. У вас немає дозволу на перегляд цієї сторінки."
+  },
+  "general": {
+    "message": "Загальні"
+  },
+  "display": {
+    "message": "Екран"
+  },
+  "accountSuccessfullyCreated": {
+    "message": "Обліковий запис успішно створено!"
+  },
+  "adminApprovalRequested": {
+    "message": "Запитано затвердження адміністратором"
+  },
+  "adminApprovalRequestSentToAdmins": {
+    "message": "Ваш запит відправлено адміністратору."
+  },
+  "youWillBeNotifiedOnceApproved": {
+    "message": "Ви отримаєте сповіщення після затвердження."
+  },
+  "troubleLoggingIn": {
+    "message": "Проблема під час входу?"
+  },
+  "loginApproved": {
+    "message": "Вхід затверджено"
+  },
+  "userEmailMissing": {
+    "message": "Немає адреси електронної пошти"
+  },
+  "deviceTrusted": {
+    "message": "Довірений пристрій"
+  },
+  "inputRequired": {
+    "message": "Необхідно ввести дані."
+  },
+  "required": {
+    "message": "обов'язково"
+  },
+  "search": {
+    "message": "Пошук"
+  },
+  "inputMinLength": {
+    "message": "Введені дані мають бути довжиною принаймні $COUNT$ символів.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxLength": {
+    "message": "Вхідне значення не повинно перевищувати $COUNT$ символів.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
+  "inputForbiddenCharacters": {
+    "message": "Вказані символи заборонені: $CHARACTERS$",
+    "placeholders": {
+      "characters": {
+        "content": "$1",
+        "example": "@, #, $, %"
+      }
+    }
+  },
+  "inputMinValue": {
+    "message": "Значення має бути принаймні $MIN$.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "Значення не може перевищувати $MAX$.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "multipleInputEmails": {
+    "message": "1 або більше адрес е-пошти недійсні"
+  },
+  "inputTrimValidator": {
+    "message": "Введене значення не повинно містити лише пробіл.",
+    "description": "Notification to inform the user that a form's input can't contain only whitespace."
+  },
+  "inputEmail": {
+    "message": "Введені дані не є адресою е-пошти."
+  },
+  "fieldsNeedAttention": {
+    "message": "$COUNT$ поле (поля) вище потребують вашої уваги.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "selectPlaceholder": {
+    "message": "-- Оберіть--"
+  },
+  "multiSelectPlaceholder": {
+    "message": "-- Введіть для фільтрування --"
+  },
+  "multiSelectLoading": {
+    "message": "Параметри отримання..."
+  },
+  "multiSelectNotFound": {
+    "message": "Нічого не знайдено"
+  },
+  "multiSelectClearAll": {
+    "message": "Очистити все"
+  },
+  "plusNMore": {
+    "message": "+ ще $QUANTITY$",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "submenu": {
+    "message": "Підменю"
+  },
+  "toggleCollapse": {
+    "message": "Згорнути/розгорнути",
+    "description": "Toggling an expand/collapse state."
+  },
+  "aliasDomain": {
+    "message": "Псевдонім домену"
+  },
+  "passwordRepromptDisabledAutofillOnPageLoad": {
+    "message": "Записи з повторним запитом головного пароля не можна автоматично заповнювати під час завантаження сторінки. Автозаповнення на сторінці вимкнено.",
+    "description": "Toast message for describing that master password re-prompt cannot be auto-filled on page load."
+  },
+  "autofillOnPageLoadSetToDefault": {
+    "message": "Автозаповнення на сторінці налаштовано з типовими параметрами.",
+    "description": "Toast message for informing the user that auto-fill on page load has been set to the default setting."
+  },
+  "turnOffMasterPasswordPromptToEditField": {
+    "message": "Вимкніть повторний запит головного пароля, щоб редагувати це поле",
+    "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
   }
 }

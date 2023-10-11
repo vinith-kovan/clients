@@ -1,12 +1,12 @@
 import { map, Observable } from "rxjs";
 
-import { I18nService } from "../../../abstractions/i18n.service";
-import { Utils } from "../../../misc/utils";
+import { I18nService } from "../../../platform/abstractions/i18n.service";
+import { Utils } from "../../../platform/misc/utils";
 import { OrganizationData } from "../../models/data/organization.data";
 import { Organization } from "../../models/domain/organization";
 
 export function canAccessVaultTab(org: Organization): boolean {
-  return org.canViewAssignedCollections || org.canViewAllCollections || org.canManageGroups;
+  return org.canViewAssignedCollections || org.canViewAllCollections;
 }
 
 export function canAccessSettingsTab(org: Organization): boolean {
@@ -15,7 +15,8 @@ export function canAccessSettingsTab(org: Organization): boolean {
     org.canManagePolicies ||
     org.canManageSso ||
     org.canManageScim ||
-    org.canAccessImportExport
+    org.canAccessImportExport ||
+    org.canManageDeviceApprovals
   );
 }
 
@@ -56,12 +57,27 @@ export function canAccessAdmin(i18nService: I18nService) {
   );
 }
 
-export function isNotProviderUser(org: Organization): boolean {
-  return !org.isProviderUser;
+export function canAccessImportExport(i18nService: I18nService) {
+  return map<Organization[], Organization[]>((orgs) =>
+    orgs.filter((org) => org.canAccessImportExport).sort(Utils.getSortFunction(i18nService, "name"))
+  );
+}
+
+/**
+ * Returns `true` if a user is a member of an organization (rather than only being a ProviderUser)
+ * @deprecated Use organizationService.memberOrganizations$ instead
+ */
+export function isMember(org: Organization): boolean {
+  return org.isMember;
 }
 
 export abstract class OrganizationService {
   organizations$: Observable<Organization[]>;
+
+  /**
+   * Organizations that the user is a member of (excludes organizations that they only have access to via a provider)
+   */
+  memberOrganizations$: Observable<Organization[]>;
 
   get$: (id: string) => Observable<Organization | undefined>;
   get: (id: string) => Organization;
@@ -76,6 +92,7 @@ export abstract class OrganizationService {
   hasOrganizations: () => boolean;
 }
 
-export abstract class InternalOrganizationService extends OrganizationService {
+export abstract class InternalOrganizationServiceAbstraction extends OrganizationService {
   replace: (organizations: { [id: string]: OrganizationData }) => Promise<void>;
+  upsert: (OrganizationData: OrganizationData | OrganizationData[]) => Promise<void>;
 }

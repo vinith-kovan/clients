@@ -1,16 +1,18 @@
 import { DatePipe } from "@angular/common";
 import { Component } from "@angular/core";
+import { FormBuilder } from "@angular/forms";
 
 import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/tools/send/add-edit.component";
-import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
+import { DialogService } from "@bitwarden/components";
 
 @Component({
   selector: "app-send-add-edit",
@@ -27,7 +29,9 @@ export class AddEditComponent extends BaseAddEditComponent {
     messagingService: MessagingService,
     policyService: PolicyService,
     logService: LogService,
-    sendApiService: SendApiService
+    sendApiService: SendApiService,
+    dialogService: DialogService,
+    formBuilder: FormBuilder
   ) {
     super(
       i18nService,
@@ -39,14 +43,16 @@ export class AddEditComponent extends BaseAddEditComponent {
       policyService,
       logService,
       stateService,
-      sendApiService
+      sendApiService,
+      dialogService,
+      formBuilder
     );
   }
 
   async refresh() {
-    this.password = null;
     const send = await this.loadSend();
     this.send = await send.decrypt();
+    this.updateFormValues();
     this.hasPassword = this.send.password != null && this.send.password.trim() !== "";
   }
 
@@ -61,5 +67,12 @@ export class AddEditComponent extends BaseAddEditComponent {
       null,
       this.i18nService.t("valueCopied", this.i18nService.t("sendLink"))
     );
+  }
+
+  async resetAndLoad() {
+    this.sendId = null;
+    this.send = null;
+    await this.load();
+    this.updateFormValues();
   }
 }

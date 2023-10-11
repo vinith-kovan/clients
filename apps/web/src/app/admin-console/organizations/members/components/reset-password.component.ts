@@ -11,19 +11,23 @@ import { Subject, takeUntil } from "rxjs";
 import zxcvbn from "zxcvbn";
 
 import { PasswordStrengthComponent } from "@bitwarden/angular/shared/components/password-strength/password-strength.component";
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationUserResetPasswordRequest } from "@bitwarden/common/abstractions/organization-user/requests";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
-import { Utils } from "@bitwarden/common/misc/utils";
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
+import {
+  SymmetricCryptoKey,
+  UserKey,
+} from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { DialogService } from "@bitwarden/components";
 
 @Component({
   selector: "app-reset-password",
@@ -52,7 +56,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     private policyService: PolicyService,
     private cryptoService: CryptoService,
     private logService: LogService,
-    private organizationUserService: OrganizationUserService
+    private organizationUserService: OrganizationUserService,
+    private dialogService: DialogService
   ) {}
 
   async ngOnInit() {
@@ -135,13 +140,12 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     }
 
     if (this.passwordStrengthResult.score < 3) {
-      const result = await this.platformUtilsService.showDialog(
-        this.i18nService.t("weakMasterPasswordDesc"),
-        this.i18nService.t("weakMasterPassword"),
-        this.i18nService.t("yes"),
-        this.i18nService.t("no"),
-        "warning"
-      );
+      const result = await this.dialogService.openSimpleDialog({
+        title: { key: "weakMasterPassword" },
+        content: { key: "weakMasterPasswordDesc" },
+        type: "warning",
+      });
+
       if (!result) {
         return false;
       }
@@ -170,26 +174,32 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
             orgSymKey
           );
 
-          // Decrypt User's Reset Password Key to get EncKey
+          // Decrypt User's Reset Password Key to get UserKey
           const decValue = await this.cryptoService.rsaDecrypt(resetPasswordKey, decPrivateKey);
-          const userEncKey = new SymmetricCryptoKey(decValue);
+          const existingUserKey = new SymmetricCryptoKey(decValue) as UserKey;
 
-          // Create new key and hash new password
-          const newKey = await this.cryptoService.makeKey(
+          // Create new master key and hash new password
+          const newMasterKey = await this.cryptoService.makeMasterKey(
             this.newPassword,
             this.email.trim().toLowerCase(),
             kdfType,
             new KdfConfig(kdfIterations, kdfMemory, kdfParallelism)
           );
-          const newPasswordHash = await this.cryptoService.hashPassword(this.newPassword, newKey);
+          const newMasterKeyHash = await this.cryptoService.hashMasterKey(
+            this.newPassword,
+            newMasterKey
+          );
 
-          // Create new encKey for the User
-          const newEncKey = await this.cryptoService.remakeEncKey(newKey, userEncKey);
+          // Create new encrypted user key for the User
+          const newUserKey = await this.cryptoService.encryptUserKeyWithMasterKey(
+            newMasterKey,
+            existingUserKey
+          );
 
           // Create request
           const request = new OrganizationUserResetPasswordRequest();
-          request.key = newEncKey[1].encryptedString;
-          request.newMasterPasswordHash = newPasswordHash;
+          request.key = newUserKey[1].encryptedString;
+          request.newMasterPasswordHash = newMasterKeyHash;
 
           // Change user's password
           return this.organizationUserService.putOrganizationUserResetPassword(

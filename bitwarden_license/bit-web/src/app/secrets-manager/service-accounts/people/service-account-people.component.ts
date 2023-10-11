@@ -11,9 +11,9 @@ import {
   takeUntil,
 } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
-import { DialogService, SimpleDialogOptions, SimpleDialogType } from "@bitwarden/components";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+import { DialogService, SimpleDialogOptions } from "@bitwarden/components";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
 import {
@@ -130,11 +130,11 @@ export class ServiceAccountPeopleComponent {
       const simpleDialogOpts: SimpleDialogOptions = {
         title: this.i18nService.t("saPeopleWarningTitle"),
         content: this.i18nService.t("saPeopleWarningMessage"),
-        type: SimpleDialogType.WARNING,
-        acceptButtonText: this.i18nService.t("close"),
+        type: "warning",
+        acceptButtonText: { key: "close" },
         cancelButtonText: null,
       };
-      this.dialogService.openSimpleDialog(simpleDialogOpts);
+      this.dialogService.openSimpleDialogRef(simpleDialogOpts);
     } catch (e) {
       this.validationService.showError(e);
     }

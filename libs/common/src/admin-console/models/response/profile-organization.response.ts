@@ -1,4 +1,4 @@
-import { ProductType } from "../../../enums";
+import { ProductType, ProviderType } from "../../../enums";
 import { BaseResponse } from "../../../models/response/base.response";
 import { OrganizationUserStatusType, OrganizationUserType } from "../../enums";
 import { PermissionsApi } from "../api/permissions.api";
@@ -19,6 +19,7 @@ export class ProfileOrganizationResponse extends BaseResponse {
   useCustomPermissions: boolean;
   useResetPassword: boolean;
   useSecretsManager: boolean;
+  usePasswordManager: boolean;
   useActivateAutofillPolicy: boolean;
   selfHost: boolean;
   usersGetPremium: boolean;
@@ -37,6 +38,7 @@ export class ProfileOrganizationResponse extends BaseResponse {
   userId: string;
   providerId: string;
   providerName: string;
+  providerType?: ProviderType;
   familySponsorshipFriendlyName: string;
   familySponsorshipAvailable: boolean;
   planProductType: ProductType;
@@ -64,6 +66,7 @@ export class ProfileOrganizationResponse extends BaseResponse {
     this.useCustomPermissions = this.getResponseProperty("UseCustomPermissions") ?? false;
     this.useResetPassword = this.getResponseProperty("UseResetPassword");
     this.useSecretsManager = this.getResponseProperty("UseSecretsManager");
+    this.usePasswordManager = this.getResponseProperty("UsePasswordManager");
     this.useActivateAutofillPolicy = this.getResponseProperty("UseActivateAutofillPolicy");
     this.selfHost = this.getResponseProperty("SelfHost");
     this.usersGetPremium = this.getResponseProperty("UsersGetPremium");
@@ -82,6 +85,7 @@ export class ProfileOrganizationResponse extends BaseResponse {
     this.userId = this.getResponseProperty("UserId");
     this.providerId = this.getResponseProperty("ProviderId");
     this.providerName = this.getResponseProperty("ProviderName");
+    this.providerType = this.getResponseProperty("ProviderType");
     this.familySponsorshipFriendlyName = this.getResponseProperty("FamilySponsorshipFriendlyName");
     this.familySponsorshipAvailable = this.getResponseProperty("FamilySponsorshipAvailable");
     this.planProductType = this.getResponseProperty("PlanProductType");

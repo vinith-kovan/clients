@@ -475,8 +475,8 @@
   "maxFileSize": {
     "message": "Maksymalny rozmiar pliku to 500 MB."
   },
-  "updateKey": {
-    "message": "Nie możesz używać tej funkcji, dopóki nie zaktualizujesz klucza szyfrowania."
+  "encryptionKeyMigrationRequired": {
+    "message": "Wymagana jest migracja klucza szyfrowania. Zaloguj się przez sejf internetowy, aby zaktualizować klucz szyfrowania."
   },
   "editedFolder": {
     "message": "Folder został zapisany"
@@ -1077,8 +1077,8 @@
   "premiumSignUpStorage": {
     "message": "1 GB miejsca na zaszyfrowane załączniki."
   },
-  "premiumSignUpTwoStep": {
-    "message": "Dodatkowe opcje logowania dwustopniowego, takie jak klucze YubiKey, FIDO U2F oraz Duo."
+  "premiumSignUpTwoStepOptions": {
+    "message": "Własnościowe opcje logowania dwuetapowego, takie jak YubiKey i Duo."
   },
   "premiumSignUpReports": {
     "message": "Raporty bezpieczeństwa haseł, stanu konta i raporty wycieków danych, aby Twoje dane były bezpieczne."
@@ -1392,11 +1392,17 @@
   "unlockWithWindowsHello": {
     "message": "Odblokuj za pomocą Windows Hello"
   },
+  "additionalWindowsHelloSettings": {
+    "message": "Dodatkowe ustawienia Windows Hello"
+  },
   "windowsHelloConsentMessage": {
     "message": "Zweryfikuj dla Bitwarden."
   },
   "unlockWithTouchId": {
     "message": "Odblokuj za pomocą Touch ID"
+  },
+  "additionalTouchIdSettings": {
+    "message": "Dodatkowe ustawienia Touch ID"
   },
   "touchIdConsentMessage": {
     "message": "odblokuj sejf"
@@ -1406,6 +1412,12 @@
   },
   "autoPromptTouchId": {
     "message": "Poproś o Touch ID przy uruchomieniu"
+  },
+  "requirePasswordOnStart": {
+    "message": "Wymagaj hasła lub PIN przy starcie aplikacji"
+  },
+  "recommendedForSecurity": {
+    "message": "Zalecane dla bezpieczeństwa."
   },
   "lockWithMasterPassOnRestart": {
     "message": "Zablokuj hasłem głównym po uruchomieniu ponownym"
@@ -1480,6 +1492,9 @@
   "vaultTimeoutActionLogOutDesc": {
     "message": "Zaloguj się ponownie, aby uzyskać dostęp do sejfu."
   },
+  "unlockMethodNeededToChangeTimeoutActionDesc": {
+    "message": "Ustaw metodę odblokowania, aby zmienić czas blokowania sejfu."
+  },
   "lock": {
     "message": "Zablokuj",
     "description": "Verb form: to make secure or inaccesible by"
@@ -1499,12 +1514,6 @@
   },
   "permanentlyDeletedItem": {
     "message": "Element został trwale usunięty"
-  },
-  "restoreItem": {
-    "message": "Przywróć element"
-  },
-  "restoreItemConfirmation": {
-    "message": "Czy na pewno chcesz przywrócić ten element?"
   },
   "restoredItem": {
     "message": "Element został przywrócony"
@@ -1526,6 +1535,9 @@
   },
   "ssoCompleteRegistration": {
     "message": "W celu zakończenia jednokrotnego logowania SSO, ustaw hasło główne, aby uzyskać dostęp do sejfu."
+  },
+  "currentMasterPass": {
+    "message": "Aktualne hasło główne"
   },
   "newMasterPass": {
     "message": "Nowe hasło główne"
@@ -1843,6 +1855,9 @@
   "updateMasterPasswordWarning": {
     "message": "Hasło główne zostało zmienione przez administratora Twojej organizacji. Musisz je zaktualizować, aby uzyskać dostęp do sejfu. Ta czynność spowoduje wylogowanie z bieżącej sesji, przez co konieczne będzie ponowne zalogowanie się. Aktywne sesje na innych urządzeniach mogą pozostać aktywne przez maksymalnie godzinę."
   },
+  "updateWeakMasterPasswordWarning": {
+    "message": "Twoje hasło główne nie spełnia jednej lub kilku zasad organizacji. Aby uzyskać dostęp do sejfu, musisz teraz zaktualizować swoje hasło główne. Kontynuacja wyloguje Cię z bieżącej sesji, wymagając zalogowania się ponownie. Aktywne sesje na innych urządzeniach mogą pozostać aktywne przez maksymalnie jedną godzinę."
+  },
   "hours": {
     "message": "Godziny"
   },
@@ -1850,7 +1865,7 @@
     "message": "Minuty"
   },
   "vaultTimeoutPolicyInEffect": {
-    "message": "Zasady organizacji mają wpływ czas blokowania sejfu. Maksymalny dozwolony czas wynosi $HOURS$ godz. i $MINUTES$ min.",
+    "message": "Zasady organizacji mają wpływ na czas blokowania sejfu. Maksymalny dozwolony czas wynosi $HOURS$ godz. i $MINUTES$ min.",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -1859,6 +1874,32 @@
       "minutes": {
         "content": "$2",
         "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyWithActionInEffect": {
+    "message": "Zasady organizacji mają wpływ na czas blokowania sejfu. Maksymalny dozwolony czas wynosi $HOURS$ godz. i $MINUTES$ min. Twój czas blokowania sejfu to $ACTION$.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      },
+      "action": {
+        "content": "$3",
+        "example": "Lock"
+      }
+    }
+  },
+  "vaultTimeoutActionPolicyInEffect": {
+    "message": "Zasady organizacji ustawiły czas blokowania sejfu na $ACTION$.",
+    "placeholders": {
+      "action": {
+        "content": "$1",
+        "example": "Lock"
       }
     }
   },
@@ -1943,8 +1984,8 @@
   "exportingPersonalVaultTitle": {
     "message": "Eksportowanie osobistego sejfu"
   },
-  "exportingPersonalVaultDescription": {
-    "message": "Tylko osobiste elementy sejfu powiązane z adresem $EMAIL$ zostaną wyeksportowane. Elementy sejfu należące do organizacji nie będą uwzględnione.",
+  "exportingIndividualVaultDescription": {
+    "message": "Z sejfu zostaną wyeksportowane tylko elementy powiązane z $EMAIL$. Elementy z sejfu organizacji nie będą uwzględnione. Tylko informacje o elemencie zostaną wyeksportowane i nie będą zawierać powiązanych załączników.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -2068,7 +2109,7 @@
   "logInWithAnotherDevice": {
     "message": "Logowanie innym urządzeniem"
   },
-  "logInInitiated": {
+  "loginInitiated": {
     "message": "Logowanie rozpoczęte"
   },
   "notificationSentDevice": {
@@ -2201,5 +2242,181 @@
         "example": "14"
       }
     }
+  },
+  "windowsBiometricUpdateWarning": {
+    "message": "Bitwarden zaleca aktualizację ustawień biometrycznych, aby wymagać hasła głównego (lub kodu PIN) przy pierwszym odblokowaniu. Czy chcesz teraz zaktualizować ustawienia?"
+  },
+  "windowsBiometricUpdateWarningTitle": {
+    "message": "Aktualizacja ustawień zalecanych"
+  },
+  "deviceApprovalRequired": {
+    "message": "Wymagane zatwierdzenie urządzenia. Wybierz opcję zatwierdzenia poniżej:"
+  },
+  "rememberThisDevice": {
+    "message": "Zapamiętaj to urządzenie"
+  },
+  "uncheckIfPublicDevice": {
+    "message": "Odznacz jeśli używasz publicznego urządzenia"
+  },
+  "approveFromYourOtherDevice": {
+    "message": "Zatwierdź z twojego innego urządzenia"
+  },
+  "requestAdminApproval": {
+    "message": "Poproś administratora o zatwierdzenie"
+  },
+  "approveWithMasterPassword": {
+    "message": "Zatwierdź przy użyciu hasła głównego"
+  },
+  "region": {
+    "message": "Region"
+  },
+  "ssoIdentifierRequired": {
+    "message": "Identyfikator organizacji jest wymagany."
+  },
+  "eu": {
+    "message": "UE",
+    "description": "European Union"
+  },
+  "loggingInOn": {
+    "message": "Logowanie do"
+  },
+  "usDomain": {
+    "message": "bitwarden.com"
+  },
+  "euDomain": {
+    "message": "bitwarden.eu"
+  },
+  "selfHostedServer": {
+    "message": "samodzielnie hostowany"
+  },
+  "accessDenied": {
+    "message": "Odmowa dostępu. Nie masz uprawnień do przeglądania tej strony."
+  },
+  "accountSuccessfullyCreated": {
+    "message": "Konto pomyślnie utworzone!"
+  },
+  "adminApprovalRequested": {
+    "message": "Poproszono administratora o zatwierdzenie"
+  },
+  "adminApprovalRequestSentToAdmins": {
+    "message": "Twoja prośba została wysłana do Twojego administratora."
+  },
+  "youWillBeNotifiedOnceApproved": {
+    "message": "Zostaniesz powiadomiony po zatwierdzeniu."
+  },
+  "troubleLoggingIn": {
+    "message": "Problem z zalogowaniem?"
+  },
+  "loginApproved": {
+    "message": "Logowanie zatwierdzone"
+  },
+  "userEmailMissing": {
+    "message": "Brak adresu e-mail użytkownika"
+  },
+  "deviceTrusted": {
+    "message": "Zaufano urządzeniu"
+  },
+  "inputRequired": {
+    "message": "Dane wejściowe są wymagane."
+  },
+  "required": {
+    "message": "wymagane"
+  },
+  "search": {
+    "message": "Szukaj"
+  },
+  "inputMinLength": {
+    "message": "Dane wejściowe muszą zawierać co najmniej $COUNT$ znaki(-ów).",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxLength": {
+    "message": "Dane wejściowe nie mogą przekraczać długości $COUNT$ znaków.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
+  "inputForbiddenCharacters": {
+    "message": "Następujące znaki są niedozwolone: $CHARACTERS$",
+    "placeholders": {
+      "characters": {
+        "content": "$1",
+        "example": "@, #, $, %"
+      }
+    }
+  },
+  "inputMinValue": {
+    "message": "Wartość wejściowa musi wynosić co najmniej $MIN$.",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
+  },
+  "inputMaxValue": {
+    "message": "Wartość wejściowa nie może przekraczać $MAX$.",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "multipleInputEmails": {
+    "message": "Co najmniej 1 e-mail jest nieprawidłowy"
+  },
+  "inputTrimValidator": {
+    "message": "Tekst nie może zawierać tylko spacji.",
+    "description": "Notification to inform the user that a form's input can't contain only whitespace."
+  },
+  "inputEmail": {
+    "message": "Dane wejściowe nie są adresem e-mail."
+  },
+  "fieldsNeedAttention": {
+    "message": "Pola powyżej wymagające Twojej uwagi: $COUNT$.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "selectPlaceholder": {
+    "message": "-- Wybierz --"
+  },
+  "multiSelectPlaceholder": {
+    "message": "-- Pisz, aby filtrować --"
+  },
+  "multiSelectLoading": {
+    "message": "Pobieranie opcji..."
+  },
+  "multiSelectNotFound": {
+    "message": "Nie znaleziono żadnych pozycji"
+  },
+  "multiSelectClearAll": {
+    "message": "Wyczyść wszystko"
+  },
+  "plusNMore": {
+    "message": "+ $QUANTITY$ więcej",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "submenu": {
+    "message": "Podmenu"
+  },
+  "aliasDomain": {
+    "message": "Domena aliasu"
   }
 }

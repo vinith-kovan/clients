@@ -54,6 +54,7 @@
         [cloneableOrganizationCiphers]="true"
         [showAdminActions]="true"
         (onEvent)="onVaultItemsEvent($event)"
+        [showBulkEditCollectionAccess]="showBulkEditCollectionAccess$ | async"
       >
       </app-vault-items>
       <div

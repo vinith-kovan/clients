@@ -11,7 +11,7 @@ class MockPlatformUtilsService implements Partial<PlatformUtilsService> {
 }
 
 export default {
-  title: "Web/Anon Layout",
+  title: "Auth/Anon Layout",
   component: AnonLayoutComponent,
   decorators: [
     componentWrapperDecorator(

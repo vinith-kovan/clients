@@ -139,25 +139,16 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     return this.sub != null ? this.sub.customerDiscount : null;
   }
 
-  discountLineItem(lineItem: BillingSubscriptionItemResponse, percentOff: number) {
-    const discount = lineItem.amount * (percentOff / 100);
-    return {
+  get subscriptionLineItems() {
+    return this.lineItems.map((lineItem: BillingSubscriptionItemResponse) => ({
       name: lineItem.name,
-      amount: lineItem.amount - discount,
+      amount: this.discount(lineItem.amount),
       quantity: lineItem.quantity,
       interval: lineItem.interval,
       sponsoredSubscriptionItem: lineItem.sponsoredSubscriptionItem,
       addonSubscriptionItem: lineItem.addonSubscriptionItem,
       bitwardenProduct: lineItem.bitwardenProduct,
-    };
-  }
-
-  get subscriptionLineItems() {
-    return !this.customerDiscount?.percentOff
-      ? this.lineItems
-      : this.lineItems.map((lineItem: BillingSubscriptionItemResponse) =>
-          this.discountLineItem(lineItem, this.customerDiscount.percentOff)
-        );
+    }));
   }
 
   get isExpired() {
@@ -185,12 +176,21 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     return monthly ? "month" : "year";
   }
 
+  discount = (price: number) => {
+    const discount =
+      !!this.customerDiscount && this.customerDiscount.active
+        ? price * (this.customerDiscount.percentOff / 100)
+        : 0;
+
+    return price - discount;
+  };
+
   get storageGbPrice() {
-    return this.sub.plan.additionalStoragePricePerGb;
+    return this.discount(this.sub.plan.additionalStoragePricePerGb);
   }
 
   get seatPrice() {
-    return this.sub.plan.seatPrice;
+    return this.discount(this.sub.plan.seatPrice);
   }
 
   get seats() {
@@ -201,12 +201,14 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     return {
       seatCount: this.sub.smSeats,
       maxAutoscaleSeats: this.sub.maxAutoscaleSmSeats,
-      seatPrice: this.sub.secretsManagerPlan.seatPrice,
+      seatPrice: this.discount(this.sub.secretsManagerPlan.seatPrice),
       maxAutoscaleServiceAccounts: this.sub.maxAutoscaleSmServiceAccounts,
       additionalServiceAccounts:
         this.sub.smServiceAccounts - this.sub.secretsManagerPlan.baseServiceAccount,
       interval: this.sub.secretsManagerPlan.isAnnual ? "year" : "month",
-      additionalServiceAccountPrice: this.sub.secretsManagerPlan.additionalPricePerServiceAccount,
+      additionalServiceAccountPrice: this.discount(
+        this.sub.secretsManagerPlan.additionalPricePerServiceAccount
+      ),
       baseServiceAccountCount: this.sub.secretsManagerPlan.baseServiceAccount,
     };
   }

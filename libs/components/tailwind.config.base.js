@@ -11,7 +11,7 @@ module.exports = {
   content: [
     "./src/**/*.{html,ts}",
     "../../libs/components/src/**/*.{html,ts}",
-    "../../libs/auth/src/components/**/*.{html,ts}",
+    "../../libs/auth/src/**/*.{html,ts}",
   ],
   safelist: [],
   corePlugins: { preflight: false },

@@ -40,7 +40,7 @@ type Story = StoryObj<AnonLayoutComponent>;
 export const Empty: Story = {
   render: (args) => ({
     props: args,
-    template: /* HTML */ ` <anon-layout title="Page Title"> </anon-layout> `,
+    template: /* HTML */ ` <auth-anon-layout title="Page Title"> </auth-anon-layout> `,
   }),
 };
 
@@ -53,13 +53,13 @@ export const WithContent: Story = {
        * sample and could be replaced with any content and styling
        */
       `
-      <anon-layout title="Page Title">
+      <auth-anon-layout title="Page Title">
         <div
           class="tw-flex tw-h-80 tw-flex-col tw-items-center tw-justify-center tw-bg-secondary-100"
         >
           Sample Projected Content
         </div>
-      </anon-layout>
+      </auth-anon-layout>
     `,
   }),
 };
@@ -70,7 +70,7 @@ export const WithSecondaryContent: Story = {
     template:
       // Notice that slot="secondary" is requred to project any secondary content:
       `
-      <anon-layout title="Page Title">
+      <auth-anon-layout title="Page Title">
         <div
           class="tw-flex tw-h-80 tw-flex-col tw-items-center tw-justify-center tw-bg-secondary-100"
         >
@@ -81,7 +81,7 @@ export const WithSecondaryContent: Story = {
           <h3 class="tw-mb-3 tw-text-xl sm:tw-text-2xl tw-font-semibold">Secondary Content</h3>
           <button bitButton>Perform Action</button>
         </div>
-      </anon-layout>
+      </auth-anon-layout>
     `,
   }),
 };

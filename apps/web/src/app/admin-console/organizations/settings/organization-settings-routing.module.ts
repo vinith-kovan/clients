@@ -45,10 +45,20 @@ const routes: Routes = [
       },
       {
         path: "tools",
-        loadChildren: () =>
-          import("../tools/import-export/org-import-export.module").then(
-            (m) => m.OrganizationImportExportModule
-          ),
+        children: [
+          {
+            path: "import",
+            loadChildren: () =>
+              import("../tools/import/org-import.module").then((m) => m.OrganizationImportModule),
+          },
+          {
+            path: "export",
+            loadChildren: () =>
+              import("../tools/vault-export/org-vault-export.module").then(
+                (m) => m.OrganizationVaultExportModule
+              ),
+          },
+        ],
       },
     ],
   },
@@ -69,6 +79,9 @@ function getSettingsRoute(organization: Organization) {
   }
   if (organization.canManageScim) {
     return "scim";
+  }
+  if (organization.canManageDeviceApprovals) {
+    return "device-approvals";
   }
   return undefined;
 }

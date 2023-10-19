@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
-import { combineLatest, map, Subject, takeUntil } from "rxjs";
+import { combineLatest, map, Observable, Subject, takeUntil } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
@@ -30,11 +30,12 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
   protected loaded = false;
   protected hideMenu = false;
   protected showLeaveOrgOption = false;
+  protected organization: OrganizationFilter;
 
   private destroy$ = new Subject<void>();
 
   constructor(
-    @Inject(OptionsInput) protected organization: OrganizationFilter,
+    @Inject(OptionsInput) protected organization$: Observable<OrganizationFilter>,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
     private apiService: ApiService,
@@ -52,9 +53,14 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
       map((policies) => policies.filter((policy) => policy.type === PolicyType.ResetPassword))
     );
 
-    combineLatest([resetPasswordPolicies$, this.stateService.getAccountDecryptionOptions()])
+    combineLatest([
+      this.organization$,
+      resetPasswordPolicies$,
+      this.stateService.getAccountDecryptionOptions(),
+    ])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([resetPasswordPolicies, decryptionOptions]) => {
+      .subscribe(([organization, resetPasswordPolicies, decryptionOptions]) => {
+        this.organization = organization;
         this.policies = resetPasswordPolicies;
 
         // A user can leave an organization if they are NOT using TDE and Key Connector, or they have a master password.

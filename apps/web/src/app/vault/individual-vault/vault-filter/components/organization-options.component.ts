@@ -26,7 +26,7 @@ import { OrganizationFilter } from "../shared/models/vault-filter.type";
 })
 export class OrganizationOptionsComponent implements OnInit, OnDestroy {
   protected actionPromise: Promise<void | boolean>;
-  protected policies: Policy[];
+  protected resetPasswordPolicy?: Policy | undefined;
   protected loaded = false;
   protected hideMenu = false;
   protected showLeaveOrgOption = false;
@@ -61,7 +61,9 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(([organization, resetPasswordPolicies, decryptionOptions]) => {
         this.organization = organization;
-        this.policies = resetPasswordPolicies;
+        this.resetPasswordPolicy = resetPasswordPolicies.find(
+          (p) => p.organizationId === organization.id
+        );
 
         // A user can leave an organization if they are NOT using TDE and Key Connector, or they have a master password.
         this.showLeaveOrgOption =
@@ -86,9 +88,8 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
 
   allowEnrollmentChanges(org: OrganizationFilter): boolean {
     if (org.usePolicies && org.useResetPassword && org.hasPublicAndPrivateKeys) {
-      const policy = this.policies.find((p) => p.organizationId === org.id);
-      if (policy != null && policy.enabled) {
-        return org.resetPasswordEnrolled && policy.data.autoEnrollEnabled ? false : true;
+      if (this.resetPasswordPolicy != undefined && this.resetPasswordPolicy.enabled) {
+        return !(org.resetPasswordEnrolled && this.resetPasswordPolicy.data.autoEnrollEnabled);
       }
     }
 
@@ -97,14 +98,6 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
 
   showSsoOptions(org: OrganizationFilter) {
     return org.useSso && org.identifier;
-  }
-
-  showEnrolledStatus(org: Organization): boolean {
-    return (
-      org.useResetPassword &&
-      org.resetPasswordEnrolled &&
-      this.policies.some((p) => p.organizationId === org.id && p.enabled)
-    );
   }
 
   async unlinkSso(org: Organization) {
@@ -169,7 +162,7 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
           null,
           this.i18nService.t("withdrawPasswordResetSuccess")
         );
-        this.syncService.fullSync(true);
+        await this.syncService.fullSync(true);
       } catch (e) {
         this.logService.error(e);
       }

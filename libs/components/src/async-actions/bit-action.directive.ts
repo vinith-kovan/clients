@@ -25,7 +25,7 @@ export class BitActionDirective implements OnDestroy {
   readonly loading$ = this._loading$.asObservable();
 
   constructor(
-    private buttonComponent: ButtonLikeAbstraction,
+    @Optional() private buttonComponent: ButtonLikeAbstraction,
     @Optional() private validationService?: ValidationService,
     @Optional() private logService?: LogService
   ) {}
@@ -36,12 +36,14 @@ export class BitActionDirective implements OnDestroy {
 
   set loading(value: boolean) {
     this._loading$.next(value);
-    this.buttonComponent.loading = value;
+    if (this.buttonComponent) {
+      this.buttonComponent.loading = value;
+    }
   }
 
   @HostListener("click")
   protected async onClick() {
-    if (!this.handler || this.loading || this.disabled || this.buttonComponent.disabled) {
+    if (!this.handler || this.loading || this.disabled || this.buttonComponent?.disabled) {
       return;
     }
 

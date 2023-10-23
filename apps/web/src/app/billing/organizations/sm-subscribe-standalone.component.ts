@@ -35,10 +35,10 @@ export class SecretsManagerSubscribeStandaloneComponent {
 
   submit = async () => {
     const request = new SecretsManagerSubscribeRequest();
-    request.additionalSmSeats = this.plan.hasAdditionalSeatsOption
+    request.additionalSmSeats = this.plan.SecretsManager.hasAdditionalSeatsOption
       ? this.formGroup.value.userSeats
       : 0;
-    request.additionalServiceAccounts = this.plan.hasAdditionalServiceAccountOption
+    request.additionalServiceAccounts = this.plan.SecretsManager.hasAdditionalServiceAccountOption
       ? this.formGroup.value.additionalServiceAccounts
       : 0;
 

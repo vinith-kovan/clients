@@ -82,7 +82,7 @@
           [organizations]="allOrganizations"
           [orgVault]="orgVault"
           [groups]="allGroups"
-          [canDeleteCollection]="canDeleteCollection(item.collection) | async"
+          [canDeleteCollection]="canDeleteCollection(item.collection)"
           [canEditCollection]="canEditCollection(item.collection)"
           [checked]="selection.isSelected(item)"
           (checkedToggled)="selection.toggle(item)"

@@ -175,7 +175,7 @@ export class VaultHeaderComponent {
     this.onEditCollection.emit({ tab });
   }
 
-  async canDeleteCollection(): Promise<boolean> {
+  get canDeleteCollection(): boolean {
     // Only delete collections if not deleting "Unassigned"
     if (this.collection === undefined) {
       return false;

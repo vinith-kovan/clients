@@ -5,6 +5,7 @@ import { firstValueFrom } from "rxjs";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { ProductType } from "@bitwarden/common/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -57,6 +58,8 @@ export class VaultHeaderComponent {
   protected CollectionDialogTabType = CollectionDialogTabType;
   protected organizations$ = this.organizationService.organizations$;
 
+  private flexibleCollectionsEnabled: boolean;
+
   constructor(
     private organizationService: OrganizationService,
     private i18nService: I18nService,
@@ -65,6 +68,12 @@ export class VaultHeaderComponent {
     private router: Router,
     private configService: ConfigServiceAbstraction
   ) {}
+
+  async ngOnInit() {
+    this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections
+    );
+  }
 
   get title() {
     if (this.collection !== undefined) {
@@ -166,14 +175,14 @@ export class VaultHeaderComponent {
     this.onEditCollection.emit({ tab });
   }
 
-  async canDeleteCollection(): Promise<boolean> {
+  get canDeleteCollection(): boolean {
     // Only delete collections if not deleting "Unassigned"
     if (this.collection === undefined) {
       return false;
     }
 
     // Otherwise, check if we can delete the specified collection
-    return await this.collection.node.canDelete(this.organization, this.configService);
+    return this.collection.node.canDelete(this.organization, this.flexibleCollectionsEnabled);
   }
 
   deleteCollection() {

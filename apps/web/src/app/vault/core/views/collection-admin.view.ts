@@ -1,6 +1,4 @@
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CollectionAccessDetailsResponse } from "@bitwarden/common/src/vault/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 
@@ -37,11 +35,8 @@ export class CollectionAdminView extends CollectionView {
     return org?.canEditAnyCollection || (org?.canEditAssignedCollections && this.assigned);
   }
 
-  override async canDelete(
-    org: Organization,
-    configService: ConfigServiceAbstraction
-  ): Promise<boolean> {
-    if (await configService.getFeatureFlag(FeatureFlag.FlexibleCollections)) {
+  override canDelete(org: Organization, flexibleCollectionsEnabled: boolean): boolean {
+    if (flexibleCollectionsEnabled) {
       return org?.canDeleteAnyCollection;
     } else {
       return org?.canDeleteAnyCollection || (org?.canDeleteAssignedCollections && this.assigned);

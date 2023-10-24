@@ -2,6 +2,7 @@ import { SelectionModel } from "@angular/cdk/collections";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
@@ -27,6 +28,8 @@ const MaxSelectionCount = 500;
 })
 export class VaultItemsComponent {
   protected RowHeight = RowHeight;
+
+  private flexibleCollectionsEnabled: boolean;
 
   @Input() disabled: boolean;
   @Input() showOwner: boolean;
@@ -70,6 +73,12 @@ export class VaultItemsComponent {
 
   constructor(private configService: ConfigServiceAbstraction) {}
 
+  async ngOnInit() {
+    this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections
+    );
+  }
+
   get showExtraColumn() {
     return this.showCollections || this.showGroups || this.showOwner;
   }
@@ -100,14 +109,14 @@ export class VaultItemsComponent {
     return collection.canEdit(organization);
   }
 
-  protected async canDeleteCollection(collection: CollectionView): Promise<boolean> {
+  protected canDeleteCollection(collection: CollectionView): boolean {
     // Only allow allow deletion if collection editing is enabled and not deleting "Unassigned"
     if (collection.id === Unassigned) {
       return false;
     }
 
     const organization = this.allOrganizations.find((o) => o.id === collection.organizationId);
-    return await collection.canDelete(organization, this.configService);
+    return collection.canDelete(organization, this.flexibleCollectionsEnabled);
   }
 
   protected toggleAll() {

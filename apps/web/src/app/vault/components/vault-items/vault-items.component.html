@@ -80,7 +80,7 @@
           [showGroups]="showGroups"
           [organizations]="allOrganizations"
           [groups]="allGroups"
-          [canDeleteCollection]="canDeleteCollection(item.collection)"
+          [canDeleteCollection]="canDeleteCollection(item.collection) | async"
           [canEditCollection]="canEditCollection(item.collection)"
           [checked]="selection.isSelected(item)"
           (checkedToggled)="selection.toggle(item)"

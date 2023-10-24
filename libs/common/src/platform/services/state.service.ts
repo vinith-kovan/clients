@@ -6,6 +6,8 @@ import { OrganizationData } from "../../admin-console/models/data/organization.d
 import { PolicyData } from "../../admin-console/models/data/policy.data";
 import { ProviderData } from "../../admin-console/models/data/provider.data";
 import { Policy } from "../../admin-console/models/domain/policy";
+import { AccountService } from "../../auth/abstractions/account.service";
+import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-req-storable";
 import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
 import { ForceResetPasswordReason } from "../../auth/models/domain/force-reset-password-reason";
@@ -22,9 +24,12 @@ import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { EventData } from "../../models/data/event.data";
 import { WindowState } from "../../models/domain/window-state";
 import { migrate } from "../../state-migrations";
-import { GeneratedPasswordHistory } from "../../tools/generator/password";
+import { GeneratorOptions } from "../../tools/generator/generator-options";
+import { GeneratedPasswordHistory, PasswordGeneratorOptions } from "../../tools/generator/password";
+import { UsernameGeneratorOptions } from "../../tools/generator/username";
 import { SendData } from "../../tools/send/models/data/send.data";
 import { SendView } from "../../tools/send/models/view/send.view";
+import { UserId } from "../../types/guid";
 import { CipherData } from "../../vault/models/data/cipher.data";
 import { CollectionData } from "../../vault/models/data/collection.data";
 import { FolderData } from "../../vault/models/data/folder.data";
@@ -108,6 +113,7 @@ export class StateService<
     protected memoryStorageService: AbstractMemoryStorageService,
     protected logService: LogService,
     protected stateFactory: StateFactory<TGlobalState, TAccount>,
+    protected accountService: AccountService,
     protected useAccountCache: boolean = true
   ) {
     // If the account gets changed, verify the new account is unlocked
@@ -166,6 +172,8 @@ export class StateService<
       }
       await this.pushAccounts();
       this.activeAccountSubject.next(state.activeUserId);
+      // TODO: Temporary update to avoid routing all account status changes through account service for now.
+      this.accountService.switchAccount(state.activeUserId as UserId);
 
       return state;
     });
@@ -182,6 +190,12 @@ export class StateService<
       state.accounts[userId] = this.createAccount();
       const diskAccount = await this.getAccountFromDisk({ userId: userId });
       state.accounts[userId].profile = diskAccount.profile;
+      // TODO: Temporary update to avoid routing all account status changes through account service for now.
+      this.accountService.addAccount(userId as UserId, {
+        status: AuthenticationStatus.Locked,
+        name: diskAccount.profile.name,
+        email: diskAccount.profile.email,
+      });
       return state;
     });
   }
@@ -196,6 +210,12 @@ export class StateService<
     });
     await this.scaffoldNewAccountStorage(account);
     await this.setLastActive(new Date().getTime(), { userId: account.profile.userId });
+    // TODO: Temporary update to avoid routing all account status changes through account service for now.
+    this.accountService.addAccount(account.profile.userId as UserId, {
+      status: AuthenticationStatus.Locked,
+      name: account.profile.name,
+      email: account.profile.email,
+    });
     await this.setActiveUser(account.profile.userId);
     this.activeAccountSubject.next(account.profile.userId);
   }
@@ -206,6 +226,9 @@ export class StateService<
       state.activeUserId = userId;
       await this.storageService.save(keys.activeUserId, userId);
       this.activeAccountSubject.next(state.activeUserId);
+      // TODO: temporary update to avoid routing all account status changes through account service for now.
+      this.accountService.switchAccount(userId as UserId);
+
       return state;
     });
 
@@ -546,6 +569,9 @@ export class StateService<
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
 
+    const nextStatus = value != null ? AuthenticationStatus.Unlocked : AuthenticationStatus.Locked;
+    this.accountService.setAccountStatus(options.userId as UserId, nextStatus);
+
     if (options.userId == this.activeAccountSubject.getValue()) {
       const nextValue = value != null;
 
@@ -578,6 +604,9 @@ export class StateService<
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
+
+    const nextStatus = value != null ? AuthenticationStatus.Unlocked : AuthenticationStatus.Locked;
+    this.accountService.setAccountStatus(options.userId as UserId, nextStatus);
 
     if (options?.userId == this.activeAccountSubject.getValue()) {
       const nextValue = value != null;
@@ -2367,13 +2396,16 @@ export class StateService<
     );
   }
 
-  async getPasswordGenerationOptions(options?: StorageOptions): Promise<any> {
+  async getPasswordGenerationOptions(options?: StorageOptions): Promise<PasswordGeneratorOptions> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
     )?.settings?.passwordGenerationOptions;
   }
 
-  async setPasswordGenerationOptions(value: any, options?: StorageOptions): Promise<void> {
+  async setPasswordGenerationOptions(
+    value: PasswordGeneratorOptions,
+    options?: StorageOptions
+  ): Promise<void> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
     );
@@ -2384,13 +2416,16 @@ export class StateService<
     );
   }
 
-  async getUsernameGenerationOptions(options?: StorageOptions): Promise<any> {
+  async getUsernameGenerationOptions(options?: StorageOptions): Promise<UsernameGeneratorOptions> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
     )?.settings?.usernameGenerationOptions;
   }
 
-  async setUsernameGenerationOptions(value: any, options?: StorageOptions): Promise<void> {
+  async setUsernameGenerationOptions(
+    value: UsernameGeneratorOptions,
+    options?: StorageOptions
+  ): Promise<void> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
     );
@@ -2401,13 +2436,13 @@ export class StateService<
     );
   }
 
-  async getGeneratorOptions(options?: StorageOptions): Promise<any> {
+  async getGeneratorOptions(options?: StorageOptions): Promise<GeneratorOptions> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
     )?.settings?.generatorOptions;
   }
 
-  async setGeneratorOptions(value: any, options?: StorageOptions): Promise<void> {
+  async setGeneratorOptions(value: GeneratorOptions, options?: StorageOptions): Promise<void> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
     );
@@ -3054,7 +3089,6 @@ export class StateService<
       this.reconcileOptions({ userId: account.profile.userId }, await this.defaultOnDiskOptions())
     );
   }
-  //
 
   protected async pushAccounts(): Promise<void> {
     await this.pruneInMemoryAccounts();
@@ -3172,6 +3206,8 @@ export class StateService<
 
       return state;
     });
+    // TODO: Invert this logic, we should remove accounts based on logged out emit
+    this.accountService.setAccountStatus(userId as UserId, AuthenticationStatus.LoggedOut);
   }
 
   protected async pruneInMemoryAccounts() {

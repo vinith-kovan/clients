@@ -178,10 +178,6 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
             collections = collections.filter((c) => collectionIds.includes(c.id));
           }
 
-          if (collectionIds) {
-            collections = collections.filter((c) => collectionIds.includes(c.id));
-          }
-
           if (this.params.collectionId) {
             this.collection = collections.find((c) => c.id === this.collectionId);
             this.nestOptions = collections.filter((c) => c.id !== this.collectionId);

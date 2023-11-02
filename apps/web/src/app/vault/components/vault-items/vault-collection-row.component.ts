@@ -35,7 +35,6 @@ export class VaultCollectionRowComponent implements OnInit {
   @Input() organizations: Organization[];
   @Input() groups: GroupView[];
   @Input() orgVault: boolean;
-  @Input() isOrgOwner: boolean;
   permissionText: string;
 
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
@@ -49,7 +48,7 @@ export class VaultCollectionRowComponent implements OnInit {
   // https://github.com/bitwarden/clients/pull/6417
 
   ngOnInit() {
-    if (this.collection.manage || this.isOrgOwner) {
+    if (this.collection.manage) {
       this.permissionText = "canManage";
     } else if (!this.collection.readOnly) {
       this.permissionText = "canEdit";

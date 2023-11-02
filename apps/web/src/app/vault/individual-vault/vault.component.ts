@@ -103,6 +103,12 @@ import { FolderFilter, OrganizationFilter } from "./vault-filter/shared/models/v
 const BroadcasterSubscriptionId = "VaultComponent";
 const SearchTextDebounceInterval = 200;
 
+type VaultOnboardingTasks = {
+  createAccount: boolean;
+  importData: boolean;
+  installExtension: boolean;
+};
+
 @Component({
   selector: "app-vault",
   templateUrl: "vault.component.html",
@@ -143,6 +149,13 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected selectedCollection: TreeNode<CollectionView> | undefined;
   protected canCreateCollections = false;
   protected currentSearchText$: Observable<string>;
+  protected importBasic = true;
+  protected onboardingTasks$: BehaviorSubject<VaultOnboardingTasks> =
+    new BehaviorSubject<VaultOnboardingTasks>({
+      createAccount: true,
+      importData: false,
+      installExtension: false,
+    });
 
   private searchText$ = new Subject<string>();
   private refresh$ = new BehaviorSubject<void>(null);
@@ -180,6 +193,23 @@ export class VaultComponent implements OnInit, OnDestroy {
     private userVerificationService: UserVerificationService
   ) {}
 
+  createNewItem() {
+    // console.log('%c you clicked create new item', 'color: red');
+  }
+
+  hideOnboarding() {
+    // console.log('%c you have clicked hide onboarding', 'color: blue')
+  }
+
+  navigateToImport() {
+    // console.log('%c navigating to import','color: green');
+    this.router.navigate(["tools/import"]);
+  }
+
+  setOnboardingTasks(tasks: VaultOnboardingTasks) {
+    this.onboardingTasks$.next(tasks);
+  }
+
   async ngOnInit() {
     this.showBrowserOutdated = window.navigator.userAgent.indexOf("MSIE") !== -1;
     this.trashCleanupWarning = this.i18nService.t(
@@ -212,6 +242,12 @@ export class VaultComponent implements OnInit, OnDestroy {
         } else if (params.action === "edit") {
           await this.editCipher(cipherView);
         }
+
+        this.setOnboardingTasks({
+          createAccount: true,
+          importData: this.ciphers.length > 0,
+          installExtension: false,
+        });
       }),
       shareReplay({ refCount: true, bufferSize: 1 })
     );

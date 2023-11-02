@@ -1317,6 +1317,15 @@
   "importData": {
     "message": "Import data"
   },
+  "importDataDetailsBasicA": {
+    "message": "If you don't have any data to import, you can create a "
+  },
+  "importDataDetailsBasicB": {
+    "message": "new item here."
+  },
+  "importDataDetailsIndividual": {
+    "message": "Once an administrator confirms your organization membership, you will receive an email and may import items."
+  },
   "importError": {
     "message": "Import error"
   },
@@ -6780,6 +6789,9 @@
     "message": "SDK",
     "description": "Software Development Kit"
   },
+  "createAnAccount": {
+    "message": "Create an account"
+  },
   "createSecret": {
     "message": "Create a secret"
   },
@@ -7285,5 +7297,11 @@
   "seeDetailedInstructions": {
     "message": "See detailed instructions on our help site at",
     "description": "This is followed a by a hyperlink to the help website."
+  },
+  "installBrowserExtension": {
+    "message": "Install browser extension"
+  },
+  "installBrowserExtensionDetails": {
+    "message": "Use the extension to quickly save logins and auto-fill forms without opening the web app."
   }
 }

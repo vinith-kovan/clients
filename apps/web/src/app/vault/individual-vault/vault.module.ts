@@ -15,6 +15,7 @@ import { VaultFilterModule } from "./vault-filter/vault-filter.module";
 import { VaultHeaderComponent } from "./vault-header/vault-header.component";
 import { VaultRoutingModule } from "./vault-routing.module";
 import { VaultComponent } from "./vault.component";
+import { OnboardingModule } from "../../shared/components/onboarding/onboarding.module";
 
 @NgModule({
   imports: [
@@ -30,6 +31,7 @@ import { VaultComponent } from "./vault.component";
     BreadcrumbsModule,
     VaultItemsModule,
     CollectionDialogModule,
+    OnboardingModule,
   ],
   declarations: [VaultComponent, VaultHeaderComponent],
   exports: [VaultComponent],

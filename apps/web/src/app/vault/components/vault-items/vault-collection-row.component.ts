@@ -7,7 +7,7 @@ import {
   OnInit,
   Output,
 } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
@@ -42,10 +42,7 @@ export class VaultCollectionRowComponent implements OnInit {
   @Input() checked: boolean;
   @Output() checkedToggled = new EventEmitter<void>();
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
-
-  // we will have more permissions when this PR is merged
-  // https://github.com/bitwarden/clients/pull/6417
+  constructor(private router: Router) {}
 
   ngOnInit() {
     if (this.collection.manage) {

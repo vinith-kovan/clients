@@ -9,7 +9,6 @@ import {
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { OrganizationUserType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 
@@ -36,6 +35,7 @@ export class VaultCollectionRowComponent implements OnInit {
   @Input() organizations: Organization[];
   @Input() groups: GroupView[];
   @Input() orgVault: boolean;
+  @Input() isOrgOwner: boolean;
   permissionText: string;
 
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
@@ -49,16 +49,12 @@ export class VaultCollectionRowComponent implements OnInit {
   // https://github.com/bitwarden/clients/pull/6417
 
   ngOnInit() {
-    // change this to use new collection data
-    if (
-      this.organizations[0].type === OrganizationUserType.Owner ||
-      this.organizations[0].type === OrganizationUserType.Manager
-    ) {
-      this.permissionText = "canManage"; // how to bring this from json. maybe set the json key
-    } else if (this.organizations[0].type === OrganizationUserType.Admin) {
+    if (this.collection.manage || this.isOrgOwner) {
+      this.permissionText = "canManage";
+    } else if (!this.collection.readOnly) {
       this.permissionText = "canEdit";
     } else {
-      this.permissionText = "-";
+      this.permissionText = null;
     }
   }
 

@@ -110,7 +110,7 @@ export class VaultItemsComponent {
     return collection.canEdit(organization);
   }
 
-  protected canDeleteCollection(collection: CollectionView): boolean {
+  protected async canDeleteCollection(collection: CollectionView): Promise<boolean> {
     // Only allow allow deletion if collection editing is enabled and not deleting "Unassigned"
     if (collection.id === Unassigned) {
       return false;

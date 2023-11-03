@@ -2,7 +2,9 @@ import { Component, InjectionToken, Injector, Input, OnDestroy, OnInit } from "@
 import { Subject, takeUntil } from "rxjs";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ITreeNodeObject, TreeNode } from "@bitwarden/common/models/domain/tree-node";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 
 import { VaultFilterService } from "../../services/abstractions/vault-filter.service";
 import { VaultFilterSection, VaultFilterType } from "../models/vault-filter-section.type";
@@ -13,6 +15,11 @@ import { VaultFilter } from "../models/vault-filter.model";
   templateUrl: "vault-filter-section.component.html",
 })
 export class VaultFilterSectionComponent implements OnInit, OnDestroy {
+  protected flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
+    FeatureFlag.FlexibleCollections,
+    false
+  );
+
   private destroy$ = new Subject<void>();
 
   @Input() activeFilter: VaultFilter;
@@ -24,7 +31,11 @@ export class VaultFilterSectionComponent implements OnInit, OnDestroy {
 
   private injectors = new Map<string, Injector>();
 
-  constructor(private vaultFilterService: VaultFilterService, private injector: Injector) {
+  constructor(
+    private vaultFilterService: VaultFilterService,
+    private injector: Injector,
+    private configService: ConfigServiceAbstraction
+  ) {
     this.vaultFilterService.collapsedFilterNodes$
       .pipe(takeUntil(this.destroy$))
       .subscribe((nodes) => {

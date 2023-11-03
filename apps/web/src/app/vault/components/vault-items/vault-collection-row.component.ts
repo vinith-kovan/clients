@@ -35,6 +35,7 @@ export class VaultCollectionRowComponent implements OnInit {
   @Input() organizations: Organization[];
   @Input() groups: GroupView[];
   @Input() orgVault: boolean;
+  @Input() flexibleCollectionsEnabled: boolean;
   permissionText: string;
 
   @Output() onEvent = new EventEmitter<VaultItemEvent>();

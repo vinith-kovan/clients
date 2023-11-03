@@ -29,7 +29,7 @@ const MaxSelectionCount = 500;
 export class VaultItemsComponent {
   protected RowHeight = RowHeight;
 
-  private flexibleCollectionsEnabled: boolean;
+  protected flexibleCollectionsEnabled: boolean;
 
   @Input() disabled: boolean;
   @Input() showOwner: boolean;

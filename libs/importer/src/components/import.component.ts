@@ -16,6 +16,7 @@ import { filter, map, takeUntil } from "rxjs/operators";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import {
+  canAccessImport,
   canAccessImportExport,
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -23,6 +24,8 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { ClientType } from "@bitwarden/common/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -99,6 +102,11 @@ import { ImportLastPassComponent } from "./lastpass";
   ],
 })
 export class ImportComponent implements OnInit, OnDestroy {
+  protected flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
+    FeatureFlag.FlexibleCollections,
+    false
+  );
+
   featuredImportOptions: ImportOption[];
   importOptions: ImportOption[];
   format: ImportType = null;
@@ -178,7 +186,8 @@ export class ImportComponent implements OnInit, OnDestroy {
     protected folderService: FolderService,
     protected collectionService: CollectionService,
     protected organizationService: OrganizationService,
-    protected formBuilder: FormBuilder
+    protected formBuilder: FormBuilder,
+    private configService: ConfigServiceAbstraction
   ) {}
 
   protected get importBlockedByPolicy(): boolean {
@@ -201,7 +210,9 @@ export class ImportComponent implements OnInit, OnDestroy {
 
     this.organizations$ = concat(
       this.organizationService.memberOrganizations$.pipe(
-        canAccessImportExport(this.i18nService),
+        this.flexibleCollectionsEnabled$
+          ? canAccessImport(this.i18nService)
+          : canAccessImportExport(this.i18nService),
         map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name")))
       )
     );
@@ -245,7 +256,13 @@ export class ImportComponent implements OnInit, OnDestroy {
             this.collections$ = Utils.asyncToObservable(() =>
               this.collectionService
                 .getAllDecrypted()
-                .then((c) => c.filter((c2) => c2.organizationId === value))
+                .then((c) =>
+                  c.filter(
+                    (c2) =>
+                      c2.organizationId === value &&
+                      (!this.flexibleCollectionsEnabled$ || c2.manage)
+                  )
+                )
             );
           }
         });

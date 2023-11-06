@@ -2862,6 +2862,28 @@ export class StateService<
     );
   }
 
+  async getVaultOnboardingTasks(
+    options?: StorageOptions
+  ): Promise<Record<string, Record<string, boolean>>> {
+    return (
+      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
+    )?.settings?.vaultOnboardingTasks;
+  }
+
+  async setVaultOnboardingTasks(
+    value: Record<string, Record<string, boolean>>,
+    options?: StorageOptions
+  ): Promise<void> {
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
+    );
+    account.settings.vaultOnboardingTasks = value;
+    return await this.saveAccount(
+      account,
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
+    );
+  }
+
   protected async getGlobals(options: StorageOptions): Promise<TGlobalState> {
     let globals: TGlobalState;
     if (this.useMemory(options.storageLocation)) {

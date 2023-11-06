@@ -1,7 +1,10 @@
 <div class="container page-content">
   <ng-container *ngIf="onboardingTasks$ | async as onboardingTasks">
     <onboarding [title]="'getStarted' | i18n" (dismiss)="hideOnboarding()">
-      <onboarding-task [title]="'createAnAccount' | i18n" [completed]="true"></onboarding-task>
+      <onboarding-task
+        [title]="'createAnAccount' | i18n"
+        [completed]="onboardingTasks.createAccount"
+      ></onboarding-task>
       <onboarding-task
         [title]="'importData' | i18n"
         icon="bwi-save"

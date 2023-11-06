@@ -530,4 +530,11 @@ export abstract class StateService<T extends Account = Account> {
     value: Record<string, Record<string, boolean>>,
     options?: StorageOptions
   ) => Promise<void>;
+  getVaultOnboardingTasks: (
+    options?: StorageOptions
+  ) => Promise<Record<string, Record<string, boolean>>>;
+  setVaultOnboardingTasks: (
+    value: Record<string, Record<string, boolean>>,
+    options?: StorageOptions
+  ) => Promise<void>;
 }

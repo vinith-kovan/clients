@@ -165,6 +165,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected isFirefox: boolean;
   protected isSafari: boolean;
   protected extensionUrl: string;
+  protected showOnboarding = true;
 
   private searchText$ = new Subject<string>();
   private refresh$ = new BehaviorSubject<void>(null);
@@ -206,12 +207,31 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.isSafari = platformUtilsService.isSafari();
   }
 
-  createNewItem() {
-    // console.log('%c you clicked create new item', 'color: red');
+  protected hideOnboarding() {
+    this.showOnboarding = false;
+    this.saveCompletedTasks({
+      createAccount: true,
+      importData: true,
+      installExtension: true,
+    });
   }
 
-  hideOnboarding() {
-    // console.log('%c you have clicked hide onboarding', 'color: blue')
+  private async saveCompletedTasks(
+    vaultTasks: VaultOnboardingTasks
+  ): Promise<VaultOnboardingTasks> {
+    // const prevTasks = ((await this.stateService.getVaultOnboardingTasks()) || {});
+
+    const updatedTasks = {
+      createAccount: false,
+      importData: false,
+      installExtension: false,
+      ...vaultTasks,
+    };
+    this.stateService.setVaultOnboardingTasks({
+      currentStatus: updatedTasks,
+    });
+
+    return updatedTasks as VaultOnboardingTasks;
   }
 
   navigateToImport() {
@@ -234,8 +254,10 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
   }
 
-  setOnboardingTasks(tasks: VaultOnboardingTasks) {
+  async setOnboardingTasks(tasks: VaultOnboardingTasks) {
     this.onboardingTasks$.next(tasks);
+
+    await this.saveCompletedTasks(tasks);
   }
 
   async ngOnInit() {

@@ -1,17 +1,16 @@
 <div class="container page-content">
-  {{ onboardingTasks$ | async }}
   <ng-container *ngIf="onboardingTasks$ | async as onboardingTasks">
     <onboarding [title]="'getStarted' | i18n" (dismiss)="hideOnboarding()">
-      <onboarding-task [title]="'createAnAccount' | i18n" [completed]="true"> </onboarding-task>
+      <onboarding-task [title]="'createAnAccount' | i18n" [completed]="true"></onboarding-task>
       <onboarding-task
         [title]="'importData' | i18n"
         icon="bwi-save"
         (click)="navigateToImport()"
         [completed]="onboardingTasks.importData"
       >
-        <ng-container *ngIf="this.ciphers.length === 0">
+        <ng-container *ngIf="onboardingTasks.importData">
           <!-- use for basic flow -->
-          <span class="tw-pl-1" *ngIf="importBasic">
+          <span class="tw-pl-1" *ngIf="importBasic && !onboardingTasks.importData">
             {{ "importDataDetailsBasicA" | i18n }}
             <a (click)="addCipher()" class="link">
               {{ "importDataDetailsBasicB" | i18n }}
@@ -24,7 +23,11 @@
         </ng-container>
       </onboarding-task>
       <!-- how to add click here to link to extension install of the browser they are using -->
-      <onboarding-task [title]="'installBrowserExtension' | i18n" icon="bwi-cli">
+      <onboarding-task
+        [title]="'installBrowserExtension' | i18n"
+        icon="bwi-cli"
+        (click)="navigateToExtension()"
+      >
         <span class="tw-pl-1">
           {{ "installBrowserExtensionDetails" | i18n }}
         </span>

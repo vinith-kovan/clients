@@ -161,6 +161,10 @@ export class VaultComponent implements OnInit, OnDestroy {
     FeatureFlag.BulkCollectionAccess,
     false
   );
+  protected isChrome: boolean;
+  protected isFirefox: boolean;
+  protected isSafari: boolean;
+  protected extensionUrl: string;
 
   private searchText$ = new Subject<string>();
   private refresh$ = new BehaviorSubject<void>(null);
@@ -196,7 +200,11 @@ export class VaultComponent implements OnInit, OnDestroy {
     private configService: ConfigServiceAbstraction,
     private apiService: ApiService,
     private userVerificationService: UserVerificationService
-  ) {}
+  ) {
+    this.isChrome = platformUtilsService.isChrome();
+    this.isFirefox = platformUtilsService.isFirefox();
+    this.isSafari = platformUtilsService.isSafari();
+  }
 
   createNewItem() {
     // console.log('%c you clicked create new item', 'color: red');
@@ -207,8 +215,23 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   navigateToImport() {
-    // console.log('%c navigating to import','color: green');
     this.router.navigate(["tools/import"]);
+  }
+
+  navigateToExtension() {
+    window.open(this.extensionUrl, "_blank");
+  }
+
+  setInstallExtLink() {
+    if (this.isChrome) {
+      this.extensionUrl =
+        "https://chrome.google.com/webstore/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb";
+    } else if (this.isFirefox) {
+      this.extensionUrl =
+        "https://addons.mozilla.org/en-US/firefox/addon/bitwarden-password-manager/";
+    } else if (this.isSafari) {
+      this.extensionUrl = "https://apps.apple.com/us/app/bitwarden/id1352778147?mt=12";
+    }
   }
 
   setOnboardingTasks(tasks: VaultOnboardingTasks) {
@@ -247,12 +270,6 @@ export class VaultComponent implements OnInit, OnDestroy {
         } else if (params.action === "edit") {
           await this.editCipher(cipherView);
         }
-
-        this.setOnboardingTasks({
-          createAccount: true,
-          importData: this.ciphers.length > 0,
-          installExtension: false,
-        });
       }),
       shareReplay({ refCount: true, bufferSize: 1 })
     );
@@ -442,6 +459,13 @@ export class VaultComponent implements OnInit, OnDestroy {
 
           this.performingInitialLoad = false;
           this.refreshing = false;
+          this.setOnboardingTasks({
+            createAccount: true,
+            importData: this.ciphers.length > 0,
+            installExtension: false,
+          });
+
+          this.setInstallExtLink();
         }
       );
   }

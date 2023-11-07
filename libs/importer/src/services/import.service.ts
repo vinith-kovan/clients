@@ -148,9 +148,8 @@ export class ImportService implements ImportServiceAbstraction {
     }
 
     if (organizationId && Utils.isNullOrWhitespace(selectedImportTarget) && !isUserAdmin) {
-      const hasUnassignedCollections = importResult.ciphers.some(
-        (c) => !Array.isArray(c.collectionIds) || c.collectionIds.length == 0
-      );
+      const hasUnassignedCollections =
+        importResult.collectionRelationships.length < importResult.ciphers.length;
       if (hasUnassignedCollections) {
         throw new Error(this.i18nService.t("importUnassignedItemsError"));
       }

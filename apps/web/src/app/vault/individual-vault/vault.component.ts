@@ -26,6 +26,7 @@ import {
   switchMap,
   takeUntil,
   tap,
+  take,
 } from "rxjs/operators";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
@@ -35,6 +36,8 @@ import { EventCollectionService } from "@bitwarden/common/abstractions/event/eve
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
@@ -150,7 +153,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected selectedCollection: TreeNode<CollectionView> | undefined;
   protected canCreateCollections = false;
   protected currentSearchText$: Observable<string>;
-  protected importBasic = true;
   protected onboardingTasks$: BehaviorSubject<VaultOnboardingTasks> =
     new BehaviorSubject<VaultOnboardingTasks>({
       createAccount: true,
@@ -165,6 +167,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected isFirefox: boolean;
   protected isSafari: boolean;
   protected extensionUrl: string;
+  protected isIndividualPolicyVault: boolean;
   protected showOnboarding = true;
 
   private searchText$ = new Subject<string>();
@@ -200,7 +203,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     private searchPipe: SearchPipe,
     private configService: ConfigServiceAbstraction,
     private apiService: ApiService,
-    private userVerificationService: UserVerificationService
+    private userVerificationService: UserVerificationService,
+    private policyService: PolicyService
   ) {
     this.isChrome = platformUtilsService.isChrome();
     this.isFirefox = platformUtilsService.isFirefox();
@@ -216,22 +220,24 @@ export class VaultComponent implements OnInit, OnDestroy {
     });
   }
 
-  private async saveCompletedTasks(
-    vaultTasks: VaultOnboardingTasks
-  ): Promise<VaultOnboardingTasks> {
-    // const prevTasks = ((await this.stateService.getVaultOnboardingTasks()) || {});
+  private async saveCompletedTasks(vaultTasks: VaultOnboardingTasks) {
+    const prevTasks = (await this.stateService.getVaultOnboardingTasks()) || {};
+    const updatedTasks = Object.fromEntries(
+      Object.entries(vaultTasks).filter(([_k, v]) => v === true)
+    );
 
-    const updatedTasks = {
+    const combinedTasks = {
       createAccount: false,
       importData: false,
       installExtension: false,
-      ...vaultTasks,
+      ...prevTasks.currentStatus,
+      ...updatedTasks,
     };
     this.stateService.setVaultOnboardingTasks({
-      currentStatus: updatedTasks,
+      currentStatus: combinedTasks,
     });
 
-    return updatedTasks as VaultOnboardingTasks;
+    this.onboardingTasks$.next(combinedTasks);
   }
 
   navigateToImport() {
@@ -252,6 +258,12 @@ export class VaultComponent implements OnInit, OnDestroy {
     } else if (this.isSafari) {
       this.extensionUrl = "https://apps.apple.com/us/app/bitwarden/id1352778147?mt=12";
     }
+  }
+
+  async individualVaultPolicyCheck() {
+    this.isIndividualPolicyVault = await firstValueFrom(
+      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
+    );
   }
 
   async setOnboardingTasks(tasks: VaultOnboardingTasks) {
@@ -481,6 +493,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
           this.performingInitialLoad = false;
           this.refreshing = false;
+          this.individualVaultPolicyCheck();
           this.setOnboardingTasks({
             createAccount: true,
             importData: this.ciphers.length > 0,
@@ -490,6 +503,9 @@ export class VaultComponent implements OnInit, OnDestroy {
           this.setInstallExtLink();
         }
       );
+    this.onboardingTasks$.pipe(take(1), takeUntil(this.destroy$)).subscribe((tasks) => {
+      this.showOnboarding = Object.values(tasks).includes(false);
+    });
   }
 
   get isShowingCards() {

@@ -137,6 +137,7 @@ export class ImportComponent implements OnInit, OnDestroy {
   protected destroy$ = new Subject<void>();
 
   private _importBlockedByPolicy = false;
+  private _isFromAC = false;
 
   formGroup = this.formBuilder.group({
     vaultSelector: [
@@ -238,6 +239,8 @@ export class ImportComponent implements OnInit, OnDestroy {
           .getAllDecrypted()
           .then((c) => c.filter((c2) => c2.organizationId === this.organizationId))
       );
+
+      this._isFromAC = true;
     } else {
       // Filter out the `no folder`-item from folderViews$
       this.folders$ = this.folderService.folderViews$.pipe(
@@ -378,7 +381,7 @@ export class ImportComponent implements OnInit, OnDestroy {
         fileContents,
         this.organizationId,
         this.formGroup.controls.targetSelector.value,
-        this.isUserAdmin(this.organizationId)
+        this.isUserAdmin(this.organizationId) && this._isFromAC
       );
 
       //No errors, display success message

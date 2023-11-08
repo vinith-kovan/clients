@@ -241,7 +241,12 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   navigateToImport() {
-    this.router.navigate(["tools/import"]);
+    const onboardingTasks = this.onboardingTasks$.getValue();
+    const importData = onboardingTasks.importData;
+
+    if (!this.isIndividualPolicyVault && !importData) {
+      this.router.navigate(["tools/import"]);
+    }
   }
 
   navigateToExtension() {

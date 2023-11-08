@@ -6,30 +6,22 @@
         [completed]="onboardingTasks.createAccount"
       ></onboarding-task>
 
-      <!-- basic flow -->
       <onboarding-task
         [title]="'importData' | i18n"
         icon="bwi-save"
         (click)="navigateToImport()"
         [completed]="onboardingTasks.importData"
-        *ngIf="!isIndividualPolicyVault && !onboardingTasks.importData"
       >
-        <span class="tw-pl-1">
+        <!-- basic flow -->
+        <span class="tw-pl-1" *ngIf="!isIndividualPolicyVault && !onboardingTasks.importData">
           {{ "importDataDetailsBasicA" | i18n }}
           <a (click)="addCipher()" class="link">
             {{ "importDataDetailsBasicB" | i18n }}
           </a>
         </span>
-      </onboarding-task>
 
-      <!-- basic flow individual vault policy -->
-      <onboarding-task
-        [title]="'importData' | i18n"
-        icon="bwi-save"
-        [completed]="onboardingTasks.importData"
-        *ngIf="isIndividualPolicyVault"
-      >
-        <span class="tw-pl-1">
+        <!-- basic flow individual vault policy -->
+        <span class="tw-pl-1" *ngIf="isIndividualPolicyVault">
           {{ "importDataDetailsIndividual" | i18n }}
         </span>
       </onboarding-task>

@@ -26,7 +26,6 @@ import {
   switchMap,
   takeUntil,
   tap,
-  take,
 } from "rxjs/operators";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
@@ -168,7 +167,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected isSafari: boolean;
   protected extensionUrl: string;
   protected isIndividualPolicyVault: boolean;
-  protected showOnboarding = true;
+  protected showOnboarding = false;
 
   private searchText$ = new Subject<string>();
   private refresh$ = new BehaviorSubject<void>(null);
@@ -220,24 +219,29 @@ export class VaultComponent implements OnInit, OnDestroy {
     });
   }
 
+  async setOnboardingTasks() {
+    const tasksInStorage: any = (await this.stateService.getVaultOnboardingTasks()) || null;
+    if (tasksInStorage == null) {
+      const freshStart = {
+        createAccount: true,
+        importData: this.ciphers?.length > 0,
+        installExtension: false,
+      };
+      this.onboardingTasks$.next(freshStart);
+      this.stateService.setVaultOnboardingTasks({
+        currentStatus: freshStart,
+      });
+      this.showOnboarding = true;
+    } else if (tasksInStorage && tasksInStorage.currentStatus) {
+      this.showOnboarding = Object.values(tasksInStorage.currentStatus).includes(false);
+    }
+  }
+
   private async saveCompletedTasks(vaultTasks: VaultOnboardingTasks) {
-    const prevTasks = (await this.stateService.getVaultOnboardingTasks()) || {};
-    const updatedTasks = Object.fromEntries(
-      Object.entries(vaultTasks).filter(([_k, v]) => v === true)
-    );
-
-    const combinedTasks = {
-      createAccount: false,
-      importData: false,
-      installExtension: false,
-      ...prevTasks.currentStatus,
-      ...updatedTasks,
-    };
+    this.onboardingTasks$.next(vaultTasks);
     this.stateService.setVaultOnboardingTasks({
-      currentStatus: combinedTasks,
+      currentStatus: vaultTasks,
     });
-
-    this.onboardingTasks$.next(combinedTasks);
   }
 
   navigateToImport() {
@@ -271,13 +275,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     );
   }
 
-  async setOnboardingTasks(tasks: VaultOnboardingTasks) {
-    this.onboardingTasks$.next(tasks);
-
-    await this.saveCompletedTasks(tasks);
-  }
-
   async ngOnInit() {
+    this.setOnboardingTasks();
     this.showBrowserOutdated = window.navigator.userAgent.indexOf("MSIE") !== -1;
     this.trashCleanupWarning = this.i18nService.t(
       this.platformUtilsService.isSelfHost()
@@ -498,18 +497,20 @@ export class VaultComponent implements OnInit, OnDestroy {
 
           this.performingInitialLoad = false;
           this.refreshing = false;
-          this.individualVaultPolicyCheck();
-          this.setOnboardingTasks({
-            createAccount: true,
-            importData: this.ciphers.length > 0,
-            installExtension: false,
-          });
+          if (this.showOnboarding) {
+            this.individualVaultPolicyCheck();
+            this.saveCompletedTasks({
+              createAccount: true,
+              importData: this.ciphers.length > 0,
+              installExtension: false,
+            });
 
-          this.setInstallExtLink();
+            this.setInstallExtLink();
+          }
         }
       );
-    this.onboardingTasks$.pipe(take(1), takeUntil(this.destroy$)).subscribe((tasks) => {
-      this.showOnboarding = Object.values(tasks).includes(false);
+    this.onboardingTasks$.pipe(takeUntil(this.destroy$)).subscribe((tasks: any) => {
+      this.showOnboarding = tasks !== null ? Object.values(tasks).includes(false) : true;
     });
   }
 

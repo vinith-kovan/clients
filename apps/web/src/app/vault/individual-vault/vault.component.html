@@ -1,5 +1,5 @@
 <div class="container page-content">
-  <ng-container *ngIf="onboardingTasks$ | async as onboardingTasks">
+  <div *ngIf="onboardingTasks$ | async as onboardingTasks" class="tw-mb-6">
     <onboarding *ngIf="showOnboarding" [title]="'getStarted' | i18n" (dismiss)="hideOnboarding()">
       <onboarding-task
         [title]="'createAnAccount' | i18n"
@@ -36,7 +36,7 @@
         </span>
       </onboarding-task>
     </onboarding>
-  </ng-container>
+  </div>
   <!-- ============================================================================================ -->
   <div class="row">
     <div class="col-3">

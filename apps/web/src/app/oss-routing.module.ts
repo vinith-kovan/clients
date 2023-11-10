@@ -17,19 +17,18 @@ import { AcceptFamilySponsorshipComponent } from "./admin-console/organizations/
 import { FamiliesForEnterpriseSetupComponent } from "./admin-console/organizations/sponsorships/families-for-enterprise-setup.component";
 import { CreateOrganizationComponent } from "./admin-console/settings/create-organization.component";
 import { SponsoredFamiliesComponent } from "./admin-console/settings/sponsored-families.component";
-import { AcceptEmergencyComponent } from "./auth/accept-emergency.component";
 import { AcceptOrganizationComponent } from "./auth/accept-organization.component";
 import { HintComponent } from "./auth/hint.component";
 import { LockComponent } from "./auth/lock.component";
 import { LoginDecryptionOptionsComponent } from "./auth/login/login-decryption-options/login-decryption-options.component";
-import { LoginWithDeviceComponent } from "./auth/login/login-with-device.component";
+import { LoginViaAuthRequestComponent } from "./auth/login/login-via-auth-request.component";
 import { LoginComponent } from "./auth/login/login.component";
 import { RecoverDeleteComponent } from "./auth/recover-delete.component";
 import { RecoverTwoFactorComponent } from "./auth/recover-two-factor.component";
 import { RemovePasswordComponent } from "./auth/remove-password.component";
 import { SetPasswordComponent } from "./auth/set-password.component";
-import { EmergencyAccessViewComponent } from "./auth/settings/emergency-access/emergency-access-view.component";
 import { EmergencyAccessComponent } from "./auth/settings/emergency-access/emergency-access.component";
+import { EmergencyAccessViewComponent } from "./auth/settings/emergency-access/view/emergency-access-view.component";
 import { SsoComponent } from "./auth/sso.component";
 import { TrialInitiationComponent } from "./auth/trial-initiation/trial-initiation.component";
 import { TwoFactorComponent } from "./auth/two-factor.component";
@@ -66,13 +65,13 @@ const routes: Routes = [
       { path: "login", component: LoginComponent, canActivate: [UnauthGuard] },
       {
         path: "login-with-device",
-        component: LoginWithDeviceComponent,
+        component: LoginViaAuthRequestComponent,
         data: { titleId: "loginWithDevice" },
       },
       {
         path: "admin-approval-requested",
-        component: LoginWithDeviceComponent,
-        data: { titleId: "loginWithDevice" },
+        component: LoginViaAuthRequestComponent,
+        data: { titleId: "adminApprovalRequested" },
       },
       { path: "2fa", component: TwoFactorComponent, canActivate: [UnauthGuard] },
       {
@@ -124,8 +123,11 @@ const routes: Routes = [
       },
       {
         path: "accept-emergency",
-        component: AcceptEmergencyComponent,
         data: { titleId: "acceptEmergency", doNotSaveUrl: false },
+        loadComponent: () =>
+          import("./auth/emergency-access/accept/accept-emergency.component").then(
+            (mod) => mod.AcceptEmergencyComponent
+          ),
       },
       {
         path: "accept-families-for-enterprise",

@@ -2771,6 +2771,9 @@
   "webVault": {
     "message": "Web vault"
   },
+  "cli": {
+    "message": "CLI"
+  },
   "bitWebVault": {
     "message": "Bitwarden Web vault"
   },
@@ -7404,5 +7407,8 @@
   },
   "installBrowserExtensionDetails": {
     "message": "Use the extension to quickly save logins and auto-fill forms without opening the web app."
+  },
+  "projectAccessUpdated": {
+    "message": "Project access updated"
   }
 }

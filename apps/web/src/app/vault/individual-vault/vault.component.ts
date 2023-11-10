@@ -35,8 +35,6 @@ import { EventCollectionService } from "@bitwarden/common/abstractions/event/eve
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
@@ -102,15 +100,10 @@ import {
 } from "./vault-filter/shared/models/routed-vault-filter.model";
 import { VaultFilter } from "./vault-filter/shared/models/vault-filter.model";
 import { FolderFilter, OrganizationFilter } from "./vault-filter/shared/models/vault-filter.type";
+import { VaultOnboardingTasks } from "./vault-onboarding/vault-onboarding.component";
 
 const BroadcasterSubscriptionId = "VaultComponent";
 const SearchTextDebounceInterval = 200;
-
-type VaultOnboardingTasks = {
-  createAccount: boolean;
-  importData: boolean;
-  installExtension: boolean;
-};
 
 @Component({
   selector: "app-vault",
@@ -152,21 +145,17 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected selectedCollection: TreeNode<CollectionView> | undefined;
   protected canCreateCollections = false;
   protected currentSearchText$: Observable<string>;
+  protected showBulkCollectionAccess$ = this.configService.getFeatureFlag$(
+    FeatureFlag.BulkCollectionAccess,
+    false
+  );
   protected onboardingTasks$: BehaviorSubject<VaultOnboardingTasks> =
     new BehaviorSubject<VaultOnboardingTasks>({
       createAccount: true,
       importData: false,
       installExtension: false,
     });
-  protected showBulkCollectionAccess$ = this.configService.getFeatureFlag$(
-    FeatureFlag.BulkCollectionAccess,
-    false
-  );
-  protected isChrome: boolean;
-  protected isFirefox: boolean;
-  protected isSafari: boolean;
-  protected extensionUrl: string;
-  protected isIndividualPolicyVault: boolean;
+
   protected showOnboarding = false;
 
   private searchText$ = new Subject<string>();
@@ -202,13 +191,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     private searchPipe: SearchPipe,
     private configService: ConfigServiceAbstraction,
     private apiService: ApiService,
-    private userVerificationService: UserVerificationService,
-    private policyService: PolicyService
-  ) {
-    this.isChrome = platformUtilsService.isChrome();
-    this.isFirefox = platformUtilsService.isFirefox();
-    this.isSafari = platformUtilsService.isSafari();
-  }
+    private userVerificationService: UserVerificationService
+  ) {}
 
   protected hideOnboarding() {
     this.showOnboarding = false;
@@ -242,37 +226,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.stateService.setVaultOnboardingTasks({
       currentStatus: vaultTasks,
     });
-  }
-
-  navigateToImport() {
-    const onboardingTasks = this.onboardingTasks$.getValue();
-    const importData = onboardingTasks.importData;
-
-    if (!this.isIndividualPolicyVault && !importData) {
-      this.router.navigate(["tools/import"]);
-    }
-  }
-
-  navigateToExtension() {
-    window.open(this.extensionUrl, "_blank");
-  }
-
-  setInstallExtLink() {
-    if (this.isChrome) {
-      this.extensionUrl =
-        "https://chrome.google.com/webstore/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb";
-    } else if (this.isFirefox) {
-      this.extensionUrl =
-        "https://addons.mozilla.org/en-US/firefox/addon/bitwarden-password-manager/";
-    } else if (this.isSafari) {
-      this.extensionUrl = "https://apps.apple.com/us/app/bitwarden/id1352778147?mt=12";
-    }
-  }
-
-  async individualVaultPolicyCheck() {
-    this.isIndividualPolicyVault = await firstValueFrom(
-      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
-    );
   }
 
   async ngOnInit() {
@@ -498,14 +451,11 @@ export class VaultComponent implements OnInit, OnDestroy {
           this.performingInitialLoad = false;
           this.refreshing = false;
           if (this.showOnboarding) {
-            this.individualVaultPolicyCheck();
             this.saveCompletedTasks({
               createAccount: true,
               importData: this.ciphers.length > 0,
               installExtension: false,
             });
-
-            this.setInstallExtLink();
           }
         }
       );

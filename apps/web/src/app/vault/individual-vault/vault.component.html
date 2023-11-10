@@ -1,43 +1,13 @@
 <div class="container page-content">
-  <div *ngIf="onboardingTasks$ | async as onboardingTasks" class="tw-mb-6">
-    <onboarding *ngIf="showOnboarding" [title]="'getStarted' | i18n" (dismiss)="hideOnboarding()">
-      <onboarding-task
-        [title]="'createAnAccount' | i18n"
-        [completed]="onboardingTasks.createAccount"
-      ></onboarding-task>
-
-      <onboarding-task
-        [title]="'importData' | i18n"
-        icon="bwi-save"
-        (click)="navigateToImport()"
-        [completed]="onboardingTasks.importData"
-      >
-        <!-- basic flow -->
-        <span class="tw-pl-1" *ngIf="!isIndividualPolicyVault && !onboardingTasks.importData">
-          {{ "importDataDetailsBasicA" | i18n }}
-          <a (click)="addCipher()" class="link">
-            {{ "importDataDetailsBasicB" | i18n }}
-          </a>
-        </span>
-
-        <!-- basic flow individual vault policy -->
-        <span class="tw-pl-1" *ngIf="isIndividualPolicyVault">
-          {{ "importDataDetailsIndividual" | i18n }}
-        </span>
-      </onboarding-task>
-
-      <onboarding-task
-        [title]="'installBrowserExtension' | i18n"
-        icon="bwi-cli"
-        (click)="navigateToExtension()"
-      >
-        <span class="tw-pl-1">
-          {{ "installBrowserExtensionDetails" | i18n }}
-        </span>
-      </onboarding-task>
-    </onboarding>
+  <div *ngIf="showOnboarding" class="tw-mb-6">
+    <app-vault-onboarding
+      [onboardingTasks]="onboardingTasks$ | async"
+      (onHideOnboarding)="hideOnboarding()"
+      (onAddCipher)="addCipher()"
+    >
+    </app-vault-onboarding>
   </div>
-  <!-- ============================================================================================ -->
+
   <div class="row">
     <div class="col-3">
       <div class="groupings">

@@ -1,0 +1,37 @@
+<onboarding
+  *ngIf="onboardingTasks"
+  [title]="'getStarted' | i18n"
+  (dismiss)="emitToHideOnboarding()"
+>
+  <onboarding-task
+    [title]="'createAnAccount' | i18n"
+    [completed]="onboardingTasks.createAccount"
+  ></onboarding-task>
+
+  <onboarding-task
+    [title]="'importData' | i18n"
+    icon="bwi-save"
+    (click)="navigateToImport()"
+    [completed]="onboardingTasks.importData"
+  >
+    <span class="tw-pl-1" *ngIf="!isIndividualPolicyVault && !onboardingTasks.importData">
+      {{ "importDataDetailsBasicA" | i18n }}
+      <a (click)="emitToAddCipher()" class="link">
+        {{ "importDataDetailsBasicB" | i18n }}
+      </a>
+    </span>
+    <span class="tw-pl-1" *ngIf="isIndividualPolicyVault">
+      {{ "importDataDetailsIndividual" | i18n }}
+    </span>
+  </onboarding-task>
+
+  <onboarding-task
+    [title]="'installBrowserExtension' | i18n"
+    icon="bwi-cli"
+    (click)="navigateToExtension()"
+  >
+    <span class="tw-pl-1">
+      {{ "installBrowserExtensionDetails" | i18n }}
+    </span>
+  </onboarding-task>
+</onboarding>

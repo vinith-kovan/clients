@@ -2,9 +2,11 @@ import { CommonModule } from "@angular/common";
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnDestroy,
   OnInit,
+  Optional,
   Output,
   ViewChild,
 } from "@angular/core";
@@ -53,6 +55,7 @@ import { ImportOption, ImportResult, ImportType } from "../models";
 import {
   ImportApiService,
   ImportApiServiceAbstraction,
+  ImportCollectionServiceAbstraction,
   ImportService,
   ImportServiceAbstraction,
 } from "../services";
@@ -185,10 +188,13 @@ export class ImportComponent implements OnInit, OnDestroy {
     protected syncService: SyncService,
     protected dialogService: DialogService,
     protected folderService: FolderService,
-    protected collectionService: CollectionService,
     protected organizationService: OrganizationService,
+    protected collectionService: CollectionService,
     protected formBuilder: FormBuilder,
-    private configService: ConfigServiceAbstraction
+    private configService: ConfigServiceAbstraction,
+    @Inject(ImportCollectionServiceAbstraction)
+    @Optional()
+    protected importCollectionService: ImportCollectionServiceAbstraction
   ) {}
 
   protected get importBlockedByPolicy(): boolean {
@@ -230,14 +236,12 @@ export class ImportComponent implements OnInit, OnDestroy {
         }
       });
 
-    if (this.organizationId) {
+    if (this.organizationId && this.isUserAdmin(this.organizationId)) {
       this.formGroup.controls.vaultSelector.patchValue(this.organizationId);
       this.formGroup.controls.vaultSelector.disable();
 
       this.collections$ = Utils.asyncToObservable(() =>
-        this.collectionService
-          .getAllDecrypted()
-          .then((c) => c.filter((c2) => c2.organizationId === this.organizationId))
+        this.importCollectionService.getAllAdminCollections(this.organizationId)
       );
 
       this._isFromAC = true;

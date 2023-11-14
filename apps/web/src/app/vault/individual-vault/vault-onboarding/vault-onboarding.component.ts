@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { Router } from "@angular/router";
-import { firstValueFrom } from "rxjs";
+import { Subject, first, takeUntil } from "rxjs";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
@@ -17,21 +17,23 @@ export type VaultOnboardingTasks = {
   templateUrl: "vault-onboarding.component.html",
   providers: [],
 })
+// eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class VaultOnboardingComponent implements OnInit {
   @Input() onboardingTasks: VaultOnboardingTasks;
   @Output() onHideOnboarding = new EventEmitter<void>();
   @Output() onAddCipher = new EventEmitter<void>();
 
-  protected isChrome: boolean;
-  protected isFirefox: boolean;
-  protected isSafari: boolean;
-  protected extensionUrl: string;
-  protected isIndividualPolicyVault: boolean;
+  isChrome: boolean;
+  isFirefox: boolean;
+  isSafari: boolean;
+  extensionUrl: string;
+  isIndividualPolicyVault: boolean;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private platformUtilsService: PlatformUtilsService,
-    private policyService: PolicyService,
-    private router: Router
+    protected policyService: PolicyService,
+    protected router: Router
   ) {
     this.isChrome = platformUtilsService.isChrome();
     this.isFirefox = platformUtilsService.isFirefox();
@@ -43,10 +45,13 @@ export class VaultOnboardingComponent implements OnInit {
     this.individualVaultPolicyCheck();
   }
 
-  async individualVaultPolicyCheck() {
-    this.isIndividualPolicyVault = await firstValueFrom(
-      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
-    );
+  individualVaultPolicyCheck() {
+    this.policyService
+      .policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
+      .pipe(first(), takeUntil(this.destroy$))
+      .subscribe((data) => {
+        this.isIndividualPolicyVault = data;
+      });
   }
 
   emitToAddCipher() {

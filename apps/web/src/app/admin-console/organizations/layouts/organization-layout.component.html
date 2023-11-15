@@ -1,4 +1,4 @@
-<app-navbar></app-navbar>
+<!--
 <div class="org-nav !tw-h-32" *ngIf="organization$ | async as organization">
   <div class="container d-flex">
     <div class="d-flex flex-column">
@@ -29,6 +29,43 @@
     </div>
   </div>
 </div>
+-->
 
-<router-outlet></router-outlet>
-<app-footer></app-footer>
+<bit-layout>
+  <nav slot="sidebar" *ngIf="organization$ | async as organization">
+    <a routerLink="." class="tw-m-5 tw-mt-7 tw-block">
+      <bit-icon [icon]="logo"></bit-icon>
+    </a>
+    <!--<org-switcher [filter]="orgFilter" [hideNewButton]="true"></org-switcher>-->
+    <bit-nav-item icon="bwi-collection" [text]="'vault' | i18n" route="vault"></bit-nav-item>
+    <bit-nav-item icon="bwi-user" [text]="'members' | i18n" route="members"></bit-nav-item>
+    <bit-nav-item icon="bwi-user" [text]="'groups' | i18n" route="groups"></bit-nav-item>
+    <bit-nav-item
+      icon="bwi-user"
+      [text]="getReportTabLabel(organization) | i18n"
+      route="reporting"
+    ></bit-nav-item>
+    <bit-nav-item icon="bwi-user" [text]="'billing' | i18n" route="billing"></bit-nav-item>
+
+    <bit-nav-group icon="bwi-cog" [text]="'settings' | i18n">
+      <bit-nav-item [text]="'organizationInfo' | i18n" route="settings/account"></bit-nav-item>
+      <bit-nav-item [text]="'policies' | i18n" route="settings/policies"></bit-nav-item>
+      <bit-nav-item [text]="'twoStepLogin' | i18n" route="settings/two-factor"></bit-nav-item>
+      <bit-nav-item [text]="'importData' | i18n" route="settings/tools/import"></bit-nav-item>
+      <bit-nav-item [text]="'exportVault' | i18n" route="settings/tools/export"></bit-nav-item>
+      <bit-nav-item
+        [text]="'domainVerification' | i18n"
+        route="settings/domain-verification"
+      ></bit-nav-item>
+      <bit-nav-item [text]="'singleSignOn' | i18n" route="settings/sso"></bit-nav-item>
+      <bit-nav-item
+        [text]="'deviceApprovals' | i18n"
+        route="settings/device-approvals"
+        *ngIf="organization.canManageDeviceApprovals"
+      ></bit-nav-item>
+      <bit-nav-item [text]="'scim' | i18n" route="settings/scim"></bit-nav-item>
+    </bit-nav-group>
+  </nav>
+
+  <router-outlet></router-outlet>
+</bit-layout>

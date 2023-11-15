@@ -1,7 +1,9 @@
 import { NgModule } from "@angular/core";
 
 import { PasswordCalloutComponent } from "@bitwarden/auth";
+import { LayoutComponent, NavigationModule } from "@bitwarden/components";
 
+import { HeaderComponent } from "../../../../../bitwarden_license/bit-web/src/app/secrets-manager/shared/header.component";
 import { OrganizationSwitcherComponent } from "../admin-console/components/organization-switcher.component";
 import { OrganizationLayoutComponent } from "../admin-console/organizations/layouts/organization-layout.component";
 import { EventsComponent as OrgEventsComponent } from "../admin-console/organizations/manage/events.component";
@@ -104,6 +106,8 @@ import { SharedModule } from "./shared.module";
     EnvironmentSelectorModule,
     AccountFingerprintComponent,
     PasswordCalloutComponent,
+    LayoutComponent,
+    NavigationModule,
   ],
   declarations: [
     AcceptFamilySponsorshipComponent,
@@ -186,6 +190,7 @@ import { SharedModule } from "./shared.module";
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
     LowKdfComponent,
+    HeaderComponent,
   ],
   exports: [
     UserVerificationModule,
@@ -270,6 +275,7 @@ import { SharedModule } from "./shared.module";
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
     LowKdfComponent,
+    HeaderComponent,
   ],
 })
 export class LooseComponentsModule {}

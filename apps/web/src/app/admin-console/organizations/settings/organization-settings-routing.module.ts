@@ -9,13 +9,11 @@ import { OrganizationRedirectGuard } from "../../organizations/guards/org-redire
 import { PoliciesComponent } from "../../organizations/policies";
 
 import { AccountComponent } from "./account.component";
-import { SettingsComponent } from "./settings.component";
 import { TwoFactorSetupComponent } from "./two-factor-setup.component";
 
 const routes: Routes = [
   {
     path: "",
-    component: SettingsComponent,
     canActivate: [OrganizationPermissionsGuard],
     data: { organizationPermissions: canAccessSettingsTab },
     children: [

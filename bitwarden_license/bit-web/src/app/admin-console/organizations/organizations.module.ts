@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 
-import { NoItemsModule } from "@bitwarden/components";
+import { LayoutComponent, NoItemsModule } from "@bitwarden/components";
 import { SharedModule } from "@bitwarden/web-vault/app/shared/shared.module";
 
 import { SsoComponent } from "../../auth/sso/sso.component";

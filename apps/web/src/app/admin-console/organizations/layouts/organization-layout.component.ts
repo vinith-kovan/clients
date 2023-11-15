@@ -14,11 +14,14 @@ import {
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 
+import { AdminConsoleLogo } from "../../icons/admin-console-logo";
 @Component({
   selector: "app-organization-layout",
   templateUrl: "organization-layout.component.html",
 })
 export class OrganizationLayoutComponent implements OnInit, OnDestroy {
+  protected readonly logo = AdminConsoleLogo;
+
   organization$: Observable<Organization>;
 
   private _destroy = new Subject<void>();

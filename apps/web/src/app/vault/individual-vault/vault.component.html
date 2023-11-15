@@ -1,5 +1,5 @@
 <div class="container page-content">
-  <div *ngIf="showOnboarding" class="tw-mb-6">
+  <div *ngIf="showOnboarding && showOnboardingAccess$ | async" class="tw-mb-6">
     <app-vault-onboarding
       [onboardingTasks]="onboardingTasks$ | async"
       (onHideOnboarding)="hideOnboarding()"

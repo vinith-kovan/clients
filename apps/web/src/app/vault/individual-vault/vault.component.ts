@@ -149,6 +149,10 @@ export class VaultComponent implements OnInit, OnDestroy {
     FeatureFlag.BulkCollectionAccess,
     false
   );
+  protected showOnboardingAccess$ = this.configService.getFeatureFlag$(
+    FeatureFlag.VaultOnboarding,
+    false
+  );
   protected onboardingTasks$: BehaviorSubject<VaultOnboardingTasks> =
     new BehaviorSubject<VaultOnboardingTasks>({
       createAccount: true,

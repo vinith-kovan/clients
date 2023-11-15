@@ -111,7 +111,7 @@
                 appStopClick
                 appA11yTitle="{{ 'toggleVisibility' | i18n }}"
                 (click)="togglePassword()"
-                *ngIf="cipher.viewPassword"
+                *ngIf="cipher.viewPassword && cipher.login.password"
                 [attr.aria-pressed]="showPassword"
               >
                 <i
@@ -168,7 +168,7 @@
                 appStopClick
                 appA11yTitle="{{ 'toggleVisibility' | i18n }}"
                 (click)="toggleTotpSeed()"
-                *ngIf="cipher.viewPassword"
+                *ngIf="cipher.viewPassword && cipher.login.totp"
                 [attr.aria-pressed]="showTotpSeed"
               >
                 <i

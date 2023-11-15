@@ -205,6 +205,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
     if (!this.allowPersonal && this.organizationId == undefined) {
       this.organizationId = this.defaultOwnerId;
     }
+
+    this.resetMaskState();
   }
 
   async load() {
@@ -252,9 +254,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
         this.cipher.reprompt = CipherRepromptType.None;
       }
 
-      // toggle masks off for maskable login properties with no value on load
-      this.showTotpSeed = !this.cipher.login?.password;
-      this.showPassword = !this.cipher.login?.totp;
+      this.resetMaskState();
     }
 
     if (this.cipher != null && (!this.editMode || loadedAddEditCipherInfo || this.cloneMode)) {
@@ -494,10 +494,18 @@ export class AddEditComponent implements OnInit, OnDestroy {
     return true;
   }
 
+  resetMaskState() {
+    // toggle masks off for maskable login properties with no value on init/load
+    this.showTotpSeed = !this.cipher.login?.totp;
+    this.showPassword = !this.cipher.login?.password;
+  }
+
   togglePassword() {
     this.showPassword = !this.showPassword;
-    document.getElementById("loginPassword").focus();
+
     if (this.editMode && this.showPassword) {
+      document.getElementById("loginPassword")?.focus();
+
       this.eventCollectionService.collect(
         EventType.Cipher_ClientToggledPasswordVisible,
         this.cipherId
@@ -507,8 +515,10 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   toggleTotpSeed() {
     this.showTotpSeed = !this.showTotpSeed;
-    document.getElementById("loginTotp").focus();
+
     if (this.editMode && this.showTotpSeed) {
+      document.getElementById("loginTotp")?.focus();
+
       this.eventCollectionService.collect(
         EventType.Cipher_ClientToggledTOTPSeedVisible,
         this.cipherId

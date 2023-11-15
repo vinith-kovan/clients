@@ -105,10 +105,7 @@ import { ImportLastPassComponent } from "./lastpass";
   ],
 })
 export class ImportComponent implements OnInit, OnDestroy {
-  protected flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
-    FeatureFlag.FlexibleCollections,
-    false
-  );
+  protected flexibleCollectionsEnabled: boolean;
 
   featuredImportOptions: ImportOption[];
   importOptions: ImportOption[];
@@ -212,12 +209,16 @@ export class ImportComponent implements OnInit, OnDestroy {
     return this.showLastPassToggle && this.formGroup.controls.lastPassType.value === "direct";
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections
+    );
+
     this.setImportOptions();
 
     this.organizations$ = concat(
       this.organizationService.memberOrganizations$.pipe(
-        this.flexibleCollectionsEnabled$
+        this.flexibleCollectionsEnabled
           ? canAccessImport(this.i18nService)
           : canAccessImportExport(this.i18nService),
         map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name")))
@@ -266,8 +267,7 @@ export class ImportComponent implements OnInit, OnDestroy {
                 .then((c) =>
                   c.filter(
                     (c2) =>
-                      c2.organizationId === value &&
-                      (!this.flexibleCollectionsEnabled$ || c2.manage)
+                      c2.organizationId === value && (!this.flexibleCollectionsEnabled || c2.manage)
                   )
                 )
             );

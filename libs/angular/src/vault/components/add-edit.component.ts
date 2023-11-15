@@ -251,6 +251,10 @@ export class AddEditComponent implements OnInit, OnDestroy {
         this.cipher.secureNote.type = SecureNoteType.Generic;
         this.cipher.reprompt = CipherRepromptType.None;
       }
+
+      // toggle masks off for maskable login properties with no value on load
+      this.showTotpSeed = !this.cipher.login?.password;
+      this.showPassword = !this.cipher.login?.totp;
     }
 
     if (this.cipher != null && (!this.editMode || loadedAddEditCipherInfo || this.cloneMode)) {

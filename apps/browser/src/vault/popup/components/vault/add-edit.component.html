@@ -80,7 +80,7 @@
                 [readonly]="!cipher.edit && editMode"
               />
               <div *ngIf="!showPassword" class="monospaced">
-                {{ cipher.login.maskedPassword }}
+                {{ cipher.login.maskedPassword || "••••••••" }}
               </div>
             </div>
             <div class="action-buttons">
@@ -158,7 +158,7 @@
                 [readonly]="!cipher.edit && editMode"
               />
               <div *ngIf="!showTotpSeed" class="monospaced">
-                {{ cipher.login.maskedPassword }}
+                {{ cipher.login.maskedPassword || "••••••••" }}
               </div>
             </div>
             <div class="action-buttons">

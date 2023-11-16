@@ -1,43 +1,41 @@
-<sm-header></sm-header>
+<sm-header>
+  <bit-search
+    class="tw-grow"
+    [(ngModel)]="searchText"
+    [placeholder]="'searchMembers' | i18n"
+  ></bit-search>
+
+  <button type="button" bitButton buttonType="primary" (click)="invite()">
+    <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>
+    {{ "inviteMember" | i18n }}
+  </button>
+</sm-header>
 
 <div class="tw-mb-4 tw-flex tw-flex-col tw-space-y-4">
-  <div class="tw-flex tw-items-center tw-justify-end tw-space-x-3">
-    <bit-toggle-group
-      [selected]="status"
-      (selectedChange)="filter($event)"
-      [attr.aria-label]="'memberStatusFilter' | i18n"
-    >
-      <bit-toggle [value]="null">
-        {{ "all" | i18n }} <span bitBadge badgeType="info" *ngIf="allCount">{{ allCount }}</span>
-      </bit-toggle>
+  <bit-toggle-group
+    [selected]="status"
+    (selectedChange)="filter($event)"
+    [attr.aria-label]="'memberStatusFilter' | i18n"
+  >
+    <bit-toggle [value]="null">
+      {{ "all" | i18n }} <span bitBadge badgeType="info" *ngIf="allCount">{{ allCount }}</span>
+    </bit-toggle>
 
-      <bit-toggle [value]="userStatusType.Invited">
-        {{ "invited" | i18n }}
-        <span bitBadge badgeType="info" *ngIf="invitedCount">{{ invitedCount }}</span>
-      </bit-toggle>
+    <bit-toggle [value]="userStatusType.Invited">
+      {{ "invited" | i18n }}
+      <span bitBadge badgeType="info" *ngIf="invitedCount">{{ invitedCount }}</span>
+    </bit-toggle>
 
-      <bit-toggle [value]="userStatusType.Accepted">
-        {{ "needsConfirmation" | i18n }}
-        <span bitBadge badgeType="info" *ngIf="acceptedCount">{{ acceptedCount }}</span>
-      </bit-toggle>
+    <bit-toggle [value]="userStatusType.Accepted">
+      {{ "needsConfirmation" | i18n }}
+      <span bitBadge badgeType="info" *ngIf="acceptedCount">{{ acceptedCount }}</span>
+    </bit-toggle>
 
-      <bit-toggle [value]="userStatusType.Revoked">
-        {{ "revoked" | i18n }}
-        <span bitBadge badgeType="info" *ngIf="revokedCount">{{ revokedCount }}</span>
-      </bit-toggle>
-    </bit-toggle-group>
-
-    <bit-search
-      class="tw-grow"
-      [(ngModel)]="searchText"
-      [placeholder]="'searchMembers' | i18n"
-    ></bit-search>
-
-    <button type="button" bitButton buttonType="primary" (click)="invite()">
-      <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>
-      {{ "inviteMember" | i18n }}
-    </button>
-  </div>
+    <bit-toggle [value]="userStatusType.Revoked">
+      {{ "revoked" | i18n }}
+      <span bitBadge badgeType="info" *ngIf="revokedCount">{{ revokedCount }}</span>
+    </bit-toggle>
+  </bit-toggle-group>
 </div>
 <ng-container *ngIf="loading">
   <i

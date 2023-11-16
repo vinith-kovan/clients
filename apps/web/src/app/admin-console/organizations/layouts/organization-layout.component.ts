@@ -13,6 +13,7 @@ import {
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
 import { AdminConsoleLogo } from "../../icons/admin-console-logo";
 @Component({
@@ -21,6 +22,7 @@ import { AdminConsoleLogo } from "../../icons/admin-console-logo";
 })
 export class OrganizationLayoutComponent implements OnInit, OnDestroy {
   protected readonly logo = AdminConsoleLogo;
+  protected readonly FeatureFlag = FeatureFlag;
 
   organization$: Observable<Organization>;
 

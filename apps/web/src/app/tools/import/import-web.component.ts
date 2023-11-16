@@ -1,11 +1,6 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { firstValueFrom } from "rxjs";
+import { Component } from "@angular/core";
+import { Router } from "@angular/router";
 
-import {
-  OrganizationService,
-  canAccessVaultTab,
-} from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { ImportComponent } from "@bitwarden/importer/ui";
 
 import { SharedModule } from "../../shared";
@@ -15,37 +10,16 @@ import { SharedModule } from "../../shared";
   standalone: true,
   imports: [SharedModule, ImportComponent],
 })
-export class ImportWebComponent implements OnInit {
-  protected routeOrgId: string = null;
+export class ImportWebComponent {
   protected loading = false;
   protected disabled = false;
 
-  constructor(
-    private route: ActivatedRoute,
-    private organizationService: OrganizationService,
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    this.routeOrgId = this.route.snapshot.paramMap.get("organizationId");
-  }
+  constructor(private router: Router) {}
 
   /**
    * Callback that is called after a successful import.
    */
   protected async onSuccessfulImport(organizationId: string): Promise<void> {
-    if (!organizationId) {
-      await this.router.navigate(["vault"]);
-      return;
-    }
-
-    const organization = await firstValueFrom(this.organizationService.get$(organizationId));
-    if (organization == null) {
-      return;
-    }
-
-    if (canAccessVaultTab(organization)) {
-      await this.router.navigate(["organizations", organizationId, "vault"]);
-    }
+    await this.router.navigate(["vault"]);
   }
 }

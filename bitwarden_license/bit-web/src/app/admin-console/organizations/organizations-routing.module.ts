@@ -33,6 +33,7 @@ const routes: Routes = [
             component: DomainVerificationComponent,
             canActivate: [OrganizationPermissionsGuard],
             data: {
+              titleId: "domainVerification",
               organizationPermissions: (org: Organization) => org.canManageDomainVerification,
             },
           },
@@ -41,6 +42,7 @@ const routes: Routes = [
             component: SsoComponent,
             canActivate: [OrganizationPermissionsGuard],
             data: {
+              titleId: "singleSignOn",
               organizationPermissions: (org: Organization) => org.canManageSso,
             },
           },
@@ -49,6 +51,7 @@ const routes: Routes = [
             component: ScimComponent,
             canActivate: [OrganizationPermissionsGuard],
             data: {
+              titleId: "scim",
               organizationPermissions: (org: Organization) => org.canManageScim,
             },
           },

@@ -1,5 +1,8 @@
 <!-- Please remove this disable statement when editing this file! -->
 <!-- eslint-disable tailwindcss/no-custom-classname -->
+
+<sm-header *ngIf="organizationId != null"></sm-header>
+
 <form
   #form
   (ngSubmit)="submit()"
@@ -7,7 +10,7 @@
   [formGroup]="exportForm"
   *ngIf="exportForm"
 >
-  <div class="page-header">
+  <div class="page-header" *ngIf="organizationId == null">
     <h1>{{ "exportVault" | i18n }}</h1>
   </div>
 

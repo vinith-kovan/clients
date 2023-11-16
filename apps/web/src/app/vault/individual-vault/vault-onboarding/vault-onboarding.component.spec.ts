@@ -82,19 +82,6 @@ describe("VaultOnboardingComponent", () => {
     });
   });
 
-  // describe('individualVaultPolicyCheck', () => {
-  //   it('should set isIndividualPolicyVault to true from return of policyService', fakeAsync(() => {
-  //     const policySpy = jest
-  //       .spyOn((component as any).policyService, 'policyAppliesToActiveUser$')
-  //       .mockReturnValue(of(true));
-
-  //     component.individualVaultPolicyCheck();
-  //     tick()
-  //     fixture.detectChanges();
-  //     expect(component.isIndividualPolicyVault).toEqual(true);
-  //   }));
-  // });
-
   describe("navigateToImport", () => {
     it("should navigate to tools/import when individualPolicy and tasks.importData are both false", () => {
       component.isIndividualPolicyVault = false;

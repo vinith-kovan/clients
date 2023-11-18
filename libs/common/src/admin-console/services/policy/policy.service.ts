@@ -1,14 +1,13 @@
-import { BehaviorSubject, concatMap, map, Observable, of } from "rxjs";
+import { BehaviorSubject, concatMap, firstValueFrom, map, Observable, of } from "rxjs";
 
 import { ListResponse } from "../../../models/response/list.response";
 import { StateService } from "../../../platform/abstractions/state.service";
 import { Utils } from "../../../platform/misc/utils";
 import { OrganizationService } from "../../abstractions/organization/organization.service.abstraction";
 import { InternalPolicyService as InternalPolicyServiceAbstraction } from "../../abstractions/policy/policy.service.abstraction";
-import { OrganizationUserStatusType, OrganizationUserType, PolicyType } from "../../enums";
+import { OrganizationUserStatusType, PolicyType } from "../../enums";
 import { PolicyData } from "../../models/data/policy.data";
 import { MasterPasswordPolicyOptions } from "../../models/domain/master-password-policy-options";
-import { Organization } from "../../models/domain/organization";
 import { Policy } from "../../models/domain/policy";
 import { ResetPasswordPolicyOptions } from "../../models/domain/reset-password-policy-options";
 import { PolicyResponse } from "../../models/response/policy.response";
@@ -17,6 +16,9 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
   protected _policies: BehaviorSubject<Policy[]> = new BehaviorSubject([]);
 
   policies$ = this._policies.asObservable();
+  enforcedPolicies$ = this.policies$.pipe(
+    map((policies) => policies.filter((p) => this.enforcedPolicyFilter(p)))
+  );
 
   constructor(
     protected stateService: StateService,
@@ -45,22 +47,10 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
   /**
    * Returns the first policy found that applies to the active user
    * @param policyType Policy type to search for
-   * @param policyFilter Additional filter to apply to the policy
    */
-  get$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean): Observable<Policy> {
-    return this.policies$.pipe(
-      concatMap(async (policies) => {
-        const userId = await this.stateService.getUserId();
-        const appliesToCurrentUser = await this.checkPoliciesThatApplyToUser(
-          policies,
-          policyType,
-          policyFilter,
-          userId
-        );
-        if (appliesToCurrentUser) {
-          return policies.find((policy) => policy.type === policyType && policy.enabled);
-        }
-      })
+  get$(policyType: PolicyType): Observable<Policy[]> {
+    return this.enforcedPolicies$.pipe(
+      map((policies) => policies.filter((p) => p.type == policyType))
     );
   }
 
@@ -148,13 +138,8 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     );
   }
 
-  policyAppliesToActiveUser$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
-    return this.policies$.pipe(
-      concatMap(async (policies) => {
-        const userId = await this.stateService.getUserId();
-        return await this.checkPoliciesThatApplyToUser(policies, policyType, policyFilter, userId);
-      })
-    );
+  policyAppliesToActiveUser$(policyType: PolicyType) {
+    return this.get$(policyType).pipe(map((p) => p != null));
   }
 
   evaluateMasterPassword(
@@ -231,14 +216,10 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     return policiesResponse.data.map((response) => this.mapPolicyFromResponse(response));
   }
 
-  async policyAppliesToUser(
-    policyType: PolicyType,
-    policyFilter?: (policy: Policy) => boolean,
-    userId?: string
-  ) {
-    const policies = await this.getAll(policyType, userId);
-
-    return this.checkPoliciesThatApplyToUser(policies, policyType, policyFilter, userId);
+  async policyAppliesToUser(policyType: PolicyType, userId?: string) {
+    // TODO: deal with different users?
+    // TODO: deprecated
+    return firstValueFrom(this.policyAppliesToActiveUser$(policyType));
   }
 
   async upsert(policy: PolicyData): Promise<any> {
@@ -268,38 +249,36 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     await this.stateService.setEncryptedPolicies(null, { userId: userId });
   }
 
-  private isExemptFromPolicies(organization: Organization, policyType: PolicyType) {
-    if (policyType === PolicyType.MaximumVaultTimeout) {
-      return organization.type === OrganizationUserType.Owner;
-    }
-
-    return organization.isExemptFromPolicies;
-  }
-
   private async updateObservables(policiesMap: { [id: string]: PolicyData }) {
     const policies = Object.values(policiesMap || {}).map((f) => new Policy(f));
 
     this._policies.next(policies);
   }
 
-  private async checkPoliciesThatApplyToUser(
-    policies: Policy[],
-    policyType: PolicyType,
-    policyFilter?: (policy: Policy) => boolean,
-    userId?: string
-  ) {
-    const organizations = await this.organizationService.getAll(userId);
-    const filteredPolicies = policies.filter(
-      (p) => p.type === policyType && p.enabled && (policyFilter == null || policyFilter(p))
-    );
-    const policySet = new Set(filteredPolicies.map((p) => p.organizationId));
+  private enforcedPolicyFilter(policy: Policy) {
+    const org = this.organizationService.get(policy.organizationId);
 
-    return organizations.some(
-      (o) =>
-        o.status >= OrganizationUserStatusType.Accepted &&
-        o.usePolicies &&
-        policySet.has(o.id) &&
-        !this.isExemptFromPolicies(o, policyType)
+    return (
+      org.status >= OrganizationUserStatusType.Accepted &&
+      org.usePolicies &&
+      !this.isExemptFromPolicy(policy)
     );
+  }
+
+  /**
+   * Determines whether an orgUser is exempt from a specific policy because of their role
+   * Generally orgUsers who can manage policies are exempt from them, but some policies are stricter
+   * @returns
+   */
+  private isExemptFromPolicy(policy: Policy) {
+    const org = this.organizationService.get(policy.organizationId);
+
+    switch (policy.type) {
+      case PolicyType.MaximumVaultTimeout:
+        // Max Vault Timeout applies to everyone except owners
+        return org.isOwner;
+      default:
+        return org.canManagePolicies;
+    }
   }
 }

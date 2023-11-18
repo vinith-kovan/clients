@@ -82,9 +82,7 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
   async getVaultTimeout(userId?: string): Promise<number> {
     const vaultTimeout = await this.stateService.getVaultTimeout({ userId });
 
-    if (
-      await this.policyService.policyAppliesToUser(PolicyType.MaximumVaultTimeout, null, userId)
-    ) {
+    if (await this.policyService.policyAppliesToUser(PolicyType.MaximumVaultTimeout, userId)) {
       const policy = await this.policyService.getAll(PolicyType.MaximumVaultTimeout, userId);
       // Remove negative values, and ensure it's smaller than maximum allowed value according to policy
       let timeout = Math.min(vaultTimeout, policy[0].data.minutes);
@@ -118,9 +116,7 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
 
     const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction({ userId: userId });
 
-    if (
-      await this.policyService.policyAppliesToUser(PolicyType.MaximumVaultTimeout, null, userId)
-    ) {
+    if (await this.policyService.policyAppliesToUser(PolicyType.MaximumVaultTimeout, userId)) {
       const policy = await this.policyService.getAll(PolicyType.MaximumVaultTimeout, userId);
       const action = policy[0].data.action;
       // We really shouldn't need to set the value here, but multiple services relies on this value being correct.

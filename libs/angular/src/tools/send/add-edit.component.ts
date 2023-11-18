@@ -1,7 +1,7 @@
 import { DatePipe } from "@angular/common";
 import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, map, takeUntil } from "rxjs";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
@@ -151,11 +151,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
       });
 
     this.policyService
-      .policyAppliesToActiveUser$(PolicyType.SendOptions, (p) => p.data.disableHideEmail)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((policyAppliesToActiveUser) => {
+      .get$(PolicyType.SendOptions)
+      .pipe(
+        map((policies) => policies.some((p) => p.data.disableHideEmail)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((disableHideEmail) => {
         if (
-          (this.disableHideEmail = policyAppliesToActiveUser) &&
+          (this.disableHideEmail = disableHideEmail) &&
           !this.formGroup.controls.hideEmail.value
         ) {
           this.formGroup.controls.hideEmail.disable();

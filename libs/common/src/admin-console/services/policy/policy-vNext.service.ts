@@ -58,7 +58,7 @@ export class PolicyVNextService implements InternalPolicyServiceAbstraction {
    * @param policyType Policy type to search for
    */
   get$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
-    return this.newGet$(policyType).pipe(
+    return this.get_vNext$(policyType).pipe(
       map((policies) => policies?.filter((p) => policyFilter == null || policyFilter(p))),
       map((policies) => policies?.at(0))
     );
@@ -79,7 +79,7 @@ export class PolicyVNextService implements InternalPolicyServiceAbstraction {
   }
 
   policyAppliesToActiveUser$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
-    return this.newGet$(policyType).pipe(
+    return this.get_vNext$(policyType).pipe(
       map((policies) => policies.filter((p) => policyFilter == null || policyFilter(p))),
       map((policies) => policies?.length > 0)
     );
@@ -91,7 +91,7 @@ export class PolicyVNextService implements InternalPolicyServiceAbstraction {
     userId?: string
   ) {
     return firstValueFrom(
-      this.newGet$(policyType, userId).pipe(
+      this.get_vNext$(policyType, userId).pipe(
         map((policies) => policies.filter((p) => policyFilter == null || policyFilter(p))),
         map((policies) => policies?.length > 0)
       )
@@ -106,7 +106,7 @@ export class PolicyVNextService implements InternalPolicyServiceAbstraction {
    * @param userId
    * @returns
    */
-  private newGet$(policyType: PolicyType, userId?: string): Observable<Policy[]> {
+  private get_vNext$(policyType: PolicyType, userId?: string): Observable<Policy[]> {
     if (userId == null) {
       return this.policies$.pipe(map((policies) => policies.filter((p) => p.type == policyType)));
     }

@@ -10,14 +10,13 @@ import { PolicyResponse } from "../../models/response/policy.response";
 
 export abstract class PolicyService {
   policies$: Observable<Policy[]>;
-  get$: (policyType: PolicyType) => Observable<Policy[]>;
+  get$: (policyType: PolicyType, userId?: string) => Observable<Policy[]>;
   masterPasswordPolicyOptions$: (policies?: Policy[]) => Observable<MasterPasswordPolicyOptions>;
   policyAppliesToActiveUser$: (policyType: PolicyType) => Observable<boolean>;
 
   /**
    * @deprecated Do not call this, use the policies$ observable collection
    */
-  getAll: (type?: PolicyType, userId?: string) => Promise<Policy[]>;
   evaluateMasterPassword: (
     passwordStrength: number,
     newPassword: string,
@@ -29,7 +28,7 @@ export abstract class PolicyService {
   ) => [ResetPasswordPolicyOptions, boolean];
   mapPolicyFromResponse: (policyResponse: PolicyResponse) => Policy;
   mapPoliciesFromToken: (policiesResponse: ListResponse<PolicyResponse>) => Policy[];
-  policyAppliesToUser: (policyType: PolicyType, userId?: string) => Promise<boolean>;
+  policyAppliesToUser: (policyType: PolicyType) => Promise<boolean>;
 }
 
 export abstract class InternalPolicyService extends PolicyService {

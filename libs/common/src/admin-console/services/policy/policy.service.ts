@@ -1,4 +1,4 @@
-import { BehaviorSubject, concatMap, firstValueFrom, map, Observable, of } from "rxjs";
+import { BehaviorSubject, concatMap, firstValueFrom, from, map, Observable, of } from "rxjs";
 
 import { ListResponse } from "../../../models/response/list.response";
 import { StateService } from "../../../platform/abstractions/state.service";
@@ -48,16 +48,17 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
    * Returns the first policy found that applies to the active user
    * @param policyType Policy type to search for
    */
-  get$(policyType: PolicyType): Observable<Policy[]> {
-    return this.enforcedPolicies$.pipe(
-      map((policies) => policies.filter((p) => p.type == policyType))
-    );
+  get$(policyType: PolicyType, userId?: string): Observable<Policy[]> {
+    if (userId == null) {
+      return this.enforcedPolicies$.pipe(
+        map((policies) => policies.filter((p) => p.type == policyType))
+      );
+    }
+
+    return from(this.getPoliciesForUserId(policyType, userId));
   }
 
-  /**
-   * @deprecated Do not call this, use the policies$ observable collection
-   */
-  async getAll(type?: PolicyType, userId?: string): Promise<Policy[]> {
+  private async getPoliciesForUserId(type: PolicyType, userId?: string): Promise<Policy[]> {
     let response: Policy[] = [];
     const decryptedPolicies = await this.stateService.getDecryptedPolicies({ userId: userId });
     if (decryptedPolicies != null) {
@@ -71,11 +72,8 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
       }
       await this.stateService.setDecryptedPolicies(response, { userId: userId });
     }
-    if (type != null) {
-      return response.filter((policy) => policy.type === type);
-    } else {
-      return response;
-    }
+
+    return response.filter((policy) => policy.type === type);
   }
 
   masterPasswordPolicyOptions$(policies?: Policy[]): Observable<MasterPasswordPolicyOptions> {
@@ -216,9 +214,7 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     return policiesResponse.data.map((response) => this.mapPolicyFromResponse(response));
   }
 
-  async policyAppliesToUser(policyType: PolicyType, userId?: string) {
-    // TODO: deal with different users?
-    // TODO: deprecated
+  async policyAppliesToUser(policyType: PolicyType) {
     return firstValueFrom(this.policyAppliesToActiveUser$(policyType));
   }
 

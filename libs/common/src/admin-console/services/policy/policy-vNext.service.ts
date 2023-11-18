@@ -7,6 +7,7 @@ import {
   map,
   Observable,
   of,
+  skip,
 } from "rxjs";
 
 import { ListResponse } from "../../../models/response/list.response";
@@ -24,8 +25,13 @@ import { PolicyResponse } from "../../models/response/policy.response";
 export class PolicyVNextService implements InternalPolicyServiceAbstraction {
   protected _policies: BehaviorSubject<Policy[]> = new BehaviorSubject([]);
 
-  policies$ = this._policies.asObservable();
-  enforcedPolicies$ = this.policies$.pipe(
+  /**
+   * All policies that apply to the active user
+   * TODO: make this protected, callers should use get$ because they always want to specify a type
+   */
+  policies$ = this._policies.pipe(
+    skip(1), // Skip BehaviorSubject default value because it doesn't mean anything and interferes with firstValueFrom.
+    // We can remove this when we stop using BehaviorSubjects.
     map((policies) => policies.filter((p) => this.enforcedPolicyFilter(p)))
   );
 
@@ -49,10 +55,8 @@ export class PolicyVNextService implements InternalPolicyServiceAbstraction {
    */
   get$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
     return this.newGet$(policyType).pipe(
-      map((policies) => {
-        const filteredPolicies = policies?.filter((p) => policyFilter == null || policyFilter(p));
-        return filteredPolicies?.at(0);
-      })
+      map((policies) => policies?.filter((p) => policyFilter == null || policyFilter(p))),
+      map((policies) => policies?.at(0))
     );
   }
 
@@ -104,9 +108,7 @@ export class PolicyVNextService implements InternalPolicyServiceAbstraction {
    */
   private newGet$(policyType: PolicyType, userId?: string): Observable<Policy[]> {
     if (userId == null) {
-      return this.enforcedPolicies$.pipe(
-        map((policies) => policies.filter((p) => p.type == policyType))
-      );
+      return this.policies$.pipe(map((policies) => policies.filter((p) => p.type == policyType)));
     }
 
     return from(this.getAll(policyType, userId));

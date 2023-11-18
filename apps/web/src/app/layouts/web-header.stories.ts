@@ -27,9 +27,10 @@ import {
   TypographyModule,
   InputModule,
 } from "@bitwarden/components";
-import { PreloadedEnglishI18nModule } from "@bitwarden/web-vault/app/core/tests";
 
-import { HeaderComponent } from "./header.component";
+import { PreloadedEnglishI18nModule } from "../core/tests";
+
+import { HeaderComponent } from "./web-header.component";
 
 @Injectable({
   providedIn: "root",
@@ -126,7 +127,7 @@ export default {
 export const KitchenSink: Story = (args) => ({
   props: args,
   template: `
-    <sm-header title="LongTitleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" icon="bwi-bug">
+    <app-header title="LongTitleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" icon="bwi-bug">
       <bit-breadcrumbs slot="breadcrumbs">
         <bit-breadcrumb>Foo</bit-breadcrumb>
         <bit-breadcrumb>Bar</bit-breadcrumb>
@@ -142,75 +143,75 @@ export const KitchenSink: Story = (args) => ({
         <bit-tab-link route="">Foo</bit-tab-link>
         <bit-tab-link route="#bar">Bar</bit-tab-link>
       </bit-tab-nav-bar>
-    </sm-header>
+    </app-header>
   `,
 });
 
 export const Basic: Story = (args) => ({
   props: args,
   template: `
-    <sm-header title="Foobar" icon="bwi-bug"></sm-header>
+    <app-header title="Foobar" icon="bwi-bug"></app-header>
   `,
 });
 
 export const WithLongTitle: Story = (args) => ({
   props: args,
   template: `
-    <sm-header title="LongTitleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" icon="bwi-bug"></sm-header>
+    <app-header title="LongTitleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" icon="bwi-bug"></app-header>
   `,
 });
 
 export const WithBreadcrumbs: Story = (args) => ({
   props: args,
   template: `
-    <sm-header title="Foobar" icon="bwi-bug" class="tw-text-main">
+    <app-header title="Foobar" icon="bwi-bug" class="tw-text-main">
       <bit-breadcrumbs slot="breadcrumbs">
         <bit-breadcrumb>Foo</bit-breadcrumb>
         <bit-breadcrumb>Bar</bit-breadcrumb>
       </bit-breadcrumbs>
-    </sm-header>
+    </app-header>
   `,
 });
 
 export const WithSearch: Story = (args) => ({
   props: args,
   template: `
-    <sm-header title="Foobar" icon="bwi-bug" class="tw-text-main">
+    <app-header title="Foobar" icon="bwi-bug" class="tw-text-main">
       <input
         bitInput
         placeholder="Ask Jeeves"
         type="text"
       />
-    </sm-header>
+    </app-header>
   `,
 });
 
 export const WithSecondaryContent: Story = (args) => ({
   props: args,
   template: `
-    <sm-header title="Foobar" icon="bwi-bug" class="tw-text-main">
+    <app-header title="Foobar" icon="bwi-bug" class="tw-text-main">
       <button bitButton slot="secondary">Click Me 🎉</button>
-    </sm-header>
+    </app-header>
   `,
 });
 
 export const WithTabs: Story = (args) => ({
   props: args,
   template: `
-    <sm-header title="Foobar" icon="bwi-bug" class="tw-text-main">
+    <app-header title="Foobar" icon="bwi-bug" class="tw-text-main">
       <bit-tab-nav-bar slot="tabs">
         <bit-tab-link route="">Foo</bit-tab-link>
         <bit-tab-link route="#bar">Bar</bit-tab-link>
       </bit-tab-nav-bar>
-    </sm-header>
+    </app-header>
   `,
 });
 
 export const WithCustomTitleComponent: Story = (args) => ({
   props: args,
   template: `
-    <sm-header title="Foobar" icon="bwi-bug" class="tw-text-main">
+    <app-header title="Foobar" icon="bwi-bug" class="tw-text-main">
       <h1 slot="title" class="tw-text-3xl tw-font-semibold" style="font-family: 'Comic Sans MS'">Bitwarden</h1>
-    </sm-header>
+    </app-header>
   `,
 });

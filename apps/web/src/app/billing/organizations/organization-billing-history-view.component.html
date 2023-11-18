@@ -1,4 +1,4 @@
-<sm-header>
+<app-header>
   <button
     type="button"
     bitButton
@@ -11,7 +11,7 @@
     <i class="bwi bwi-refresh bwi-fw" [ngClass]="{ 'bwi-spin': loading }" aria-hidden="true"></i>
     {{ "refresh" | i18n }}
   </button>
-</sm-header>
+</app-header>
 
 <ng-container *ngIf="!firstLoaded && loading">
   <i

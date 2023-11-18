@@ -1,4 +1,4 @@
-<sm-header *ngIf="organizationId != null"></sm-header>
+<app-header *ngIf="organizationId != null"></app-header>
 <div class="tabbed-header" *ngIf="organizationId == null">
   <h1 *ngIf="!organizationId || !isEnterpriseOrg">{{ "twoStepLogin" | i18n }}</h1>
   <h1 *ngIf="organizationId && isEnterpriseOrg">{{ "twoStepLoginEnforcement" | i18n }}</h1>

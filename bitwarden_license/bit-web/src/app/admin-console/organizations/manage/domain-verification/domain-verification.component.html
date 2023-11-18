@@ -1,8 +1,8 @@
-<sm-header>
+<app-header>
   <button *ngIf="!loading" type="button" buttonType="primary" bitButton (click)="addDomain()">
     <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i> {{ "newDomain" | i18n }}
   </button>
-</sm-header>
+</app-header>
 
 <ng-container *ngIf="loading">
   <i

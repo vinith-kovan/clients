@@ -1,4 +1,4 @@
-<sm-header>
+<app-header>
   <bit-search
     [placeholder]="'searchGroups' | i18n"
     [(ngModel)]="searchText"
@@ -8,7 +8,7 @@
     <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>
     {{ "newGroup" | i18n }}
   </button>
-</sm-header>
+</app-header>
 
 <ng-container *ngIf="loading">
   <i

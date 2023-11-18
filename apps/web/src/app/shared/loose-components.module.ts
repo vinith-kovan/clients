@@ -3,7 +3,6 @@ import { NgModule } from "@angular/core";
 import { PasswordCalloutComponent } from "@bitwarden/auth";
 import { LayoutComponent, NavigationModule } from "@bitwarden/components";
 
-import { HeaderComponent } from "../../../../../bitwarden_license/bit-web/src/app/secrets-manager/shared/header.component";
 import { OrganizationSwitcherComponent } from "../admin-console/components/organization-switcher.component";
 import { OrganizationLayoutComponent } from "../admin-console/organizations/layouts/organization-layout.component";
 import { EventsComponent as OrgEventsComponent } from "../admin-console/organizations/manage/events.component";
@@ -57,6 +56,7 @@ import { FrontendLayoutComponent } from "../layouts/frontend-layout.component";
 import { NavbarComponent } from "../layouts/navbar.component";
 import { ProductSwitcherModule } from "../layouts/product-switcher/product-switcher.module";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
+import { HeaderComponent } from "../layouts/web-header.component";
 import { AccountComponent } from "../settings/account.component";
 import { ApiKeyComponent } from "../settings/api-key.component";
 import { ChangeAvatarComponent } from "../settings/change-avatar.component";

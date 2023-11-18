@@ -104,8 +104,7 @@ export class SettingsComponent implements OnInit {
   async ngOnInit() {
     const maximumVaultTimeoutPolicy = this.policyService.get$(PolicyType.MaximumVaultTimeout);
     this.vaultTimeoutPolicyCallout = maximumVaultTimeoutPolicy.pipe(
-      filter((policies) => policies?.length > 0),
-      map((policies) => policies[0]),
+      filter((policy) => policy != null),
       map((policy) => {
         let timeout;
         if (policy.data?.minutes) {

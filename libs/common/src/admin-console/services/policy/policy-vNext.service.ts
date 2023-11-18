@@ -22,6 +22,9 @@ import { Policy } from "../../models/domain/policy";
 import { ResetPasswordPolicyOptions } from "../../models/domain/reset-password-policy-options";
 import { PolicyResponse } from "../../models/response/policy.response";
 
+const policyMapToArray = (policiesMap: { [id: string]: PolicyData }) =>
+  Object.values(policiesMap || {}).map((f) => new Policy(f));
+
 export class PolicyVNextService implements InternalPolicyServiceAbstraction {
   protected _policies: BehaviorSubject<Policy[]> = new BehaviorSubject([]);
 
@@ -44,9 +47,10 @@ export class PolicyVNextService implements InternalPolicyServiceAbstraction {
         filter(() => Utils.global.bitwardenContainerService != null),
         concatMap(async (unlocked) =>
           unlocked ? await this.stateService.getEncryptedPolicies() : {}
-        )
+        ),
+        map((policyMap) => policyMapToArray(policyMap))
       )
-      .subscribe((policies) => this.updateObservables(policies));
+      .subscribe((policies) => this._policies.next(policies));
   }
 
   /**
@@ -61,21 +65,17 @@ export class PolicyVNextService implements InternalPolicyServiceAbstraction {
   }
 
   async getAll(type: PolicyType, userId?: string): Promise<Policy[]> {
-    let response: Policy[] = [];
+    let result: Policy[] = [];
     const decryptedPolicies = await this.stateService.getDecryptedPolicies({ userId: userId });
     if (decryptedPolicies != null) {
-      response = decryptedPolicies;
+      result = decryptedPolicies;
     } else {
       const diskPolicies = await this.stateService.getEncryptedPolicies({ userId: userId });
-      for (const id in diskPolicies) {
-        if (Object.prototype.hasOwnProperty.call(diskPolicies, id)) {
-          response.push(new Policy(diskPolicies[id]));
-        }
-      }
-      await this.stateService.setDecryptedPolicies(response, { userId: userId });
+      result = policyMapToArray(diskPolicies);
+      await this.stateService.setDecryptedPolicies(result, { userId: userId });
     }
 
-    return response.filter((policy) => policy.type === type);
+    return result.filter((policy) => policy.type === type);
   }
 
   policyAppliesToActiveUser$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
@@ -256,13 +256,13 @@ export class PolicyVNextService implements InternalPolicyServiceAbstraction {
 
     policies[policy.id] = policy;
 
-    this.updateObservables(policies);
+    this._policies.next(policyMapToArray(policies));
     await this.stateService.setDecryptedPolicies(null);
     await this.stateService.setEncryptedPolicies(policies);
   }
 
   async replace(policies: { [id: string]: PolicyData }): Promise<void> {
-    this.updateObservables(policies);
+    this._policies.next(policyMapToArray(policies));
     await this.stateService.setDecryptedPolicies(null);
     await this.stateService.setEncryptedPolicies(policies);
   }
@@ -273,11 +273,6 @@ export class PolicyVNextService implements InternalPolicyServiceAbstraction {
     }
     await this.stateService.setDecryptedPolicies(null, { userId: userId });
     await this.stateService.setEncryptedPolicies(null, { userId: userId });
-  }
-
-  private updateObservables(policiesMap: { [id: string]: PolicyData }) {
-    const policies = Object.values(policiesMap || {}).map((f) => new Policy(f));
-    this._policies.next(policies);
   }
 
   private enforcedPolicyFilter(policy: Policy) {

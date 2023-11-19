@@ -280,6 +280,12 @@ export class PolicyVNextService implements InternalPolicyServiceAbstraction {
   private enforcedPolicyFilter(policy: Policy) {
     const org = this.organizationService.get(policy.organizationId);
 
+    // This shouldn't happen, i.e. the user should only have policies for orgs they are a member of
+    // But if it does, err on the side of enforcing the policy
+    if (org == null) {
+      return true;
+    }
+
     return (
       org.status >= OrganizationUserStatusType.Accepted &&
       org.usePolicies &&

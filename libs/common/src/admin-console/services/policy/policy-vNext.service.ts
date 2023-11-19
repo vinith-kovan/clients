@@ -7,7 +7,6 @@ import {
   map,
   Observable,
   of,
-  skip,
 } from "rxjs";
 
 import { ListResponse } from "../../../models/response/list.response";
@@ -25,17 +24,20 @@ import { PolicyResponse } from "../../models/response/policy.response";
 const policyMapToArray = (policiesMap: { [id: string]: PolicyData }) =>
   Object.values(policiesMap || {}).map((f) => new Policy(f));
 
+// This is used to represent and skip the BehaviorSubject default value.
+// It doesn't mean anything and interferes with firstValueFrom. We can remove this when we stop using BehaviorSubjects.
+const LOADING = "LOADING";
+
 export class PolicyVNextService implements InternalPolicyServiceAbstraction {
-  protected _policies: BehaviorSubject<Policy[]> = new BehaviorSubject([]);
+  protected _policies: BehaviorSubject<Policy[] | typeof LOADING> = new BehaviorSubject(LOADING);
 
   /**
    * All policies that apply to the active user
    * TODO: make this protected, callers should use get$ because they always want to specify a type
    */
   policies$ = this._policies.pipe(
-    skip(1), // Skip BehaviorSubject default value because it doesn't mean anything and interferes with firstValueFrom.
-    // We can remove this when we stop using BehaviorSubjects.
-    map((policies) => policies.filter((p) => this.enforcedPolicyFilter(p)))
+    filter((val) => val != LOADING),
+    map((policies: Policy[]) => policies.filter((p) => this.enforcedPolicyFilter(p)))
   );
 
   constructor(

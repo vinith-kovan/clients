@@ -48,17 +48,34 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
    * Returns the first policy found that applies to the active user
    * @param policyType Policy type to search for
    */
-  get$(policyType: PolicyType, userId?: string): Observable<Policy[]> {
+  get$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
+    return this.newGet$(policyType).pipe(
+      map((policies) => {
+        const filteredPolicies = policies?.filter((p) => policyFilter == null || policyFilter(p));
+        return filteredPolicies?.at(0);
+      })
+    );
+  }
+
+  /**
+   * TODO: this will replace get$ and getAll when PolicyServiceRefactor feature flag is removed.
+   * The policyFilter callback parameters will also be removed in favor of callers using this method
+   * to get all policies and then filtering them themselves.
+   * @param policyType
+   * @param userId
+   * @returns
+   */
+  private newGet$(policyType: PolicyType, userId?: string): Observable<Policy[]> {
     if (userId == null) {
       return this.enforcedPolicies$.pipe(
         map((policies) => policies.filter((p) => p.type == policyType))
       );
     }
 
-    return from(this.getPoliciesForUserId(policyType, userId));
+    return from(this.getAll(policyType, userId));
   }
 
-  private async getPoliciesForUserId(type: PolicyType, userId?: string): Promise<Policy[]> {
+  async getAll(type: PolicyType, userId?: string): Promise<Policy[]> {
     let response: Policy[] = [];
     const decryptedPolicies = await this.stateService.getDecryptedPolicies({ userId: userId });
     if (decryptedPolicies != null) {
@@ -136,8 +153,24 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     );
   }
 
-  policyAppliesToActiveUser$(policyType: PolicyType) {
-    return this.get$(policyType).pipe(map((p) => p != null));
+  policyAppliesToActiveUser$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
+    return this.newGet$(policyType).pipe(
+      map((policies) => policies.filter((p) => policyFilter == null || policyFilter(p))),
+      map((policies) => policies?.length > 0)
+    );
+  }
+
+  async policyAppliesToUser(
+    policyType: PolicyType,
+    policyFilter?: (policy: Policy) => boolean,
+    userId?: string
+  ) {
+    return firstValueFrom(
+      this.newGet$(policyType, userId).pipe(
+        map((policies) => policies.filter((p) => policyFilter == null || policyFilter(p))),
+        map((policies) => policies?.length > 0)
+      )
+    );
   }
 
   evaluateMasterPassword(
@@ -212,10 +245,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     }
 
     return policiesResponse.data.map((response) => this.mapPolicyFromResponse(response));
-  }
-
-  async policyAppliesToUser(policyType: PolicyType) {
-    return firstValueFrom(this.policyAppliesToActiveUser$(policyType));
   }
 
   async upsert(policy: PolicyData): Promise<any> {

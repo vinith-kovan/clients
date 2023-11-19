@@ -10,7 +10,7 @@ import { AccountService } from "../../auth/abstractions/account.service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-req-storable";
 import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
-import { ForceResetPasswordReason } from "../../auth/models/domain/force-reset-password-reason";
+import { ForceSetPasswordReason } from "../../auth/models/domain/force-set-password-reason";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { BiometricKey } from "../../auth/types/biometric-key";
 import {
@@ -1121,18 +1121,18 @@ export class StateService<
 
   async getDisableAddLoginNotification(options?: StorageOptions): Promise<boolean> {
     return (
-      (await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
-        ?.settings?.disableAddLoginNotification ?? false
+      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
+        ?.disableAddLoginNotification ?? false
     );
   }
 
   async setDisableAddLoginNotification(value: boolean, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
+    const globals = await this.getGlobals(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    account.settings.disableAddLoginNotification = value;
-    await this.saveAccount(
-      account,
+    globals.disableAddLoginNotification = value;
+    await this.saveGlobals(
+      globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }
@@ -1193,8 +1193,8 @@ export class StateService<
 
   async getDisableChangedPasswordNotification(options?: StorageOptions): Promise<boolean> {
     return (
-      (await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
-        ?.settings?.disableChangedPasswordNotification ?? false
+      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
+        ?.disableChangedPasswordNotification ?? false
     );
   }
 
@@ -1202,30 +1202,30 @@ export class StateService<
     value: boolean,
     options?: StorageOptions
   ): Promise<void> {
-    const account = await this.getAccount(
+    const globals = await this.getGlobals(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    account.settings.disableChangedPasswordNotification = value;
-    await this.saveAccount(
-      account,
+    globals.disableChangedPasswordNotification = value;
+    await this.saveGlobals(
+      globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }
 
   async getDisableContextMenuItem(options?: StorageOptions): Promise<boolean> {
     return (
-      (await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
-        ?.settings?.disableContextMenuItem ?? false
+      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
+        ?.disableContextMenuItem ?? false
     );
   }
 
   async setDisableContextMenuItem(value: boolean, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
+    const globals = await this.getGlobals(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    account.settings.disableContextMenuItem = value;
-    await this.saveAccount(
-      account,
+    globals.disableContextMenuItem = value;
+    await this.saveGlobals(
+      globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }
@@ -2072,24 +2072,24 @@ export class StateService<
     );
   }
 
-  async getForcePasswordResetReason(options?: StorageOptions): Promise<ForceResetPasswordReason> {
+  async getForceSetPasswordReason(options?: StorageOptions): Promise<ForceSetPasswordReason> {
     return (
       (
         await this.getAccount(
           this.reconcileOptions(options, await this.defaultOnDiskMemoryOptions())
         )
-      )?.profile?.forcePasswordResetReason ?? ForceResetPasswordReason.None
+      )?.profile?.forceSetPasswordReason ?? ForceSetPasswordReason.None
     );
   }
 
-  async setForcePasswordResetReason(
-    value: ForceResetPasswordReason,
+  async setForceSetPasswordReason(
+    value: ForceSetPasswordReason,
     options?: StorageOptions
   ): Promise<void> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultOnDiskMemoryOptions())
     );
-    account.profile.forcePasswordResetReason = value;
+    account.profile.forceSetPasswordReason = value;
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultOnDiskMemoryOptions())
@@ -2295,19 +2295,19 @@ export class StateService<
     );
   }
 
-  async getNeverDomains(options?: StorageOptions): Promise<{ [id: string]: any }> {
+  async getNeverDomains(options?: StorageOptions): Promise<{ [id: string]: unknown }> {
     return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
-    )?.settings?.neverDomains;
+      await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
+    )?.neverDomains;
   }
 
-  async setNeverDomains(value: { [id: string]: any }, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
+  async setNeverDomains(value: { [id: string]: unknown }, options?: StorageOptions): Promise<void> {
+    const globals = await this.getGlobals(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    account.settings.neverDomains = value;
-    await this.saveAccount(
-      account,
+    globals.neverDomains = value;
+    await this.saveGlobals(
+      globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }

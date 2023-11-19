@@ -7,7 +7,7 @@ import { ProviderData } from "../../admin-console/models/data/provider.data";
 import { Policy } from "../../admin-console/models/domain/policy";
 import { AdminAuthRequestStorable } from "../../auth/models/domain/admin-auth-req-storable";
 import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
-import { ForceResetPasswordReason } from "../../auth/models/domain/force-reset-password-reason";
+import { ForceSetPasswordReason } from "../../auth/models/domain/force-set-password-reason";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { BiometricKey } from "../../auth/types/biometric-key";
 import { KdfType, ThemeType, UriMatchType } from "../../enums";
@@ -391,9 +391,9 @@ export abstract class StateService<T extends Account = Account> {
   setEverHadUserKey: (value: boolean, options?: StorageOptions) => Promise<void>;
   getEverBeenUnlocked: (options?: StorageOptions) => Promise<boolean>;
   setEverBeenUnlocked: (value: boolean, options?: StorageOptions) => Promise<void>;
-  getForcePasswordResetReason: (options?: StorageOptions) => Promise<ForceResetPasswordReason>;
-  setForcePasswordResetReason: (
-    value: ForceResetPasswordReason,
+  getForceSetPasswordReason: (options?: StorageOptions) => Promise<ForceSetPasswordReason>;
+  setForceSetPasswordReason: (
+    value: ForceSetPasswordReason,
     options?: StorageOptions
   ) => Promise<void>;
   getInstalledVersion: (options?: StorageOptions) => Promise<string>;
@@ -420,8 +420,8 @@ export abstract class StateService<T extends Account = Account> {
   setMainWindowSize: (value: number, options?: StorageOptions) => Promise<void>;
   getMinimizeOnCopyToClipboard: (options?: StorageOptions) => Promise<boolean>;
   setMinimizeOnCopyToClipboard: (value: boolean, options?: StorageOptions) => Promise<void>;
-  getNeverDomains: (options?: StorageOptions) => Promise<{ [id: string]: any }>;
-  setNeverDomains: (value: { [id: string]: any }, options?: StorageOptions) => Promise<void>;
+  getNeverDomains: (options?: StorageOptions) => Promise<{ [id: string]: unknown }>;
+  setNeverDomains: (value: { [id: string]: unknown }, options?: StorageOptions) => Promise<void>;
   getNoAutoPromptBiometricsText: (options?: StorageOptions) => Promise<string>;
   setNoAutoPromptBiometricsText: (value: string, options?: StorageOptions) => Promise<void>;
   getOpenAtLogin: (options?: StorageOptions) => Promise<boolean>;

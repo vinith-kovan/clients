@@ -21,7 +21,7 @@ import { Policy } from "../../models/domain/policy";
 import { ResetPasswordPolicyOptions } from "../../models/domain/reset-password-policy-options";
 import { PolicyResponse } from "../../models/response/policy.response";
 
-export class PolicyService implements InternalPolicyServiceAbstraction {
+export class PolicyVNextService implements InternalPolicyServiceAbstraction {
   protected _policies: BehaviorSubject<Policy[]> = new BehaviorSubject([]);
 
   policies$ = this._policies.asObservable();

@@ -56,24 +56,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     );
   }
 
-  /**
-   * TODO: this will replace get$ and getAll when PolicyServiceRefactor feature flag is removed.
-   * The policyFilter callback parameters will also be removed in favor of callers using this method
-   * to get all policies and then filtering them themselves.
-   * @param policyType
-   * @param userId
-   * @returns
-   */
-  private newGet$(policyType: PolicyType, userId?: string): Observable<Policy[]> {
-    if (userId == null) {
-      return this.enforcedPolicies$.pipe(
-        map((policies) => policies.filter((p) => p.type == policyType))
-      );
-    }
-
-    return from(this.getAll(policyType, userId));
-  }
-
   async getAll(type: PolicyType, userId?: string): Promise<Policy[]> {
     let response: Policy[] = [];
     const decryptedPolicies = await this.stateService.getDecryptedPolicies({ userId: userId });
@@ -90,6 +72,44 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     }
 
     return response.filter((policy) => policy.type === type);
+  }
+
+  policyAppliesToActiveUser$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
+    return this.newGet$(policyType).pipe(
+      map((policies) => policies.filter((p) => policyFilter == null || policyFilter(p))),
+      map((policies) => policies?.length > 0)
+    );
+  }
+
+  async policyAppliesToUser(
+    policyType: PolicyType,
+    policyFilter?: (policy: Policy) => boolean,
+    userId?: string
+  ) {
+    return firstValueFrom(
+      this.newGet$(policyType, userId).pipe(
+        map((policies) => policies.filter((p) => policyFilter == null || policyFilter(p))),
+        map((policies) => policies?.length > 0)
+      )
+    );
+  }
+
+  /**
+   * TODO: this will replace get$ and getAll when PolicyServiceRefactor feature flag is removed.
+   * The policyFilter callback parameters will also be removed in favor of callers using this method
+   * to get all policies and then filtering them themselves.
+   * @param policyType
+   * @param userId
+   * @returns
+   */
+  private newGet$(policyType: PolicyType, userId?: string): Observable<Policy[]> {
+    if (userId == null) {
+      return this.enforcedPolicies$.pipe(
+        map((policies) => policies.filter((p) => p.type == policyType))
+      );
+    }
+
+    return from(this.getAll(policyType, userId));
   }
 
   masterPasswordPolicyOptions$(policies?: Policy[]): Observable<MasterPasswordPolicyOptions> {
@@ -149,26 +169,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
 
         return enforcedOptions;
       })
-    );
-  }
-
-  policyAppliesToActiveUser$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
-    return this.newGet$(policyType).pipe(
-      map((policies) => policies.filter((p) => policyFilter == null || policyFilter(p))),
-      map((policies) => policies?.length > 0)
-    );
-  }
-
-  async policyAppliesToUser(
-    policyType: PolicyType,
-    policyFilter?: (policy: Policy) => boolean,
-    userId?: string
-  ) {
-    return firstValueFrom(
-      this.newGet$(policyType, userId).pipe(
-        map((policies) => policies.filter((p) => policyFilter == null || policyFilter(p))),
-        map((policies) => policies?.length > 0)
-      )
     );
   }
 

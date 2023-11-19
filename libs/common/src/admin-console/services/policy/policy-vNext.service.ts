@@ -1,4 +1,13 @@
-import { BehaviorSubject, concatMap, firstValueFrom, from, map, Observable, of } from "rxjs";
+import {
+  BehaviorSubject,
+  concatMap,
+  filter,
+  firstValueFrom,
+  from,
+  map,
+  Observable,
+  of,
+} from "rxjs";
 
 import { ListResponse } from "../../../models/response/list.response";
 import { StateService } from "../../../platform/abstractions/state.service";
@@ -26,22 +35,12 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
   ) {
     this.stateService.activeAccountUnlocked$
       .pipe(
-        concatMap(async (unlocked) => {
-          if (Utils.global.bitwardenContainerService == null) {
-            return;
-          }
-
-          if (!unlocked) {
-            this._policies.next([]);
-            return;
-          }
-
-          const data = await this.stateService.getEncryptedPolicies();
-
-          await this.updateObservables(data);
-        })
+        filter(() => Utils.global.bitwardenContainerService != null),
+        concatMap(async (unlocked) =>
+          unlocked ? await this.stateService.getEncryptedPolicies() : {}
+        )
       )
-      .subscribe();
+      .subscribe((policies) => this.updateObservables(policies));
   }
 
   /**
@@ -255,13 +254,13 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
 
     policies[policy.id] = policy;
 
-    await this.updateObservables(policies);
+    this.updateObservables(policies);
     await this.stateService.setDecryptedPolicies(null);
     await this.stateService.setEncryptedPolicies(policies);
   }
 
   async replace(policies: { [id: string]: PolicyData }): Promise<void> {
-    await this.updateObservables(policies);
+    this.updateObservables(policies);
     await this.stateService.setDecryptedPolicies(null);
     await this.stateService.setEncryptedPolicies(policies);
   }
@@ -274,9 +273,8 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     await this.stateService.setEncryptedPolicies(null, { userId: userId });
   }
 
-  private async updateObservables(policiesMap: { [id: string]: PolicyData }) {
+  private updateObservables(policiesMap: { [id: string]: PolicyData }) {
     const policies = Object.values(policiesMap || {}).map((f) => new Policy(f));
-
     this._policies.next(policies);
   }
 

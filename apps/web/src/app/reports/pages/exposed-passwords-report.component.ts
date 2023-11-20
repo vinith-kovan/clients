@@ -3,7 +3,10 @@ import { Component, OnInit } from "@angular/core";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { PasswordRepromptService } from "@bitwarden/vault";
@@ -17,23 +20,41 @@ import { CipherReportComponent } from "./cipher-report.component";
 export class ExposedPasswordsReportComponent extends CipherReportComponent implements OnInit {
   exposedPasswordMap = new Map<string, number>();
   disabled = true;
+  private flexibleCollectionsEnabled: boolean;
 
   constructor(
     protected cipherService: CipherService,
     protected auditService: AuditService,
     protected organizationService: OrganizationService,
     modalService: ModalService,
-    passwordRepromptService: PasswordRepromptService
+    passwordRepromptService: PasswordRepromptService,
+    protected collectionService?: CollectionService,
+    private configService?: ConfigServiceAbstraction
   ) {
     super(modalService, passwordRepromptService, organizationService);
   }
 
   async ngOnInit() {
     await super.load();
+    this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections
+    );
   }
 
   async setCiphers() {
-    const allCiphers = await this.getAllCiphers();
+    const canManageCollections = (await this.collectionService.getAllDecrypted())?.filter(
+      (c) => c.manage
+    );
+    const allCiphers = (await this.getAllCiphers()).filter(
+      (c) =>
+        c.edit ||
+        c.collectionIds.some((collectionId) =>
+          canManageCollections.some(
+            (canManageCollection) => canManageCollection.id === collectionId
+          )
+        )
+    );
+
     const exposedPasswordCiphers: CipherView[] = [];
     const promises: Promise<void>[] = [];
     allCiphers.forEach((ciph) => {

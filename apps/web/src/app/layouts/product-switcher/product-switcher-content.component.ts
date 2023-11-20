@@ -52,17 +52,20 @@ export class ProductSwitcherContentComponent {
           ? routeOrg
           : orgs.find((o) => o.canAccessSecretsManager && o.enabled == true);
 
+      const org = routeOrg ?? orgs[0];
+
       /**
        * We can update this to the "satisfies" type upon upgrading to TypeScript 4.9
        * https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/#satisfies
        */
-      const products: Record<"pm" | "sm" | "orgs", ProductSwitcherItem> = {
+      const products: Record<"pm" | "sm" | "ac" | "orgs", ProductSwitcherItem> = {
         pm: {
           name: "Password Manager",
           icon: "bwi-lock",
           appRoute: "/vault",
           marketingRoute: "https://bitwarden.com/products/personal/",
-          isActive: !this.router.url.includes("/sm/"),
+          isActive:
+            !this.router.url.includes("/sm/") && !this.router.url.includes("/organizations/"),
         },
         sm: {
           name: "Secrets Manager",
@@ -70,6 +73,13 @@ export class ProductSwitcherContentComponent {
           appRoute: ["/sm", smOrg?.id],
           marketingRoute: "https://bitwarden.com/products/secrets-manager/",
           isActive: this.router.url.includes("/sm/"),
+        },
+        ac: {
+          name: "Admin Console",
+          icon: "bwi-business",
+          appRoute: ["/organizations", org?.id],
+          marketingRoute: "https://bitwarden.com/products/business/",
+          isActive: this.router.url.includes("/organizations/"),
         },
         orgs: {
           name: "Organizations",
@@ -81,7 +91,9 @@ export class ProductSwitcherContentComponent {
       const bento: ProductSwitcherItem[] = [products.pm];
       const other: ProductSwitcherItem[] = [];
 
-      if (orgs.length === 0) {
+      if (orgs.length > 0) {
+        bento.push(products.ac);
+      } else {
         other.push(products.orgs);
       }
 

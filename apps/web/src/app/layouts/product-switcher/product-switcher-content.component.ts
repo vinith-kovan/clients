@@ -1,8 +1,9 @@
 import { Component, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { combineLatest, map } from "rxjs";
+import { combineLatest, concatMap } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { MenuComponent } from "@bitwarden/components";
 
 type ProductSwitcherItem = {
@@ -44,7 +45,7 @@ export class ProductSwitcherContentComponent {
     this.organizationService.organizations$,
     this.route.paramMap,
   ]).pipe(
-    map(([orgs, paramMap]) => {
+    concatMap(async ([orgs, paramMap]) => {
       const routeOrg = orgs.find((o) => o.id === paramMap.get("organizationId"));
       // If the active route org doesn't have access to SM, find the first org that does.
       const smOrg =
@@ -54,18 +55,22 @@ export class ProductSwitcherContentComponent {
 
       const org = routeOrg ?? orgs[0];
 
+      const providers = await this.providerService.getAll();
+
       /**
        * We can update this to the "satisfies" type upon upgrading to TypeScript 4.9
        * https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/#satisfies
        */
-      const products: Record<"pm" | "sm" | "ac" | "orgs", ProductSwitcherItem> = {
+      const products: Record<"pm" | "sm" | "ac" | "provider" | "orgs", ProductSwitcherItem> = {
         pm: {
           name: "Password Manager",
           icon: "bwi-lock",
           appRoute: "/vault",
           marketingRoute: "https://bitwarden.com/products/personal/",
           isActive:
-            !this.router.url.includes("/sm/") && !this.router.url.includes("/organizations/"),
+            !this.router.url.includes("/sm/") &&
+            !this.router.url.includes("/organizations/") &&
+            !this.router.url.includes("/providers/"),
         },
         sm: {
           name: "Secrets Manager",
@@ -80,6 +85,12 @@ export class ProductSwitcherContentComponent {
           appRoute: ["/organizations", org?.id],
           marketingRoute: "https://bitwarden.com/products/business/",
           isActive: this.router.url.includes("/organizations/"),
+        },
+        provider: {
+          name: "Provider Portal",
+          icon: "bwi-provider",
+          appRoute: ["/providers", providers[0]?.id],
+          isActive: this.router.url.includes("/providers/"),
         },
         orgs: {
           name: "Organizations",
@@ -103,6 +114,10 @@ export class ProductSwitcherContentComponent {
         other.push(products.sm);
       }
 
+      if (providers.length > 0) {
+        bento.push(products.provider);
+      }
+
       return {
         bento,
         other,
@@ -112,6 +127,7 @@ export class ProductSwitcherContentComponent {
 
   constructor(
     private organizationService: OrganizationService,
+    private providerService: ProviderService,
     private route: ActivatedRoute,
     private router: Router
   ) {}

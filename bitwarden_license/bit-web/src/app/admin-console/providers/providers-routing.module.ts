@@ -11,11 +11,9 @@ import { CreateOrganizationComponent } from "./clients/create-organization.compo
 import { ProviderPermissionsGuard } from "./guards/provider-permissions.guard";
 import { AcceptProviderComponent } from "./manage/accept-provider.component";
 import { EventsComponent } from "./manage/events.component";
-import { ManageComponent } from "./manage/manage.component";
 import { PeopleComponent } from "./manage/people.component";
 import { ProvidersLayoutComponent } from "./providers-layout.component";
 import { AccountComponent } from "./settings/account.component";
-import { SettingsComponent } from "./settings/settings.component";
 import { SetupProviderComponent } from "./setup/setup-provider.component";
 import { SetupComponent } from "./setup/setup.component";
 
@@ -59,7 +57,6 @@ const routes: Routes = [
           { path: "clients", component: ClientsComponent, data: { titleId: "clients" } },
           {
             path: "manage",
-            component: ManageComponent,
             children: [
               {
                 path: "",
@@ -88,7 +85,6 @@ const routes: Routes = [
           },
           {
             path: "settings",
-            component: SettingsComponent,
             children: [
               {
                 path: "",

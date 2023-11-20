@@ -1,15 +1,23 @@
+import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, RouterModule } from "@angular/router";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { Provider } from "@bitwarden/common/models/domain/provider";
+import { IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
+import { AdminConsoleLogo } from "@bitwarden/web-vault/app/admin-console/icons/admin-console-logo";
 
 @Component({
   selector: "providers-layout",
   templateUrl: "providers-layout.component.html",
+  standalone: true,
+  imports: [CommonModule, RouterModule, JslibModule, LayoutComponent, IconModule, NavigationModule],
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class ProvidersLayoutComponent {
+  protected readonly logo = AdminConsoleLogo;
+
   provider: Provider;
   private providerId: string;
 

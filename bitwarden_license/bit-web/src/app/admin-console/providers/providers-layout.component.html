@@ -1,9 +1,32 @@
-<app-navbar></app-navbar>
-<div class="org-nav" *ngIf="provider">
-  <div class="container d-flex">
+<bit-layout>
+  <nav slot="sidebar" *ngIf="provider">
+    <a routerLink="." class="tw-m-5 tw-mt-7 tw-block">
+      <bit-icon [icon]="logo"></bit-icon>
+    </a>
+
+    <bit-nav-item icon="bwi-bank" [text]="'clients' | i18n" route="clients"></bit-nav-item>
+    <bit-nav-group icon="bwi-sliders" [text]="'manage' | i18n" route="manage" *ngIf="showManageTab">
+      <bit-nav-item
+        [text]="'people' | i18n"
+        route="manage/people"
+        *ngIf="provider.canManageUsers"
+      ></bit-nav-item>
+      <bit-nav-item
+        [text]="'eventLogs' | i18n"
+        route="manage/events"
+        *ngIf="provider.useEvents"
+      ></bit-nav-item>
+    </bit-nav-group>
+    <bit-nav-item
+      icon="bwi-cogs"
+      [text]="'settings' | i18n"
+      route="settings"
+      *ngIf="showSettingsTab"
+    ></bit-nav-item>
+
+    <!--
     <div class="d-flex flex-column">
       <div class="my-auto d-flex align-items-center pl-1">
-        <bit-avatar [text]="provider.name" [id]="provider.id"></bit-avatar>
         <div class="org-name ml-3">
           <span>{{ provider.name }}</span>
           <small class="text-muted">{{ "provider" | i18n }}</small>
@@ -36,9 +59,7 @@
         </li>
       </ul>
     </div>
-  </div>
-</div>
-<div class="container page-content">
+-->
+  </nav>
   <router-outlet></router-outlet>
-</div>
-<app-footer></app-footer>
+</bit-layout>

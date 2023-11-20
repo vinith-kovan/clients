@@ -142,6 +142,17 @@
                 </bit-menu>
               </ng-container>
             </span>
+            <i
+              *ngIf="isOrganizationFilter && !f.node.enabled"
+              class="org-options bwi bwi-fw bwi-exclamation-triangle text-danger"
+              [attr.aria-label]="'organizationIsDisabled' | i18n"
+              appA11yTitle="{{ 'organizationIsDisabled' | i18n }}"
+            ></i>
+            <ng-container *ngIf="optionsInfo && !f.node.hideOptions">
+              <ng-container
+                *ngComponentOutlet="optionsInfo.component; injector: createInjector(f.node)"
+              ></ng-container>
+            </ng-container>
           </span>
           <ul
             [id]="f.node.name + '_children'"

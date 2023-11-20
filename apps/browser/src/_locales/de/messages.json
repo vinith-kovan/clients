@@ -796,7 +796,7 @@
     "message": "Funktion nicht verfügbar"
   },
   "encryptionKeyMigrationRequired": {
-    "message": "Encryption key migration required. Please login through the web vault to update your encryption key."
+    "message": "Verschlüsselungscode-Migration erforderlich. Bitte melde dich über den Web-Tresor an, um deinen Verschlüsselungscode zu aktualisieren."
   },
   "premiumMembership": {
     "message": "Premium-Mitgliedschaft"
@@ -1925,8 +1925,13 @@
   "selectFolder": {
     "message": "Ordner auswählen..."
   },
-  "ssoCompleteRegistration": {
-    "message": "Um die Anmeldung über SSO abzuschließen, lege bitte ein Master-Passwort fest, um auf deinen Tresor zuzugreifen und ihn zu schützen."
+  "orgPermissionsUpdatedMustSetPassword": {
+    "message": "Your organization permissions were updated, requiring you to set a master password.",
+    "description": "Used as a card title description on the set password page to explain why the user is there"
+  },
+  "orgRequiresYouToSetPassword": {
+    "message": "Your organization requires you to set a master password.",
+    "description": "Used as a card title description on the set password page to explain why the user is there"
   },
   "hours": {
     "message": "Stunden"

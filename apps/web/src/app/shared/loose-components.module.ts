@@ -16,7 +16,6 @@ import { WeakPasswordsReportComponent as OrgWeakPasswordsReportComponent } from 
 import { ProvidersComponent } from "../admin-console/providers/providers.component";
 import { SponsoredFamiliesComponent } from "../admin-console/settings/sponsored-families.component";
 import { SponsoringOrgRowComponent } from "../admin-console/settings/sponsoring-org-row.component";
-import { AcceptEmergencyComponent } from "../auth/accept-emergency.component";
 import { AcceptOrganizationComponent } from "../auth/accept-organization.component";
 import { HintComponent } from "../auth/hint.component";
 import { LockComponent } from "../auth/lock.component";
@@ -26,13 +25,13 @@ import { RegisterFormModule } from "../auth/register-form/register-form.module";
 import { RemovePasswordComponent } from "../auth/remove-password.component";
 import { SetPasswordComponent } from "../auth/set-password.component";
 import { DeauthorizeSessionsComponent } from "../auth/settings/deauthorize-sessions.component";
+import { EmergencyAccessAttachmentsComponent } from "../auth/settings/emergency-access/attachments/emergency-access-attachments.component";
+import { EmergencyAccessConfirmComponent } from "../auth/settings/emergency-access/confirm/emergency-access-confirm.component";
 import { EmergencyAccessAddEditComponent } from "../auth/settings/emergency-access/emergency-access-add-edit.component";
-import { EmergencyAccessAttachmentsComponent } from "../auth/settings/emergency-access/emergency-access-attachments.component";
-import { EmergencyAccessConfirmComponent } from "../auth/settings/emergency-access/emergency-access-confirm.component";
-import { EmergencyAccessTakeoverComponent } from "../auth/settings/emergency-access/emergency-access-takeover.component";
-import { EmergencyAccessViewComponent } from "../auth/settings/emergency-access/emergency-access-view.component";
 import { EmergencyAccessComponent } from "../auth/settings/emergency-access/emergency-access.component";
-import { EmergencyAddEditComponent } from "../auth/settings/emergency-access/emergency-add-edit.component";
+import { EmergencyAccessTakeoverComponent } from "../auth/settings/emergency-access/takeover/emergency-access-takeover.component";
+import { EmergencyAccessViewComponent } from "../auth/settings/emergency-access/view/emergency-access-view.component";
+import { EmergencyAddEditCipherComponent } from "../auth/settings/emergency-access/view/emergency-add-edit-cipher.component";
 import { TwoFactorAuthenticatorComponent } from "../auth/settings/two-factor-authenticator.component";
 import { TwoFactorDuoComponent } from "../auth/settings/two-factor-duo.component";
 import { TwoFactorEmailComponent } from "../auth/settings/two-factor-email.component";
@@ -74,7 +73,6 @@ import { SettingsComponent } from "../settings/settings.component";
 import { VaultTimeoutInputComponent } from "../settings/vault-timeout-input.component";
 import { GeneratorComponent } from "../tools/generator.component";
 import { PasswordGeneratorHistoryComponent } from "../tools/password-generator-history.component";
-import { AccessComponent } from "../tools/send/access.component";
 import { AddEditComponent as SendAddEditComponent } from "../tools/send/add-edit.component";
 import { ToolsComponent } from "../tools/tools.component";
 import { PremiumBadgeComponent } from "../vault/components/premium-badge.component";
@@ -83,6 +81,8 @@ import { AddEditComponent } from "../vault/individual-vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/individual-vault/attachments.component";
 import { CollectionsComponent } from "../vault/individual-vault/collections.component";
 import { FolderAddEditComponent } from "../vault/individual-vault/folder-add-edit.component";
+import { OrganizationBadgeModule } from "../vault/individual-vault/organization-badge/organization-badge.module";
+import { PipesModule } from "../vault/individual-vault/pipes/pipes.module";
 import { ShareComponent } from "../vault/individual-vault/share.component";
 import { AddEditComponent as OrgAddEditComponent } from "../vault/org-vault/add-edit.component";
 import { AttachmentsComponent as OrgAttachmentsComponent } from "../vault/org-vault/attachments.component";
@@ -104,13 +104,13 @@ import { SharedModule } from "./shared.module";
     DynamicAvatarComponent,
     EnvironmentSelectorModule,
     AccountFingerprintComponent,
+    OrganizationBadgeModule,
+    PipesModule,
     PasswordCalloutComponent,
   ],
   declarations: [
-    AcceptEmergencyComponent,
     AcceptFamilySponsorshipComponent,
     AcceptOrganizationComponent,
-    AccessComponent,
     AccountComponent,
     AddEditComponent,
     AddEditCustomFieldsComponent,
@@ -128,7 +128,7 @@ import { SharedModule } from "./shared.module";
     EmergencyAccessConfirmComponent,
     EmergencyAccessTakeoverComponent,
     EmergencyAccessViewComponent,
-    EmergencyAddEditComponent,
+    EmergencyAddEditCipherComponent,
     FolderAddEditComponent,
     FooterComponent,
     FrontendLayoutComponent,
@@ -192,9 +192,7 @@ import { SharedModule } from "./shared.module";
   exports: [
     UserVerificationModule,
     PremiumBadgeComponent,
-    AcceptEmergencyComponent,
     AcceptOrganizationComponent,
-    AccessComponent,
     AccountComponent,
     AddEditComponent,
     AddEditCustomFieldsComponent,
@@ -213,7 +211,7 @@ import { SharedModule } from "./shared.module";
     EmergencyAccessConfirmComponent,
     EmergencyAccessTakeoverComponent,
     EmergencyAccessViewComponent,
-    EmergencyAddEditComponent,
+    EmergencyAddEditCipherComponent,
     FolderAddEditComponent,
     FooterComponent,
     FrontendLayoutComponent,

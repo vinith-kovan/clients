@@ -1,7 +1,9 @@
+import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, RouterModule } from "@angular/router";
 import { map, mergeMap, Observable, Subject, takeUntil } from "rxjs";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
   canAccessBillingTab,
   canAccessGroupsTab,
@@ -14,11 +16,14 @@ import {
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
 
 import { AdminConsoleLogo } from "../../icons/admin-console-logo";
 @Component({
   selector: "app-organization-layout",
   templateUrl: "organization-layout.component.html",
+  standalone: true,
+  imports: [CommonModule, RouterModule, JslibModule, LayoutComponent, IconModule, NavigationModule],
 })
 export class OrganizationLayoutComponent implements OnInit, OnDestroy {
   protected readonly logo = AdminConsoleLogo;

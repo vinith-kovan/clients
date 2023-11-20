@@ -108,6 +108,7 @@ import { SharedModule } from "./shared.module";
     LayoutComponent,
     NavigationModule,
     HeaderComponent,
+    OrganizationLayoutComponent,
   ],
   declarations: [
     AcceptFamilySponsorshipComponent,
@@ -139,7 +140,6 @@ import { SharedModule } from "./shared.module";
     NavbarComponent,
     OrganizationSwitcherComponent,
     OrgAddEditComponent,
-    OrganizationLayoutComponent,
     OrgAttachmentsComponent,
     OrgCollectionsComponent,
     OrgEventsComponent,

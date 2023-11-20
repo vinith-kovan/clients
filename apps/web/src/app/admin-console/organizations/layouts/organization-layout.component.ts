@@ -18,16 +18,28 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
 
+import { OrgSwitcherComponent } from "../../../layouts/org-switcher/org-switcher.component";
 import { AdminConsoleLogo } from "../../icons/admin-console-logo";
+
 @Component({
   selector: "app-organization-layout",
   templateUrl: "organization-layout.component.html",
   standalone: true,
-  imports: [CommonModule, RouterModule, JslibModule, LayoutComponent, IconModule, NavigationModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    JslibModule,
+    LayoutComponent,
+    IconModule,
+    NavigationModule,
+    OrgSwitcherComponent,
+  ],
 })
 export class OrganizationLayoutComponent implements OnInit, OnDestroy {
   protected readonly logo = AdminConsoleLogo;
   protected readonly FeatureFlag = FeatureFlag;
+
+  protected orgFilter = (org: Organization) => org.isAdmin;
 
   organization$: Observable<Organization>;
 

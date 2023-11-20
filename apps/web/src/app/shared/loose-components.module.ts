@@ -3,7 +3,6 @@ import { NgModule } from "@angular/core";
 import { PasswordCalloutComponent } from "@bitwarden/auth";
 import { LayoutComponent, NavigationModule } from "@bitwarden/components";
 
-import { OrganizationSwitcherComponent } from "../admin-console/components/organization-switcher.component";
 import { OrganizationLayoutComponent } from "../admin-console/organizations/layouts/organization-layout.component";
 import { EventsComponent as OrgEventsComponent } from "../admin-console/organizations/manage/events.component";
 import { UserConfirmComponent as OrgUserConfirmComponent } from "../admin-console/organizations/manage/user-confirm.component";
@@ -138,7 +137,6 @@ import { SharedModule } from "./shared.module";
     HintComponent,
     LockComponent,
     NavbarComponent,
-    OrganizationSwitcherComponent,
     OrgAddEditComponent,
     OrgAttachmentsComponent,
     OrgCollectionsComponent,
@@ -220,7 +218,6 @@ import { SharedModule } from "./shared.module";
     HintComponent,
     LockComponent,
     NavbarComponent,
-    OrganizationSwitcherComponent,
     OrgAddEditComponent,
     OrganizationLayoutComponent,
     OrgAttachmentsComponent,

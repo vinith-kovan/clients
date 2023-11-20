@@ -3,12 +3,13 @@ import { Router } from "@angular/router";
 
 import { ImportComponent } from "@bitwarden/importer/ui";
 
+import { HeaderComponent } from "../../layouts/web-header.component";
 import { SharedModule } from "../../shared";
 
 @Component({
   templateUrl: "import-web.component.html",
   standalone: true,
-  imports: [SharedModule, ImportComponent],
+  imports: [SharedModule, ImportComponent, HeaderComponent],
 })
 export class ImportWebComponent {
   protected loading = false;

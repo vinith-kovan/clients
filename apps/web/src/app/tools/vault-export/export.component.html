@@ -1,7 +1,7 @@
 <!-- Please remove this disable statement when editing this file! -->
 <!-- eslint-disable tailwindcss/no-custom-classname -->
 
-<app-header *ngIf="organizationId != null"></app-header>
+<app-header></app-header>
 
 <form
   #form
@@ -10,10 +10,6 @@
   [formGroup]="exportForm"
   *ngIf="exportForm"
 >
-  <div class="page-header" *ngIf="organizationId == null">
-    <h1>{{ "exportVault" | i18n }}</h1>
-  </div>
-
   <app-callout type="error" title="{{ 'vaultExportDisabled' | i18n }}" *ngIf="disabledByPolicy">
     {{ "personalVaultExportPolicyInEffect" | i18n }}
   </app-callout>

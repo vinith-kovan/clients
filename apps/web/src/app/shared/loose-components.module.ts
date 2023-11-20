@@ -69,13 +69,11 @@ import { ProfileComponent } from "../settings/profile.component";
 import { PurgeVaultComponent } from "../settings/purge-vault.component";
 import { SecurityKeysComponent } from "../settings/security-keys.component";
 import { SecurityComponent } from "../settings/security.component";
-import { SettingsComponent } from "../settings/settings.component";
 import { VaultTimeoutInputComponent } from "../settings/vault-timeout-input.component";
 import { GeneratorComponent } from "../tools/generator.component";
 import { PasswordGeneratorHistoryComponent } from "../tools/password-generator-history.component";
 import { AccessComponent } from "../tools/send/access.component";
 import { AddEditComponent as SendAddEditComponent } from "../tools/send/add-edit.component";
-import { ToolsComponent } from "../tools/tools.component";
 import { PremiumBadgeComponent } from "../vault/components/premium-badge.component";
 import { AddEditCustomFieldsComponent } from "../vault/individual-vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../vault/individual-vault/add-edit.component";
@@ -108,6 +106,7 @@ import { SharedModule } from "./shared.module";
     NavigationModule,
     HeaderComponent,
     OrganizationLayoutComponent,
+    UserLayoutComponent,
   ],
   declarations: [
     AcceptFamilySponsorshipComponent,
@@ -163,12 +162,10 @@ import { SharedModule } from "./shared.module";
     SelectableAvatarComponent,
     SendAddEditComponent,
     SetPasswordComponent,
-    SettingsComponent,
     ShareComponent,
     SponsoredFamiliesComponent,
     SponsoringOrgRowComponent,
     SsoComponent,
-    ToolsComponent,
     TwoFactorAuthenticatorComponent,
     TwoFactorComponent,
     TwoFactorDuoComponent,
@@ -181,7 +178,6 @@ import { SharedModule } from "./shared.module";
     TwoFactorYubiKeyComponent,
     UpdatePasswordComponent,
     UpdateTempPasswordComponent,
-    UserLayoutComponent,
     VaultTimeoutInputComponent,
     VerifyEmailComponent,
     VerifyEmailTokenComponent,
@@ -245,12 +241,10 @@ import { SharedModule } from "./shared.module";
     SelectableAvatarComponent,
     SendAddEditComponent,
     SetPasswordComponent,
-    SettingsComponent,
     ShareComponent,
     SponsoredFamiliesComponent,
     SponsoringOrgRowComponent,
     SsoComponent,
-    ToolsComponent,
     TwoFactorAuthenticatorComponent,
     TwoFactorComponent,
     TwoFactorDuoComponent,

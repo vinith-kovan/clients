@@ -10,7 +10,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { AccountProfile } from "@bitwarden/common/platform/models/domain/account";
-import { MenuModule } from "@bitwarden/components";
+import { MenuModule, TypographyModule } from "@bitwarden/components";
 
 import { DynamicAvatarComponent } from "../components/dynamic-avatar.component";
 
@@ -20,7 +20,14 @@ import { ProductSwitcherModule } from "./product-switcher/product-switcher.modul
   selector: "app-header",
   templateUrl: "./web-header.component.html",
   standalone: true,
-  imports: [CommonModule, JslibModule, MenuModule, ProductSwitcherModule, DynamicAvatarComponent],
+  imports: [
+    CommonModule,
+    JslibModule,
+    MenuModule,
+    TypographyModule,
+    ProductSwitcherModule,
+    DynamicAvatarComponent,
+  ],
 })
 export class HeaderComponent {
   /**

@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 
+import { HeaderComponent } from "../layouts/web-header.component";
 import { SharedModule } from "../shared";
 
 import { BreachReportComponent } from "./pages/breach-report.component";
@@ -15,7 +16,7 @@ import { ReportsRoutingModule } from "./reports-routing.module";
 import { ReportsSharedModule } from "./shared";
 
 @NgModule({
-  imports: [CommonModule, SharedModule, ReportsSharedModule, ReportsRoutingModule],
+  imports: [CommonModule, SharedModule, ReportsSharedModule, ReportsRoutingModule, HeaderComponent],
   declarations: [
     BreachReportComponent,
     ExposedPasswordsReportComponent,

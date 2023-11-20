@@ -1,6 +1,5 @@
-<div class="page-header">
-  <h1>{{ "domainRules" | i18n }}</h1>
-</div>
+<app-header></app-header>
+
 <p>{{ "domainRulesDesc" | i18n }}</p>
 <form #form (ngSubmit)="submit()" [appApiAction]="formPromise" ngNativeValidate>
   <h2>{{ "customEqDomains" | i18n }}</h2>

@@ -1,6 +1,5 @@
-<div class="page-header">
-  <h1>{{ "preferences" | i18n }}</h1>
-</div>
+<app-header></app-header>
+
 <p>{{ "preferencesDesc" | i18n }}</p>
 <form [formGroup]="form" (ngSubmit)="submit()" ngNativeValidate>
   <div class="row">

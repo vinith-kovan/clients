@@ -1,3 +1,4 @@
+import { CommonModule } from "@angular/common";
 import { Component, Injectable, importProvidersFrom } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import {
@@ -20,11 +21,8 @@ import {
   BreadcrumbsModule,
   ButtonModule,
   IconButtonModule,
-  IconModule,
   MenuModule,
-  NavigationModule,
   TabsModule,
-  TypographyModule,
   InputModule,
 } from "@bitwarden/components";
 
@@ -61,12 +59,16 @@ class MockPlatformUtilsService {
 @Component({
   selector: "product-switcher",
   template: `<button bitIconButton="bwi-filter"></button>`,
+  standalone: true,
+  imports: [CommonModule, IconButtonModule],
 })
 class MockProductSwitcher {}
 
 @Component({
   selector: "dynamic-avatar",
   template: `<bit-avatar [text]="name$ | async"></bit-avatar>`,
+  standalone: true,
+  imports: [CommonModule, AvatarModule],
 })
 class MockDynamicAvatar {
   protected name$ = combineLatest([
@@ -91,18 +93,14 @@ export default {
       imports: [
         JslibModule,
         RouterModule,
-        AvatarModule,
         BreadcrumbsModule,
         ButtonModule,
-        IconButtonModule,
-        IconModule,
         InputModule,
         MenuModule,
         TabsModule,
-        TypographyModule,
-        NavigationModule,
+        MockProductSwitcher,
+        MockDynamicAvatar,
       ],
-      declarations: [HeaderComponent, MockProductSwitcher, MockDynamicAvatar],
       providers: [
         { provide: StateService, useClass: MockStateService },
         { provide: PlatformUtilsService, useClass: MockPlatformUtilsService },

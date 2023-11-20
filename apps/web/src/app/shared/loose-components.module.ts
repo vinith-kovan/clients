@@ -107,6 +107,7 @@ import { SharedModule } from "./shared.module";
     PasswordCalloutComponent,
     LayoutComponent,
     NavigationModule,
+    HeaderComponent,
   ],
   declarations: [
     AcceptFamilySponsorshipComponent,
@@ -188,7 +189,6 @@ import { SharedModule } from "./shared.module";
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
     LowKdfComponent,
-    HeaderComponent,
   ],
   exports: [
     UserVerificationModule,

@@ -1,17 +1,26 @@
+import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatest, map, Observable } from "rxjs";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { AccountProfile } from "@bitwarden/common/platform/models/domain/account";
+import { MenuModule } from "@bitwarden/components";
+
+import { DynamicAvatarComponent } from "../components/dynamic-avatar.component";
+
+import { ProductSwitcherModule } from "./product-switcher/product-switcher.module";
 
 @Component({
   selector: "app-header",
   templateUrl: "./web-header.component.html",
+  standalone: true,
+  imports: [CommonModule, JslibModule, MenuModule, ProductSwitcherModule, DynamicAvatarComponent],
 })
 export class HeaderComponent {
   /**

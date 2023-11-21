@@ -2,11 +2,15 @@ import { Component, OnInit } from "@angular/core";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { CipherReportComponent } from "./cipher-report.component";
@@ -19,19 +23,25 @@ export class InactiveTwoFactorReportComponent extends CipherReportComponent impl
   services = new Map<string, string>();
   cipherDocs = new Map<string, string>();
   disabled = true;
+  private flexibleCollectionsEnabled: boolean;
 
   constructor(
     protected cipherService: CipherService,
     protected organizationService: OrganizationService,
     modalService: ModalService,
     private logService: LogService,
-    passwordRepromptService: PasswordRepromptService
+    passwordRepromptService: PasswordRepromptService,
+    protected collectionService?: CollectionService,
+    private configService?: ConfigServiceAbstraction
   ) {
     super(modalService, passwordRepromptService, organizationService);
   }
 
   async ngOnInit() {
     await super.load();
+    this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections
+    );
   }
 
   async setCiphers() {
@@ -43,6 +53,13 @@ export class InactiveTwoFactorReportComponent extends CipherReportComponent impl
 
     if (this.services.size > 0) {
       const allCiphers = await this.getAllCiphers();
+      let canManageCollections: CollectionView[];
+      if (this.flexibleCollectionsEnabled && this.collectionService) {
+        canManageCollections = (await this.collectionService.getAllDecrypted())?.filter(
+          (c) => c.manage
+        );
+      }
+
       const inactive2faCiphers: CipherView[] = [];
       const docs = new Map<string, string>();
 
@@ -53,7 +70,8 @@ export class InactiveTwoFactorReportComponent extends CipherReportComponent impl
           (login.totp != null && login.totp !== "") ||
           !login.hasUris ||
           isDeleted ||
-          (!this.organization && !edit)
+          (!this.organization && !edit) ||
+          (!this.manageCipher(ciph, canManageCollections) && !edit)
         ) {
           return;
         }
@@ -104,5 +122,14 @@ export class InactiveTwoFactorReportComponent extends CipherReportComponent impl
       }
       this.services.set(serviceData.domain, serviceData.documentation);
     }
+  }
+
+  private manageCipher(cipher: CipherView, canManageCollections: CollectionView[]): boolean {
+    if (this.flexibleCollectionsEnabled && this.collectionService) {
+      return cipher.collectionIds.some((collectionId) =>
+        canManageCollections.some((canManageCollection) => canManageCollection.id === collectionId)
+      );
+    }
+    return true;
   }
 }

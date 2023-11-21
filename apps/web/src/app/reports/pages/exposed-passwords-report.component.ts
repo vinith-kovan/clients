@@ -9,6 +9,7 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { CipherReportComponent } from "./cipher-report.component";
@@ -42,30 +43,27 @@ export class ExposedPasswordsReportComponent extends CipherReportComponent imple
   }
 
   async setCiphers() {
-    const canManageCollections = (await this.collectionService.getAllDecrypted())?.filter(
-      (c) => c.manage
-    );
-    const allCiphers = (await this.getAllCiphers()).filter(
-      (c) =>
-        c.edit ||
-        c.collectionIds.some((collectionId) =>
-          canManageCollections.some(
-            (canManageCollection) => canManageCollection.id === collectionId
-          )
-        )
-    );
+    const allCiphers = await this.getAllCiphers();
+    let canManageCollections: CollectionView[];
+    if (this.flexibleCollectionsEnabled && this.collectionService) {
+      canManageCollections = (await this.collectionService.getAllDecrypted())?.filter(
+        (c) => c.manage
+      );
+    }
 
     const exposedPasswordCiphers: CipherView[] = [];
     const promises: Promise<void>[] = [];
     allCiphers.forEach((ciph) => {
       const { type, login, isDeleted, edit, viewPassword, id } = ciph;
+
       if (
         type !== CipherType.Login ||
         login.password == null ||
         login.password === "" ||
         isDeleted ||
         (!this.organization && !edit) ||
-        !viewPassword
+        !viewPassword ||
+        (!this.manageCipher(ciph, canManageCollections) && !edit)
       ) {
         return;
       }
@@ -86,7 +84,16 @@ export class ExposedPasswordsReportComponent extends CipherReportComponent imple
   }
 
   protected canManageCipher(c: CipherView): boolean {
-    // this will only ever be false from the org view;
+    // this will only ever be false from the org view
+    return true;
+  }
+
+  private manageCipher(cipher: CipherView, canManageCollections: CollectionView[]): boolean {
+    if (this.flexibleCollectionsEnabled && this.collectionService) {
+      return cipher.collectionIds.some((collectionId) =>
+        canManageCollections.some((canManageCollection) => canManageCollection.id === collectionId)
+      );
+    }
     return true;
   }
 }

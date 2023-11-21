@@ -39,7 +39,7 @@ export class CollectionView implements View, ITreeNodeObject {
       );
     }
     if (flexibleCollectionsEnabled) {
-      return org?.canEditAnyCollection || org?.canEditAssignedCollections || this.manage;
+      return org?.canEditAnyCollection || this.manage;
     } else {
       return org?.canEditAnyCollection || org?.canEditAssignedCollections;
     }

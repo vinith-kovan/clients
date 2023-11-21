@@ -2,11 +2,15 @@ import { Component, OnInit } from "@angular/core";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { BadgeTypes } from "@bitwarden/components";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
@@ -19,6 +23,7 @@ import { CipherReportComponent } from "./cipher-report.component";
 export class WeakPasswordsReportComponent extends CipherReportComponent implements OnInit {
   passwordStrengthMap = new Map<string, [string, BadgeTypes]>();
   disabled = true;
+  private flexibleCollectionsEnabled: boolean;
 
   private passwordStrengthCache = new Map<string, number>();
   weakPasswordCiphers: CipherView[] = [];
@@ -28,21 +33,32 @@ export class WeakPasswordsReportComponent extends CipherReportComponent implemen
     protected passwordStrengthService: PasswordStrengthServiceAbstraction,
     protected organizationService: OrganizationService,
     modalService: ModalService,
-    passwordRepromptService: PasswordRepromptService
+    passwordRepromptService: PasswordRepromptService,
+    protected collectionService?: CollectionService,
+    private configService?: ConfigServiceAbstraction
   ) {
     super(modalService, passwordRepromptService, organizationService);
   }
 
   async ngOnInit() {
     await super.load();
+    this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections
+    );
   }
 
   async setCiphers() {
     const allCiphers = await this.getAllCiphers();
-    this.findWeakPasswords(allCiphers);
+    await this.findWeakPasswords(allCiphers);
   }
 
-  protected findWeakPasswords(ciphers: any[]): void {
+  private async findWeakPasswords(ciphers: any[]): Promise<void> {
+    let canManageCollections: CollectionView[];
+    if (this.flexibleCollectionsEnabled && this.collectionService) {
+      canManageCollections = (await this.collectionService.getAllDecrypted())?.filter(
+        (c) => c.manage
+      );
+    }
     ciphers.forEach((ciph) => {
       const { type, login, isDeleted, edit, viewPassword, id } = ciph;
       if (
@@ -51,7 +67,8 @@ export class WeakPasswordsReportComponent extends CipherReportComponent implemen
         login.password === "" ||
         isDeleted ||
         (!this.organization && !edit) ||
-        !viewPassword
+        !viewPassword ||
+        (!this.manageCipher(ciph, canManageCollections) && !edit)
       ) {
         return;
       }
@@ -129,5 +146,14 @@ export class WeakPasswordsReportComponent extends CipherReportComponent implemen
       default:
         return ["veryWeak", "danger"];
     }
+  }
+
+  private manageCipher(cipher: CipherView, canManageCollections: CollectionView[]): boolean {
+    if (this.flexibleCollectionsEnabled && this.collectionService) {
+      return cipher.collectionIds.some((collectionId) =>
+        canManageCollections.some((canManageCollection) => canManageCollection.id === collectionId)
+      );
+    }
+    return true;
   }
 }

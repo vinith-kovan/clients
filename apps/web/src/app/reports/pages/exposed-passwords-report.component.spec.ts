@@ -6,8 +6,10 @@ import { I18nPipe } from "@bitwarden/angular/platform/pipes/i18n.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { ExposedPasswordsReportComponent } from "./exposed-passwords-report.component";
@@ -46,6 +48,14 @@ describe("ExposedPasswordsReportComponent", () => {
         {
           provide: I18nService,
           useValue: mock<I18nService>(),
+        },
+        {
+          provide: CollectionService,
+          useValue: mock<CollectionService>(),
+        },
+        {
+          provide: ConfigServiceAbstraction,
+          useValue: mock<ConfigServiceAbstraction>(),
         },
       ],
       schemas: [],

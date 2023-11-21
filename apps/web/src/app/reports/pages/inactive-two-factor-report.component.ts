@@ -64,13 +64,14 @@ export class InactiveTwoFactorReportComponent extends CipherReportComponent impl
       const docs = new Map<string, string>();
 
       allCiphers.forEach((ciph) => {
-        const { type, login, isDeleted, edit, id } = ciph;
+        const { type, login, isDeleted, edit, id, viewPassword } = ciph;
         if (
           type !== CipherType.Login ||
           (login.totp != null && login.totp !== "") ||
           !login.hasUris ||
           isDeleted ||
           (!this.organization && !edit) ||
+          !viewPassword ||
           (!this.manageCipher(ciph, canManageCollections) && !edit)
         ) {
           return;

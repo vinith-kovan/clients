@@ -68,7 +68,6 @@ const common = {
 const renderer = {
   mode: NODE_ENV,
   devtool: "source-map",
-  // TODO: Replace this with web.
   target: "web",
   node: {
     __dirname: false,

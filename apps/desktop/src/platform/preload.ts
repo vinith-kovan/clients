@@ -10,7 +10,7 @@ import {
   UnencryptedMessageResponse,
 } from "../models/native-messaging";
 import { BiometricMessage, BiometricAction } from "../types/biometric-message";
-import { isDev, isWindowsStore } from "../utils";
+import { isDev, isMacAppStore, isWindowsStore } from "../utils";
 
 import { ClipboardWriteMessage } from "./types/clipboard";
 
@@ -81,6 +81,7 @@ export default {
   },
   deviceType: deviceType(),
   isDev: isDev(),
+  isMacAppStore: isMacAppStore(),
   isWindowsStore: isWindowsStore(),
   reloadProcess: () => ipcRenderer.send("reload-process"),
 

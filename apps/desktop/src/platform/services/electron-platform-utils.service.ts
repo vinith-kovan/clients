@@ -6,7 +6,6 @@ import {
   PlatformUtilsService,
 } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
-import { isDev, isMacAppStore } from "../../utils";
 import { ClipboardWriteMessage } from "../types/clipboard";
 
 export class ElectronPlatformUtilsService implements PlatformUtilsService {
@@ -50,7 +49,7 @@ export class ElectronPlatformUtilsService implements PlatformUtilsService {
   }
 
   isMacAppStore(): boolean {
-    return isMacAppStore();
+    return ipc.platform.isMacAppStore;
   }
 
   isViewOpen(): Promise<boolean> {
@@ -94,7 +93,7 @@ export class ElectronPlatformUtilsService implements PlatformUtilsService {
   }
 
   isDev(): boolean {
-    return isDev();
+    return ipc.platform.isDev;
   }
 
   isSelfHost(): boolean {

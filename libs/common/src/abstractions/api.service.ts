@@ -206,6 +206,7 @@ export abstract class ApiService {
     emergencyAccessId?: string
   ) => Promise<AttachmentResponse>;
   getCiphersOrganization: (organizationId: string) => Promise<ListResponse<CipherResponse>>;
+  getManagedCiphersOrganization: (organizationId: string) => Promise<ListResponse<CipherResponse>>;
   postCipher: (request: CipherRequest) => Promise<CipherResponse>;
   postCipherCreate: (request: CipherCreateRequest) => Promise<CipherResponse>;
   postCipherAdmin: (request: CipherCreateRequest) => Promise<CipherResponse>;
@@ -265,6 +266,7 @@ export abstract class ApiService {
 
   getUserCollections: () => Promise<ListResponse<CollectionResponse>>;
   getCollections: (organizationId: string) => Promise<ListResponse<CollectionResponse>>;
+  getManagedCollections: (organizationId: string) => Promise<ListResponse<CollectionResponse>>;
   getCollectionUsers: (organizationId: string, id: string) => Promise<SelectionReadOnlyResponse[]>;
   getCollectionAccessDetails: (
     organizationId: string,
@@ -498,5 +500,8 @@ export abstract class ApiService {
     request: KeyConnectorUserKeyRequest
   ) => Promise<void>;
   getKeyConnectorAlive: (keyConnectorUrl: string) => Promise<void>;
-  getOrganizationExport: (organizationId: string) => Promise<OrganizationExportResponse>;
+  getOrganizationExport: (
+    organizationId: string,
+    isManaged: boolean
+  ) => Promise<OrganizationExportResponse>;
 }

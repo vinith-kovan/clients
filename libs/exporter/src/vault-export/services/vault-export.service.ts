@@ -51,9 +51,13 @@ export class VaultExportService implements VaultExportServiceAbstraction {
     private stateService: StateService
   ) {}
 
-  async getExport(format: ExportFormat = "csv", organizationId?: string): Promise<string> {
+  async getExport(
+    format: ExportFormat = "csv",
+    organizationId?: string,
+    isManaged?: boolean
+  ): Promise<string> {
     if (organizationId) {
-      return await this.getOrganizationExport(organizationId, format);
+      return await this.getOrganizationExport(organizationId, format, isManaged);
     }
 
     if (format === "encrypted_json") {
@@ -63,9 +67,13 @@ export class VaultExportService implements VaultExportServiceAbstraction {
     }
   }
 
-  async getPasswordProtectedExport(password: string, organizationId?: string): Promise<string> {
+  async getPasswordProtectedExport(
+    password: string,
+    organizationId?: string,
+    isManaged?: boolean
+  ): Promise<string> {
     const clearText = organizationId
-      ? await this.getOrganizationExport(organizationId, "json")
+      ? await this.getOrganizationExport(organizationId, "json", isManaged)
       : await this.getExport("json");
 
     const kdfType: KdfType = await this.stateService.getKdfType();
@@ -94,12 +102,13 @@ export class VaultExportService implements VaultExportServiceAbstraction {
 
   async getOrganizationExport(
     organizationId: string,
-    format: ExportFormat = "csv"
+    format: ExportFormat = "csv",
+    isManaged = false
   ): Promise<string> {
     if (format === "encrypted_json") {
-      return this.getOrganizationEncryptedExport(organizationId);
+      return this.getOrganizationEncryptedExport(organizationId, isManaged);
     } else {
-      return this.getOrganizationDecryptedExport(organizationId, format);
+      return this.getOrganizationDecryptedExport(organizationId, format, isManaged);
     }
   }
 
@@ -235,14 +244,15 @@ export class VaultExportService implements VaultExportServiceAbstraction {
 
   private async getOrganizationDecryptedExport(
     organizationId: string,
-    format: "json" | "csv"
+    format: "json" | "csv",
+    isManaged: boolean
   ): Promise<string> {
     const decCollections: CollectionView[] = [];
     const decCiphers: CipherView[] = [];
     const promises = [];
 
     promises.push(
-      this.apiService.getOrganizationExport(organizationId).then((exportData) => {
+      this.apiService.getOrganizationExport(organizationId, isManaged).then((exportData) => {
         const exportPromises: any = [];
         if (exportData != null) {
           if (exportData.collections != null && exportData.collections.length > 0) {
@@ -324,13 +334,19 @@ export class VaultExportService implements VaultExportServiceAbstraction {
     }
   }
 
-  private async getOrganizationEncryptedExport(organizationId: string): Promise<string> {
+  private async getOrganizationEncryptedExport(
+    organizationId: string,
+    managed?: boolean
+  ): Promise<string> {
     const collections: Collection[] = [];
     const ciphers: Cipher[] = [];
     const promises = [];
 
     promises.push(
-      this.apiService.getCollections(organizationId).then((c) => {
+      (managed
+        ? this.apiService.getManagedCollections(organizationId)
+        : this.apiService.getCollections(organizationId)
+      ).then((c) => {
         if (c != null && c.data != null && c.data.length > 0) {
           c.data.forEach((r) => {
             const collection = new Collection(new CollectionData(r as CollectionDetailsResponse));
@@ -341,7 +357,10 @@ export class VaultExportService implements VaultExportServiceAbstraction {
     );
 
     promises.push(
-      this.apiService.getCiphersOrganization(organizationId).then((c) => {
+      (managed
+        ? this.apiService.getManagedCiphersOrganization(organizationId)
+        : this.apiService.getCiphersOrganization(organizationId)
+      ).then((c) => {
         if (c != null && c.data != null && c.data.length > 0) {
           c.data
             .filter((item) => item.deletedDate === null)

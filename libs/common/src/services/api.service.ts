@@ -506,6 +506,19 @@ export class ApiService implements ApiServiceAbstraction {
     return new ListResponse(r, CipherResponse);
   }
 
+  async getManagedCiphersOrganization(
+    organizationId: string
+  ): Promise<ListResponse<CipherResponse>> {
+    const r = await this.send(
+      "GET",
+      "/ciphers/organization-details/managed?organizationId=" + organizationId,
+      null,
+      true,
+      true
+    );
+    return new ListResponse(r, CipherResponse);
+  }
+
   async postCipher(request: CipherRequest): Promise<CipherResponse> {
     const r = await this.send("POST", "/ciphers", request, true, true);
     return new CipherResponse(r);
@@ -738,6 +751,17 @@ export class ApiService implements ApiServiceAbstraction {
     const r = await this.send(
       "GET",
       "/organizations/" + organizationId + "/collections",
+      null,
+      true,
+      true
+    );
+    return new ListResponse(r, CollectionResponse);
+  }
+
+  async getManagedCollections(organizationId: string): Promise<ListResponse<CollectionResponse>> {
+    const r = await this.send(
+      "GET",
+      "/organizations/" + organizationId + "/collections/managed",
       null,
       true,
       true
@@ -1568,10 +1592,13 @@ export class ApiService implements ApiServiceAbstraction {
     }
   }
 
-  async getOrganizationExport(organizationId: string): Promise<OrganizationExportResponse> {
+  async getOrganizationExport(
+    organizationId: string,
+    isManaged: boolean
+  ): Promise<OrganizationExportResponse> {
     const r = await this.send(
       "GET",
-      "/organizations/" + organizationId + "/export",
+      "/organizations/" + organizationId + "/export/" + isManaged,
       null,
       true,
       true

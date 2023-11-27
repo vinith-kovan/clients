@@ -10,6 +10,8 @@ import { FileDownloadService } from "@bitwarden/common/platform/abstractions/fil
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { ConfigService } from "@bitwarden/common/platform/services/config/config.service";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
@@ -29,7 +31,9 @@ export class ExportComponent extends BaseExportComponent implements OnInit {
     logService: LogService,
     fileDownloadService: FileDownloadService,
     dialogService: DialogService,
-    organizationService: OrganizationService
+    organizationService: OrganizationService,
+    collectionService: CollectionService,
+    configService: ConfigService
   ) {
     super(
       i18nService,
@@ -42,7 +46,9 @@ export class ExportComponent extends BaseExportComponent implements OnInit {
       formBuilder,
       fileDownloadService,
       dialogService,
-      organizationService
+      organizationService,
+      collectionService,
+      configService
     );
   }
 }

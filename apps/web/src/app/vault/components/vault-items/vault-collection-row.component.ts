@@ -1,15 +1,8 @@
-import {
-  Component,
-  EventEmitter,
-  HostBinding,
-  HostListener,
-  Input,
-  OnInit,
-  Output,
-} from "@angular/core";
+import { Component, EventEmitter, HostBinding, HostListener, Input, Output } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 
 import { GroupView } from "../../../admin-console/organizations/core";
@@ -22,7 +15,7 @@ import { RowHeightClass } from "./vault-items.component";
   selector: "tr[appVaultCollectionRow]",
   templateUrl: "vault-collection-row.component.html",
 })
-export class VaultCollectionRowComponent implements OnInit {
+export class VaultCollectionRowComponent {
   protected RowHeightClass = RowHeightClass;
 
   @Input() disabled: boolean;
@@ -34,28 +27,16 @@ export class VaultCollectionRowComponent implements OnInit {
   @Input() canDeleteCollection: boolean;
   @Input() organizations: Organization[];
   @Input() groups: GroupView[];
-  @Input() orgVault: boolean;
+  @Input() isOrgVaultActive: boolean;
   @Input() flexibleCollectionsEnabled: boolean;
-  permissionText: string;
+  // permissionText: string;
 
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
 
   @Input() checked: boolean;
   @Output() checkedToggled = new EventEmitter<void>();
 
-  constructor(private router: Router) {}
-
-  ngOnInit() {
-    if (this.collection.manage) {
-      this.permissionText = "canManage";
-    } else if (!this.collection.readOnly) {
-      this.permissionText = "canEdit";
-    } else if (this.collection.readOnly) {
-      this.permissionText = "canView";
-    } else {
-      this.permissionText = null;
-    }
-  }
+  constructor(private router: Router, private i18nService: I18nService) {}
 
   @HostBinding("class")
   get classes() {
@@ -72,6 +53,18 @@ export class VaultCollectionRowComponent implements OnInit {
 
   get organization() {
     return this.organizations.find((o) => o.id === this.collection.organizationId);
+  }
+
+  get permissionText() {
+    if (this.collection.manage) {
+      return this.i18nService.t("canManage");
+    } else if (!this.collection.readOnly) {
+      return this.i18nService.t("canEdit");
+    } else if (this.collection.readOnly) {
+      return this.i18nService.t("canView");
+    } else {
+      return "-";
+    }
   }
 
   @HostListener("click")

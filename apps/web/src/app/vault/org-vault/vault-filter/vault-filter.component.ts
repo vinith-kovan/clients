@@ -33,7 +33,7 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
         (await this.getDefaultFilter()) as TreeNode<CollectionFilter>;
     }
     this.isLoaded = true;
-    this.isOrgVault = true;
+    this.isOrgVaultActive = true;
   }
 
   ngOnDestroy() {

@@ -238,7 +238,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.collectionService.getAllDecrypted(),
     ]).pipe(
       map(([adminCollections, syncCollections]) => {
-        adminCollections.forEach((collection) => {
+        return adminCollections.map((collection) => {
           const currentId = collection.id;
           const match = syncCollections.find((syncCollection) => currentId === syncCollection.id);
 
@@ -248,7 +248,6 @@ export class VaultComponent implements OnInit, OnDestroy {
           }
           return collection;
         });
-        return adminCollections;
       }),
       shareReplay({ refCount: true, bufferSize: 1 })
     );

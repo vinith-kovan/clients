@@ -8,30 +8,25 @@
       appA11yTitle="{{ 'toggleCollapse' | i18n }}: {{ headerNode.node.name | i18n }}"
       aria-controls="sub-filters"
     >
-      <ng-container
+      <i
         *ngIf="
           headerNode.node.id === 'AllCollections' &&
-          isOrgVault &&
-          (flexibleCollectionsEnabled$ | async)
+            isOrgVaultActive &&
+            (flexibleCollectionsEnabled$ | async);
+          else elseBlock
         "
+        class="bwi bwi-fw bwi-angle-down"
+        aria-hidden="true"
       >
-        <i class="bwi bwi-fw bwi-angle-down" aria-hidden="true"></i>
-      </ng-container>
-      <ng-container
-        *ngIf="
-          !(
-            headerNode.node.id === 'AllCollections' &&
-            isOrgVault &&
-            (flexibleCollectionsEnabled$ | async)
-          )
-        "
-      >
+      </i>
+      <ng-template #elseBlock>
         <i
+          #elseBlock
           class="bwi bwi-fw"
           aria-hidden="true"
           [ngClass]="isCollapsed(headerNode.node) ? 'bwi-angle-right' : 'bwi-angle-down'"
         ></i>
-      </ng-container>
+      </ng-template>
     </button>
     <button
       type="button"
@@ -64,7 +59,7 @@
         *ngIf="
           !(
             headerNode.node.id === 'AllCollections' &&
-            isOrgVault &&
+            isOrgVaultActive &&
             (flexibleCollectionsEnabled$ | async)
           )
         "

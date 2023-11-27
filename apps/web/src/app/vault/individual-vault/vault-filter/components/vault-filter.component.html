@@ -28,7 +28,11 @@
       />
       <ng-container *ngFor="let f of filtersList">
         <div class="filter">
-          <app-filter-section [activeFilter]="activeFilter" [section]="f" [isOrgVault]="isOrgVault">
+          <app-filter-section
+            [activeFilter]="activeFilter"
+            [section]="f"
+            [isOrgVaultActive]="isOrgVaultActive"
+          >
           </app-filter-section>
         </div>
       </ng-container>

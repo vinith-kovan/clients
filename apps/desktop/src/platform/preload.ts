@@ -1,6 +1,6 @@
 import { ipcRenderer } from "electron";
 
-import { DeviceType, ThemeType, KeySuffixOptions } from "@bitwarden/common/enums";
+import { DeviceType, ThemeType, KeySuffixOptions, LogLevelType } from "@bitwarden/common/enums";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 
 import {
@@ -84,6 +84,7 @@ export default {
   isMacAppStore: isMacAppStore(),
   isWindowsStore: isWindowsStore(),
   reloadProcess: () => ipcRenderer.send("reload-process"),
+  log: (level: LogLevelType, message: string) => ipcRenderer.invoke("ipc.log", { level, message }),
 
   openContextMenu: (
     menu: {

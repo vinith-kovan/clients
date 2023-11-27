@@ -1,5 +1,6 @@
 import * as path from "path";
 
+import { ipcMain } from "electron";
 import log from "electron-log/main";
 
 import { LogLevelType } from "@bitwarden/common/enums";
@@ -23,6 +24,10 @@ export class ElectronLogMainService extends BaseLogService {
       log.transports.file.resolvePathFn = () => path.join(this.logDir, "app.log");
     }
     log.initialize();
+
+    ipcMain.handle("ipc.log", (_event, { level, message }) => {
+      this.write(level, message);
+    });
   }
 
   write(level: LogLevelType, message: string) {

@@ -1,5 +1,3 @@
-import log from "electron-log/renderer";
-
 import { LogLevelType } from "@bitwarden/common/enums";
 import { ConsoleLogService as BaseLogService } from "@bitwarden/common/platform/services/console-log.service";
 
@@ -13,18 +11,21 @@ export class ElectronLogRendererService extends BaseLogService {
       return;
     }
 
+    ipc.platform.log(level, message);
+
+    /* eslint-disable no-console */
     switch (level) {
       case LogLevelType.Debug:
-        log.debug(message);
+        console.debug(message);
         break;
       case LogLevelType.Info:
-        log.info(message);
+        console.info(message);
         break;
       case LogLevelType.Warning:
-        log.warn(message);
+        console.warn(message);
         break;
       case LogLevelType.Error:
-        log.error(message);
+        console.error(message);
         break;
       default:
         break;

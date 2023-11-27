@@ -1,6 +1,7 @@
 import { BehaviorSubject, concatMap } from "rxjs";
 import { Jsonify, JsonValue } from "type-fest";
 
+import { AutofillOverlayVisibility } from "../../../../../apps/browser/src/autofill/utils/autofill-overlay.enum";
 import { EncryptedOrganizationKeyData } from "../../admin-console/models/data/encrypted-organization-key.data";
 import { OrganizationData } from "../../admin-console/models/data/organization.data";
 import { PolicyData } from "../../admin-console/models/data/policy.data";
@@ -1212,6 +1213,24 @@ export class StateService<
     );
   }
 
+  async getEnablePasskeys(options?: StorageOptions): Promise<boolean> {
+    return (
+      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
+        ?.enablePasskeys ?? true
+    );
+  }
+
+  async setEnablePasskeys(value: boolean, options?: StorageOptions): Promise<void> {
+    const globals = await this.getGlobals(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+    globals.enablePasskeys = value;
+    await this.saveGlobals(
+      globals,
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+  }
+
   async getDisableContextMenuItem(options?: StorageOptions): Promise<boolean> {
     return (
       (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
@@ -1523,6 +1542,27 @@ export class StateService<
     await this.saveGlobals(
       globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+  }
+
+  async getAutoFillOverlayVisibility(options?: StorageOptions): Promise<number> {
+    return (
+      (
+        await this.getGlobals(
+          this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
+        )
+      )?.autoFillOverlayVisibility ?? AutofillOverlayVisibility.OnFieldFocus
+    );
+  }
+
+  async setAutoFillOverlayVisibility(value: number, options?: StorageOptions): Promise<void> {
+    const globals = await this.getGlobals(
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
+    );
+    globals.autoFillOverlayVisibility = value;
+    await this.saveGlobals(
+      globals,
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
     );
   }
 
@@ -2364,23 +2404,6 @@ export class StateService<
     );
   }
 
-  async getEmergencyAccessInvitation(options?: StorageOptions): Promise<any> {
-    return (
-      await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
-    )?.emergencyAccessInvitation;
-  }
-
-  async setEmergencyAccessInvitation(value: any, options?: StorageOptions): Promise<void> {
-    const globals = await this.getGlobals(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
-    );
-    globals.emergencyAccessInvitation = value;
-    await this.saveGlobals(
-      globals,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
-    );
-  }
-
   /**
    * @deprecated Do not call this directly, use OrganizationService
    */
@@ -2859,6 +2882,23 @@ export class StateService<
     return await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
+    );
+  }
+
+  async getDeepLinkRedirectUrl(options?: StorageOptions): Promise<string> {
+    return (
+      await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
+    )?.deepLinkRedirectUrl;
+  }
+
+  async setDeepLinkRedirectUrl(url: string, options?: StorageOptions): Promise<void> {
+    const globals = await this.getGlobals(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+    globals.deepLinkRedirectUrl = url;
+    await this.saveGlobals(
+      globals,
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }
 

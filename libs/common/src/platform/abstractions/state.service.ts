@@ -243,6 +243,8 @@ export abstract class StateService<T extends Account = Account> {
     value: boolean,
     options?: StorageOptions
   ) => Promise<void>;
+  getEnablePasskeys: (options?: StorageOptions) => Promise<boolean>;
+  setEnablePasskeys: (value: boolean, options?: StorageOptions) => Promise<void>;
   getDisableContextMenuItem: (options?: StorageOptions) => Promise<boolean>;
   setDisableContextMenuItem: (value: boolean, options?: StorageOptions) => Promise<void>;
   /**
@@ -285,6 +287,8 @@ export abstract class StateService<T extends Account = Account> {
   setEmailVerified: (value: boolean, options?: StorageOptions) => Promise<void>;
   getEnableAlwaysOnTop: (options?: StorageOptions) => Promise<boolean>;
   setEnableAlwaysOnTop: (value: boolean, options?: StorageOptions) => Promise<void>;
+  getAutoFillOverlayVisibility: (options?: StorageOptions) => Promise<number>;
+  setAutoFillOverlayVisibility: (value: number, options?: StorageOptions) => Promise<void>;
   getEnableAutoFillOnPageLoad: (options?: StorageOptions) => Promise<boolean>;
   setEnableAutoFillOnPageLoad: (value: boolean, options?: StorageOptions) => Promise<void>;
   getEnableBrowserIntegration: (options?: StorageOptions) => Promise<boolean>;
@@ -428,8 +432,6 @@ export abstract class StateService<T extends Account = Account> {
   setOpenAtLogin: (value: boolean, options?: StorageOptions) => Promise<void>;
   getOrganizationInvitation: (options?: StorageOptions) => Promise<any>;
   setOrganizationInvitation: (value: any, options?: StorageOptions) => Promise<void>;
-  getEmergencyAccessInvitation: (options?: StorageOptions) => Promise<any>;
-  setEmergencyAccessInvitation: (value: any, options?: StorageOptions) => Promise<void>;
   /**
    * @deprecated Do not call this directly, use OrganizationService
    */
@@ -530,4 +532,17 @@ export abstract class StateService<T extends Account = Account> {
     value: Record<string, Record<string, boolean>>,
     options?: StorageOptions
   ) => Promise<void>;
+  /**
+   * fetches string value of URL user tried to navigate to while unauthenticated.
+   * @param options Defines the storage options for the URL; Defaults to session Storage.
+   * @returns route called prior to successful login.
+   */
+  getDeepLinkRedirectUrl: (options?: StorageOptions) => Promise<string>;
+  /**
+   * Store URL in session storage by default, but can be configured. Developed to handle
+   * unauthN interrupted navigation.
+   * @param url URL of route
+   * @param options Defines the storage options for the URL; Defaults to session Storage.
+   */
+  setDeepLinkRedirectUrl: (url: string, options?: StorageOptions) => Promise<void>;
 }

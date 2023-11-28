@@ -9,12 +9,7 @@
       aria-controls="sub-filters"
     >
       <i
-        *ngIf="
-          headerNode.node.id === 'AllCollections' &&
-            isOrgVaultActive &&
-            (flexibleCollectionsEnabled$ | async);
-          else elseBlock
-        "
+        *ngIf="headerNode.node.id === 'AllCollections' && isOrgVaultActive; else elseBlock"
         class="bwi bwi-fw bwi-angle-down"
         aria-hidden="true"
       >
@@ -55,15 +50,7 @@
     class="filter-options"
   >
     <ng-template #recursiveFilters let-filters>
-      <ng-container
-        *ngIf="
-          !(
-            headerNode.node.id === 'AllCollections' &&
-            isOrgVaultActive &&
-            (flexibleCollectionsEnabled$ | async)
-          )
-        "
-      >
+      <ng-container *ngIf="!(headerNode.node.id === 'AllCollections' && isOrgVaultActive)">
         <li
           *ngFor="let f of filters"
           [ngClass]="{

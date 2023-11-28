@@ -57,7 +57,11 @@ export class VaultCollectionRowComponent {
 
   get permissionText() {
     if (this.collection.manage) {
-      return this.i18nService.t("canManage");
+      if (this.flexibleCollectionsEnabled) {
+        return this.i18nService.t("canManage");
+      } else {
+        return this.i18nService.t("canEdit");
+      }
     } else if (!this.collection.readOnly) {
       return this.i18nService.t("canEdit");
     } else if (this.collection.readOnly) {

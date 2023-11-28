@@ -5,7 +5,7 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
@@ -47,13 +47,14 @@ export class InactiveTwoFactorReportComponent extends CipherReportComponent impl
       const docs = new Map<string, string>();
 
       allCiphers.forEach((ciph) => {
-        const { type, login, isDeleted, edit, id } = ciph;
+        const { type, login, isDeleted, edit, id, viewPassword } = ciph;
         if (
           type !== CipherType.Login ||
           (login.totp != null && login.totp !== "") ||
           !login.hasUris ||
           isDeleted ||
-          (!this.organization && !edit)
+          (!this.organization && !edit) ||
+          !viewPassword
         ) {
           return;
         }

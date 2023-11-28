@@ -4,12 +4,12 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { ThemeType } from "@bitwarden/common/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { ThemeType } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import { openUnlockPopout } from "../../auth/popup/utils/auth-popout-window";
@@ -122,7 +122,7 @@ export default class NotificationBackground {
         }
         break;
       case "bgUnlockPopoutOpened":
-        await this.unlockVault(sender.tab);
+        await this.unlockVault(msg, sender.tab);
         break;
       case "checkNotificationQueue":
         await this.checkNotificationQueue(sender.tab);
@@ -330,7 +330,21 @@ export default class NotificationBackground {
     }
   }
 
-  private async unlockVault(tab: chrome.tabs.Tab) {
+  /**
+   * Sets up a notification to unlock the vault when the user
+   * attempts to autofill a cipher while the vault is locked.
+   *
+   * @param message - Extension message, determines if the notification should be skipped
+   * @param tab - The tab that the message was sent from
+   */
+  private async unlockVault(
+    message: { data?: { skipNotification?: boolean } },
+    tab: chrome.tabs.Tab
+  ) {
+    if (message.data?.skipNotification) {
+      return;
+    }
+
     const currentAuthStatus = await this.authService.getAuthStatus();
     if (currentAuthStatus !== AuthenticationStatus.Locked || this.notificationQueue.length) {
       return;

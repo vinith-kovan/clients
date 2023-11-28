@@ -7,7 +7,6 @@ import * as lock from "proper-lockfile";
 import { OperationOptions } from "retry";
 import { Subject } from "rxjs";
 
-import { NodeUtils } from "@bitwarden/common/misc/nodeUtils";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import {
   AbstractStorageService,
@@ -15,6 +14,7 @@ import {
 } from "@bitwarden/common/platform/abstractions/storage.service";
 import { sequentialize } from "@bitwarden/common/platform/misc/sequentialize";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { NodeUtils } from "@bitwarden/node/node-utils";
 
 const retries: OperationOptions = {
   retries: 50,
@@ -29,6 +29,7 @@ export class LowdbStorageService implements AbstractStorageService {
   private defaults: any;
   private ready = false;
   private updatesSubject = new Subject<StorageUpdate>();
+  updates$;
 
   constructor(
     protected logService: LogService,
@@ -38,6 +39,7 @@ export class LowdbStorageService implements AbstractStorageService {
     private requireLock = false
   ) {
     this.defaults = defaults;
+    this.updates$ = this.updatesSubject.asObservable();
   }
 
   @sequentialize(() => "lowdbStorageInit")
@@ -109,9 +111,6 @@ export class LowdbStorageService implements AbstractStorageService {
 
   get valuesRequireDeserialization(): boolean {
     return true;
-  }
-  get updates$() {
-    return this.updatesSubject.asObservable();
   }
 
   async get<T>(key: string): Promise<T> {

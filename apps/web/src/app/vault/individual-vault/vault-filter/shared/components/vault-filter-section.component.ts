@@ -4,8 +4,8 @@ import { map } from "rxjs/operators";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ITreeNodeObject, TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { ITreeNodeObject, TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 
 import { VaultFilterService } from "../../services/abstractions/vault-filter.service";
 import { VaultFilterSection, VaultFilterType } from "../models/vault-filter-section.type";

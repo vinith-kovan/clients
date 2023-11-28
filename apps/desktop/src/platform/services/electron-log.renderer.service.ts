@@ -1,4 +1,4 @@
-import { LogLevelType } from "@bitwarden/common/enums";
+import { LogLevelType } from "@bitwarden/common/platform/enums";
 import { ConsoleLogService as BaseLogService } from "@bitwarden/common/platform/services/console-log.service";
 
 export class ElectronLogRendererService extends BaseLogService {

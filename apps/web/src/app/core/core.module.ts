@@ -29,6 +29,7 @@ import { HtmlStorageService } from "../core/html-storage.service";
 import { I18nService } from "../core/i18n.service";
 import { CollectionAdminService } from "../vault/core/collection-admin.service";
 
+import { BannerService } from "./banner.service";
 import { BroadcasterMessagingService } from "./broadcaster-messaging.service";
 import { EventService } from "./event.service";
 import { InitService } from "./init.service";
@@ -46,6 +47,7 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
     RouterService,
     EventService,
     PolicyListService,
+    BannerService,
     {
       provide: APP_INITIALIZER,
       useFactory: (initService: InitService) => initService.init(),

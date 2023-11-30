@@ -87,6 +87,7 @@ import { AddEditComponent as OrgAddEditComponent } from "../vault/org-vault/add-
 import { AttachmentsComponent as OrgAttachmentsComponent } from "../vault/org-vault/attachments.component";
 import { CollectionsComponent as OrgCollectionsComponent } from "../vault/org-vault/collections.component";
 import { PurgeVaultComponent } from "../vault/settings/purge-vault.component";
+import { PaymentMethodsWarningComponent } from "../admin-console/components/payment-methods-warning.component";
 
 import { EnvironmentSelectorModule } from "./../components/environment-selector/environment-selector.module";
 import { AccountFingerprintComponent } from "./components/account-fingerprint/account-fingerprint.component";
@@ -150,6 +151,7 @@ import { SharedModule } from "./shared.module";
     OrgWeakPasswordsReportComponent,
     GeneratorComponent,
     PasswordGeneratorHistoryComponent,
+    PaymentMethodsWarningComponent,
     PreferencesComponent,
     PremiumBadgeComponent,
     ProfileComponent,
@@ -233,6 +235,7 @@ import { SharedModule } from "./shared.module";
     OrgWeakPasswordsReportComponent,
     GeneratorComponent,
     PasswordGeneratorHistoryComponent,
+    PaymentMethodsWarningComponent,
     PreferencesComponent,
     PremiumBadgeComponent,
     ProfileComponent,

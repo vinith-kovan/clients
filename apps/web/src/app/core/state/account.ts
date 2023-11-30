@@ -5,6 +5,7 @@ import {
 
 export class AccountSettings extends BaseAccountSettings {
   vaultTimeout: number = process.env.NODE_ENV === "development" ? null : 15;
+  bannerStates: { [id: string]: boolean } = {};
 }
 
 export class Account extends BaseAccount {

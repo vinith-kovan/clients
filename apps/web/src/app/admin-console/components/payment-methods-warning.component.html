@@ -1,0 +1,8 @@
+<ng-container *ngFor="let organization of organizations">
+  <bit-banner
+    *ngIf="showBanner(organization)"
+    (onClose)="handleClose(organization)"
+    [bannerType]="'warning'"
+    >Here's a banner</bit-banner
+  >
+</ng-container>

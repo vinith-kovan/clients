@@ -27,9 +27,8 @@ export class VaultCollectionRowComponent {
   @Input() canDeleteCollection: boolean;
   @Input() organizations: Organization[];
   @Input() groups: GroupView[];
-  @Input() isOrgVaultActive: boolean;
+  @Input() showPermissionsColumn: boolean;
   @Input() flexibleCollectionsEnabled: boolean;
-  // permissionText: string;
 
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
 

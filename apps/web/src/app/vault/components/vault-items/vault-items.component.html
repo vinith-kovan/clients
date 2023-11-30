@@ -20,7 +20,7 @@
         <th bitCell class="tw-w-2/5" *ngIf="showOwner">{{ "owner" | i18n }}</th>
         <th bitCell class="tw-w-2/5" *ngIf="showCollections">{{ "collections" | i18n }}</th>
         <th bitCell class="tw-w-2/5" *ngIf="showGroups">{{ "groups" | i18n }}</th>
-        <th bitCell class="tw-w-2/5" *ngIf="isOrgVaultActive && flexibleCollectionsEnabled">
+        <th bitCell class="tw-w-2/5" *ngIf="showPermissionsColumn">
           {{ "permission" | i18n }}
         </th>
         <th bitCell class="tw-w-12 tw-text-right">
@@ -82,7 +82,7 @@
           [showCollections]="showCollections"
           [showGroups]="showGroups"
           [organizations]="allOrganizations"
-          [isOrgVaultActive]="isOrgVaultActive"
+          [showPermissionsColumn]="showPermissionsColumn"
           [groups]="allGroups"
           [canDeleteCollection]="canDeleteCollection(item.collection)"
           [canEditCollection]="canEditCollection(item.collection)"

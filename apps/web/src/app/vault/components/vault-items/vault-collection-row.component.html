@@ -47,7 +47,7 @@
     [allGroups]="groups"
   ></app-group-badge>
 </td>
-<td bitCell [ngClass]="RowHeightClass" *ngIf="isOrgVaultActive">
+<td bitCell [ngClass]="RowHeightClass" *ngIf="showPermissionsColumn">
   <p class="tw-mb-0 tw-text-muted">
     {{ permissionText }}
   </p>

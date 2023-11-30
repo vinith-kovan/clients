@@ -13,6 +13,7 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import {
   AvatarModule,
@@ -50,6 +51,12 @@ class MockVaultTimeoutService {
   }
 }
 
+class MockPlatformUtilsService {
+  isSelfHost() {
+    return false;
+  }
+}
+
 @Component({
   selector: "product-switcher",
   template: `<button bitIconButton="bwi-filter"></button>`,
@@ -66,8 +73,8 @@ class MockDynamicAvatar {
     this.stateService.activeAccount$,
   ]).pipe(
     map(
-      ([accounts, activeAccount]) => accounts[activeAccount as keyof typeof accounts].profile.name
-    )
+      ([accounts, activeAccount]) => accounts[activeAccount as keyof typeof accounts].profile.name,
+    ),
   );
   constructor(private stateService: MockStateService) {}
 }
@@ -77,7 +84,7 @@ export default {
   component: HeaderComponent,
   decorators: [
     componentWrapperDecorator(
-      (story) => `<div class="tw-min-h-screen tw-flex-1 tw-p-6 tw-text-main">${story}</div>`
+      (story) => `<div class="tw-min-h-screen tw-flex-1 tw-p-6 tw-text-main">${story}</div>`,
     ),
     moduleMetadata({
       imports: [
@@ -97,6 +104,7 @@ export default {
       declarations: [HeaderComponent, MockProductSwitcher, MockDynamicAvatar],
       providers: [
         { provide: StateService, useClass: MockStateService },
+        { provide: PlatformUtilsService, useClass: MockPlatformUtilsService },
         { provide: VaultTimeoutSettingsService, useClass: MockVaultTimeoutService },
         {
           provide: MessagingService,

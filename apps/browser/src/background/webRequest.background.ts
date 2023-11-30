@@ -1,8 +1,8 @@
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { UriMatchType } from "@bitwarden/common/enums";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { UriMatchType } from "@bitwarden/common/vault/enums";
 
 import { BrowserApi } from "../platform/browser/browser-api";
 
@@ -14,7 +14,7 @@ export default class WebRequestBackground {
   constructor(
     platformUtilsService: PlatformUtilsService,
     private cipherService: CipherService,
-    private authService: AuthService
+    private authService: AuthService,
   ) {
     if (BrowserApi.manifestVersion === 2) {
       this.webRequest = (window as any).chrome.webRequest;
@@ -48,7 +48,7 @@ export default class WebRequestBackground {
         }
       },
       { urls: ["http://*/*", "https://*/*"] },
-      [this.isFirefox ? "blocking" : "asyncBlocking"]
+      [this.isFirefox ? "blocking" : "asyncBlocking"],
     );
 
     this.webRequest.onCompleted.addListener((details: any) => this.completeAuthRequest(details), {
@@ -58,7 +58,7 @@ export default class WebRequestBackground {
       (details: any) => this.completeAuthRequest(details),
       {
         urls: ["http://*/*"],
-      }
+      },
     );
   }
 
@@ -73,7 +73,7 @@ export default class WebRequestBackground {
       const ciphers = await this.cipherService.getAllDecryptedForUrl(
         domain,
         null,
-        UriMatchType.Host
+        UriMatchType.Host,
       );
       if (ciphers == null || ciphers.length !== 1) {
         error();

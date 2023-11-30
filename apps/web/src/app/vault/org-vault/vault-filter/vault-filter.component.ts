@@ -48,14 +48,14 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
         {
           id: "AllCollections",
           name: "collections",
-          type: "collections",
+          type: "all",
           icon: "bwi-collection",
         },
         [
           {
             id: "AllCollections",
             name: "Collections",
-            type: "collections",
+            type: "all",
             icon: "bwi-collection",
           },
         ],

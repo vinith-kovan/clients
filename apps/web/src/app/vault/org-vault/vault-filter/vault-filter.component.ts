@@ -58,7 +58,7 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
             type: "collections",
             icon: "bwi-collection",
           },
-        ]
+        ],
       ),
       header: {
         showHeader: false,

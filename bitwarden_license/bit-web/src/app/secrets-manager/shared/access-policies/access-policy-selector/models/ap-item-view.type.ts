@@ -29,7 +29,7 @@ export type ApItemViewType = SelectItemView & {
   );
 
 export function convertToAccessPolicyItemViews(
-  value: ProjectPeopleAccessPoliciesView
+  value: ProjectPeopleAccessPoliciesView,
 ): ApItemViewType[] {
   const accessPolicies: ApItemViewType[] = [];
 
@@ -64,7 +64,7 @@ export function convertToAccessPolicyItemViews(
 }
 
 export function convertPotentialGranteesToApItemViewType(
-  grantees: PotentialGranteeView[]
+  grantees: PotentialGranteeView[],
 ): ApItemViewType[] {
   return grantees.map((granteeView) => {
     let icon: string;

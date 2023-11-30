@@ -35,7 +35,10 @@ export class VaultCollectionRowComponent {
   @Input() checked: boolean;
   @Output() checkedToggled = new EventEmitter<void>();
 
-  constructor(private router: Router, private i18nService: I18nService) {}
+  constructor(
+    private router: Router,
+    private i18nService: I18nService,
+  ) {}
 
   @HostBinding("class")
   get classes() {

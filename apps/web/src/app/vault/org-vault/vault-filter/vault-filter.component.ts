@@ -8,6 +8,7 @@ import { VaultFilterComponent as BaseVaultFilterComponent } from "../../individu
 import {
   VaultFilterList,
   VaultFilterType,
+  VaultFilterSection,
 } from "../../individual-vault/vault-filter/shared/models/vault-filter-section.type";
 import { CollectionFilter } from "../../individual-vault/vault-filter/shared/models/vault-filter.type";
 
@@ -26,6 +27,7 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
   protected destroy$: Subject<void>;
 
   async ngOnInit() {
+    await this.vaultFilterService.setCollapsedFilterNodes(new Set());
     this.filters = await this.buildAllFilters();
     if (!this.activeFilter.selectedCipherTypeNode) {
       this.activeFilter.resetFilter();
@@ -33,12 +35,38 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
         (await this.getDefaultFilter()) as TreeNode<CollectionFilter>;
     }
     this.isLoaded = true;
-    this.isOrgVaultActive = true;
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  protected async addCollectionFilter(): Promise<VaultFilterSection> {
+    const collectionFilterSection: VaultFilterSection = {
+      data$: this.vaultFilterService.buildTypeTree(
+        {
+          id: "AllCollections",
+          name: "collections",
+          type: "collections",
+          icon: "bwi-collection",
+        },
+        [
+          {
+            id: "AllCollections",
+            name: "Collections",
+            type: "collections",
+            icon: "bwi-collection",
+          },
+        ]
+      ),
+      header: {
+        showHeader: false,
+        isSelectable: true,
+      },
+      action: this.applyCollectionFilter,
+    };
+    return collectionFilterSection;
   }
 
   async buildAllFilters(): Promise<VaultFilterList> {

@@ -9,7 +9,7 @@ export class SidebarService {
   open$ = this._open$.asObservable();
 
   isOverlay$ = combineLatest([this.open$, media("(max-width: 768px)")]).pipe(
-    map(([open, isSmallScreen]) => open && isSmallScreen)
+    map(([open, isSmallScreen]) => open && isSmallScreen),
   );
 
   get open() {
@@ -38,6 +38,6 @@ export const media = (query: string): Observable<boolean> => {
   const mediaQuery = window.matchMedia(query);
   return fromEvent<MediaQueryList>(mediaQuery, "change").pipe(
     startWith(mediaQuery),
-    map((list: MediaQueryList) => list.matches)
+    map((list: MediaQueryList) => list.matches),
   );
 };

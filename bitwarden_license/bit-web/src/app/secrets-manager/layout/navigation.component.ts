@@ -21,6 +21,6 @@ export class NavigationComponent {
   constructor(
     private route: ActivatedRoute,
     private organizationService: OrganizationService,
-    protected sidebarService: SidebarService
+    protected sidebarService: SidebarService,
   ) {}
 }

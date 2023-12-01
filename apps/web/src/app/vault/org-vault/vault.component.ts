@@ -238,9 +238,12 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.collectionService.getAllDecrypted(),
     ]).pipe(
       map(([adminCollections, syncCollections]) => {
+        const syncCollectionDict = Object.fromEntries(syncCollections.map((c) => [c.id, c]));
+
         return adminCollections.map((collection) => {
-          const currentId = collection.id;
-          const match = syncCollections.find((syncCollection) => currentId === syncCollection.id);
+          const currentId: any = collection.id;
+
+          const match = syncCollectionDict[currentId];
 
           if (match) {
             collection.manage = match.manage;

@@ -27,7 +27,6 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
   protected destroy$: Subject<void>;
 
   async ngOnInit() {
-    await this.vaultFilterService.setCollapsedFilterNodes(new Set());
     this.filters = await this.buildAllFilters();
     if (!this.activeFilter.selectedCipherTypeNode) {
       this.activeFilter.resetFilter();
@@ -42,7 +41,18 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
     this.destroy$.complete();
   }
 
+  async removeCollapsibleCollection() {
+    const collapsedNodes = await firstValueFrom(this.vaultFilterService.collapsedFilterNodes$);
+
+    collapsedNodes.delete("AllCollections");
+
+    await this.vaultFilterService.setCollapsedFilterNodes(collapsedNodes);
+  }
+
   protected async addCollectionFilter(): Promise<VaultFilterSection> {
+    // Ensure the Collections filter is never collapsed for the org vault
+    this.removeCollapsibleCollection();
+
     const collectionFilterSection: VaultFilterSection = {
       data$: this.vaultFilterService.buildTypeTree(
         {

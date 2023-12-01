@@ -9,7 +9,10 @@ import {
 import { ClipboardWriteMessage } from "../types/clipboard";
 
 export class ElectronPlatformUtilsService implements PlatformUtilsService {
-  constructor(protected i18nService: I18nService, private messagingService: MessagingService) {}
+  constructor(
+    protected i18nService: I18nService,
+    private messagingService: MessagingService,
+  ) {}
 
   getDevice(): DeviceType {
     return ipc.platform.deviceType;
@@ -82,7 +85,7 @@ export class ElectronPlatformUtilsService implements PlatformUtilsService {
     type: "error" | "success" | "warning" | "info",
     title: string,
     text: string | string[],
-    options?: any
+    options?: any,
   ): void {
     this.messagingService.send("showToast", {
       text: text,

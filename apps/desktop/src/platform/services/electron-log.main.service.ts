@@ -11,7 +11,7 @@ import { isDev } from "../../utils";
 export class ElectronLogMainService extends BaseLogService {
   constructor(
     protected filter: (level: LogLevelType) => boolean = null,
-    private logDir: string = null
+    private logDir: string = null,
   ) {
     super(isDev(), filter);
 

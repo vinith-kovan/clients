@@ -1,13 +1,25 @@
-import { Component, EventEmitter, HostBinding, HostListener, Input, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  HostBinding,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+} from "@angular/core";
 import { Router } from "@angular/router";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 
 import { GroupView } from "../../../admin-console/organizations/core";
 import { CollectionAdminView } from "../../core/views/collection-admin.view";
 
+import {
+  convertToPermission,
+  getPermissionList,
+  getCanManagePermission,
+} from "./../../../admin-console/organizations/shared/components/access-selector/access-selector.models";
 import { VaultItemEvent } from "./vault-item-event";
 import { RowHeightClass } from "./vault-items.component";
 
@@ -15,7 +27,7 @@ import { RowHeightClass } from "./vault-items.component";
   selector: "tr[appVaultCollectionRow]",
   templateUrl: "vault-collection-row.component.html",
 })
-export class VaultCollectionRowComponent {
+export class VaultCollectionRowComponent implements OnInit {
   protected RowHeightClass = RowHeightClass;
 
   @Input() disabled: boolean;
@@ -35,10 +47,16 @@ export class VaultCollectionRowComponent {
   @Input() checked: boolean;
   @Output() checkedToggled = new EventEmitter<void>();
 
-  constructor(
-    private router: Router,
-    private i18nService: I18nService,
-  ) {}
+  private permissionList = getPermissionList();
+  private canManagePermissionListItem = getCanManagePermission();
+
+  constructor(private router: Router) {}
+
+  ngOnInit() {
+    if (this.flexibleCollectionsEnabled) {
+      this.permissionList.push(this.canManagePermissionListItem);
+    }
+  }
 
   @HostBinding("class")
   get classes() {
@@ -58,19 +76,8 @@ export class VaultCollectionRowComponent {
   }
 
   get permissionText() {
-    if (this.collection.manage) {
-      if (this.flexibleCollectionsEnabled) {
-        return this.i18nService.t("canManage");
-      } else {
-        return this.i18nService.t("canEdit");
-      }
-    } else if (!this.collection.readOnly) {
-      return this.i18nService.t("canEdit");
-    } else if (this.collection.readOnly) {
-      return this.i18nService.t("canView");
-    } else {
-      return "-";
-    }
+    return this.permissionList.find((p) => p.perm === convertToPermission(this.collection))
+      ?.labelId;
   }
 
   @HostListener("click")

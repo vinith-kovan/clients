@@ -77,6 +77,19 @@ export type AccessItemValue = {
   type: AccessItemType;
 };
 
+export const getPermissionList = () => {
+  return [
+    { perm: CollectionPermission.View, labelId: "canView" },
+    { perm: CollectionPermission.ViewExceptPass, labelId: "canViewExceptPass" },
+    { perm: CollectionPermission.Edit, labelId: "canEdit" },
+    { perm: CollectionPermission.EditExceptPass, labelId: "canEditExceptPass" },
+  ];
+};
+
+export const getCanManagePermission = () => {
+  return { perm: CollectionPermission.Manage, labelId: "canManage" };
+};
+
 /**
  * Converts the CollectionAccessSelectionView interface to one of the new CollectionPermission values
  * for the dropdown in the AccessSelectorComponent

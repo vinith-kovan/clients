@@ -18,6 +18,8 @@ import {
   AccessItemValue,
   AccessItemView,
   CollectionPermission,
+  getPermissionList,
+  getCanManagePermission,
 } from "./access-selector.models";
 
 export enum PermissionMode {
@@ -116,16 +118,8 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
   });
 
   protected itemType = AccessItemType;
-  protected permissionList = [
-    { perm: CollectionPermission.View, labelId: "canView" },
-    { perm: CollectionPermission.ViewExceptPass, labelId: "canViewExceptPass" },
-    { perm: CollectionPermission.Edit, labelId: "canEdit" },
-    { perm: CollectionPermission.EditExceptPass, labelId: "canEditExceptPass" },
-  ];
-  private canManagePermissionListItem = {
-    perm: CollectionPermission.Manage,
-    labelId: "canManage",
-  };
+  protected permissionList = getPermissionList();
+  private canManagePermissionListItem = getCanManagePermission();
   protected initialPermission = CollectionPermission.View;
 
   disabled: boolean;

@@ -248,6 +248,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           if (match) {
             collection.manage = match.manage;
             collection.readOnly = match.readOnly;
+            collection.hidePasswords = match.hidePasswords;
           }
           return collection;
         });

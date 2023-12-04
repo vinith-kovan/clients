@@ -34,7 +34,7 @@ export class OrganizationVaultExportComponent extends ExportComponent {
     formBuilder: UntypedFormBuilder,
     fileDownloadService: FileDownloadService,
     dialogService: DialogService,
-    organizationService: OrganizationService
+    organizationService: OrganizationService,
   ) {
     super(
       i18nService,
@@ -47,7 +47,7 @@ export class OrganizationVaultExportComponent extends ExportComponent {
       formBuilder,
       fileDownloadService,
       dialogService,
-      organizationService
+      organizationService,
     );
   }
 
@@ -80,7 +80,7 @@ export class OrganizationVaultExportComponent extends ExportComponent {
       EventType.Organization_ClientExportedVault,
       null,
       null,
-      this.organizationId
+      this.organizationId,
     );
   }
 }

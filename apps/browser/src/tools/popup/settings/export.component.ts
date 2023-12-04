@@ -31,7 +31,7 @@ export class ExportComponent extends BaseExportComponent {
     formBuilder: UntypedFormBuilder,
     fileDownloadService: FileDownloadService,
     dialogService: DialogService,
-    organizationService: OrganizationService
+    organizationService: OrganizationService,
   ) {
     super(
       i18nService,
@@ -44,7 +44,7 @@ export class ExportComponent extends BaseExportComponent {
       formBuilder,
       fileDownloadService,
       dialogService,
-      organizationService
+      organizationService,
     );
   }
 

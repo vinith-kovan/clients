@@ -29,7 +29,7 @@ export class ExportComponent extends BaseExportComponent implements OnInit {
     logService: LogService,
     fileDownloadService: FileDownloadService,
     dialogService: DialogService,
-    organizationService: OrganizationService
+    organizationService: OrganizationService,
   ) {
     super(
       i18nService,
@@ -42,7 +42,7 @@ export class ExportComponent extends BaseExportComponent implements OnInit {
       formBuilder,
       fileDownloadService,
       dialogService,
-      organizationService
+      organizationService,
     );
   }
 }

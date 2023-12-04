@@ -1,4 +1,4 @@
-import { Directive, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
+import { Directive, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
 import { UntypedFormBuilder, Validators } from "@angular/forms";
 import { concat, map, merge, Observable, startWith, Subject, takeUntil } from "rxjs";
 
@@ -11,19 +11,24 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { EncryptedExportType, EventType } from "@bitwarden/common/enums";
+import { EventType } from "@bitwarden/common/enums";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { EncryptedExportType } from "@bitwarden/common/tools/enums/encrypted-export-type.enum";
 import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
+
+import { PasswordStrengthComponent } from "../../../shared/components/password-strength/password-strength.component";
 
 @Directive()
 export class ExportComponent implements OnInit, OnDestroy {
   @Output() onSaved = new EventEmitter();
+  @ViewChild(PasswordStrengthComponent) passwordStrengthComponent: PasswordStrengthComponent;
 
+  filePasswordValue: string = null;
   formPromise: Promise<string>;
   private _disabledByPolicy = false;
   protected organizationId: string = null;
@@ -67,15 +72,15 @@ export class ExportComponent implements OnInit, OnDestroy {
     private formBuilder: UntypedFormBuilder,
     protected fileDownloadService: FileDownloadService,
     protected dialogService: DialogService,
-    protected organizationService: OrganizationService
+    protected organizationService: OrganizationService,
   ) {}
 
   async ngOnInit() {
     this.organizations$ = concat(
       this.organizationService.memberOrganizations$.pipe(
         canAccessImportExport(this.i18nService),
-        map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name")))
-      )
+        map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
+      ),
     );
 
     this.policyService
@@ -103,7 +108,7 @@ export class ExportComponent implements OnInit, OnDestroy {
 
     merge(
       this.exportForm.get("format").valueChanges,
-      this.exportForm.get("fileEncryptionType").valueChanges
+      this.exportForm.get("fileEncryptionType").valueChanges,
     )
       .pipe(takeUntil(this.destroy$))
       .pipe(startWith(0))
@@ -137,7 +142,7 @@ export class ExportComponent implements OnInit, OnDestroy {
       this.platformUtilsService.showToast(
         "error",
         null,
-        this.i18nService.t("personalVaultExportPolicyInEffect")
+        this.i18nService.t("personalVaultExportPolicyInEffect"),
       );
       return;
     }

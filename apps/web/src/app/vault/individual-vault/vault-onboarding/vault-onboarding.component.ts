@@ -33,7 +33,7 @@ export class VaultOnboardingComponent implements OnInit {
   constructor(
     private platformUtilsService: PlatformUtilsService,
     protected policyService: PolicyService,
-    protected router: Router
+    protected router: Router,
   ) {
     this.isChrome = platformUtilsService.isChrome();
     this.isFirefox = platformUtilsService.isFirefox();

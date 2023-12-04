@@ -141,7 +141,7 @@ export class SettingsComponent implements OnInit {
     this.startToTrayDescText = this.i18nService.t(startToTrayKey + "Desc");
 
     // DuckDuckGo browser is only for macos initially
-    this.showDuckDuckGoIntegrationOption = flagEnabled("showDDGSetting") && isMac;
+    this.showDuckDuckGoIntegrationOption = flagEnabled("showDDGSetting");
 
     this.vaultTimeoutOptions = [
       // { name: i18nService.t('immediately'), value: 0 },

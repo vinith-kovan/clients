@@ -1,0 +1,9 @@
+<ng-container *ngFor="let bannerState of bannerStates">
+  <bit-banner
+    *ngIf="bannerState.showBanner"
+    [bannerType]="'warning'"
+    (onClose)="closeBanner(bannerState.organizationId)"
+  >
+    To maintain your subscription for {{ bannerState.organizationName }}, add a payment method.
+  </bit-banner>
+</ng-container>

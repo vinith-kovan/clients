@@ -1,10 +1,16 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { firstValueFrom, Subject } from "rxjs";
 
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 
 import { VaultFilterComponent as BaseVaultFilterComponent } from "../../individual-vault/vault-filter/components/vault-filter.component"; //../../vault/vault-filter/components/vault-filter.component";
+import { VaultFilterService } from "../../individual-vault/vault-filter/services/abstractions/vault-filter.service";
 import {
   VaultFilterList,
   VaultFilterType,
@@ -26,7 +32,22 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
   _organization: Organization;
   protected destroy$: Subject<void>;
 
+  private flexibleCollectionsEnabled: boolean;
+
+  constructor(
+    protected vaultFilterService: VaultFilterService,
+    protected policyService: PolicyService,
+    protected i18nService: I18nService,
+    protected platformUtilsService: PlatformUtilsService,
+    protected configService: ConfigServiceAbstraction,
+  ) {
+    super(vaultFilterService, policyService, i18nService, platformUtilsService);
+  }
+
   async ngOnInit() {
+    this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections,
+    );
     this.filters = await this.buildAllFilters();
     if (!this.activeFilter.selectedCipherTypeNode) {
       this.activeFilter.resetFilter();
@@ -82,7 +103,11 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
   async buildAllFilters(): Promise<VaultFilterList> {
     const builderFilter = {} as VaultFilterList;
     builderFilter.typeFilter = await this.addTypeFilter(["favorites"]);
-    builderFilter.collectionFilter = await this.addCollectionFilter();
+    if (!this.flexibleCollectionsEnabled) {
+      builderFilter.collectionFilter = await this.addCollectionFilter();
+    } else {
+      builderFilter.collectionFilter = await super.addCollectionFilter();
+    }
     builderFilter.trashFilter = await this.addTrashFilter();
     return builderFilter;
   }

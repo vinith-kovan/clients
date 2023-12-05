@@ -1,6 +1,7 @@
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { LogService } from "../../platform/abstractions/log.service";
 import { StateService } from "../../platform/abstractions/state.service";
+import { KdfType } from "../../platform/enums";
 import { EncString } from "../../platform/models/domain/enc-string";
 import { UserKey } from "../../platform/models/domain/symmetric-crypto-key";
 import {
@@ -8,6 +9,7 @@ import {
   VaultTimeoutSettingsService,
 } from "../../services/vault-timeout/vault-timeout-settings.service";
 import { PinCryptoServiceAbstraction } from "../abstractions/pin-crypto.service.abstraction";
+import { KdfConfig } from "../models/domain/kdf-config";
 
 export class PinCryptoService implements PinCryptoServiceAbstraction {
   constructor(
@@ -23,8 +25,8 @@ export class PinCryptoService implements PinCryptoServiceAbstraction {
       const { pinKeyEncryptedUserKey, oldPinKeyEncryptedMasterKey } =
         await this.getPinKeyEncryptedKeys(pinLockType);
 
-      const kdf = await this.stateService.getKdfType();
-      const kdfConfig = await this.stateService.getKdfConfig();
+      const kdf: KdfType = await this.stateService.getKdfType();
+      const kdfConfig: KdfConfig = await this.stateService.getKdfConfig();
       let userKey: UserKey;
       if (oldPinKeyEncryptedMasterKey) {
         userKey = await this.cryptoService.decryptAndMigrateOldPinKey(

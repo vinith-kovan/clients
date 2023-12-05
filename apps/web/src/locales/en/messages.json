@@ -1347,10 +1347,11 @@
   "importData": {
     "message": "Import data"
   },
-  "importDataDetailsBasicA": {
-    "message": "If you don't have any data to import, you can create a "
+  "onboardingImportDataDetailsStart": {
+    "message": "If you don't have any data to import, you can create a ",
+    "description": "This will be used as part of a larger sentence to include a link later on. The full sentence reads 'If you don't have any data to import, you can create a new item here.'"
   },
-  "importDataDetailsBasicB": {
+  "onboardingImportDataDetailsLink": {
     "message": "new item here."
   },
   "importDataDetailsIndividual": {

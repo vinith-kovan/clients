@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
 
 @Component({
-  selector: "onboarding-task",
+  selector: "app-onboarding-task",
   templateUrl: "./onboarding-task.component.html",
   host: {
     class: "tw-max-w-max",

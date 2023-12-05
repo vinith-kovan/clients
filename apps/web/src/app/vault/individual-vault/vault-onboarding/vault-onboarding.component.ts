@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subject, first, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
@@ -15,10 +15,8 @@ export type VaultOnboardingTasks = {
 @Component({
   selector: "app-vault-onboarding",
   templateUrl: "vault-onboarding.component.html",
-  providers: [],
 })
-// eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class VaultOnboardingComponent implements OnInit {
+export class VaultOnboardingComponent implements OnInit, OnDestroy {
   @Input() onboardingTasks: VaultOnboardingTasks;
   @Output() onHideOnboarding = new EventEmitter<void>();
   @Output() onAddCipher = new EventEmitter<void>();
@@ -45,10 +43,15 @@ export class VaultOnboardingComponent implements OnInit {
     this.individualVaultPolicyCheck();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   individualVaultPolicyCheck() {
     this.policyService
       .policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
-      .pipe(first(), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         this.isIndividualPolicyVault = data;
       });

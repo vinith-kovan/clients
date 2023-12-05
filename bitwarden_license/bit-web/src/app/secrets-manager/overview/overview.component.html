@@ -3,8 +3,8 @@
 </sm-header>
 
 <div *ngIf="!loading && view$ | async as view; else spinner">
-  <onboarding [title]="'getStarted' | i18n" *ngIf="showOnboarding" (dismiss)="hideOnboarding()">
-    <onboarding-task
+  <app-onboarding [title]="'getStarted' | i18n" *ngIf="showOnboarding" (dismiss)="hideOnboarding()">
+    <app-onboarding-task
       [title]="'createServiceAccount' | i18n"
       (click)="openServiceAccountDialog()"
       icon="bwi-cli"
@@ -16,29 +16,29 @@
           "smCLI" | i18n
         }}</a>
       </span>
-    </onboarding-task>
-    <onboarding-task
+    </app-onboarding-task>
+    <app-onboarding-task
       *ngIf="userIsAdmin"
       [title]="'createProject' | i18n"
       (click)="openNewProjectDialog()"
       icon="bwi-collection"
       [completed]="view.tasks.createProject"
-    ></onboarding-task>
-    <onboarding-task
+    ></app-onboarding-task>
+    <app-onboarding-task
       *ngIf="userIsAdmin"
       [title]="'importSecrets' | i18n"
       [route]="['settings', 'import']"
       icon="bwi-download"
       [completed]="view.tasks.importSecrets"
-    ></onboarding-task>
-    <onboarding-task
+    ></app-onboarding-task>
+    <app-onboarding-task
       *ngIf="view.tasks.createProject"
       [title]="'createSecret' | i18n"
       (click)="openSecretDialog()"
       icon="bwi-key"
       [completed]="view.tasks.createSecret"
-    ></onboarding-task>
-  </onboarding>
+    ></app-onboarding-task>
+  </app-onboarding>
 
   <div class="tw-mt-6 tw-flex tw-flex-col tw-gap-6">
     <sm-section>

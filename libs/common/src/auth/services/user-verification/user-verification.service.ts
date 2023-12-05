@@ -64,33 +64,45 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
   async verifyUser(verification: Verification): Promise<boolean> {
     this.validateInput(verification);
 
-    if (verification.type === VerificationType.OTP) {
-      const request = new VerifyOTPRequest(verification.secret);
-      try {
-        await this.userVerificationApiService.postAccountVerifyOTP(request);
-      } catch (e) {
-        throw new Error(this.i18nService.t("invalidVerificationCode"));
-      }
-    } else {
-      let masterKey = await this.cryptoService.getMasterKey();
-      if (!masterKey) {
-        masterKey = await this.cryptoService.makeMasterKey(
-          verification.secret,
-          await this.stateService.getEmail(),
-          await this.stateService.getKdfType(),
-          await this.stateService.getKdfConfig(),
-        );
-      }
-      const passwordValid = await this.cryptoService.compareAndUpdateKeyHash(
-        verification.secret,
-        masterKey,
-      );
-      if (!passwordValid) {
-        throw new Error(this.i18nService.t("invalidMasterPassword"));
-      }
-      this.cryptoService.setMasterKey(masterKey);
+    switch (verification.type) {
+      case VerificationType.OTP:
+        await this.verifyUserByOTP(verification);
+        break;
+      case VerificationType.MasterPassword:
+        await this.verifyUserByMasterPassword(verification);
+        break;
     }
+
     return true;
+  }
+
+  private async verifyUserByOTP(verification: Verification): Promise<void> {
+    const request = new VerifyOTPRequest(verification.secret);
+    try {
+      await this.userVerificationApiService.postAccountVerifyOTP(request);
+    } catch (e) {
+      throw new Error(this.i18nService.t("invalidVerificationCode"));
+    }
+  }
+
+  private async verifyUserByMasterPassword(verification: Verification): Promise<void> {
+    let masterKey = await this.cryptoService.getMasterKey();
+    if (!masterKey) {
+      masterKey = await this.cryptoService.makeMasterKey(
+        verification.secret,
+        await this.stateService.getEmail(),
+        await this.stateService.getKdfType(),
+        await this.stateService.getKdfConfig(),
+      );
+    }
+    const passwordValid = await this.cryptoService.compareAndUpdateKeyHash(
+      verification.secret,
+      masterKey,
+    );
+    if (!passwordValid) {
+      throw new Error(this.i18nService.t("invalidMasterPassword"));
+    }
+    this.cryptoService.setMasterKey(masterKey);
   }
 
   async requestOTP() {
@@ -123,10 +135,13 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
 
   private validateInput(verification: Verification) {
     if (verification?.secret == null || verification.secret === "") {
-      if (verification.type === VerificationType.OTP) {
-        throw new Error(this.i18nService.t("verificationCodeRequired"));
-      } else {
-        throw new Error(this.i18nService.t("masterPasswordRequired"));
+      switch (verification.type) {
+        case VerificationType.OTP:
+          throw new Error(this.i18nService.t("verificationCodeRequired"));
+        case VerificationType.MasterPassword:
+          throw new Error(this.i18nService.t("masterPasswordRequired"));
+        case VerificationType.PIN:
+          throw new Error(this.i18nService.t("pinRequired"));
       }
     }
   }

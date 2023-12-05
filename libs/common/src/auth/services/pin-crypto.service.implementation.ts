@@ -18,7 +18,7 @@ export class PinCryptoService implements PinCryptoServiceAbstraction {
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     private logService: LogService,
   ) {}
-  async decryptUserKeyWithPin(email: string, pin: string): Promise<UserKey | null> {
+  async decryptUserKeyWithPin(pin: string): Promise<UserKey | null> {
     try {
       const pinLockType: PinLockType = await this.vaultTimeoutSettingsService.isPinLockSet();
 
@@ -28,6 +28,7 @@ export class PinCryptoService implements PinCryptoServiceAbstraction {
       const kdf: KdfType = await this.stateService.getKdfType();
       const kdfConfig: KdfConfig = await this.stateService.getKdfConfig();
       let userKey: UserKey;
+      const email = await this.stateService.getEmail();
       if (oldPinKeyEncryptedMasterKey) {
         userKey = await this.cryptoService.decryptAndMigrateOldPinKey(
           pinLockType === "TRANSIENT",

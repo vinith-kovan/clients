@@ -71,6 +71,9 @@ export class AddPaymentMethodBannersComponent implements OnInit, OnDestroy {
     await this.billingBannerService.setPaymentMethodBannerState(organizationId, false);
   }
 
+  protected getAddPaymentMethodUrl = (organizationId: string) =>
+    `/organizations/${organizationId}/billing/payment-method`;
+
   private async saveBannerStateFor(organization: Organization): Promise<boolean> {
     let bannerState = await this.billingBannerService.getPaymentMethodBannerState(organization.id);
     if (bannerState === undefined) {
@@ -92,6 +95,10 @@ export class AddPaymentMethodBannersComponent implements OnInit, OnDestroy {
         showBanner: showBanner,
       };
     });
+  }
+
+  protected translateMaintainYourSubscription(organizationName: string) {
+    return this.i18nService.translate("maintainYourSubscription", organizationName);
   }
 
   private updateBannerState(organization: Organization, showBanner: boolean) {

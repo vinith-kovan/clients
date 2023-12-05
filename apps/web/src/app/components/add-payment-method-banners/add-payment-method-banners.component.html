@@ -4,6 +4,11 @@
     [bannerType]="'warning'"
     (onClose)="closeBanner(bannerState.organizationId)"
   >
-    To maintain your subscription for {{ bannerState.organizationName }}, add a payment method.
+    {{ translateMaintainYourSubscription(bannerState.organizationName) }}
+    <a
+      class="text-white font-weight-semibold"
+      [routerLink]="getAddPaymentMethodUrl(bannerState.organizationId)"
+      >{{ "addAPaymentMethod" | i18n }}</a
+    >.
   </bit-banner>
 </ng-container>

@@ -14,7 +14,7 @@ export class PinCryptoService implements PinCryptoServiceAbstraction {
     private stateService: StateService,
     private cryptoService: CryptoService,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
-    private logService: LogService
+    private logService: LogService,
   ) {}
   async decryptUserKeyWithPin(email: string, pin: string): Promise<UserKey | null> {
     try {
@@ -33,7 +33,7 @@ export class PinCryptoService implements PinCryptoServiceAbstraction {
           email,
           kdf,
           kdfConfig,
-          oldPinKeyEncryptedMasterKey
+          oldPinKeyEncryptedMasterKey,
         );
       } else {
         userKey = await this.cryptoService.decryptUserKeyWithPin(
@@ -41,7 +41,7 @@ export class PinCryptoService implements PinCryptoServiceAbstraction {
           email,
           kdf,
           kdfConfig,
-          pinKeyEncryptedUserKey
+          pinKeyEncryptedUserKey,
         );
       }
 
@@ -52,7 +52,7 @@ export class PinCryptoService implements PinCryptoServiceAbstraction {
       const protectedPin = await this.stateService.getProtectedPin();
       const decryptedPin = await this.cryptoService.decryptToUtf8(
         new EncString(protectedPin),
-        userKey
+        userKey,
       );
 
       if (decryptedPin !== pin) {
@@ -67,7 +67,7 @@ export class PinCryptoService implements PinCryptoServiceAbstraction {
   }
 
   private async getPinKeyEncryptedKeys(
-    pinLockType: PinLockType
+    pinLockType: PinLockType,
   ): Promise<{ pinKeyEncryptedUserKey: EncString; oldPinKeyEncryptedMasterKey?: EncString }> {
     switch (pinLockType) {
       case "PERSISTANT": {

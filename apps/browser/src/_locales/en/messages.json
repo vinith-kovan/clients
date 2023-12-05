@@ -1460,6 +1460,9 @@
   "invalidPin": {
     "message": "Invalid PIN code."
   },
+  "tooManyInvalidPinEntryAttemptsLoggingOut": {
+    "message": "Too many invalid PIN entry attempts. Logging you out."
+  },
   "unlockWithBiometrics": {
     "message": "Unlock with biometrics"
   },

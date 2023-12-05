@@ -25,7 +25,10 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
 
   private _destroy = new Subject<void>();
 
-  protected flexibleCollectionsEnabled: boolean;
+  protected flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
+    FeatureFlag.FlexibleCollections,
+    false,
+  );
 
   constructor(
     private route: ActivatedRoute,
@@ -34,9 +37,6 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.FlexibleCollections,
-    );
     document.body.classList.remove("layout_frontend");
 
     this.organization$ = this.route.params

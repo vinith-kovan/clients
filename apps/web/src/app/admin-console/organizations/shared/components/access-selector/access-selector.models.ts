@@ -77,17 +77,23 @@ export type AccessItemValue = {
   type: AccessItemType;
 };
 
-export const getPermissionList = () => {
-  return [
+export type Permission = {
+  perm: CollectionPermission;
+  labelId: string;
+};
+
+export const getPermissionList = (flexibleCollectionsEnabled: boolean): Permission[] => {
+  const permissions = [
     { perm: CollectionPermission.View, labelId: "canView" },
     { perm: CollectionPermission.ViewExceptPass, labelId: "canViewExceptPass" },
     { perm: CollectionPermission.Edit, labelId: "canEdit" },
     { perm: CollectionPermission.EditExceptPass, labelId: "canEditExceptPass" },
   ];
-};
+  if (flexibleCollectionsEnabled) {
+    permissions.push({ perm: CollectionPermission.Manage, labelId: "canManage" });
+  }
 
-export const getCanManagePermission = () => {
-  return { perm: CollectionPermission.Manage, labelId: "canManage" };
+  return permissions;
 };
 
 /**

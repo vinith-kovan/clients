@@ -18,7 +18,7 @@ import { CollectionAdminView } from "../../core/views/collection-admin.view";
 import {
   convertToPermission,
   getPermissionList,
-  getCanManagePermission,
+  Permission,
 } from "./../../../admin-console/organizations/shared/components/access-selector/access-selector.models";
 import { VaultItemEvent } from "./vault-item-event";
 import { RowHeightClass } from "./vault-items.component";
@@ -47,15 +47,12 @@ export class VaultCollectionRowComponent implements OnInit {
   @Input() checked: boolean;
   @Output() checkedToggled = new EventEmitter<void>();
 
-  private permissionList = getPermissionList();
-  private canManagePermissionListItem = getCanManagePermission();
+  private permissionList: Permission[];
 
   constructor(private router: Router) {}
 
   ngOnInit() {
-    if (this.flexibleCollectionsEnabled) {
-      this.permissionList.push(this.canManagePermissionListItem);
-    }
+    this.permissionList = getPermissionList(this.flexibleCollectionsEnabled);
   }
 
   @HostBinding("class")

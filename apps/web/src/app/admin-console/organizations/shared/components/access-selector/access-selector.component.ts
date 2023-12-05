@@ -19,7 +19,7 @@ import {
   AccessItemView,
   CollectionPermission,
   getPermissionList,
-  getCanManagePermission,
+  Permission,
 } from "./access-selector.models";
 
 export enum PermissionMode {
@@ -118,8 +118,7 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
   });
 
   protected itemType = AccessItemType;
-  protected permissionList = getPermissionList();
-  private canManagePermissionListItem = getCanManagePermission();
+  protected permissionList: Permission[];
   protected initialPermission = CollectionPermission.View;
 
   disabled: boolean;
@@ -258,6 +257,7 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
   }
 
   async ngOnInit() {
+    this.permissionList = getPermissionList(this.flexibleCollectionsEnabled);
     // Watch the internal formArray for changes and propagate them
     this.selectionList.formArray.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((v) => {
       if (!this.notifyOnChange || this.pauseChangeNotification) {
@@ -271,10 +271,6 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
       }
       this.notifyOnChange(v);
     });
-
-    if (this.flexibleCollectionsEnabled) {
-      this.permissionList.push(this.canManagePermissionListItem);
-    }
   }
 
   ngOnDestroy() {

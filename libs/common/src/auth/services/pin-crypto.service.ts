@@ -20,41 +20,20 @@ export class PinCryptoService implements PinCryptoServiceAbstraction {
     try {
       const pinLockType: PinLockType = await this.vaultTimeoutSettingsService.isPinLockSet();
 
+      const { pinKeyEncryptedUserKey, oldPinKeyEncryptedMasterKey } =
+        await this.getPinKeyEncryptedKeys(pinLockType);
+
       const kdf = await this.stateService.getKdfType();
       const kdfConfig = await this.stateService.getKdfConfig();
-      let userKeyPin: EncString;
-      let oldPinKey: EncString;
-      switch (pinLockType) {
-        case "PERSISTANT": {
-          userKeyPin = await this.stateService.getPinKeyEncryptedUserKey();
-          const oldEncryptedPinKey = await this.stateService.getEncryptedPinProtected();
-          oldPinKey = oldEncryptedPinKey ? new EncString(oldEncryptedPinKey) : undefined;
-          break;
-        }
-        case "TRANSIENT": {
-          userKeyPin = await this.stateService.getPinKeyEncryptedUserKeyEphemeral();
-          oldPinKey = await this.stateService.getDecryptedPinProtected();
-          break;
-        }
-        case "DISABLED": {
-          throw new Error("Pin is disabled");
-        }
-        default: {
-          // Compile time check for exhaustive switch
-          const _exhaustiveCheck: never = pinLockType;
-          return _exhaustiveCheck;
-        }
-      }
-
       let userKey: UserKey;
-      if (oldPinKey) {
+      if (oldPinKeyEncryptedMasterKey) {
         userKey = await this.cryptoService.decryptAndMigrateOldPinKey(
           pinLockType === "TRANSIENT",
           pin,
           email,
           kdf,
           kdfConfig,
-          oldPinKey
+          oldPinKeyEncryptedMasterKey
         );
       } else {
         userKey = await this.cryptoService.decryptUserKeyWithPin(
@@ -62,7 +41,7 @@ export class PinCryptoService implements PinCryptoServiceAbstraction {
           email,
           kdf,
           kdfConfig,
-          userKeyPin
+          pinKeyEncryptedUserKey
         );
       }
 
@@ -84,6 +63,35 @@ export class PinCryptoService implements PinCryptoServiceAbstraction {
     } catch (error) {
       this.logService.error(`Error decrypting user key with pin: ${error}`);
       return null;
+    }
+  }
+
+  private async getPinKeyEncryptedKeys(
+    pinLockType: PinLockType
+  ): Promise<{ pinKeyEncryptedUserKey: EncString; oldPinKeyEncryptedMasterKey?: EncString }> {
+    switch (pinLockType) {
+      case "PERSISTANT": {
+        const pinKeyEncryptedUserKey = await this.stateService.getPinKeyEncryptedUserKey();
+        const oldEncryptedPinKey = await this.stateService.getEncryptedPinProtected();
+        return {
+          pinKeyEncryptedUserKey,
+          oldPinKeyEncryptedMasterKey: oldEncryptedPinKey
+            ? new EncString(oldEncryptedPinKey)
+            : undefined,
+        };
+      }
+      case "TRANSIENT": {
+        const pinKeyEncryptedUserKey = await this.stateService.getPinKeyEncryptedUserKeyEphemeral();
+        const oldPinKeyEncryptedMasterKey = await this.stateService.getDecryptedPinProtected();
+        return { pinKeyEncryptedUserKey, oldPinKeyEncryptedMasterKey };
+      }
+      case "DISABLED":
+        throw new Error("Pin is disabled");
+      default: {
+        // Compile-time check for exhaustive switch
+        const _exhaustiveCheck: never = pinLockType;
+        return _exhaustiveCheck;
+      }
     }
   }
 }

@@ -51,13 +51,9 @@ export class PinCryptoService implements PinCryptoServiceAbstraction {
         return null;
       }
 
-      const protectedPin = await this.stateService.getProtectedPin();
-      const decryptedPin = await this.cryptoService.decryptToUtf8(
-        new EncString(protectedPin),
-        userKey,
-      );
+      const pinValid = await this.validatePin(userKey, pin);
 
-      if (decryptedPin !== pin) {
+      if (!pinValid) {
         return null;
       }
 
@@ -95,5 +91,14 @@ export class PinCryptoService implements PinCryptoServiceAbstraction {
         return _exhaustiveCheck;
       }
     }
+  }
+
+  private async validatePin(userKey: UserKey, pin: string): Promise<boolean> {
+    const protectedPin = await this.stateService.getProtectedPin();
+    const decryptedPin = await this.cryptoService.decryptToUtf8(
+      new EncString(protectedPin),
+      userKey,
+    );
+    return decryptedPin === pin;
   }
 }

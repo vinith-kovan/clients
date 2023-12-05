@@ -1,6 +1,8 @@
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { StateService } from "../../../platform/abstractions/state.service";
+import { KeySuffixOptions } from "../../../platform/enums/key-suffix-options.enum";
+import { PinCryptoServiceAbstraction } from "../../abstractions/pin-crypto.service.abstraction";
 import { UserVerificationApiServiceAbstraction } from "../../abstractions/user-verification/user-verification-api.service.abstraction";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "../../abstractions/user-verification/user-verification.service.abstraction";
 import { VerificationType } from "../../enums/verification-type";
@@ -18,6 +20,7 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     private cryptoService: CryptoService,
     private i18nService: I18nService,
     private userVerificationApiService: UserVerificationApiServiceAbstraction,
+    private pinCryptoService: PinCryptoServiceAbstraction,
   ) {}
 
   /**
@@ -66,26 +69,27 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
 
     switch (verification.type) {
       case VerificationType.OTP:
-        await this.verifyUserByOTP(verification);
-        break;
+        return this.verifyUserByOTP(verification);
       case VerificationType.MasterPassword:
-        await this.verifyUserByMasterPassword(verification);
-        break;
+        return this.verifyUserByMasterPassword(verification);
+      case VerificationType.PIN:
+        return this.verifyUserByPIN(verification);
+      case VerificationType.BIOMETRICS:
+        return this.verifyUserByBiometrics();
     }
-
-    return true;
   }
 
-  private async verifyUserByOTP(verification: Verification): Promise<void> {
+  private async verifyUserByOTP(verification: Verification): Promise<boolean> {
     const request = new VerifyOTPRequest(verification.secret);
     try {
       await this.userVerificationApiService.postAccountVerifyOTP(request);
     } catch (e) {
       throw new Error(this.i18nService.t("invalidVerificationCode"));
     }
+    return true;
   }
 
-  private async verifyUserByMasterPassword(verification: Verification): Promise<void> {
+  private async verifyUserByMasterPassword(verification: Verification): Promise<boolean> {
     let masterKey = await this.cryptoService.getMasterKey();
     if (!masterKey) {
       masterKey = await this.cryptoService.makeMasterKey(
@@ -103,6 +107,27 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
       throw new Error(this.i18nService.t("invalidMasterPassword"));
     }
     this.cryptoService.setMasterKey(masterKey);
+    return true;
+  }
+
+  private async verifyUserByPIN(verification: Verification): Promise<boolean> {
+    const userKey = await this.pinCryptoService.decryptUserKeyWithPin(verification.secret);
+
+    if (userKey) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  private async verifyUserByBiometrics(): Promise<boolean> {
+    const userKey = await this.cryptoService.getUserKeyFromStorage(KeySuffixOptions.Biometric);
+
+    if (userKey) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   async requestOTP() {

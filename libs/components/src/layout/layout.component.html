@@ -8,6 +8,14 @@
     <aside
       id="bit-sidebar"
       class="tw-fixed tw-inset-y-0 tw-left-0 tw-z-20 tw-flex tw-h-screen tw-flex-col tw-overflow-auto tw-bg-background-alt3 tw-pt-7 group-[.sidebar-open]:tw-w-60 md:tw-sticky"
+      [ngStyle]="
+        variant === 'secondary' && {
+          '--color-text-alt2': 'var(--color-text-main)',
+          '--color-background-alt3': 'var(--color-secondary-100)',
+          '--color-background-alt4': 'var(--color-secondary-300)',
+          '--color-secondary-300': 'var(--color-secondary-500)'
+        }
+      "
       [cdkTrapFocus]="data.isOverlay"
       [attr.role]="data.isOverlay ? 'dialog' : null"
       [attr.aria-modal]="data.isOverlay"

@@ -1,12 +1,14 @@
 import { A11yModule } from "@angular/cdk/a11y";
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
 
 import { IconButtonModule } from "../icon-button";
 import { NavigationModule } from "../navigation";
 import { SharedModule } from "../shared";
 
 import { SidebarService } from "./sidebar.service";
+
+export type LayoutVariant = "primary" | "secondary";
 
 @Component({
   selector: "bit-layout",
@@ -15,6 +17,8 @@ import { SidebarService } from "./sidebar.service";
   imports: [CommonModule, SharedModule, NavigationModule, A11yModule, IconButtonModule],
 })
 export class LayoutComponent {
+  @Input() variant: LayoutVariant = "primary";
+
   constructor(protected sidebarService: SidebarService) {}
 
   protected handleKeyDown = (event: KeyboardEvent) => {

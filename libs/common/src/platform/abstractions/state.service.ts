@@ -547,6 +547,7 @@ export abstract class StateService<T extends Account = Account> {
    * @param options Defines the storage options for the URL; Defaults to session Storage.
    */
   setDeepLinkRedirectUrl: (url: string, options?: StorageOptions) => Promise<void>;
+  nextUpActiveUser: () => Promise<UserId>;
   getBillingBannerStates: (options?: StorageOptions) => Promise<Record<string, boolean>>;
   setBillingBannerStates: (
     value: Record<string, boolean>,

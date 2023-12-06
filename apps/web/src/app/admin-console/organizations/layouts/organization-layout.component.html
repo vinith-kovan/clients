@@ -10,12 +10,12 @@
         <bit-tab-link
           *ngIf="
             canShowVaultTab(organization) && (flexibleCollectionsEnabled$ | async);
-            else elseBlock
+            else vaultTab
           "
           route="vault"
           >{{ "collections" | i18n }}</bit-tab-link
         >
-        <ng-template #elseBlock>
+        <ng-template #vaultTab>
           <bit-tab-link *ngIf="canShowVaultTab(organization)" route="vault">{{
             "vault" | i18n
           }}</bit-tab-link>

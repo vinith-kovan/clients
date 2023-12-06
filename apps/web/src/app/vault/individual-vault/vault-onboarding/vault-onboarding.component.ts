@@ -1,10 +1,21 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnDestroy,
+  SimpleChanges,
+  OnChanges,
+} from "@angular/core";
 import { Router } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil, BehaviorSubject, take } from "rxjs";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 export type VaultOnboardingTasks = {
   createAccount: boolean;
@@ -16,9 +27,9 @@ export type VaultOnboardingTasks = {
   selector: "app-vault-onboarding",
   templateUrl: "vault-onboarding.component.html",
 })
-export class VaultOnboardingComponent implements OnInit, OnDestroy {
-  @Input() onboardingTasks: VaultOnboardingTasks;
-  @Output() onHideOnboarding = new EventEmitter<void>();
+export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
+  @Input() showOnboardingAccess: boolean;
+  @Input() ciphers: CipherView[];
   @Output() onAddCipher = new EventEmitter<void>();
 
   isChrome: boolean;
@@ -28,9 +39,19 @@ export class VaultOnboardingComponent implements OnInit, OnDestroy {
   isIndividualPolicyVault: boolean;
   private destroy$ = new Subject<void>();
 
+  protected onboardingTasks$: BehaviorSubject<VaultOnboardingTasks> =
+    new BehaviorSubject<VaultOnboardingTasks>({
+      createAccount: true,
+      importData: false,
+      installExtension: false,
+    });
+
+  protected showOnboarding = false;
+
   constructor(
     private platformUtilsService: PlatformUtilsService,
     protected policyService: PolicyService,
+    private stateService: StateService,
     protected router: Router,
   ) {
     this.isChrome = platformUtilsService.isChrome();
@@ -39,13 +60,63 @@ export class VaultOnboardingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.onboardingTasks$.pipe(takeUntil(this.destroy$)).subscribe((tasks: any) => {
+      this.showOnboarding = tasks !== null ? Object.values(tasks).includes(false) : true;
+    });
+
+    this.setOnboardingTasks();
     this.setInstallExtLink();
     this.individualVaultPolicyCheck();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    const { currentValue, previousValue } = changes.ciphers;
+    if (this.showOnboarding && currentValue.length !== previousValue.length) {
+      this.saveCompletedTasks({
+        createAccount: true,
+        importData: this.ciphers.length > 0,
+        installExtension: false,
+      });
+    }
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  protected hideOnboarding() {
+    this.showOnboarding = false;
+    this.saveCompletedTasks({
+      createAccount: true,
+      importData: true,
+      installExtension: true,
+    });
+  }
+
+  async setOnboardingTasks() {
+    const tasksInStorage: any = (await this.stateService.getVaultOnboardingTasks()) || null;
+    if (tasksInStorage == null) {
+      const freshStart = {
+        createAccount: true,
+        importData: this.ciphers?.length > 0,
+        installExtension: false,
+      };
+      this.onboardingTasks$.next(freshStart);
+      this.stateService.setVaultOnboardingTasks({
+        currentStatus: freshStart,
+      });
+      this.showOnboarding = true;
+    } else if (tasksInStorage && tasksInStorage.currentStatus) {
+      this.showOnboarding = Object.values(tasksInStorage.currentStatus).includes(false);
+    }
+  }
+
+  private async saveCompletedTasks(vaultTasks: VaultOnboardingTasks) {
+    this.onboardingTasks$.next(vaultTasks);
+    this.stateService.setVaultOnboardingTasks({
+      currentStatus: vaultTasks,
+    });
   }
 
   individualVaultPolicyCheck() {
@@ -61,10 +132,6 @@ export class VaultOnboardingComponent implements OnInit, OnDestroy {
     this.onAddCipher.emit();
   }
 
-  emitToHideOnboarding() {
-    this.onHideOnboarding.emit();
-  }
-
   setInstallExtLink() {
     if (this.isChrome) {
       this.extensionUrl =
@@ -78,8 +145,12 @@ export class VaultOnboardingComponent implements OnInit, OnDestroy {
   }
 
   navigateToImport() {
-    if (!this.isIndividualPolicyVault && !this.onboardingTasks.importData) {
-      this.router.navigate(["tools/import"]);
+    if (!this.isIndividualPolicyVault) {
+      this.onboardingTasks$.pipe(take(1), takeUntil(this.destroy$)).subscribe((onboardingTasks) => {
+        if (!onboardingTasks.importData) {
+          this.router.navigate(["tools/import"]);
+        }
+      });
     }
   }
 

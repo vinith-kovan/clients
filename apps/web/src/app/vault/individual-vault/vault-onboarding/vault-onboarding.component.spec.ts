@@ -1,23 +1,30 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { mock, MockProxy } from "jest-mock-extended";
-import { of } from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
 
+import { I18nPipe } from "@bitwarden/angular/platform/pipes/i18n.pipe";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
-import { VaultOnboardingComponent } from "./vault-onboarding.component";
+import { VaultOnboardingComponent, VaultOnboardingTasks } from "./vault-onboarding.component";
 
 describe("VaultOnboardingComponent", () => {
   let component: VaultOnboardingComponent;
   let fixture: ComponentFixture<VaultOnboardingComponent>;
   let mockPlatformUtilsService: Partial<PlatformUtilsService>;
+  let mockStateService: MockProxy<StateService>;
   let mockPolicyService: MockProxy<PolicyService>;
+  let mockI18nService: MockProxy<I18nService>;
   let setInstallExtLinkSpy: any;
   let individualVaultPolicyCheckSpy: any;
 
   beforeEach(() => {
     mockPolicyService = mock<PolicyService>();
+    mockStateService = mock<StateService>();
+    mockI18nService = mock<I18nService>();
     mockPlatformUtilsService = {
       isChrome: jest.fn(),
       isFirefox: jest.fn(),
@@ -25,11 +32,13 @@ describe("VaultOnboardingComponent", () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [VaultOnboardingComponent],
+      declarations: [VaultOnboardingComponent, I18nPipe],
       imports: [RouterTestingModule],
       providers: [
         { provide: PlatformUtilsService, useValue: mockPlatformUtilsService },
         { provide: PolicyService, useValue: mockPolicyService },
+        { provide: StateService, useValue: mockStateService },
+        { provide: I18nService, useValue: mockI18nService },
       ],
     }).compileComponents();
   });
@@ -56,6 +65,22 @@ describe("VaultOnboardingComponent", () => {
     it("should call individualVaultPolicyCheck", () => {
       component.ngOnInit();
       expect(individualVaultPolicyCheckSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe("show and hide onboarding component", () => {
+    it("should set showOnboarding to true", () => {
+      jest
+        .spyOn((component as any).stateService, "getVaultOnboardingTasks")
+        .mockReturnValue(undefined);
+      component.ngOnInit();
+      expect((component as any).showOnboarding).toBe(true);
+    });
+
+    it("should set showOnboarding to false if dismiss is clicked", () => {
+      component.ngOnInit();
+      (component as any).hideOnboarding();
+      expect((component as any).showOnboarding).toBe(false);
     });
   });
 
@@ -99,11 +124,11 @@ describe("VaultOnboardingComponent", () => {
   describe("navigateToImport", () => {
     it("should navigate to tools/import when individualPolicy and tasks.importData are both false", () => {
       component.isIndividualPolicyVault = false;
-      component.onboardingTasks = {
+      (component as any).onboardingTasks$ = new BehaviorSubject<VaultOnboardingTasks>({
         createAccount: true,
         importData: false,
         installExtension: false,
-      };
+      });
       const navigateSpy = jest.spyOn((component as any).router, "navigate").mockResolvedValue(true);
       const expected = ["tools/import"];
       component.navigateToImport();

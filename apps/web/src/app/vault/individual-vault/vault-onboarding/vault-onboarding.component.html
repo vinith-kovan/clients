@@ -1,37 +1,42 @@
-<app-onboarding
-  *ngIf="onboardingTasks"
-  [title]="'getStarted' | i18n"
-  (dismiss)="emitToHideOnboarding()"
->
-  <app-onboarding-task
-    [title]="'createAnAccount' | i18n"
-    [completed]="onboardingTasks.createAccount"
-  ></app-onboarding-task>
-
-  <app-onboarding-task
-    [title]="'importData' | i18n"
-    icon="bwi-save"
-    (click)="navigateToImport()"
-    [completed]="onboardingTasks.importData"
+<div *ngIf="showOnboarding" class="tw-mb-6">
+  <app-onboarding
+    *ngIf="onboardingTasks$ | async"
+    [title]="'getStarted' | i18n"
+    (dismiss)="hideOnboarding()"
   >
-    <span class="tw-pl-1" *ngIf="!isIndividualPolicyVault && !onboardingTasks.importData">
-      {{ "onboardingImportDataDetailsStart" | i18n }}
-      <a (click)="emitToAddCipher()" class="link">
-        {{ "onboardingImportDataDetailsLink" | i18n }}
-      </a>
-    </span>
-    <span class="tw-pl-1" *ngIf="isIndividualPolicyVault">
-      {{ "importDataDetailsIndividual" | i18n }}
-    </span>
-  </app-onboarding-task>
+    <app-onboarding-task
+      [title]="'createAnAccount' | i18n"
+      [completed]="(onboardingTasks$ | async).createAccount"
+    ></app-onboarding-task>
 
-  <app-onboarding-task
-    [title]="'installBrowserExtension' | i18n"
-    icon="bwi-cli"
-    (click)="navigateToExtension()"
-  >
-    <span class="tw-pl-1">
-      {{ "installBrowserExtensionDetails" | i18n }}
-    </span>
-  </app-onboarding-task>
-</app-onboarding>
+    <app-onboarding-task
+      [title]="'importData' | i18n"
+      icon="bwi-save"
+      (click)="navigateToImport()"
+      [completed]="(onboardingTasks$ | async).importData"
+    >
+      <span
+        class="tw-pl-1"
+        *ngIf="!isIndividualPolicyVault && !(onboardingTasks$ | async).importData"
+      >
+        {{ "onboardingImportDataDetailsStart" | i18n }}
+        <a (click)="emitToAddCipher()" class="link">
+          {{ "onboardingImportDataDetailsLink" | i18n }}
+        </a>
+      </span>
+      <span class="tw-pl-1" *ngIf="isIndividualPolicyVault">
+        {{ "importDataDetailsIndividual" | i18n }}
+      </span>
+    </app-onboarding-task>
+
+    <app-onboarding-task
+      [title]="'installBrowserExtension' | i18n"
+      icon="bwi-cli"
+      (click)="navigateToExtension()"
+    >
+      <span class="tw-pl-1">
+        {{ "installBrowserExtensionDetails" | i18n }}
+      </span>
+    </app-onboarding-task>
+  </app-onboarding>
+</div>

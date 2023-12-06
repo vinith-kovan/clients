@@ -1,12 +1,10 @@
 <div class="container page-content">
-  <div *ngIf="showOnboarding && showOnboardingAccess$ | async" class="tw-mb-6">
-    <app-vault-onboarding
-      [onboardingTasks]="onboardingTasks$ | async"
-      (onHideOnboarding)="hideOnboarding()"
-      (onAddCipher)="addCipher()"
-    >
-    </app-vault-onboarding>
-  </div>
+  <app-vault-onboarding
+    [showOnboardingAccess]="showOnboardingAccess$ | async"
+    [ciphers]="ciphers"
+    (onAddCipher)="addCipher()"
+  >
+  </app-vault-onboarding>
 
   <div class="row">
     <div class="col-3">

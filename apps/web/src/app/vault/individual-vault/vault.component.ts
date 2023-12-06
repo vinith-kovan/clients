@@ -101,7 +101,6 @@ import {
 } from "./vault-filter/shared/models/routed-vault-filter.model";
 import { VaultFilter } from "./vault-filter/shared/models/vault-filter.model";
 import { FolderFilter, OrganizationFilter } from "./vault-filter/shared/models/vault-filter.type";
-import { VaultOnboardingTasks } from "./vault-onboarding/vault-onboarding.component";
 
 const BroadcasterSubscriptionId = "VaultComponent";
 const SearchTextDebounceInterval = 200;
@@ -154,14 +153,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     FeatureFlag.VaultOnboarding,
     false,
   );
-  protected onboardingTasks$: BehaviorSubject<VaultOnboardingTasks> =
-    new BehaviorSubject<VaultOnboardingTasks>({
-      createAccount: true,
-      importData: false,
-      installExtension: false,
-    });
-
-  protected showOnboarding = false;
 
   private searchText$ = new Subject<string>();
   private refresh$ = new BehaviorSubject<void>(null);
@@ -199,42 +190,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     private userVerificationService: UserVerificationService,
   ) {}
 
-  protected hideOnboarding() {
-    this.showOnboarding = false;
-    this.saveCompletedTasks({
-      createAccount: true,
-      importData: true,
-      installExtension: true,
-    });
-  }
-
-  async setOnboardingTasks() {
-    const tasksInStorage: any = (await this.stateService.getVaultOnboardingTasks()) || null;
-    if (tasksInStorage == null) {
-      const freshStart = {
-        createAccount: true,
-        importData: this.ciphers?.length > 0,
-        installExtension: false,
-      };
-      this.onboardingTasks$.next(freshStart);
-      this.stateService.setVaultOnboardingTasks({
-        currentStatus: freshStart,
-      });
-      this.showOnboarding = true;
-    } else if (tasksInStorage && tasksInStorage.currentStatus) {
-      this.showOnboarding = Object.values(tasksInStorage.currentStatus).includes(false);
-    }
-  }
-
-  private async saveCompletedTasks(vaultTasks: VaultOnboardingTasks) {
-    this.onboardingTasks$.next(vaultTasks);
-    this.stateService.setVaultOnboardingTasks({
-      currentStatus: vaultTasks,
-    });
-  }
-
   async ngOnInit() {
-    this.setOnboardingTasks();
     this.showBrowserOutdated = window.navigator.userAgent.indexOf("MSIE") !== -1;
     this.trashCleanupWarning = this.i18nService.t(
       this.platformUtilsService.isSelfHost()
@@ -455,18 +411,8 @@ export class VaultComponent implements OnInit, OnDestroy {
 
           this.performingInitialLoad = false;
           this.refreshing = false;
-          if (this.showOnboarding) {
-            this.saveCompletedTasks({
-              createAccount: true,
-              importData: this.ciphers.length > 0,
-              installExtension: false,
-            });
-          }
         },
       );
-    this.onboardingTasks$.pipe(takeUntil(this.destroy$)).subscribe((tasks: any) => {
-      this.showOnboarding = tasks !== null ? Object.values(tasks).includes(false) : true;
-    });
   }
 
   get isShowingCards() {

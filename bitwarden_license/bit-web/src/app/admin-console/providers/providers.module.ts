@@ -5,6 +5,7 @@ import { FormsModule } from "@angular/forms";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { SearchModule } from "@bitwarden/components";
 import { OrganizationPlansComponent } from "@bitwarden/web-vault/app/billing";
+import { AddPaymentMethodBannersComponent } from "@bitwarden/web-vault/app/components/add-payment-method-banners/add-payment-method-banners.component";
 import { OssModule } from "@bitwarden/web-vault/app/oss.module";
 
 import { AddOrganizationComponent } from "./clients/add-organization.component";
@@ -34,6 +35,7 @@ import { SetupComponent } from "./setup/setup.component";
     JslibModule,
     ProvidersRoutingModule,
     OrganizationPlansComponent,
+    AddPaymentMethodBannersComponent,
     SearchModule,
   ],
   declarations: [

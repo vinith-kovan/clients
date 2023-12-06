@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { takeUntil, tap, Subject } from "rxjs";
+import { combineLatest, switchMap, takeUntil, Subject } from "rxjs";
 
 import { OrganizationApiServiceAbstraction as OrganizationApiService } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import {
@@ -10,6 +10,8 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { BillingBannerService } from "@bitwarden/common/billing/abstractions/billing-banner.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
+import { SharedModule } from "../../shared/shared.module";
+
 type OrganizationBannerState = {
   organizationId: string;
   organizationName: string;
@@ -17,13 +19,15 @@ type OrganizationBannerState = {
 };
 
 @Component({
+  standalone: true,
   selector: "app-add-payment-method-banners",
   templateUrl: "add-payment-method-banners.component.html",
+  imports: [SharedModule],
 })
 export class AddPaymentMethodBannersComponent implements OnInit, OnDestroy {
-  protected bannerStates: OrganizationBannerState[];
-  private organizations: Organization[];
   private destroy$ = new Subject<void>();
+
+  protected organizationBannerStates: OrganizationBannerState[];
 
   constructor(
     private billingBannerService: BillingBannerService,
@@ -33,91 +37,46 @@ export class AddPaymentMethodBannersComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.organizationService.memberOrganizations$
+    const organizations$ = this.organizationService.memberOrganizations$.pipe(
+      canAccessAdmin(this.i18nService),
+    );
+
+    combineLatest([organizations$, this.billingBannerService.billingBannerStates$])
       .pipe(
-        canAccessAdmin(this.i18nService),
-        tap(async (organizations) => {
-          await Promise.all(
+        switchMap(async ([organizations, billingBannerStates]) => {
+          return await Promise.all(
             organizations.map(async (organization) => {
-              const showBanner = await this.saveBannerStateFor(organization);
-              this.updateBannerState(organization, showBanner);
+              const bannerState = await this.getBannerState(organization, billingBannerStates);
+              return {
+                organizationId: organization.id,
+                organizationName: organization.name,
+                showBanner: bannerState,
+              };
             }),
           );
         }),
         takeUntil(this.destroy$),
       )
-      .subscribe((organizations) => {
-        this.organizations = organizations;
+      .subscribe((organizationBannerStates) => {
+        this.organizationBannerStates = organizationBannerStates;
       });
-
-    this.billingBannerService.billingBannerStates$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((billingBannerStates) => this.setBannerStates(billingBannerStates));
-  }
-
-  private async checkForMissingPaymentMethod(organization: Organization): Promise<boolean> {
-    const billingResponse = await this.organizationApiService.getBilling(organization.id);
-    const subscriptionResponse = await this.organizationApiService.getSubscription(organization.id);
-
-    return (
-      billingResponse?.paymentSource === null ||
-      (billingResponse?.paymentSource === undefined &&
-        (subscriptionResponse?.subscription.status === "trialing" ||
-          subscriptionResponse?.subscription.status === "active"))
-    );
   }
 
   protected async closeBanner(organizationId: string): Promise<void> {
     await this.billingBannerService.setPaymentMethodBannerState(organizationId, false);
   }
 
-  protected getAddPaymentMethodUrl = (organizationId: string) =>
-    `/organizations/${organizationId}/billing/payment-method`;
-
-  private async saveBannerStateFor(organization: Organization): Promise<boolean> {
-    let bannerState = await this.billingBannerService.getPaymentMethodBannerState(organization.id);
+  private async getBannerState(
+    organization: Organization,
+    billingBannerStates: Record<string, boolean>,
+  ) {
+    const bannerId = this.billingBannerService.getPaymentMethodBannerId(organization.id);
+    let bannerState = billingBannerStates[bannerId];
     if (bannerState === undefined) {
-      bannerState = await this.checkForMissingPaymentMethod(organization);
+      bannerState = await this.organizationApiService.checkForMissingPaymentMethod(organization.id);
       await this.billingBannerService.setPaymentMethodBannerState(organization.id, bannerState);
     }
     return bannerState;
-  }
-
-  private setBannerStates(billingBannerStates: Record<string, boolean>): void {
-    this.bannerStates = Object.entries(billingBannerStates).map(([bannerId, showBanner]) => {
-      const organizationId = bannerId.split("_")[0];
-      const organization = this.organizations.find(
-        (organization) => organization.id === organizationId,
-      );
-      return {
-        organizationId: organization.id,
-        organizationName: organization.name,
-        showBanner: showBanner,
-      };
-    });
-  }
-
-  protected translateMaintainYourSubscription(organizationName: string) {
-    return this.i18nService.translate("maintainYourSubscription", organizationName);
-  }
-
-  private updateBannerState(organization: Organization, showBanner: boolean) {
-    const bannerState = this.bannerStates.find((obs) => obs.organizationId === organization.id);
-
-    if (bannerState) {
-      const index = this.bannerStates.indexOf(bannerState);
-      this.bannerStates[index] = {
-        organizationId: bannerState.organizationId,
-        organizationName: organization.name,
-        showBanner: showBanner,
-      };
-    } else {
-      this.bannerStates.push({
-        organizationId: organization.id,
-        organizationName: organization.name,
-        showBanner: showBanner,
-      });
-    }
   }
 
   ngOnDestroy() {

@@ -108,6 +108,7 @@ import { SharedModule } from "./shared.module";
     OrganizationBadgeModule,
     PipesModule,
     PasswordCalloutComponent,
+    AddPaymentMethodBannersComponent,
   ],
   declarations: [
     AcceptFamilySponsorshipComponent,
@@ -116,7 +117,6 @@ import { SharedModule } from "./shared.module";
     AddEditComponent,
     AddEditCustomFieldsComponent,
     AddEditCustomFieldsComponent,
-    AddPaymentMethodBannersComponent,
     ApiKeyComponent,
     AttachmentsComponent,
     ChangeEmailComponent,
@@ -199,7 +199,6 @@ import { SharedModule } from "./shared.module";
     AddEditComponent,
     AddEditCustomFieldsComponent,
     AddEditCustomFieldsComponent,
-    AddPaymentMethodBannersComponent,
     ApiKeyComponent,
     AttachmentsComponent,
     ChangeEmailComponent,

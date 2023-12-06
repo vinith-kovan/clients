@@ -342,4 +342,15 @@ export class OrganizationApiService implements OrganizationApiServiceAbstraction
     await this.syncService.fullSync(true);
     return data;
   }
+
+  async checkForMissingPaymentMethod(id: string): Promise<boolean> {
+    const billingResponse = await this.getBilling(id);
+    const subscriptionResponse = await this.getSubscription(id);
+
+    return (
+      (billingResponse?.paymentSource === null || billingResponse?.paymentSource === undefined) &&
+      (subscriptionResponse?.subscription?.status === "trialing" ||
+        subscriptionResponse?.subscription?.status === "active")
+    );
+  }
 }

@@ -9,33 +9,30 @@ export class BillingBannerService implements BillingBannerServiceAbstraction {
   billingBannerStates$ = this._billingBannerStates.asObservable();
 
   constructor(private stateService: StateService) {
-    this.stateService.activeAccountUnlocked$.pipe(
-      concatMap(async (unlocked) => {
-        if (!unlocked) {
-          this._billingBannerStates.next({});
-          return;
-        }
+    this.stateService.activeAccountUnlocked$
+      .pipe(
+        concatMap(async (unlocked) => {
+          if (!unlocked) {
+            this._billingBannerStates.next({});
+            return;
+          }
 
-        const data = await this.stateService.getBillingBannerStates();
-        this._billingBannerStates.next(data);
-      }),
-    );
+          const data = await this.stateService.getBillingBannerStates();
+          this._billingBannerStates.next(data);
+        }),
+      )
+      .subscribe();
   }
 
-  async getPaymentMethodBannerState(organizationId: string): Promise<boolean | undefined> {
-    const billingBannerStates = await this.stateService.getBillingBannerStates();
-    const paymentMethodBannerId = this.getPaymentMethodBannerIdFor(organizationId);
-    return billingBannerStates[paymentMethodBannerId];
+  getPaymentMethodBannerId(organizationId: string) {
+    return `${organizationId}_add-payment-method-banner`;
   }
 
   async setPaymentMethodBannerState(organizationId: string, state: boolean): Promise<void> {
     const billingBannerStates = await this.stateService.getBillingBannerStates();
-    const paymentMethodBannerId = this.getPaymentMethodBannerIdFor(organizationId);
+    const paymentMethodBannerId = this.getPaymentMethodBannerId(organizationId);
     billingBannerStates[paymentMethodBannerId] = state;
     await this.stateService.setBillingBannerStates(billingBannerStates);
     this._billingBannerStates.next(billingBannerStates);
   }
-
-  private getPaymentMethodBannerIdFor = (organizationId: string) =>
-    `${organizationId}_add-payment-method-banner`;
 }

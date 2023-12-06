@@ -1,13 +1,18 @@
-<ng-container *ngFor="let bannerState of bannerStates">
+<ng-container *ngFor="let organizationBannerState of organizationBannerStates">
   <bit-banner
-    *ngIf="bannerState.showBanner"
-    [bannerType]="'warning'"
-    (onClose)="closeBanner(bannerState.organizationId)"
+    *ngIf="organizationBannerState.showBanner"
+    bannerType="warning"
+    (onClose)="closeBanner(organizationBannerState.organizationId)"
   >
-    {{ translateMaintainYourSubscription(bannerState.organizationName) }}
+    {{ "maintainYourSubscription" | i18n: organizationBannerState.organizationName }}
     <a
       class="text-white font-weight-semibold"
-      [routerLink]="getAddPaymentMethodUrl(bannerState.organizationId)"
+      [routerLink]="[
+        '/organizations',
+        organizationBannerState.organizationId,
+        'billing',
+        'payment-method'
+      ]"
       >{{ "addAPaymentMethod" | i18n }}</a
     >.
   </bit-banner>

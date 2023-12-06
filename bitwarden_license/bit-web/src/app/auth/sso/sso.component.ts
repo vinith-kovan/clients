@@ -117,7 +117,7 @@ export class SsoComponent implements OnInit, OnDestroy {
       metadataAddress: new FormControl(),
       redirectBehavior: new FormControl(
         OpenIdConnectRedirectBehavior.RedirectGet,
-        Validators.required
+        Validators.required,
       ),
       getClaimsFromUserInfoEndpoint: new FormControl(),
       additionalScopes: new FormControl(),
@@ -129,7 +129,7 @@ export class SsoComponent implements OnInit, OnDestroy {
     },
     {
       updateOn: "blur",
-    }
+    },
   );
 
   protected samlForm = this.formBuilder.group<ControlsOf<SsoConfigView["saml"]>>(
@@ -154,7 +154,7 @@ export class SsoComponent implements OnInit, OnDestroy {
     },
     {
       updateOn: "blur",
-    }
+    },
   );
 
   protected ssoConfigForm = this.formBuilder.group<ControlsOf<SsoConfigView>>({
@@ -187,7 +187,7 @@ export class SsoComponent implements OnInit, OnDestroy {
     private i18nService: I18nService,
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private configService: ConfigServiceAbstraction
+    private configService: ConfigServiceAbstraction,
   ) {}
 
   async ngOnInit() {
@@ -233,12 +233,12 @@ export class SsoComponent implements OnInit, OnDestroy {
           this.organizationId = params.organizationId;
           await this.load();
         }),
-        takeUntil(this.destroy$)
+        takeUntil(this.destroy$),
       )
       .subscribe();
 
     const tdeFeatureFlag = await this.configService.getFeatureFlag<boolean>(
-      FeatureFlag.TrustedDeviceEncryption
+      FeatureFlag.TrustedDeviceEncryption,
     );
 
     this.showTdeOptions = tdeFeatureFlag;
@@ -373,7 +373,7 @@ export class SsoComponent implements OnInit, OnDestroy {
     const errorCount = this.getErrorCount(this.ssoConfigForm);
     const errorCountText = this.i18nService.t(
       errorCount === 1 ? "formErrorSummarySingle" : "formErrorSummaryPlural",
-      errorCount.toString()
+      errorCount.toString(),
     );
 
     const div = document.createElement("div");

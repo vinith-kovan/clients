@@ -308,6 +308,17 @@
     <div class="config-section">
       <h2 class="secondary-header">{{ "samlSpConfig" | i18n }}</h2>
 
+      <bit-form-control>
+        <bit-label>{{ "spUniqueEntityId" | i18n }}</bit-label>
+        <input
+          bitCheckbox
+          type="checkbox"
+          formControlName="spUniqueEntityId"
+          id="spUniqueEntityId"
+        />
+        <bit-hint>{{ "spUniqueEntityIdDesc" | i18n }}</bit-hint>
+      </bit-form-control>
+
       <bit-form-field *ngIf="ssoConfigForm.value.saml.spUniqueEntityId">
         <bit-label>{{ "spEntityId" | i18n }}</bit-label>
         <input bitInput disabled [value]="spEntityId" />
@@ -331,16 +342,6 @@
           [appA11yTitle]="'copyValue' | i18n"
         ></button>
       </bit-form-field>
-
-      <bit-form-control>
-        <bit-label>{{ "spUniqueEntityId" | i18n }}</bit-label>
-        <input
-          bitCheckbox
-          type="checkbox"
-          formControlName="spUniqueEntityId"
-          id="spUniqueEntityId"
-        />
-      </bit-form-control>
 
       <bit-form-field>
         <bit-label>{{ "spMetadataUrl" | i18n }}</bit-label>

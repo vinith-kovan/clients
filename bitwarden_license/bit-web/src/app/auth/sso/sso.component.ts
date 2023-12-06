@@ -134,7 +134,7 @@ export class SsoComponent implements OnInit, OnDestroy {
 
   protected samlForm = this.formBuilder.group<ControlsOf<SsoConfigView["saml"]>>(
     {
-      spUniqueEntityId: new FormControl(),
+      spUniqueEntityId: new FormControl(true, { updateOn: "change" }),
       spNameIdFormat: new FormControl(Saml2NameIdFormat.NotConfigured),
       spOutboundSigningAlgorithm: new FormControl(defaultSigningAlgorithm),
       spSigningBehavior: new FormControl(Saml2SigningBehavior.IfIdpWantAuthnRequestsSigned),

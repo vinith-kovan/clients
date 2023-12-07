@@ -3,7 +3,6 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { I18nPipe } from "@bitwarden/angular/platform/pipes/i18n.pipe";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -32,7 +31,7 @@ describe("VaultOnboardingComponent", () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [VaultOnboardingComponent, I18nPipe],
+      declarations: [],
       imports: [RouterTestingModule],
       providers: [
         { provide: PlatformUtilsService, useValue: mockPlatformUtilsService },

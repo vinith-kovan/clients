@@ -13,7 +13,7 @@ import { OrganizationBadgeModule } from "./organization-badge/organization-badge
 import { PipesModule } from "./pipes/pipes.module";
 import { VaultFilterModule } from "./vault-filter/vault-filter.module";
 import { VaultHeaderComponent } from "./vault-header/vault-header.component";
-import { VaultOnboardingModule } from "./vault-onboarding/vault-onboarding.module";
+import { VaultOnboardingComponent } from "./vault-onboarding/vault-onboarding.component";
 import { VaultRoutingModule } from "./vault-routing.module";
 import { VaultComponent } from "./vault.component";
 
@@ -31,7 +31,7 @@ import { VaultComponent } from "./vault.component";
     BreadcrumbsModule,
     VaultItemsModule,
     CollectionDialogModule,
-    VaultOnboardingModule,
+    VaultOnboardingComponent,
   ],
   declarations: [VaultComponent, VaultHeaderComponent],
   exports: [VaultComponent],

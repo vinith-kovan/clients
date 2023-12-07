@@ -1,3 +1,4 @@
+import { CommonModule } from "@angular/common";
 import {
   Component,
   OnInit,
@@ -11,11 +12,14 @@ import {
 import { Router } from "@angular/router";
 import { Subject, takeUntil, BehaviorSubject, take } from "rxjs";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+
+import { OnboardingModule } from "../../../shared/components/onboarding/onboarding.module";
 
 export type VaultOnboardingTasks = {
   createAccount: boolean;
@@ -24,6 +28,8 @@ export type VaultOnboardingTasks = {
 };
 
 @Component({
+  standalone: true,
+  imports: [OnboardingModule, CommonModule, JslibModule],
   selector: "app-vault-onboarding",
   templateUrl: "vault-onboarding.component.html",
 })

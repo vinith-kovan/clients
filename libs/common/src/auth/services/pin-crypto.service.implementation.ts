@@ -67,17 +67,19 @@ export class PinCryptoService implements PinCryptoServiceAbstraction {
     }
   }
 
+  // Note: oldPinKeyEncryptedMasterKey is only used for migrating old pin keys
+  // and will be null for all migrated accounts
   private async getPinKeyEncryptedKeys(
     pinLockType: PinLockType,
   ): Promise<{ pinKeyEncryptedUserKey: EncString; oldPinKeyEncryptedMasterKey?: EncString }> {
     switch (pinLockType) {
       case "PERSISTANT": {
         const pinKeyEncryptedUserKey = await this.stateService.getPinKeyEncryptedUserKey();
-        const oldEncryptedPinKey = await this.stateService.getEncryptedPinProtected();
+        const oldPinKeyEncryptedMasterKey = await this.stateService.getEncryptedPinProtected();
         return {
           pinKeyEncryptedUserKey,
-          oldPinKeyEncryptedMasterKey: oldEncryptedPinKey
-            ? new EncString(oldEncryptedPinKey)
+          oldPinKeyEncryptedMasterKey: oldPinKeyEncryptedMasterKey
+            ? new EncString(oldPinKeyEncryptedMasterKey)
             : undefined,
         };
       }

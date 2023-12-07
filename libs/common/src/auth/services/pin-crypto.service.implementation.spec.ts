@@ -36,12 +36,24 @@ describe("PinCryptoService", () => {
   });
 
   describe("decryptUserKeyWithPin(...)", () => {
+    const mockPin = "1234";
+    const mockProtectedPin = "protectedPin";
     const DEFAULT_PBKDF2_ITERATIONS = 600000;
     const mockUserEmail = "user@example.com";
+    const mockUserKey = new SymmetricCryptoKey(randomBytes(32)) as UserKey;
 
-    function setupCommonDecryptUserKeyWithPinMocks() {
+    function setupCommonDecryptUserKeyWithPinMocks(migrationStatus: "PRE" | "POST" = "POST") {
       stateService.getKdfConfig.mockResolvedValue(new KdfConfig(DEFAULT_PBKDF2_ITERATIONS));
       stateService.getEmail.mockResolvedValue(mockUserEmail);
+
+      if (migrationStatus === "PRE") {
+        cryptoService.decryptAndMigrateOldPinKey.mockResolvedValue(mockUserKey);
+      } else {
+        cryptoService.decryptUserKeyWithPin.mockResolvedValue(mockUserKey);
+      }
+
+      stateService.getProtectedPin.mockResolvedValue(mockProtectedPin);
+      cryptoService.decryptToUtf8.mockResolvedValue(mockPin);
     }
 
     // Note: both pinKeyEncryptedUserKeys use encryptionType: 2 (AesCbc256_HmacSha256_B64)
@@ -100,8 +112,6 @@ describe("PinCryptoService", () => {
       }
     }
 
-    // use .forEach to test all pin lock types and migration statuses
-
     const testCases: { pinLockType: PinLockType; migrationStatus: "PRE" | "POST" }[] = [
       { pinLockType: "PERSISTANT", migrationStatus: "PRE" },
       { pinLockType: "PERSISTANT", migrationStatus: "POST" },
@@ -110,44 +120,19 @@ describe("PinCryptoService", () => {
     ];
 
     testCases.forEach(({ pinLockType, migrationStatus }) => {
-      it(`should successfully decrypt user key with valid ${pinLockType} PIN (${migrationStatus} migration)`, async () => {
-        // Mock setup
-        setupCommonDecryptUserKeyWithPinMocks();
+      it(`should successfully decrypt and return user key with valid, ${pinLockType} PIN (${migrationStatus} migration)`, async () => {
+        // Arrange
+        setupCommonDecryptUserKeyWithPinMocks(migrationStatus);
 
+        vaultTimeoutSettingsService.isPinLockSet.mockResolvedValue(pinLockType);
         mockPinEncryptedKeyDataByPinLockType(pinLockType, migrationStatus);
 
-        stateService.getPinKeyEncryptedUserKey.mockResolvedValue(null);
+        // Act
+        const result = await pinCryptoService.decryptUserKeyWithPin(mockPin);
 
-        // Execution
-        const result = await pinCryptoService.decryptUserKeyWithPin("1234");
-
-        // Expectations
-        expect(result).toBeNull();
-        // Additional expectations can be added if needed
+        // Assert
+        expect(result).toEqual(mockUserKey);
       });
-    });
-
-    it("should successfully decrypt user key with valid pin", async () => {
-      // TODO: gonna have to build setup helpers for the different PIN type scenarios
-      // Mock setup
-      setupCommonDecryptUserKeyWithPinMocks();
-
-      vaultTimeoutSettingsService.isPinLockSet.mockResolvedValue("PERSISTANT");
-      mockPinEncryptedKeyDataByPinLockType("PERSISTANT");
-
-      const mockUserKey = new SymmetricCryptoKey(randomBytes(32)) as UserKey;
-
-      cryptoService.decryptUserKeyWithPin.mockResolvedValue(mockUserKey);
-
-      // Valid PIN
-      const validPin = "1234";
-
-      // Execution
-      const result = await pinCryptoService.decryptUserKeyWithPin(validPin);
-
-      // Expectations
-      expect(result).toEqual(mockUserKey);
-      // Additional expectations can be added if needed
     });
   });
 });

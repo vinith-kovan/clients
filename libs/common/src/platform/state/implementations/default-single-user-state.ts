@@ -10,18 +10,22 @@ import {
   timeout,
 } from "rxjs";
 
+import { UserId } from "../../../types/guid";
+import { EncryptService } from "../../abstractions/encrypt.service";
 import {
   AbstractStorageService,
   ObservableStorageService,
 } from "../../abstractions/storage.service";
-import { GlobalState } from "../global-state";
-import { KeyDefinition, globalKeyBuilder } from "../key-definition";
+import { DerivedUserState } from "../derived-user-state";
+import { KeyDefinition, userKeyBuilder } from "../key-definition";
 import { StateUpdateOptions, populateOptionsWithDefault } from "../state-update-options";
+import { Converter, SingleUserState } from "../user-state";
 
+import { DefaultDerivedUserState } from "./default-derived-state";
 import { getStoredValue } from "./util";
 const FAKE_DEFAULT = Symbol("fakeDefault");
 
-export class DefaultGlobalState<T> implements GlobalState<T> {
+export class DefaultSingleUserState<T> implements SingleUserState<T> {
   private storageKey: string;
 
   protected stateSubject: BehaviorSubject<T | typeof FAKE_DEFAULT> = new BehaviorSubject<
@@ -31,10 +35,12 @@ export class DefaultGlobalState<T> implements GlobalState<T> {
   state$: Observable<T>;
 
   constructor(
+    readonly userId: UserId,
     private keyDefinition: KeyDefinition<T>,
+    private encryptService: EncryptService,
     private chosenLocation: AbstractStorageService & ObservableStorageService,
   ) {
-    this.storageKey = globalKeyBuilder(this.keyDefinition);
+    this.storageKey = userKeyBuilder(this.userId, this.keyDefinition);
 
     const storageUpdates$ = this.chosenLocation.updates$.pipe(
       filter((update) => update.key === this.storageKey),
@@ -91,6 +97,10 @@ export class DefaultGlobalState<T> implements GlobalState<T> {
     const newState = configureState(currentState, combinedDependencies);
     await this.chosenLocation.save(this.storageKey, newState);
     return newState;
+  }
+
+  createDerived<TTo>(converter: Converter<T, TTo>): DerivedUserState<TTo> {
+    return new DefaultDerivedUserState<T, TTo>(converter, this.encryptService, this);
   }
 
   private async getGuaranteedState() {

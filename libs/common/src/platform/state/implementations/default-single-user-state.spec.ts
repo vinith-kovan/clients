@@ -8,10 +8,12 @@ import { Jsonify } from "type-fest";
 
 import { trackEmissions, awaitAsync } from "../../../../spec";
 import { FakeStorageService } from "../../../../spec/fake-storage.service";
-import { KeyDefinition, globalKeyBuilder } from "../key-definition";
+import { UserId } from "../../../types/guid";
+import { Utils } from "../../misc/utils";
+import { KeyDefinition, userKeyBuilder } from "../key-definition";
 import { StateDefinition } from "../state-definition";
 
-import { DefaultGlobalState } from "./default-global-state";
+import { DefaultSingleUserState } from "./default-single-user-state";
 
 class TestState {
   date: Date;
@@ -32,16 +34,22 @@ const testStateDefinition = new StateDefinition("fake", "disk");
 const testKeyDefinition = new KeyDefinition<TestState>(testStateDefinition, "fake", {
   deserializer: TestState.fromJSON,
 });
-const globalKey = globalKeyBuilder(testKeyDefinition);
+const userId = Utils.newGuid() as UserId;
+const userKey = userKeyBuilder(userId, testKeyDefinition);
 
-describe("DefaultGlobalState", () => {
+describe("DefaultSingleUserState", () => {
   let diskStorageService: FakeStorageService;
-  let globalState: DefaultGlobalState<TestState>;
+  let globalState: DefaultSingleUserState<TestState>;
   const newData = { date: new Date() };
 
   beforeEach(() => {
     diskStorageService = new FakeStorageService();
-    globalState = new DefaultGlobalState(testKeyDefinition, diskStorageService);
+    globalState = new DefaultSingleUserState(
+      userId,
+      testKeyDefinition,
+      null, // Not testing anything with encrypt service
+      diskStorageService,
+    );
   });
 
   afterEach(() => {
@@ -51,7 +59,7 @@ describe("DefaultGlobalState", () => {
   describe("state$", () => {
     it("should emit when storage updates", async () => {
       const emissions = trackEmissions(globalState.state$);
-      await diskStorageService.save(globalKey, newData);
+      await diskStorageService.save(userKey, newData);
       await awaitAsync();
 
       expect(emissions).toEqual([
@@ -69,14 +77,17 @@ describe("DefaultGlobalState", () => {
 
     it("should emit initial storage value on first subscribe", async () => {
       const initialStorage: Record<string, TestState> = {};
-      initialStorage[globalKey] = TestState.fromJSON({
+      initialStorage[userKey] = TestState.fromJSON({
         date: "2022-09-21T13:14:17.648Z",
       });
       diskStorageService.internalUpdateStore(initialStorage);
 
       const state = await firstValueFrom(globalState.state$);
       expect(diskStorageService.mock.get).toHaveBeenCalledTimes(1);
-      expect(diskStorageService.mock.get).toHaveBeenCalledWith("global_fake_fake", undefined);
+      expect(diskStorageService.mock.get).toHaveBeenCalledWith(
+        `user_${userId}_fake_fake`,
+        undefined,
+      );
       expect(state).toBeTruthy();
     });
   });
@@ -179,7 +190,7 @@ describe("DefaultGlobalState", () => {
       const initialState = TestState.fromJSON({
         date: "2022-09-21T13:14:17.648Z",
       });
-      initialStorage[globalKey] = initialState;
+      initialStorage[userKey] = initialState;
       diskStorageService.internalUpdateStore(initialStorage);
 
       const emissions = trackEmissions(globalState.state$);

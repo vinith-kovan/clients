@@ -4,7 +4,7 @@ import { ActivatedRoute, RouterModule } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
-import { Provider } from "@bitwarden/common/models/domain/provider";
+import { Provider } from "@bitwarden/common/admin-console/models/domain/provider";
 import { IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
 import { AdminConsoleLogo } from "@bitwarden/web-vault/app/admin-console/icons/admin-console-logo";
 
@@ -21,7 +21,10 @@ export class ProvidersLayoutComponent {
   provider: Provider;
   private providerId: string;
 
-  constructor(private route: ActivatedRoute, private providerService: ProviderService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private providerService: ProviderService,
+  ) {}
 
   ngOnInit() {
     document.body.classList.remove("layout_frontend");

@@ -122,13 +122,13 @@ export class ProductSwitcherContentComponent {
         bento,
         other,
       };
-    })
+    }),
   );
 
   constructor(
     private organizationService: OrganizationService,
     private providerService: ProviderService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {}
 }

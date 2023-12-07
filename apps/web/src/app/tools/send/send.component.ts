@@ -55,7 +55,7 @@ export class SendComponent extends BaseSendComponent {
     private broadcasterService: BroadcasterService,
     logService: LogService,
     sendApiService: SendApiService,
-    dialogService: DialogService
+    dialogService: DialogService,
   ) {
     super(
       sendService,
@@ -67,7 +67,7 @@ export class SendComponent extends BaseSendComponent {
       policyService,
       logService,
       sendApiService,
-      dialogService
+      dialogService,
     );
   }
 

@@ -14,7 +14,6 @@ import { SharedModule } from "@bitwarden/web-vault/app/shared";
 
 import { AccessPolicySelectorComponent } from "./access-policies/access-policy-selector/access-policy-selector.component";
 import { AccessSelectorComponent } from "./access-policies/access-selector.component";
-import { AccessRemovalDialogComponent } from "./access-policies/dialogs/access-removal-dialog.component";
 import { BulkConfirmationDialogComponent } from "./dialogs/bulk-confirmation-dialog.component";
 import { BulkStatusDialogComponent } from "./dialogs/bulk-status-dialog.component";
 import { NewMenuComponent } from "./new-menu.component";
@@ -37,7 +36,6 @@ import { SecretsListComponent } from "./secrets-list.component";
   exports: [
     SharedModule,
     NoItemsModule,
-    AccessRemovalDialogComponent,
     AccessSelectorComponent,
     AccessPolicySelectorComponent,
     BulkStatusDialogComponent,
@@ -51,7 +49,6 @@ import { SecretsListComponent } from "./secrets-list.component";
     HeaderComponent,
   ],
   declarations: [
-    AccessRemovalDialogComponent,
     BulkStatusDialogComponent,
     BulkConfirmationDialogComponent,
 

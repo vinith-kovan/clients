@@ -76,8 +76,8 @@ class MockDynamicAvatar {
     this.stateService.activeAccount$,
   ]).pipe(
     map(
-      ([accounts, activeAccount]) => accounts[activeAccount as keyof typeof accounts].profile.name
-    )
+      ([accounts, activeAccount]) => accounts[activeAccount as keyof typeof accounts].profile.name,
+    ),
   );
   constructor(private stateService: MockStateService) {}
 }
@@ -87,7 +87,7 @@ export default {
   component: HeaderComponent,
   decorators: [
     componentWrapperDecorator(
-      (story) => `<div class="tw-min-h-screen tw-flex-1 tw-p-6 tw-text-main">${story}</div>`
+      (story) => `<div class="tw-min-h-screen tw-flex-1 tw-p-6 tw-text-main">${story}</div>`,
     ),
     moduleMetadata({
       imports: [

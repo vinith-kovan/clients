@@ -21,8 +21,8 @@ export class OrgSwitcherComponent {
         orgs
           .filter((org) => this.filter(org))
           .sort((a, b) => a.name.localeCompare(b.name))
-          .sort((a, b) => (a.enabled ? -1 : 1))
-      )
+          .sort((a, b) => (a.enabled ? -1 : 1)),
+      ),
     );
 
   protected activeOrganization$: Observable<Organization> = combineLatest([
@@ -54,7 +54,10 @@ export class OrgSwitcherComponent {
   @Input()
   hideNewButton = false;
 
-  constructor(private route: ActivatedRoute, private organizationService: OrganizationService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private organizationService: OrganizationService,
+  ) {}
 
   protected toggle(event?: MouseEvent) {
     event?.stopPropagation();

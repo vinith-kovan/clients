@@ -19,6 +19,7 @@ import {
   stateServiceFactory,
 } from "../../../platform/background/service-factories/state-service.factory";
 
+import { pinCryptoServiceFactory } from "./pin-crypto-service.factory";
 import {
   UserVerificationApiServiceInitOptions,
   userVerificationApiServiceFactory,
@@ -46,6 +47,7 @@ export function userVerificationServiceFactory(
         await cryptoServiceFactory(cache, opts),
         await i18nServiceFactory(cache, opts),
         await userVerificationApiServiceFactory(cache, opts),
+        await pinCryptoServiceFactory(cache, opts),
       ),
   );
 }

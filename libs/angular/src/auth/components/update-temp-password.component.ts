@@ -31,7 +31,7 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
   showPassword = false;
   reason: ForceSetPasswordReason = ForceSetPasswordReason.None;
-  verification: Verification = {
+  verification: Verification & { type: VerificationType.MasterPassword } = {
     type: VerificationType.MasterPassword,
     secret: "",
   };

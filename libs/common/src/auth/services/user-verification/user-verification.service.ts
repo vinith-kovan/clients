@@ -8,7 +8,11 @@ import { UserVerificationService as UserVerificationServiceAbstraction } from ".
 import { VerificationType } from "../../enums/verification-type";
 import { SecretVerificationRequest } from "../../models/request/secret-verification.request";
 import { VerifyOTPRequest } from "../../models/request/verify-otp.request";
-import { Verification } from "../../types/verification";
+import {
+  ServerSideVerification,
+  Verification,
+  verificationHasSecret,
+} from "../../types/verification";
 
 /**
  * Used for general-purpose user verification throughout the app.
@@ -30,11 +34,11 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
    * @param alreadyHashed Whether the master password is already hashed
    */
   async buildRequest<T extends SecretVerificationRequest>(
-    verification: Verification,
+    verification: ServerSideVerification,
     requestClass?: new () => T,
     alreadyHashed?: boolean,
   ) {
-    this.validateInput(verification);
+    this.validateSecretExistsIfRequired(verification);
 
     const request =
       requestClass != null ? new requestClass() : (new SecretVerificationRequest() as T);
@@ -60,12 +64,12 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
   }
 
   /**
-   * Used to verify the Master Password client-side, or send the OTP to the server for verification (with no other data)
+   * Used to verify Master Password, PIN, or biometrics client-side, or send the OTP to the server for verification (with no other data)
    * Generally used for client-side verification only.
    * @param verification User-supplied verification data (Master Password or OTP)
    */
   async verifyUser(verification: Verification): Promise<boolean> {
-    this.validateInput(verification);
+    this.validateSecretExistsIfRequired(verification);
 
     switch (verification.type) {
       case VerificationType.OTP:
@@ -80,6 +84,9 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
   }
 
   private async verifyUserByOTP(verification: Verification): Promise<boolean> {
+    if (!verificationHasSecret(verification)) {
+      throw new Error("Invalid verification: no secret present");
+    }
     const request = new VerifyOTPRequest(verification.secret);
     try {
       await this.userVerificationApiService.postAccountVerifyOTP(request);
@@ -90,6 +97,9 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
   }
 
   private async verifyUserByMasterPassword(verification: Verification): Promise<boolean> {
+    if (!verificationHasSecret(verification)) {
+      throw new Error("Invalid verification: no secret present");
+    }
     let masterKey = await this.cryptoService.getMasterKey();
     if (!masterKey) {
       masterKey = await this.cryptoService.makeMasterKey(
@@ -106,11 +116,17 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     if (!passwordValid) {
       throw new Error(this.i18nService.t("invalidMasterPassword"));
     }
+    // TODO: investigate if this side effect should be here
+    // Is this necessary
     this.cryptoService.setMasterKey(masterKey);
     return true;
   }
 
   private async verifyUserByPIN(verification: Verification): Promise<boolean> {
+    if (!verificationHasSecret(verification)) {
+      throw new Error("Invalid verification: no secret present");
+    }
+
     const userKey = await this.pinCryptoService.decryptUserKeyWithPin(verification.secret);
 
     return userKey != null;
@@ -150,8 +166,11 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     );
   }
 
-  private validateInput(verification: Verification) {
-    if (verification?.secret == null || verification.secret === "") {
+  private validateSecretExistsIfRequired(verification: Verification) {
+    if (
+      verificationHasSecret(verification) &&
+      (verification?.secret == null || verification.secret === "")
+    ) {
       switch (verification.type) {
         case VerificationType.OTP:
           throw new Error(this.i18nService.t("verificationCodeRequired"));

@@ -113,21 +113,13 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
   private async verifyUserByPIN(verification: Verification): Promise<boolean> {
     const userKey = await this.pinCryptoService.decryptUserKeyWithPin(verification.secret);
 
-    if (userKey) {
-      return true;
-    } else {
-      return false;
-    }
+    return userKey != null;
   }
 
   private async verifyUserByBiometrics(): Promise<boolean> {
     const userKey = await this.cryptoService.getUserKeyFromStorage(KeySuffixOptions.Biometric);
 
-    if (userKey) {
-      return true;
-    } else {
-      return false;
-    }
+    return userKey != null;
   }
 
   async requestOTP() {

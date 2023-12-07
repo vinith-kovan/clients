@@ -31,7 +31,7 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
     private platformUtilsService: PlatformUtilsService,
     private organizationService: OrganizationService,
     private stateService: StateService,
-    private apiService: ApiService
+    private apiService: ApiService,
   ) {}
 
   ngOnInit() {

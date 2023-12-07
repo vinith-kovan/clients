@@ -1461,7 +1461,7 @@
     "message": "Invalid PIN code."
   },
   "tooManyInvalidPinEntryAttemptsLoggingOut": {
-    "message": "Too many invalid PIN entry attempts. Logging you out."
+    "message": "Too many invalid PIN entry attempts. Logging out."
   },
   "unlockWithBiometrics": {
     "message": "Unlock with biometrics"

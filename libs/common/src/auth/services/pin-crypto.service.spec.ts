@@ -42,7 +42,12 @@ describe("PinCryptoService", () => {
     const mockUserEmail = "user@example.com";
     const mockUserKey = new SymmetricCryptoKey(randomBytes(32)) as UserKey;
 
-    function setupCommonDecryptUserKeyWithPinMocks(migrationStatus: "PRE" | "POST" = "POST") {
+    function setupDecryptUserKeyWithPinMocks(
+      pinLockType: PinLockType,
+      migrationStatus: "PRE" | "POST" = "POST",
+    ) {
+      vaultTimeoutSettingsService.isPinLockSet.mockResolvedValue(pinLockType);
+
       stateService.getKdfConfig.mockResolvedValue(new KdfConfig(DEFAULT_PBKDF2_ITERATIONS));
       stateService.getEmail.mockResolvedValue(mockUserEmail);
 
@@ -51,6 +56,8 @@ describe("PinCryptoService", () => {
       } else {
         cryptoService.decryptUserKeyWithPin.mockResolvedValue(mockUserKey);
       }
+
+      mockPinEncryptedKeyDataByPinLockType(pinLockType, migrationStatus);
 
       stateService.getProtectedPin.mockResolvedValue(mockProtectedPin);
       cryptoService.decryptToUtf8.mockResolvedValue(mockPin);
@@ -105,10 +112,10 @@ describe("PinCryptoService", () => {
               oldPinKeyEncryptedMasterKeyPostMigration,
             );
           }
-
           break;
-        default:
-          throw new Error(`Unexpected pin lock type: ${pinLockType}`);
+        case "DISABLED":
+          // no mocking required. Error should be thrown
+          break;
       }
     }
 
@@ -122,10 +129,7 @@ describe("PinCryptoService", () => {
     testCases.forEach(({ pinLockType, migrationStatus }) => {
       it(`should successfully decrypt and return user key with valid, ${pinLockType} PIN (${migrationStatus} migration)`, async () => {
         // Arrange
-        setupCommonDecryptUserKeyWithPinMocks(migrationStatus);
-
-        vaultTimeoutSettingsService.isPinLockSet.mockResolvedValue(pinLockType);
-        mockPinEncryptedKeyDataByPinLockType(pinLockType, migrationStatus);
+        setupDecryptUserKeyWithPinMocks(pinLockType, migrationStatus);
 
         // Act
         const result = await pinCryptoService.decryptUserKeyWithPin(mockPin);
@@ -133,6 +137,45 @@ describe("PinCryptoService", () => {
         // Assert
         expect(result).toEqual(mockUserKey);
       });
+
+      it(`should return null when ${pinLockType} PIN (${migrationStatus} migration) is incorrect and user key cannot be decrypted`, async () => {
+        // Arrange
+        setupDecryptUserKeyWithPinMocks("PERSISTANT");
+
+        cryptoService.decryptUserKeyWithPin.mockResolvedValue(null);
+
+        // Act
+        const result = await pinCryptoService.decryptUserKeyWithPin(mockPin);
+
+        // Assert
+        expect(result).toBeNull();
+      });
+
+      // not sure if this is a realistic scenario but going to test it anyway
+      it(`should return null when ${pinLockType} PIN (${migrationStatus} migration) doesn't match after successful user key decryption`, async () => {
+        // Arrange
+        setupDecryptUserKeyWithPinMocks("PERSISTANT");
+
+        // non matching PIN
+        cryptoService.decryptToUtf8.mockResolvedValue("9999");
+
+        // Act
+        const result = await pinCryptoService.decryptUserKeyWithPin(mockPin);
+
+        // Assert
+        expect(result).toBeNull();
+      });
+    });
+
+    it(`should return null when pin is disabled`, async () => {
+      // Arrange
+      setupDecryptUserKeyWithPinMocks("DISABLED");
+
+      // Act
+      const result = await pinCryptoService.decryptUserKeyWithPin(mockPin);
+
+      // Assert
+      expect(result).toBeNull();
     });
   });
 });

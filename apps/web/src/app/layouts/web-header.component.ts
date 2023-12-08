@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, RouterModule } from "@angular/router";
 import { combineLatest, map, Observable } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -22,6 +22,7 @@ import { ProductSwitcherModule } from "./product-switcher/product-switcher.modul
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     JslibModule,
     MenuModule,
     TypographyModule,

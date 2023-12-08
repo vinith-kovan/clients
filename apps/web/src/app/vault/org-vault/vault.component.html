@@ -1,4 +1,14 @@
-<app-header></app-header>
+<app-org-vault-header
+  [filter]="filter"
+  [loading]="refreshing"
+  [organization]="organization"
+  [collection]="selectedCollection"
+  (onAddCipher)="addCipher()"
+  (onAddCollection)="addCollection()"
+  (onEditCollection)="editCollection(selectedCollection.node, $event.tab)"
+  (onDeleteCollection)="deleteCollection(selectedCollection.node)"
+></app-org-vault-header>
+
 <div class="row">
   <div class="col-3">
     <div class="groupings">
@@ -16,16 +26,6 @@
     </div>
   </div>
   <div class="col-9">
-    <app-org-vault-header
-      [filter]="filter"
-      [loading]="refreshing"
-      [organization]="organization"
-      [collection]="selectedCollection"
-      (onAddCipher)="addCipher()"
-      (onAddCollection)="addCollection()"
-      (onEditCollection)="editCollection(selectedCollection.node, $event.tab)"
-      (onDeleteCollection)="deleteCollection(selectedCollection.node)"
-    ></app-org-vault-header>
     <app-callout type="warning" *ngIf="activeFilter.isDeleted" icon="bwi bwi-exclamation-triangle">
       {{ trashCleanupWarning }}
     </app-callout>

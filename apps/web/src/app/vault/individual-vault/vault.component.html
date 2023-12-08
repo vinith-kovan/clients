@@ -1,4 +1,15 @@
-<app-header></app-header>
+<app-vault-header
+  [filter]="filter"
+  [loading]="refreshing && !performingInitialLoad"
+  [organizations]="allOrganizations"
+  [canCreateCollections]="canCreateCollections"
+  [collection]="selectedCollection"
+  (onAddCipher)="addCipher()"
+  (onAddCollection)="addCollection()"
+  (onAddFolder)="addFolder()"
+  (onEditCollection)="editCollection(selectedCollection.node, $event.tab)"
+  (onDeleteCollection)="deleteCollection(selectedCollection.node)"
+></app-vault-header>
 
 <div class="row">
   <div class="col-3">
@@ -17,18 +28,6 @@
     </div>
   </div>
   <div [ngClass]="{ 'col-6': isShowingCards, 'col-9': !isShowingCards }">
-    <app-vault-header
-      [filter]="filter"
-      [loading]="refreshing && !performingInitialLoad"
-      [organizations]="allOrganizations"
-      [canCreateCollections]="canCreateCollections"
-      [collection]="selectedCollection"
-      (onAddCipher)="addCipher()"
-      (onAddCollection)="addCollection()"
-      (onAddFolder)="addFolder()"
-      (onEditCollection)="editCollection(selectedCollection.node, $event.tab)"
-      (onDeleteCollection)="deleteCollection(selectedCollection.node)"
-    ></app-vault-header>
     <app-callout type="warning" *ngIf="activeFilter.isDeleted" icon="bwi-exclamation-triangle">
       {{ trashCleanupWarning }}
     </app-callout>

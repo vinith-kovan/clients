@@ -233,7 +233,6 @@ export class AccountSettings {
   enableAlwaysOnTop?: boolean;
   enableAutoFillOnPageLoad?: boolean;
   enableBiometric?: boolean;
-  enableFullWidth?: boolean;
   environmentUrls: EnvironmentUrls = new EnvironmentUrls();
   equivalentDomains?: any;
   minimizeOnCopyToClipboard?: boolean;

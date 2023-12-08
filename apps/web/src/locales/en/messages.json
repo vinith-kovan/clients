@@ -1460,13 +1460,6 @@
   "faviconDesc": {
     "message": "Show a recognizable image next to each login."
   },
-  "enableFullWidth": {
-    "message": "Display full width layout",
-    "description": "Allows scaling the web vault UI's width"
-  },
-  "enableFullWidthDesc": {
-    "message": "Allow the web vault to expand the full width of the browser window."
-  },
   "default": {
     "message": "Default"
   },

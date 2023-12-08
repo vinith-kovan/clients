@@ -182,9 +182,6 @@ export class AppComponent implements OnDestroy, OnInit {
           case "showToast":
             this.showToast(message);
             break;
-          case "setFullWidth":
-            this.setFullWidth();
-            break;
           case "convertAccountToKeyConnector":
             this.router.navigate(["/remove-password"]);
             break;
@@ -214,8 +211,6 @@ export class AppComponent implements OnDestroy, OnInit {
       new DisableSendPolicy(),
       new SendOptionsPolicy(),
     ]);
-
-    this.setFullWidth();
   }
 
   ngOnDestroy() {
@@ -314,15 +309,6 @@ export class AppComponent implements OnDestroy, OnInit {
       this.notificationsService.disconnectFromInactivity();
     } else {
       this.notificationsService.reconnectFromActivity();
-    }
-  }
-
-  private async setFullWidth() {
-    const enableFullWidth = await this.stateService.getEnableFullWidth();
-    if (enableFullWidth) {
-      document.body.classList.add("full-width");
-    } else {
-      document.body.classList.remove("full-width");
     }
   }
 }

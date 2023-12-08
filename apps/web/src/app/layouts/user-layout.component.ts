@@ -10,7 +10,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
 
-import { AdminConsoleLogo } from "../admin-console/icons/admin-console-logo";
+import { PasswordManagerLogo } from "./password-manager-logo";
 
 const BroadcasterSubscriptionId = "UserLayoutComponent";
 
@@ -21,7 +21,7 @@ const BroadcasterSubscriptionId = "UserLayoutComponent";
   imports: [CommonModule, RouterModule, JslibModule, LayoutComponent, IconModule, NavigationModule],
 })
 export class UserLayoutComponent implements OnInit, OnDestroy {
-  protected readonly logo = AdminConsoleLogo;
+  protected readonly logo = PasswordManagerLogo;
   hasFamilySponsorshipAvailable: boolean;
   hideSubscription: boolean;
 

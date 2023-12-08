@@ -6,7 +6,7 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { Provider } from "@bitwarden/common/admin-console/models/domain/provider";
 import { IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
-import { AdminConsoleLogo } from "@bitwarden/web-vault/app/admin-console/icons/admin-console-logo";
+import { ProviderPortalLogo } from "@bitwarden/web-vault/app/admin-console/icons/provider-portal-logo";
 
 @Component({
   selector: "providers-layout",
@@ -16,7 +16,7 @@ import { AdminConsoleLogo } from "@bitwarden/web-vault/app/admin-console/icons/a
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class ProvidersLayoutComponent {
-  protected readonly logo = AdminConsoleLogo;
+  protected readonly logo = ProviderPortalLogo;
 
   provider: Provider;
   private providerId: string;

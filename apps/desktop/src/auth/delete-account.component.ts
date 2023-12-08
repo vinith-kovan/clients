@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 
 import { AccountApiService } from "@bitwarden/common/auth/abstractions/account-api.service";
-import { Verification } from "@bitwarden/common/auth/types/verification";
+import { VerificationWithSecret } from "@bitwarden/common/auth/types/verification";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -15,7 +15,7 @@ export class DeleteAccountComponent {
   formPromise: Promise<void>;
 
   deleteForm = this.formBuilder.group({
-    verification: undefined as Verification | undefined,
+    verification: undefined as VerificationWithSecret | undefined,
   });
 
   constructor(

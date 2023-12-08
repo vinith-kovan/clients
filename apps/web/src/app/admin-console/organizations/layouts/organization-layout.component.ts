@@ -16,7 +16,7 @@ import {
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
+import { BannerModule, IconModule, LayoutComponent, NavigationModule } from "@bitwarden/components";
 
 import { OrgSwitcherComponent } from "../../../layouts/org-switcher/org-switcher.component";
 import { AdminConsoleLogo } from "../../icons/admin-console-logo";
@@ -33,6 +33,7 @@ import { AdminConsoleLogo } from "../../icons/admin-console-logo";
     IconModule,
     NavigationModule,
     OrgSwitcherComponent,
+    BannerModule,
   ],
 })
 export class OrganizationLayoutComponent implements OnInit, OnDestroy {

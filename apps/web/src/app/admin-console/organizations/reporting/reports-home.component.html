@@ -1,6 +1,6 @@
-<app-header></app-header>
-
 <ng-container *ngIf="homepage$ | async">
+  <app-header></app-header>
+
   <p>{{ "orgsReportsDesc" | i18n }}</p>
 
   <app-report-list [reports]="reports$ | async"></app-report-list>

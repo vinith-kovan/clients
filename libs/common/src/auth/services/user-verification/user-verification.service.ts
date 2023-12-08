@@ -9,8 +9,12 @@ import { VerificationType } from "../../enums/verification-type";
 import { SecretVerificationRequest } from "../../models/request/secret-verification.request";
 import { VerifyOTPRequest } from "../../models/request/verify-otp.request";
 import {
+  MasterPasswordVerification,
+  OtpVerification,
+  PinVerification,
   ServerSideVerification,
   Verification,
+  VerificationWithSecret,
   verificationHasSecret,
 } from "../../types/verification";
 
@@ -38,7 +42,7 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     requestClass?: new () => T,
     alreadyHashed?: boolean,
   ) {
-    this.validateSecretExistsIfRequired(verification);
+    this.validateSecretExists(verification);
 
     const request =
       requestClass != null ? new requestClass() : (new SecretVerificationRequest() as T);
@@ -66,10 +70,12 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
   /**
    * Used to verify Master Password, PIN, or biometrics client-side, or send the OTP to the server for verification (with no other data)
    * Generally used for client-side verification only.
-   * @param verification User-supplied verification data (Master Password or OTP)
+   * @param verification User-supplied verification data (OTP, MP, PIN, or biometrics)
    */
   async verifyUser(verification: Verification): Promise<boolean> {
-    this.validateSecretExistsIfRequired(verification);
+    if (verificationHasSecret(verification)) {
+      this.validateSecretExists(verification);
+    }
 
     switch (verification.type) {
       case VerificationType.OTP:
@@ -78,15 +84,13 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
         return this.verifyUserByMasterPassword(verification);
       case VerificationType.PIN:
         return this.verifyUserByPIN(verification);
+        break;
       case VerificationType.Biometrics:
         return this.verifyUserByBiometrics();
     }
   }
 
-  private async verifyUserByOTP(verification: Verification): Promise<boolean> {
-    if (!verificationHasSecret(verification)) {
-      throw new Error("Invalid verification: no secret present");
-    }
+  private async verifyUserByOTP(verification: OtpVerification): Promise<boolean> {
     const request = new VerifyOTPRequest(verification.secret);
     try {
       await this.userVerificationApiService.postAccountVerifyOTP(request);
@@ -96,10 +100,9 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     return true;
   }
 
-  private async verifyUserByMasterPassword(verification: Verification): Promise<boolean> {
-    if (!verificationHasSecret(verification)) {
-      throw new Error("Invalid verification: no secret present");
-    }
+  private async verifyUserByMasterPassword(
+    verification: MasterPasswordVerification,
+  ): Promise<boolean> {
     let masterKey = await this.cryptoService.getMasterKey();
     if (!masterKey) {
       masterKey = await this.cryptoService.makeMasterKey(
@@ -122,11 +125,7 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     return true;
   }
 
-  private async verifyUserByPIN(verification: Verification): Promise<boolean> {
-    if (!verificationHasSecret(verification)) {
-      throw new Error("Invalid verification: no secret present");
-    }
-
+  private async verifyUserByPIN(verification: PinVerification): Promise<boolean> {
     const userKey = await this.pinCryptoService.decryptUserKeyWithPin(verification.secret);
 
     return userKey != null;
@@ -166,11 +165,8 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     );
   }
 
-  private validateSecretExistsIfRequired(verification: Verification) {
-    if (
-      verificationHasSecret(verification) &&
-      (verification?.secret == null || verification.secret === "")
-    ) {
+  private validateSecretExists(verification: VerificationWithSecret) {
+    if (verification?.secret == null || verification.secret === "") {
       switch (verification.type) {
         case VerificationType.OTP:
           throw new Error(this.i18nService.t("verificationCodeRequired"));

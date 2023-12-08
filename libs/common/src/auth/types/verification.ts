@@ -13,7 +13,7 @@ export type Verification = VerificationWithSecret | VerificationWithoutSecret;
 export function verificationHasSecret(
   verification: Verification,
 ): verification is VerificationWithSecret {
-  return verification.type !== VerificationType.Biometrics;
+  return "secret" in verification;
 }
 
 export type ServerSideVerification = OtpVerification | MasterPasswordVerification;

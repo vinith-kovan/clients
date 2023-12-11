@@ -53,13 +53,15 @@ export function getOrganizationById(id: string) {
 
 export function canAccessAdmin(i18nService: I18nService) {
   return map<Organization[], Organization[]>((orgs) =>
-    orgs.filter(canAccessOrgAdmin).sort(Utils.getSortFunction(i18nService, "name"))
+    orgs.filter(canAccessOrgAdmin).sort(Utils.getSortFunction(i18nService, "name")),
   );
 }
 
 export function canAccessImportExport(i18nService: I18nService) {
   return map<Organization[], Organization[]>((orgs) =>
-    orgs.filter((org) => org.canAccessImportExport).sort(Utils.getSortFunction(i18nService, "name"))
+    orgs
+      .filter((org) => org.canAccessImportExport)
+      .sort(Utils.getSortFunction(i18nService, "name")),
   );
 }
 
@@ -67,7 +69,7 @@ export function canAccessImport(i18nService: I18nService) {
   return map<Organization[], Organization[]>((orgs) =>
     orgs
       .filter((org) => org.canCreateNewCollections)
-      .sort(Utils.getSortFunction(i18nService, "name"))
+      .sort(Utils.getSortFunction(i18nService, "name")),
   );
 }
 
@@ -101,6 +103,12 @@ export abstract class OrganizationService {
 }
 
 export abstract class InternalOrganizationServiceAbstraction extends OrganizationService {
-  replace: (organizations: { [id: string]: OrganizationData }) => Promise<void>;
-  upsert: (OrganizationData: OrganizationData | OrganizationData[]) => Promise<void>;
+  replace: (
+    organizations: { [id: string]: OrganizationData },
+    flexibleCollectionsEnabled: boolean,
+  ) => Promise<void>;
+  upsert: (
+    OrganizationData: OrganizationData | OrganizationData[],
+    flexibleCollectionsEnabled: boolean,
+  ) => Promise<void>;
 }

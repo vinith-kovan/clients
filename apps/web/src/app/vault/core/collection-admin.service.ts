@@ -19,12 +19,14 @@ import { CollectionAdminView } from "./views/collection-admin.view";
 
 @Injectable()
 export class CollectionAdminService implements ImportCollectionServiceAbstraction {
-  constructor(private apiService: ApiService, private cryptoService: CryptoService) {}
+  constructor(
+    private apiService: ApiService,
+    private cryptoService: CryptoService,
+  ) {}
 
   async getAll(organizationId: string): Promise<CollectionAdminView[]> {
-    const collectionResponse = await this.apiService.getManyCollectionsWithAccessDetails(
-      organizationId
-    );
+    const collectionResponse =
+      await this.apiService.getManyCollectionsWithAccessDetails(organizationId);
 
     if (collectionResponse?.data == null || collectionResponse.data.length === 0) {
       return [];
@@ -35,11 +37,11 @@ export class CollectionAdminService implements ImportCollectionServiceAbstractio
 
   async get(
     organizationId: string,
-    collectionId: string
+    collectionId: string,
   ): Promise<CollectionAdminView | undefined> {
     const collectionResponse = await this.apiService.getCollectionAccessDetails(
       organizationId,
-      collectionId
+      collectionId,
     );
 
     if (collectionResponse == null) {
@@ -62,7 +64,7 @@ export class CollectionAdminService implements ImportCollectionServiceAbstractio
       response = await this.apiService.putCollection(
         collection.organizationId,
         collection.id,
-        request
+        request,
       );
     }
 
@@ -77,15 +79,15 @@ export class CollectionAdminService implements ImportCollectionServiceAbstractio
     organizationId: string,
     collectionIds: string[],
     users: CollectionAccessSelectionView[],
-    groups: CollectionAccessSelectionView[]
+    groups: CollectionAccessSelectionView[],
   ): Promise<void> {
     const request = new BulkCollectionAccessRequest();
     request.collectionIds = collectionIds;
     request.users = users.map(
-      (u) => new SelectionReadOnlyRequest(u.id, u.readOnly, u.hidePasswords, u.manage)
+      (u) => new SelectionReadOnlyRequest(u.id, u.readOnly, u.hidePasswords, u.manage),
     );
     request.groups = groups.map(
-      (g) => new SelectionReadOnlyRequest(g.id, g.readOnly, g.hidePasswords, g.manage)
+      (g) => new SelectionReadOnlyRequest(g.id, g.readOnly, g.hidePasswords, g.manage),
     );
 
     await this.apiService.send(
@@ -93,13 +95,13 @@ export class CollectionAdminService implements ImportCollectionServiceAbstractio
       `organizations/${organizationId}/collections/bulk-access`,
       request,
       true,
-      false
+      false,
     );
   }
 
   private async decryptMany(
     organizationId: string,
-    collections: CollectionResponse[] | CollectionAccessDetailsResponse[]
+    collections: CollectionResponse[] | CollectionAccessDetailsResponse[],
   ): Promise<CollectionAdminView[]> {
     const orgKey = await this.cryptoService.getOrgKey(organizationId);
 
@@ -135,11 +137,11 @@ export class CollectionAdminService implements ImportCollectionServiceAbstractio
     collection.name = (await this.cryptoService.encrypt(model.name, key)).encryptedString;
     collection.groups = model.groups.map(
       (group) =>
-        new SelectionReadOnlyRequest(group.id, group.readOnly, group.hidePasswords, group.manage)
+        new SelectionReadOnlyRequest(group.id, group.readOnly, group.hidePasswords, group.manage),
     );
     collection.users = model.users.map(
       (user) =>
-        new SelectionReadOnlyRequest(user.id, user.readOnly, user.hidePasswords, user.manage)
+        new SelectionReadOnlyRequest(user.id, user.readOnly, user.hidePasswords, user.manage),
     );
     return collection;
   }
@@ -150,7 +152,7 @@ export class CollectionAdminService implements ImportCollectionServiceAbstractio
 }
 
 function isCollectionAccessDetailsResponse(
-  response: CollectionResponse | CollectionAccessDetailsResponse
+  response: CollectionResponse | CollectionAccessDetailsResponse,
 ): response is CollectionAccessDetailsResponse {
   const anyResponse = response as any;
 

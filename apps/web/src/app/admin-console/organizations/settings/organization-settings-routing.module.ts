@@ -50,7 +50,7 @@ const routes: Routes = [
             path: "import",
             loadComponent: () =>
               import("../../../tools/import/admin-import.component").then(
-                (mod) => mod.AdminImportComponent
+                (mod) => mod.AdminImportComponent,
               ),
             canActivate: [OrganizationPermissionsGuard],
             data: {
@@ -62,7 +62,7 @@ const routes: Routes = [
             path: "export",
             loadChildren: () =>
               import("../tools/vault-export/org-vault-export.module").then(
-                (m) => m.OrganizationVaultExportModule
+                (m) => m.OrganizationVaultExportModule,
               ),
           },
         ],

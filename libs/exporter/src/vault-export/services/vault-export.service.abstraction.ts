@@ -5,17 +5,17 @@ export abstract class VaultExportServiceAbstraction {
   getExport: (
     format?: ExportFormat,
     organizationId?: string,
-    isManaged?: boolean
+    isManaged?: boolean,
   ) => Promise<string>;
   getPasswordProtectedExport: (
     password: string,
     organizationId?: string,
-    isManaged?: boolean
+    isManaged?: boolean,
   ) => Promise<string>;
   getOrganizationExport: (
     organizationId: string,
     format?: ExportFormat,
-    isManaged?: boolean
+    isManaged?: boolean,
   ) => Promise<string>;
   getFileName: (prefix?: string, extension?: string) => string;
 }

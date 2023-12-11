@@ -38,7 +38,7 @@ export class OrganizationVaultExportComponent extends ExportComponent {
     dialogService: DialogService,
     organizationService: OrganizationService,
     collectionService: CollectionService,
-    configService: ConfigService
+    configService: ConfigService,
   ) {
     super(
       i18nService,
@@ -53,7 +53,7 @@ export class OrganizationVaultExportComponent extends ExportComponent {
       dialogService,
       organizationService,
       collectionService,
-      configService
+      configService,
     );
   }
 
@@ -87,7 +87,7 @@ export class OrganizationVaultExportComponent extends ExportComponent {
       EventType.Organization_ClientExportedVault,
       null,
       null,
-      this.organizationId
+      this.organizationId,
     );
   }
 }

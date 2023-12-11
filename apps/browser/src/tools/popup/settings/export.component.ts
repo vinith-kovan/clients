@@ -35,7 +35,7 @@ export class ExportComponent extends BaseExportComponent {
     dialogService: DialogService,
     organizationService: OrganizationService,
     collectionService: CollectionService,
-    configService: ConfigService
+    configService: ConfigService,
   ) {
     super(
       i18nService,
@@ -50,7 +50,7 @@ export class ExportComponent extends BaseExportComponent {
       dialogService,
       organizationService,
       collectionService,
-      configService
+      configService,
     );
   }
 

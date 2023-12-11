@@ -28,7 +28,7 @@ export class ExportScopeCalloutComponent implements OnInit {
 
   constructor(
     protected organizationService: OrganizationService,
-    protected stateService: StateService
+    protected stateService: StateService,
   ) {}
 
   async ngOnInit(): Promise<void> {

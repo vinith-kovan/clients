@@ -12,6 +12,11 @@
       </ng-container>
     </small>
   </h1>
+
+  <button type="button" bitButton buttonType="primary" (click)="addSend()" [disabled]="disableSend">
+    <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>
+    {{ "createSend" | i18n }}
+  </button>
 </app-header>
 
 <bit-callout type="warning" title="{{ 'sendDisabled' | i18n }}" *ngIf="disableSend">
@@ -78,20 +83,6 @@
     </div>
   </div>
   <div class="tw-col-span-9">
-    <div class="tw-flex">
-      <div class="tw-ml-auto">
-        <button
-          type="button"
-          bitButton
-          buttonType="primary"
-          (click)="addSend()"
-          [disabled]="disableSend"
-        >
-          <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>
-          {{ "createSend" | i18n }}
-        </button>
-      </div>
-    </div>
     <!--Listing Table-->
     <bit-table [dataSource]="dataSource" *ngIf="filteredSends && filteredSends.length">
       <ng-container header>

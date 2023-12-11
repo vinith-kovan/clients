@@ -8,8 +8,8 @@ import {
 } from "@bitwarden/components";
 import { CoreOrganizationModule } from "@bitwarden/web-vault/app/admin-console/organizations/core";
 import { DynamicAvatarComponent } from "@bitwarden/web-vault/app/components/dynamic-avatar.component";
+import { HeaderModule } from "@bitwarden/web-vault/app/layouts/header/header.module";
 import { ProductSwitcherModule } from "@bitwarden/web-vault/app/layouts/product-switcher/product-switcher.module";
-import { HeaderComponent } from "@bitwarden/web-vault/app/layouts/web-header.component";
 import { SharedModule } from "@bitwarden/web-vault/app/shared";
 
 import { AccessPolicySelectorComponent } from "./access-policies/access-policy-selector/access-policy-selector.component";
@@ -31,33 +31,32 @@ import { SecretsListComponent } from "./secrets-list.component";
     SelectModule,
     DynamicAvatarComponent,
     SearchModule,
-    HeaderComponent,
+    HeaderModule,
   ],
   exports: [
-    SharedModule,
-    NoItemsModule,
-    AccessSelectorComponent,
     AccessPolicySelectorComponent,
-    BulkStatusDialogComponent,
+    AccessSelectorComponent,
     BulkConfirmationDialogComponent,
+    BulkStatusDialogComponent,
+    HeaderModule,
     NewMenuComponent,
+    NoItemsModule,
     ProjectsListComponent,
     SearchModule,
     SecretsListComponent,
     SelectModule,
     SharedModule,
-    HeaderComponent,
   ],
   declarations: [
-    BulkStatusDialogComponent,
+    AccessPolicySelectorComponent,
+    AccessSelectorComponent,
     BulkConfirmationDialogComponent,
-
+    BulkStatusDialogComponent,
+    BulkStatusDialogComponent,
     NewMenuComponent,
+    OrgSuspendedComponent,
     ProjectsListComponent,
     SecretsListComponent,
-    AccessSelectorComponent,
-    OrgSuspendedComponent,
-    AccessPolicySelectorComponent,
   ],
   providers: [],
   bootstrap: [],

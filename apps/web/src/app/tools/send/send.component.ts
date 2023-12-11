@@ -14,7 +14,7 @@ import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.s
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 import { DialogService, NoItemsModule, SearchModule, TableDataSource } from "@bitwarden/components";
 
-import { HeaderComponent } from "../../layouts/web-header.component";
+import { HeaderModule } from "../../layouts/header/header.module";
 import { SharedModule } from "../../shared";
 
 import { AddEditComponent } from "./add-edit.component";
@@ -25,7 +25,7 @@ const BroadcasterSubscriptionId = "SendComponent";
 @Component({
   selector: "app-send",
   standalone: true,
-  imports: [SharedModule, SearchModule, NoItemsModule, HeaderComponent],
+  imports: [SharedModule, SearchModule, NoItemsModule, HeaderModule],
   templateUrl: "send.component.html",
 })
 export class SendComponent extends BaseSendComponent {

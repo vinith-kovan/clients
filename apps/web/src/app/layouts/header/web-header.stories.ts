@@ -21,14 +21,16 @@ import {
   BreadcrumbsModule,
   ButtonModule,
   IconButtonModule,
+  IconModule,
   MenuModule,
+  NavigationModule,
   TabsModule,
+  TypographyModule,
   InputModule,
 } from "@bitwarden/components";
 
-import { PreloadedEnglishI18nModule } from "../core/tests";
-
-import { HeaderComponent } from "./web-header.component";
+import { PreloadedEnglishI18nModule } from "../../core/tests";
+import { WebHeaderComponent } from "../header/web-header.component";
 
 @Injectable({
   providedIn: "root",
@@ -59,8 +61,6 @@ class MockPlatformUtilsService {
 @Component({
   selector: "product-switcher",
   template: `<button bitIconButton="bwi-filter"></button>`,
-  standalone: true,
-  imports: [CommonModule, IconButtonModule],
 })
 class MockProductSwitcher {}
 
@@ -84,7 +84,7 @@ class MockDynamicAvatar {
 
 export default {
   title: "Web/Header",
-  component: HeaderComponent,
+  component: WebHeaderComponent,
   decorators: [
     componentWrapperDecorator(
       (story) => `<div class="tw-min-h-screen tw-flex-1 tw-p-6 tw-text-main">${story}</div>`,
@@ -92,15 +92,19 @@ export default {
     moduleMetadata({
       imports: [
         JslibModule,
-        RouterModule,
+        AvatarModule,
         BreadcrumbsModule,
         ButtonModule,
+        IconButtonModule,
+        IconModule,
         InputModule,
         MenuModule,
         TabsModule,
-        MockProductSwitcher,
+        TypographyModule,
+        NavigationModule,
         MockDynamicAvatar,
       ],
+      declarations: [WebHeaderComponent, MockProductSwitcher],
       providers: [
         { provide: StateService, useClass: MockStateService },
         { provide: PlatformUtilsService, useClass: MockPlatformUtilsService },

@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 
-import { HeaderComponent } from "../layouts/web-header.component";
+import { HeaderModule } from "../layouts/header/header.module";
 import { SharedModule } from "../shared";
 import { OrganizationBadgeModule } from "../vault/individual-vault/organization-badge/organization-badge.module";
 import { PipesModule } from "../vault/individual-vault/pipes/pipes.module";
@@ -25,7 +25,7 @@ import { ReportsSharedModule } from "./shared";
     ReportsRoutingModule,
     OrganizationBadgeModule,
     PipesModule,
-    HeaderComponent,
+    HeaderModule,
   ],
   declarations: [
     BreachReportComponent,

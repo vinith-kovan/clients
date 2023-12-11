@@ -61,10 +61,10 @@ import { DynamicAvatarComponent } from "../components/dynamic-avatar.component";
 import { SelectableAvatarComponent } from "../components/selectable-avatar.component";
 import { FooterComponent } from "../layouts/footer.component";
 import { FrontendLayoutComponent } from "../layouts/frontend-layout.component";
+import { HeaderModule } from "../layouts/header/header.module";
 import { NavbarComponent } from "../layouts/navbar.component";
 import { ProductSwitcherModule } from "../layouts/product-switcher/product-switcher.module";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
-import { HeaderComponent } from "../layouts/web-header.component";
 import { DomainRulesComponent } from "../settings/domain-rules.component";
 import { LowKdfComponent } from "../settings/low-kdf.component";
 import { PreferencesComponent } from "../settings/preferences.component";
@@ -107,7 +107,7 @@ import { SharedModule } from "./shared.module";
     PasswordCalloutComponent,
     LayoutComponent,
     NavigationModule,
-    HeaderComponent,
+    HeaderModule,
     OrganizationLayoutComponent,
     UserLayoutComponent,
   ],
@@ -264,7 +264,7 @@ import { SharedModule } from "./shared.module";
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
     LowKdfComponent,
-    HeaderComponent,
+    HeaderModule,
   ],
 })
 export class LooseComponentsModule {}

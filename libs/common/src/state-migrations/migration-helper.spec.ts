@@ -69,7 +69,7 @@ describe("RemoveLegacyEtmKeyMigrator", () => {
 
   describe("getFromGlobal", () => {
     it("should return the correct value", async () => {
-      sut.currentVersion = 10;
+      sut.currentVersion = 9;
       const value = await sut.getFromGlobal({
         stateDefinition: { name: "serviceName" },
         key: "key",
@@ -77,33 +77,33 @@ describe("RemoveLegacyEtmKeyMigrator", () => {
       expect(value).toEqual("global_serviceName_key");
     });
 
-    it("should throw if the current version is less than 10", () => {
+    it("should throw if the current version is less than 9", () => {
       expect(() =>
         sut.getFromGlobal({ stateDefinition: { name: "serviceName" }, key: "key" }),
-      ).toThrowError("No key builder should be used for versions prior to 10.");
+      ).toThrowError("No key builder should be used for versions prior to 9.");
     });
   });
 
   describe("setToGlobal", () => {
     it("should set the correct value", async () => {
-      sut.currentVersion = 10;
+      sut.currentVersion = 9;
       await sut.setToGlobal({ stateDefinition: { name: "serviceName" }, key: "key" }, "new_value");
       expect(storage.save).toHaveBeenCalledWith("global_serviceName_key", "new_value");
     });
 
-    it("should throw if the current version is less than 10", () => {
+    it("should throw if the current version is less than 9", () => {
       expect(() =>
         sut.setToGlobal(
           { stateDefinition: { name: "serviceName" }, key: "key" },
           "global_serviceName_key",
         ),
-      ).toThrowError("No key builder should be used for versions prior to 10.");
+      ).toThrowError("No key builder should be used for versions prior to 9.");
     });
   });
 
   describe("getFromUser", () => {
     it("should return the correct value", async () => {
-      sut.currentVersion = 10;
+      sut.currentVersion = 9;
       const value = await sut.getFromUser("userId", {
         stateDefinition: { name: "serviceName" },
         key: "key",
@@ -111,16 +111,16 @@ describe("RemoveLegacyEtmKeyMigrator", () => {
       expect(value).toEqual("user_userId_serviceName_key");
     });
 
-    it("should throw if the current version is less than 10", () => {
+    it("should throw if the current version is less than 9", () => {
       expect(() =>
         sut.getFromUser("userId", { stateDefinition: { name: "serviceName" }, key: "key" }),
-      ).toThrowError("No key builder should be used for versions prior to 10.");
+      ).toThrowError("No key builder should be used for versions prior to 9.");
     });
   });
 
   describe("setToUser", () => {
     it("should set the correct value", async () => {
-      sut.currentVersion = 10;
+      sut.currentVersion = 9;
       await sut.setToUser(
         "userId",
         { stateDefinition: { name: "serviceName" }, key: "key" },
@@ -129,14 +129,14 @@ describe("RemoveLegacyEtmKeyMigrator", () => {
       expect(storage.save).toHaveBeenCalledWith("user_userId_serviceName_key", "new_value");
     });
 
-    it("should throw if the current version is less than 10", () => {
+    it("should throw if the current version is less than 9", () => {
       expect(() =>
         sut.setToUser(
           "userId",
           { stateDefinition: { name: "serviceName" }, key: "key" },
           "new_value",
         ),
-      ).toThrowError("No key builder should be used for versions prior to 10.");
+      ).toThrowError("No key builder should be used for versions prior to 9.");
     });
   });
 });

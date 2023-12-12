@@ -142,18 +142,33 @@ describe("RemoveLegacyEtmKeyMigrator", () => {
 });
 
 /** Helper to create well-mocked migration helpers in migration tests */
-export function mockMigrationHelper(storageJson: any): MockProxy<MigrationHelper> {
+export function mockMigrationHelper(
+  storageJson: any,
+  stateVersion = 0,
+): MockProxy<MigrationHelper> {
   const logService: MockProxy<LogService> = mock();
   const storage: MockProxy<AbstractStorageService> = mock();
   storage.get.mockImplementation((key) => (storageJson as any)[key]);
   storage.save.mockImplementation(async (key, value) => {
     (storageJson as any)[key] = value;
   });
-  const helper = new MigrationHelper(0, storage, logService);
+  const helper = new MigrationHelper(stateVersion, storage, logService);
 
   const mockHelper = mock<MigrationHelper>();
   mockHelper.get.mockImplementation((key) => helper.get(key));
   mockHelper.set.mockImplementation((key, value) => helper.set(key, value));
+  mockHelper.getFromGlobal.mockImplementation((keyDefinition) =>
+    helper.getFromGlobal(keyDefinition),
+  );
+  mockHelper.setToGlobal.mockImplementation((keyDefinition, value) =>
+    helper.setToGlobal(keyDefinition, value),
+  );
+  mockHelper.getFromUser.mockImplementation((userId, keyDefinition) =>
+    helper.getFromUser(userId, keyDefinition),
+  );
+  mockHelper.setToUser.mockImplementation((userId, keyDefinition, value) =>
+    helper.setToUser(userId, keyDefinition, value),
+  );
   mockHelper.getAccounts.mockImplementation(() => helper.getAccounts());
   return mockHelper;
 }

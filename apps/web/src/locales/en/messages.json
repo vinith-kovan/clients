@@ -7432,6 +7432,9 @@
   "collectionAccessRestricted": {
     "message": "Collection access is restricted"
   },
+  "serviceAccountAccessUpdated": {
+    "message": "Service account access updated"
+  },
   "maintainYourSubscription": {
     "message": "To maintain your subscription for $ORG$, ",
     "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'To maintain your subscription for $ORG$, add a payment method.'",

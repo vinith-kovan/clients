@@ -59,10 +59,8 @@ import { VerifyEmailTokenComponent } from "../auth/verify-email-token.component"
 import { VerifyRecoverDeleteComponent } from "../auth/verify-recover-delete.component";
 import { DynamicAvatarComponent } from "../components/dynamic-avatar.component";
 import { SelectableAvatarComponent } from "../components/selectable-avatar.component";
-import { FooterComponent } from "../layouts/footer.component";
 import { FrontendLayoutComponent } from "../layouts/frontend-layout.component";
 import { HeaderModule } from "../layouts/header/header.module";
-import { NavbarComponent } from "../layouts/navbar.component";
 import { ProductSwitcherModule } from "../layouts/product-switcher/product-switcher.module";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
 import { DomainRulesComponent } from "../settings/domain-rules.component";
@@ -133,11 +131,9 @@ import { SharedModule } from "./shared.module";
     EmergencyAccessViewComponent,
     EmergencyAddEditCipherComponent,
     FolderAddEditComponent,
-    FooterComponent,
     FrontendLayoutComponent,
     HintComponent,
     LockComponent,
-    NavbarComponent,
     OrgAddEditComponent,
     OrgAttachmentsComponent,
     OrgCollectionsComponent,
@@ -210,11 +206,9 @@ import { SharedModule } from "./shared.module";
     EmergencyAccessViewComponent,
     EmergencyAddEditCipherComponent,
     FolderAddEditComponent,
-    FooterComponent,
     FrontendLayoutComponent,
     HintComponent,
     LockComponent,
-    NavbarComponent,
     OrgAddEditComponent,
     OrganizationLayoutComponent,
     OrgAttachmentsComponent,

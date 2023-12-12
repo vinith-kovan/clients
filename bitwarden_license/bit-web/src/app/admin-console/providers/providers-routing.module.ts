@@ -5,6 +5,7 @@ import { AuthGuard } from "@bitwarden/angular/auth/guards";
 import { Provider } from "@bitwarden/common/admin-console/models/domain/provider";
 import { ProvidersComponent } from "@bitwarden/web-vault/app/admin-console/providers/providers.component";
 import { FrontendLayoutComponent } from "@bitwarden/web-vault/app/layouts/frontend-layout.component";
+import { UserLayoutComponent } from "@bitwarden/web-vault/app/layouts/user-layout.component";
 
 import { ClientsComponent } from "./clients/clients.component";
 import { CreateOrganizationComponent } from "./clients/create-organization.component";
@@ -21,7 +22,15 @@ const routes: Routes = [
   {
     path: "",
     canActivate: [AuthGuard],
-    component: ProvidersComponent,
+    component: UserLayoutComponent,
+    children: [
+      {
+        path: "",
+        canActivate: [AuthGuard],
+        component: ProvidersComponent,
+        data: { titleId: "providers" },
+      },
+    ],
   },
   {
     path: "",

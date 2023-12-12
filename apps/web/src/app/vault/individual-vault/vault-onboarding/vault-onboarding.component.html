@@ -1,4 +1,4 @@
-<div *ngIf="showOnboarding" class="tw-mb-6">
+<div *ngIf="showOnboarding && showOnboardingAccess" class="tw-mb-6">
   <app-onboarding
     *ngIf="onboardingTasks$ | async"
     [title]="'getStarted' | i18n"

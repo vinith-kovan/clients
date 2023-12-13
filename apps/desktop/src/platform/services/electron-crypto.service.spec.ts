@@ -1,5 +1,7 @@
-import { mock, mockReset } from "jest-mock-extended";
+import { FakeStateProvider } from "@bitwarden/common/../spec/fake-state-provider";
+import { mock } from "jest-mock-extended";
 
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -9,6 +11,7 @@ import {
   UserKey,
 } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "@bitwarden/common/types/csprng";
+import { UserId } from "@bitwarden/common/types/guid";
 
 import { ElectronCryptoService } from "./electron-crypto.service";
 import { ElectronStateService } from "./electron-state.service.abstraction";
@@ -21,15 +24,13 @@ describe("electronCryptoService", () => {
   const platformUtilService = mock<PlatformUtilsService>();
   const logService = mock<LogService>();
   const stateService = mock<ElectronStateService>();
+  const accountService = mock<AccountService>();
+  let stateProvider: FakeStateProvider;
 
-  const mockUserId = "mock user id";
+  const mockUserId = "mock user id" as UserId;
 
   beforeEach(() => {
-    mockReset(cryptoFunctionService);
-    mockReset(encryptService);
-    mockReset(platformUtilService);
-    mockReset(logService);
-    mockReset(stateService);
+    stateProvider = new FakeStateProvider();
 
     electronCryptoService = new ElectronCryptoService(
       cryptoFunctionService,
@@ -37,7 +38,13 @@ describe("electronCryptoService", () => {
       platformUtilService,
       logService,
       stateService,
+      accountService,
+      stateProvider,
     );
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   it("instantiates", () => {

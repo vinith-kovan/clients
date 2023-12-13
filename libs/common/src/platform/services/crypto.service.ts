@@ -44,6 +44,8 @@ export class CryptoService implements CryptoServiceAbstraction {
     protected platformUtilService: PlatformUtilsService,
     protected logService: LogService,
     protected stateService: StateService,
+    protected accountService: AccountService,
+    protected stateProvider: StateProvider,
   ) {}
 
   async setUserKey(key: UserKey, userId?: string): Promise<void> {

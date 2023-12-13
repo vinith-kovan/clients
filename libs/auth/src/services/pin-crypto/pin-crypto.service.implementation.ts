@@ -1,13 +1,13 @@
-import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "../../abstractions/vault-timeout/vault-timeout-settings.service";
-import { CryptoService } from "../../platform/abstractions/crypto.service";
-import { LogService } from "../../platform/abstractions/log.service";
-import { StateService } from "../../platform/abstractions/state.service";
-import { KdfType } from "../../platform/enums";
-import { EncString } from "../../platform/models/domain/enc-string";
-import { UserKey } from "../../platform/models/domain/symmetric-crypto-key";
-import { PinLockType } from "../../services/vault-timeout/vault-timeout-settings.service";
-import { PinCryptoServiceAbstraction } from "../abstractions/pin-crypto.service.abstraction";
-import { KdfConfig } from "../models/domain/kdf-config";
+import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "../../../../common/src/abstractions/vault-timeout/vault-timeout-settings.service";
+import { KdfConfig } from "../../../../common/src/auth/models/domain/kdf-config";
+import { CryptoService } from "../../../../common/src/platform/abstractions/crypto.service";
+import { LogService } from "../../../../common/src/platform/abstractions/log.service";
+import { StateService } from "../../../../common/src/platform/abstractions/state.service";
+import { KdfType } from "../../../../common/src/platform/enums";
+import { EncString } from "../../../../common/src/platform/models/domain/enc-string";
+import { UserKey } from "../../../../common/src/platform/models/domain/symmetric-crypto-key";
+import { PinLockType } from "../../../../common/src/services/vault-timeout/vault-timeout-settings.service";
+import { PinCryptoServiceAbstraction } from "../../abstractions/pin-crypto.service.abstraction";
 
 export class PinCryptoService implements PinCryptoServiceAbstraction {
   constructor(

@@ -1,15 +1,18 @@
 import { mock } from "jest-mock-extended";
 
-import { CryptoService } from "../../platform/abstractions/crypto.service";
-import { LogService } from "../../platform/abstractions/log.service";
-import { StateService } from "../../platform/abstractions/state.service";
-import { EncString } from "../../platform/models/domain/enc-string";
-import { SymmetricCryptoKey, UserKey } from "../../platform/models/domain/symmetric-crypto-key";
+import { KdfConfig } from "../../../../common/src/auth/models/domain/kdf-config";
+import { CryptoService } from "../../../../common/src/platform/abstractions/crypto.service";
+import { LogService } from "../../../../common/src/platform/abstractions/log.service";
+import { StateService } from "../../../../common/src/platform/abstractions/state.service";
+import { EncString } from "../../../../common/src/platform/models/domain/enc-string";
+import {
+  SymmetricCryptoKey,
+  UserKey,
+} from "../../../../common/src/platform/models/domain/symmetric-crypto-key";
 import {
   PinLockType,
   VaultTimeoutSettingsService,
-} from "../../services/vault-timeout/vault-timeout-settings.service";
-import { KdfConfig } from "../models/domain/kdf-config";
+} from "../../../../common/src/services/vault-timeout/vault-timeout-settings.service";
 
 import { PinCryptoService } from "./pin-crypto.service.implementation";
 describe("PinCryptoService", () => {

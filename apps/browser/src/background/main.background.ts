@@ -576,6 +576,7 @@ export default class MainBackground {
       this.logService,
       this.settingsService,
       this.userVerificationService,
+      this.configService,
     );
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
 
@@ -739,6 +740,7 @@ export default class MainBackground {
       this.vaultTimeoutService,
       this.stateService,
       this.notificationsService,
+      this.accountService,
     );
     this.webRequestBackground = new WebRequestBackground(
       this.platformUtilsService,

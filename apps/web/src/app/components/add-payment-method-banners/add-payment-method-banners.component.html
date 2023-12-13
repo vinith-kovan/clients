@@ -1,18 +1,14 @@
-<ng-container *ngFor="let organizationBannerState of organizationBannerStates">
+<ng-container *ngFor="let banner of banners$ | async">
   <bit-banner
-    *ngIf="organizationBannerState.showBanner"
+    *ngIf="banner.visible"
     bannerType="warning"
-    (onClose)="closeBanner(organizationBannerState.organizationId)"
+    (onClose)="closeBanner(banner.organizationId)"
   >
-    {{ "maintainYourSubscription" | i18n: organizationBannerState.organizationName }}
+    {{ "maintainYourSubscription" | i18n: banner.organizationName }}
     <a
-      class="text-white font-weight-semibold"
-      [routerLink]="[
-        '/organizations',
-        organizationBannerState.organizationId,
-        'billing',
-        'payment-method'
-      ]"
+      bitLink
+      linkType="contrast"
+      [routerLink]="['/organizations', banner.organizationId, 'billing', 'payment-method']"
       >{{ "addAPaymentMethod" | i18n }}</a
     >.
   </bit-banner>

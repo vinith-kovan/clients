@@ -78,5 +78,4 @@ export class OrganizationApiServiceAbstraction {
     id: string,
     request: OrganizationCollectionManagementUpdateRequest,
   ) => Promise<OrganizationResponse>;
-  checkForMissingPaymentMethod: (id: string) => Promise<boolean>;
 }

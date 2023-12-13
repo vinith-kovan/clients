@@ -1,4 +1,4 @@
-import { concatMap, BehaviorSubject } from "rxjs";
+import { concatMap, BehaviorSubject, map } from "rxjs";
 
 import { StateService } from "../../platform/abstractions/state.service";
 import { BillingBannerService as BillingBannerServiceAbstraction } from "../abstractions/billing-banner.service.abstraction";
@@ -6,33 +6,45 @@ import { BillingBannerService as BillingBannerServiceAbstraction } from "../abst
 export class BillingBannerService implements BillingBannerServiceAbstraction {
   protected _billingBannerStates = new BehaviorSubject<Record<string, boolean>>({});
 
-  billingBannerStates$ = this._billingBannerStates.asObservable();
+  private addPaymentMethodBannerSuffix = "add-payment-method-banner";
 
   constructor(private stateService: StateService) {
     this.stateService.activeAccountUnlocked$
       .pipe(
         concatMap(async (unlocked) => {
           if (!unlocked) {
-            this._billingBannerStates.next({});
-            return;
+            return {};
           }
 
-          const data = await this.stateService.getBillingBannerStates();
-          this._billingBannerStates.next(data);
+          return await this.stateService.getBillingBannerStates();
         }),
       )
-      .subscribe();
+      .subscribe(this._billingBannerStates);
   }
 
-  getPaymentMethodBannerId(organizationId: string) {
-    return `${organizationId}_add-payment-method-banner`;
-  }
+  private getEntityId = (bannerId: string) => bannerId.split("_")[0];
 
-  async setPaymentMethodBannerState(organizationId: string, state: boolean): Promise<void> {
+  addPaymentMethodBannersVisibility$ = this._billingBannerStates.asObservable().pipe(
+    map((billingBannerStates) =>
+      Object.entries(billingBannerStates)
+        .filter(this.isPaymentMethodBanner)
+        .map(([paymentMethodBannerId, visible]) => ({
+          organizationId: this.getEntityId(paymentMethodBannerId),
+          visible: visible,
+        })),
+    ),
+  );
+
+  async setPaymentMethodBannerVisibility(organizationId: string, visible: boolean): Promise<void> {
     const billingBannerStates = await this.stateService.getBillingBannerStates();
     const paymentMethodBannerId = this.getPaymentMethodBannerId(organizationId);
-    billingBannerStates[paymentMethodBannerId] = state;
+    billingBannerStates[paymentMethodBannerId] = visible;
     await this.stateService.setBillingBannerStates(billingBannerStates);
     this._billingBannerStates.next(billingBannerStates);
   }
+
+  private getPaymentMethodBannerId = (organizationId: string) =>
+    `${organizationId}_${this.addPaymentMethodBannerSuffix}`;
+  private isPaymentMethodBanner = (banners: [string, boolean]) =>
+    banners[0].split("_")[1] === this.addPaymentMethodBannerSuffix;
 }

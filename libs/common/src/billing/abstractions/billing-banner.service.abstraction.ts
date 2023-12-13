@@ -1,8 +1,7 @@
 import { Observable } from "rxjs";
 
 export class BillingBannerService {
-  billingBannerStates$: Observable<Record<string, boolean>>;
+  addPaymentMethodBannersVisibility$: Observable<{ organizationId: string; visible: boolean }[]>;
 
-  getPaymentMethodBannerId: (organizationId: string) => string;
-  setPaymentMethodBannerState: (organizationId: string, state: boolean) => Promise<void>;
+  setPaymentMethodBannerVisibility: (organizationId: string, visible: boolean) => Promise<void>;
 }

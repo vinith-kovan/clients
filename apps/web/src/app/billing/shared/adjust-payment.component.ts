@@ -59,7 +59,10 @@ export class AdjustPaymentComponent {
       });
       await this.formPromise;
       if (this.organizationId) {
-        await this.billingBannerService.setPaymentMethodBannerState(this.organizationId, false);
+        await this.billingBannerService.setPaymentMethodBannerVisibility(
+          this.organizationId,
+          false,
+        );
       }
       this.platformUtilsService.showToast(
         "success",

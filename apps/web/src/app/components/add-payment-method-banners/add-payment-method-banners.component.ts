@@ -1,21 +1,20 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { combineLatest, switchMap, takeUntil, Subject } from "rxjs";
+import { Component } from "@angular/core";
+import { combineLatest, Observable, switchMap } from "rxjs";
 
-import { OrganizationApiServiceAbstraction as OrganizationApiService } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import {
   OrganizationService,
   canAccessAdmin,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { BillingBannerService } from "@bitwarden/common/billing/abstractions/billing-banner.service.abstraction";
+import { OrganizationBillingService } from "@bitwarden/common/billing/abstractions/organization-billing.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 import { SharedModule } from "../../shared/shared.module";
 
-type OrganizationBannerState = {
+type AddPaymentMethodBannerData = {
   organizationId: string;
   organizationName: string;
-  showBanner: boolean;
+  visible: boolean;
 };
 
 @Component({
@@ -24,63 +23,53 @@ type OrganizationBannerState = {
   templateUrl: "add-payment-method-banners.component.html",
   imports: [SharedModule],
 })
-export class AddPaymentMethodBannersComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
-
-  protected organizationBannerStates: OrganizationBannerState[];
-
+export class AddPaymentMethodBannersComponent {
   constructor(
     private billingBannerService: BillingBannerService,
     private i18nService: I18nService,
     private organizationService: OrganizationService,
-    private organizationApiService: OrganizationApiService,
+    private organizationBillingService: OrganizationBillingService,
   ) {}
 
-  async ngOnInit() {
-    const organizations$ = this.organizationService.memberOrganizations$.pipe(
-      canAccessAdmin(this.i18nService),
-    );
+  private organizations$ = this.organizationService.memberOrganizations$.pipe(
+    canAccessAdmin(this.i18nService),
+  );
 
-    combineLatest([organizations$, this.billingBannerService.billingBannerStates$])
-      .pipe(
-        switchMap(async ([organizations, billingBannerStates]) => {
-          return await Promise.all(
-            organizations.map(async (organization) => {
-              const bannerState = await this.getBannerState(organization, billingBannerStates);
-              return {
-                organizationId: organization.id,
-                organizationName: organization.name,
-                showBanner: bannerState,
-              };
-            }),
+  protected banners$: Observable<AddPaymentMethodBannerData[]> = combineLatest([
+    this.organizations$,
+    this.billingBannerService.addPaymentMethodBannersVisibility$,
+  ]).pipe(
+    switchMap(async ([organizations, addPaymentMethodBannersVisibility]) => {
+      return await Promise.all(
+        organizations.map(async (organization) => {
+          const matchingBanner = addPaymentMethodBannersVisibility.find(
+            (banner) => banner.organizationId === organization.id,
           );
+          if (matchingBanner !== null && matchingBanner !== undefined) {
+            return {
+              organizationId: organization.id,
+              organizationName: organization.name,
+              visible: matchingBanner.visible,
+            };
+          } else {
+            const missingPaymentMethod =
+              await this.organizationBillingService.checkForMissingPaymentMethod(organization.id);
+            await this.billingBannerService.setPaymentMethodBannerVisibility(
+              organization.id,
+              missingPaymentMethod,
+            );
+            return {
+              organizationId: organization.id,
+              organizationName: organization.name,
+              visible: missingPaymentMethod,
+            };
+          }
         }),
-        takeUntil(this.destroy$),
-      )
-      .subscribe((organizationBannerStates) => {
-        this.organizationBannerStates = organizationBannerStates;
-      });
-  }
+      );
+    }),
+  );
 
   protected async closeBanner(organizationId: string): Promise<void> {
-    await this.billingBannerService.setPaymentMethodBannerState(organizationId, false);
-  }
-
-  private async getBannerState(
-    organization: Organization,
-    billingBannerStates: Record<string, boolean>,
-  ) {
-    const bannerId = this.billingBannerService.getPaymentMethodBannerId(organization.id);
-    let bannerState = billingBannerStates[bannerId];
-    if (bannerState === undefined) {
-      bannerState = await this.organizationApiService.checkForMissingPaymentMethod(organization.id);
-      await this.billingBannerService.setPaymentMethodBannerState(organization.id, bannerState);
-    }
-    return bannerState;
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
+    await this.billingBannerService.setPaymentMethodBannerVisibility(organizationId, false);
   }
 }

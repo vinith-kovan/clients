@@ -119,8 +119,7 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     if (!passwordValid) {
       throw new Error(this.i18nService.t("invalidMasterPassword"));
     }
-    // TODO: investigate if this side effect should be here
-    // Is this necessary
+    // TODO: we should re-evaluate later on if user verification should have the side effect of modifying state. Probably not.
     this.cryptoService.setMasterKey(masterKey);
     return true;
   }

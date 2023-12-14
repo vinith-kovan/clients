@@ -148,12 +148,6 @@ a {
       font-weight: themed("linkWeight");
     }
   }
-
-  &.text-white {
-    @include themify($themes) {
-      color: $white !important;
-    }
-  }
 }
 
 code {

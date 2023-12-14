@@ -1,17 +1,18 @@
 import { Component } from "@angular/core";
 import { combineLatest, Observable, switchMap } from "rxjs";
 
+import { OrganizationApiServiceAbstraction as OrganizationApiService } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import {
   OrganizationService,
   canAccessAdmin,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { BillingBannerService } from "@bitwarden/common/billing/abstractions/billing-banner.service.abstraction";
-import { OrganizationBillingService } from "@bitwarden/common/billing/abstractions/organization-billing.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { BannerModule } from "@bitwarden/components";
 
 import { SharedModule } from "../../shared/shared.module";
 
-type AddPaymentMethodBannerData = {
+type PaymentMethodBannerData = {
   organizationId: string;
   organizationName: string;
   visible: boolean;
@@ -19,30 +20,30 @@ type AddPaymentMethodBannerData = {
 
 @Component({
   standalone: true,
-  selector: "app-add-payment-method-banners",
-  templateUrl: "add-payment-method-banners.component.html",
-  imports: [SharedModule],
+  selector: "app-payment-method-banners",
+  templateUrl: "payment-method-banners.component.html",
+  imports: [BannerModule, SharedModule],
 })
-export class AddPaymentMethodBannersComponent {
+export class PaymentMethodBannersComponent {
   constructor(
     private billingBannerService: BillingBannerService,
     private i18nService: I18nService,
     private organizationService: OrganizationService,
-    private organizationBillingService: OrganizationBillingService,
+    private organizationApiService: OrganizationApiService,
   ) {}
 
   private organizations$ = this.organizationService.memberOrganizations$.pipe(
     canAccessAdmin(this.i18nService),
   );
 
-  protected banners$: Observable<AddPaymentMethodBannerData[]> = combineLatest([
+  protected banners$: Observable<PaymentMethodBannerData[]> = combineLatest([
     this.organizations$,
-    this.billingBannerService.addPaymentMethodBannersVisibility$,
+    this.billingBannerService.paymentMethodBannersVisibility$,
   ]).pipe(
-    switchMap(async ([organizations, addPaymentMethodBannersVisibility]) => {
+    switchMap(async ([organizations, paymentMethodBannersVisibility]) => {
       return await Promise.all(
         organizations.map(async (organization) => {
-          const matchingBanner = addPaymentMethodBannersVisibility.find(
+          const matchingBanner = paymentMethodBannersVisibility.find(
             (banner) => banner.organizationId === organization.id,
           );
           if (matchingBanner !== null && matchingBanner !== undefined) {
@@ -52,16 +53,17 @@ export class AddPaymentMethodBannersComponent {
               visible: matchingBanner.visible,
             };
           } else {
-            const missingPaymentMethod =
-              await this.organizationBillingService.checkForMissingPaymentMethod(organization.id);
+            const response = await this.organizationApiService.risksSubscriptionFailure(
+              organization.id,
+            );
             await this.billingBannerService.setPaymentMethodBannerVisibility(
               organization.id,
-              missingPaymentMethod,
+              response.risksSubscriptionFailure,
             );
             return {
               organizationId: organization.id,
               organizationName: organization.name,
-              visible: missingPaymentMethod,
+              visible: response.risksSubscriptionFailure,
             };
           }
         }),

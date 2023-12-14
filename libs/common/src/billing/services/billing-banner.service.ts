@@ -6,7 +6,7 @@ import { BillingBannerService as BillingBannerServiceAbstraction } from "../abst
 export class BillingBannerService implements BillingBannerServiceAbstraction {
   protected _billingBannerStates = new BehaviorSubject<Record<string, boolean>>({});
 
-  private addPaymentMethodBannerSuffix = "add-payment-method-banner";
+  private paymentMethodBannerSuffix = "add-payment-method-banner";
 
   constructor(private stateService: StateService) {
     this.stateService.activeAccountUnlocked$
@@ -24,7 +24,7 @@ export class BillingBannerService implements BillingBannerServiceAbstraction {
 
   private getEntityId = (bannerId: string) => bannerId.split("_")[0];
 
-  addPaymentMethodBannersVisibility$ = this._billingBannerStates.asObservable().pipe(
+  paymentMethodBannersVisibility$ = this._billingBannerStates.asObservable().pipe(
     map((billingBannerStates) =>
       Object.entries(billingBannerStates)
         .filter(this.isPaymentMethodBanner)
@@ -44,7 +44,8 @@ export class BillingBannerService implements BillingBannerServiceAbstraction {
   }
 
   private getPaymentMethodBannerId = (organizationId: string) =>
-    `${organizationId}_${this.addPaymentMethodBannerSuffix}`;
-  private isPaymentMethodBanner = (banners: [string, boolean]) =>
-    banners[0].split("_")[1] === this.addPaymentMethodBannerSuffix;
+    `${organizationId}_${this.paymentMethodBannerSuffix}`;
+
+  private isPaymentMethodBanner = ([bannerId, _]: [string, boolean]) =>
+    bannerId.split("_")[1] === this.paymentMethodBannerSuffix;
 }

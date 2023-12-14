@@ -73,8 +73,12 @@ export class VaultCollectionRowComponent implements OnInit {
   }
 
   get permissionText() {
-    return this.permissionList.find((p) => p.perm === convertToPermission(this.collection))
-      ?.labelId;
+    if (!(this.collection as any).assigned) {
+      return "noAssignedPermissions";
+    } else {
+      return this.permissionList.find((p) => p.perm === convertToPermission(this.collection))
+        ?.labelId;
+    }
   }
 
   @HostListener("click")

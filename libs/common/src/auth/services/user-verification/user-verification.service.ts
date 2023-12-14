@@ -42,7 +42,7 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     requestClass?: new () => T,
     alreadyHashed?: boolean,
   ) {
-    this.validateSecretExists(verification);
+    this.validateSecretInput(verification);
 
     const request =
       requestClass != null ? new requestClass() : (new SecretVerificationRequest() as T);
@@ -74,7 +74,7 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
    */
   async verifyUser(verification: Verification): Promise<boolean> {
     if (verificationHasSecret(verification)) {
-      this.validateSecretExists(verification);
+      this.validateSecretInput(verification);
     }
 
     switch (verification.type) {
@@ -164,7 +164,7 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     );
   }
 
-  private validateSecretExists(verification: VerificationWithSecret) {
+  private validateSecretInput(verification: VerificationWithSecret) {
     if (verification?.secret == null || verification.secret === "") {
       switch (verification.type) {
         case VerificationType.OTP:

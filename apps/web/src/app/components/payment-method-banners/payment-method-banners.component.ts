@@ -6,7 +6,7 @@ import {
   OrganizationService,
   canAccessAdmin,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { BillingBannerService } from "@bitwarden/common/billing/abstractions/billing-banner.service.abstraction";
+import { BillingBannerServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-banner.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { BannerModule } from "@bitwarden/components";
 
@@ -26,7 +26,7 @@ type PaymentMethodBannerData = {
 })
 export class PaymentMethodBannersComponent {
   constructor(
-    private billingBannerService: BillingBannerService,
+    private billingBannerService: BillingBannerServiceAbstraction,
     private i18nService: I18nService,
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiService,
@@ -52,20 +52,19 @@ export class PaymentMethodBannersComponent {
               organizationName: organization.name,
               visible: matchingBanner.visible,
             };
-          } else {
-            const response = await this.organizationApiService.risksSubscriptionFailure(
-              organization.id,
-            );
-            await this.billingBannerService.setPaymentMethodBannerVisibility(
-              organization.id,
-              response.risksSubscriptionFailure,
-            );
-            return {
-              organizationId: organization.id,
-              organizationName: organization.name,
-              visible: response.risksSubscriptionFailure,
-            };
           }
+          const response = await this.organizationApiService.risksSubscriptionFailure(
+            organization.id,
+          );
+          await this.billingBannerService.setPaymentMethodBannerVisibility(
+            organization.id,
+            response.risksSubscriptionFailure,
+          );
+          return {
+            organizationId: organization.id,
+            organizationName: organization.name,
+            visible: response.risksSubscriptionFailure,
+          };
         }),
       );
     }),

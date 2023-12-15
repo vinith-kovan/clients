@@ -1,7 +1,7 @@
 import { concatMap, BehaviorSubject, map } from "rxjs";
 
 import { StateService } from "../../platform/abstractions/state.service";
-import { BillingBannerService as BillingBannerServiceAbstraction } from "../abstractions/billing-banner.service.abstraction";
+import { BillingBannerServiceAbstraction } from "../abstractions/billing-banner.service.abstraction";
 
 export class BillingBannerService implements BillingBannerServiceAbstraction {
   protected _billingBannerStates = new BehaviorSubject<Record<string, boolean>>({});

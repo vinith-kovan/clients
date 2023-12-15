@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { BillingBannerService } from "@bitwarden/common/billing/abstractions/billing-banner.service.abstraction";
+import { BillingBannerServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-banner.service.abstraction";
 import { PaymentMethodType } from "@bitwarden/common/billing/enums";
 import { PaymentRequest } from "@bitwarden/common/billing/models/request/payment.request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -34,7 +34,7 @@ export class AdjustPaymentComponent {
     private platformUtilsService: PlatformUtilsService,
     private logService: LogService,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private billingBannerService: BillingBannerService,
+    private billingBannerService: BillingBannerServiceAbstraction,
   ) {}
 
   async submit() {

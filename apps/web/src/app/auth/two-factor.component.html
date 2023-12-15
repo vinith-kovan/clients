@@ -28,7 +28,7 @@
               {{ "enterVerificationCodeApp" | i18n }}
             </p>
             <p *ngIf="selectedProviderType === providerType.Email">
-              {{ "enterVerificationCodeEmail" | i18n : twoFactorEmail }}
+              {{ "enterVerificationCodeEmail" | i18n: twoFactorEmail }}
             </p>
             <div class="form-group">
               <label for="code" class="sr-only">{{ "verificationCode" | i18n }}</label>
@@ -92,7 +92,7 @@
             <div id="duo-frame" class="mb-3">
               <iframe
                 id="duo_iframe"
-                sandbox="allow-scripts allow-forms allow-same-origin"
+                sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"
               ></iframe>
             </div>
           </ng-container>

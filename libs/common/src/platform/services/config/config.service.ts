@@ -10,6 +10,7 @@ import {
   merge,
   timer,
 } from "rxjs";
+import { SemVer } from "semver";
 
 import { AuthService } from "../../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
@@ -25,13 +26,16 @@ import { ServerConfigData } from "../../models/data/server-config.data";
 const ONE_HOUR_IN_MILLISECONDS = 1000 * 3600;
 
 export class ConfigService implements ConfigServiceAbstraction {
-  protected _serverConfig = new ReplaySubject<ServerConfig | null>(1);
-  serverConfig$ = this._serverConfig.asObservable();
-  private _forceFetchConfig = new Subject<void>();
   private inited = false;
 
+  protected _serverConfig = new ReplaySubject<ServerConfig | null>(1);
+  serverConfig$ = this._serverConfig.asObservable();
+
+  private _forceFetchConfig = new Subject<void>();
+  protected refreshTimer$ = timer(ONE_HOUR_IN_MILLISECONDS, ONE_HOUR_IN_MILLISECONDS); // after 1 hour, then every hour
+
   cloudRegion$ = this.serverConfig$.pipe(
-    map((config) => config?.environment?.cloudRegion ?? Region.US)
+    map((config) => config?.environment?.cloudRegion ?? Region.US),
   );
 
   constructor(
@@ -42,7 +46,7 @@ export class ConfigService implements ConfigServiceAbstraction {
     private logService: LogService,
 
     // Used to avoid duplicate subscriptions, e.g. in browser between the background and popup
-    private subscribe = true
+    private subscribe = true,
   ) {}
 
   init() {
@@ -57,18 +61,18 @@ export class ConfigService implements ConfigServiceAbstraction {
         // fall back to stored ServerConfig (if any)
         this.logService.error("Unable to fetch ServerConfig: " + (e as Error)?.message);
         return this.stateService.getServerConfig();
-      })
+      }),
     );
 
     // If you need to fetch a new config when an event occurs, add an observable that emits on that event here
     merge(
-      timer(ONE_HOUR_IN_MILLISECONDS, ONE_HOUR_IN_MILLISECONDS), // after 1 hour, then every hour
+      this.refreshTimer$, // an overridable interval
       this.environmentService.urls, // when environment URLs change (including when app is started)
-      this._forceFetchConfig // manual
+      this._forceFetchConfig, // manual
     )
       .pipe(
         concatMap(() => latestServerConfig$),
-        map((data) => (data == null ? null : new ServerConfig(data)))
+        map((data) => (data == null ? null : new ServerConfig(data))),
       )
       .subscribe((config) => this._serverConfig.next(config));
 
@@ -83,7 +87,7 @@ export class ConfigService implements ConfigServiceAbstraction {
         }
 
         return serverConfig.featureStates[key] as T;
-      })
+      }),
     );
   }
 
@@ -102,5 +106,22 @@ export class ConfigService implements ConfigServiceAbstraction {
 
     await this.stateService.setServerConfig(data);
     this.environmentService.setCloudWebVaultUrl(data.environment?.cloudRegion);
+  }
+
+  /**
+   * Verifies whether the server version meets the minimum required version
+   * @param minimumRequiredServerVersion The minimum version required
+   * @returns True if the server version is greater than or equal to the minimum required version
+   */
+  checkServerMeetsVersionRequirement$(minimumRequiredServerVersion: SemVer) {
+    return this.serverConfig$.pipe(
+      map((serverConfig) => {
+        if (serverConfig == null) {
+          return false;
+        }
+        const serverVersion = new SemVer(serverConfig.version);
+        return serverVersion.compare(minimumRequiredServerVersion) >= 0;
+      }),
+    );
   }
 }

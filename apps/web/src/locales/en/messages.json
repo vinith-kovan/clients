@@ -7395,6 +7395,9 @@
   "alreadyHaveAccount": {
     "message": "Already have an account?"
   },
+  "skipToContent": {
+    "message": "Skip to content"
+  },
   "managePermissionRequired": {
     "message": "At least one member or group must have can manage permission."
   },

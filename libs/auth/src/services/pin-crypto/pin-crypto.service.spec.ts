@@ -1,18 +1,18 @@
 import { mock } from "jest-mock-extended";
 
-import { KdfConfig } from "@bitwarden/common/src/auth/models/domain/kdf-config";
-import { CryptoService } from "@bitwarden/common/src/platform/abstractions/crypto.service";
-import { LogService } from "@bitwarden/common/src/platform/abstractions/log.service";
-import { StateService } from "@bitwarden/common/src/platform/abstractions/state.service";
-import { EncString } from "@bitwarden/common/src/platform/models/domain/enc-string";
+import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import {
   SymmetricCryptoKey,
   UserKey,
-} from "@bitwarden/common/src/platform/models/domain/symmetric-crypto-key";
+} from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import {
-  PinLockType,
   VaultTimeoutSettingsService,
-} from "@bitwarden/common/src/services/vault-timeout/vault-timeout-settings.service";
+  PinLockType,
+} from "@bitwarden/common/services/vault-timeout/vault-timeout-settings.service";
 
 import { PinCryptoService } from "./pin-crypto.service.implementation";
 describe("PinCryptoService", () => {

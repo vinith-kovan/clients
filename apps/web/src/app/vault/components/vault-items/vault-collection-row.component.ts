@@ -10,6 +10,7 @@ import {
 import { Router } from "@angular/router";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 
 import { GroupView } from "../../../admin-console/organizations/core";
@@ -49,7 +50,10 @@ export class VaultCollectionRowComponent implements OnInit {
 
   private permissionList: Permission[];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private i18nService: I18nService,
+  ) {}
 
   ngOnInit() {
     this.permissionList = getPermissionList(this.flexibleCollectionsEnabled);
@@ -73,11 +77,12 @@ export class VaultCollectionRowComponent implements OnInit {
   }
 
   get permissionText() {
-    if (!(this.collection as any).assigned) {
-      return "noAssignedPermissions";
+    if (!(this.collection as CollectionAdminView).assigned) {
+      return "-";
     } else {
-      return this.permissionList.find((p) => p.perm === convertToPermission(this.collection))
-        ?.labelId;
+      return this.i18nService.t(
+        this.permissionList.find((p) => p.perm === convertToPermission(this.collection))?.labelId,
+      );
     }
   }
 

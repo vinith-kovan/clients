@@ -6460,9 +6460,6 @@
   "canEditExceptPass": {
     "message": "Can edit, except passwords"
   },
-  "noAssignedPermissions": {
-    "message": "-"
-  },
   "noCollectionsAdded": {
     "message": "No collections added"
   },

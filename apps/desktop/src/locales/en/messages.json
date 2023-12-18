@@ -2430,6 +2430,9 @@
   "submenu": {
     "message": "Submenu"
   },
+  "skipToContent": {
+    "message": "Skip to content"
+  },
   "typePasskey": {
     "message": "Passkey"
   },

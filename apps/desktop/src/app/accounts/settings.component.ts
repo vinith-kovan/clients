@@ -210,7 +210,8 @@ export class SettingsComponent implements OnInit {
 
     // Load timeout policy
     this.vaultTimeoutPolicyCallout = this.policyService.get$(PolicyType.MaximumVaultTimeout).pipe(
-      filter((policy) => policy != null),
+      filter((policies) => policies.length > 0),
+      map((policies) => policies[0]),
       map((policy) => {
         let timeout;
         if (policy.data?.minutes) {

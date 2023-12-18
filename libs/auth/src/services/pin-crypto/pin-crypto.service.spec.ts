@@ -130,43 +130,45 @@ describe("PinCryptoService", () => {
     ];
 
     testCases.forEach(({ pinLockType, migrationStatus }) => {
-      it(`should successfully decrypt and return user key with valid, ${pinLockType} PIN (${migrationStatus} migration)`, async () => {
-        // Arrange
-        setupDecryptUserKeyWithPinMocks(pinLockType, migrationStatus);
+      describe(`given a ${pinLockType} PIN (${migrationStatus} migration)`, () => {
+        it(`should successfully decrypt and return user key when using a valid PIN`, async () => {
+          // Arrange
+          setupDecryptUserKeyWithPinMocks(pinLockType, migrationStatus);
 
-        // Act
-        const result = await pinCryptoService.decryptUserKeyWithPin(mockPin);
+          // Act
+          const result = await pinCryptoService.decryptUserKeyWithPin(mockPin);
 
-        // Assert
-        expect(result).toEqual(mockUserKey);
-      });
+          // Assert
+          expect(result).toEqual(mockUserKey);
+        });
 
-      it(`should return null when ${pinLockType} PIN (${migrationStatus} migration) is incorrect and user key cannot be decrypted`, async () => {
-        // Arrange
-        setupDecryptUserKeyWithPinMocks("PERSISTANT");
+        it(`should return null when PIN is incorrect and user key cannot be decrypted`, async () => {
+          // Arrange
+          setupDecryptUserKeyWithPinMocks("PERSISTANT");
 
-        cryptoService.decryptUserKeyWithPin.mockResolvedValue(null);
+          cryptoService.decryptUserKeyWithPin.mockResolvedValue(null);
 
-        // Act
-        const result = await pinCryptoService.decryptUserKeyWithPin(mockPin);
+          // Act
+          const result = await pinCryptoService.decryptUserKeyWithPin(mockPin);
 
-        // Assert
-        expect(result).toBeNull();
-      });
+          // Assert
+          expect(result).toBeNull();
+        });
 
-      // not sure if this is a realistic scenario but going to test it anyway
-      it(`should return null when ${pinLockType} PIN (${migrationStatus} migration) doesn't match after successful user key decryption`, async () => {
-        // Arrange
-        setupDecryptUserKeyWithPinMocks("PERSISTANT");
+        // not sure if this is a realistic scenario but going to test it anyway
+        it(`should return null when PIN doesn't match after successful user key decryption`, async () => {
+          // Arrange
+          setupDecryptUserKeyWithPinMocks("PERSISTANT");
 
-        // non matching PIN
-        cryptoService.decryptToUtf8.mockResolvedValue("9999");
+          // non matching PIN
+          cryptoService.decryptToUtf8.mockResolvedValue("9999");
 
-        // Act
-        const result = await pinCryptoService.decryptUserKeyWithPin(mockPin);
+          // Act
+          const result = await pinCryptoService.decryptUserKeyWithPin(mockPin);
 
-        // Assert
-        expect(result).toBeNull();
+          // Assert
+          expect(result).toBeNull();
+        });
       });
     });
 

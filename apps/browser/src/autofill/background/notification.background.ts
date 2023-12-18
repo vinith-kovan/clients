@@ -524,7 +524,9 @@ export default class NotificationBackground {
   }
 
   private async removeIndividualVault(): Promise<boolean> {
-    return await firstValueFrom(this.policyService.applies$(PolicyType.PersonalOwnership));
+    return await firstValueFrom(
+      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
+    );
   }
 
   private async handleUnlockCompleted(

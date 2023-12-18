@@ -38,7 +38,7 @@ export abstract class PolicyService {
    * This does not take into account the policy's configuration - if that is important, use {@link get$} to get the
    * {@link Policy} object instad and then look at Policy.data.
    */
-  applies$: (policyType: PolicyType) => Observable<boolean>;
+  policyAppliesToActiveUser$: (policyType: PolicyType) => Observable<boolean>;
 
   // Policy specific interfaces
 

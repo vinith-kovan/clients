@@ -142,7 +142,9 @@ export class EncryptedMessageHandlerService {
 
     if (
       credentialCreatePayload.name == null ||
-      (await this.policyService.policyAppliesToUser(PolicyType.PersonalOwnership))
+      (await firstValueFrom(
+        this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
+      ))
     ) {
       return { status: "failure" };
     }

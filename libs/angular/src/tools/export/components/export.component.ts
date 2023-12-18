@@ -84,7 +84,7 @@ export class ExportComponent implements OnInit, OnDestroy {
     );
 
     this.policyService
-      .applies$(PolicyType.DisablePersonalVaultExport)
+      .policyAppliesToActiveUser$(PolicyType.DisablePersonalVaultExport)
       .pipe(takeUntil(this.destroy$))
       .subscribe((policyAppliesToActiveUser) => {
         this._disabledByPolicy = policyAppliesToActiveUser;

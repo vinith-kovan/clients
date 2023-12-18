@@ -165,7 +165,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     this.canUseReprompt = await this.passwordRepromptService.enabled();
 
     this.policyService
-      .applies$(PolicyType.PersonalOwnership)
+      .policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
       .pipe(
         concatMap(async (policyAppliesToActiveUser) => {
           this.personalOwnershipPolicyAppliesToActiveUser = policyAppliesToActiveUser;

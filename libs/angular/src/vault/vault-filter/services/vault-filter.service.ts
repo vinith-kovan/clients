@@ -94,11 +94,15 @@ export class VaultFilterService implements DeprecatedVaultFilterServiceAbstracti
   }
 
   async checkForSingleOrganizationPolicy(): Promise<boolean> {
-    return await firstValueFrom(this.policyService.applies$(PolicyType.SingleOrg));
+    return await firstValueFrom(
+      this.policyService.policyAppliesToActiveUser$(PolicyType.SingleOrg),
+    );
   }
 
   async checkForPersonalOwnershipPolicy(): Promise<boolean> {
-    return await firstValueFrom(this.policyService.applies$(PolicyType.PersonalOwnership));
+    return await firstValueFrom(
+      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
+    );
   }
 
   protected async getAllFoldersNested(folders: FolderView[]): Promise<TreeNode<FolderView>[]> {

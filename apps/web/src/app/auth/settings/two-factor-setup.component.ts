@@ -86,7 +86,7 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
     this.providers.sort((a: any, b: any) => a.sort - b.sort);
 
     this.policyService
-      .applies$(PolicyType.TwoFactorAuthentication)
+      .policyAppliesToActiveUser$(PolicyType.TwoFactorAuthentication)
       .pipe(takeUntil(this.destroy$))
       .subscribe((policyAppliesToActiveUser) => {
         this.twoFactorAuthPolicyAppliesToActiveUser = policyAppliesToActiveUser;

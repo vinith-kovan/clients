@@ -63,7 +63,7 @@ export class SendComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.policyService
-      .applies$(PolicyType.DisableSend)
+      .policyAppliesToActiveUser$(PolicyType.DisableSend)
       .pipe(takeUntil(this.destroy$))
       .subscribe((policyAppliesToActiveUser) => {
         this.disableSend = policyAppliesToActiveUser;

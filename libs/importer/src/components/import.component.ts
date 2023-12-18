@@ -206,7 +206,10 @@ export class ImportComponent implements OnInit, OnDestroy {
       ),
     );
 
-    combineLatest([this.policyService.applies$(PolicyType.PersonalOwnership), this.organizations$])
+    combineLatest([
+      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
+      this.organizations$,
+    ])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([policyApplies, orgs]) => {
         this._importBlockedByPolicy = policyApplies;

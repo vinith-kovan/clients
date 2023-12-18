@@ -56,7 +56,7 @@ export class WebauthnLoginSettingsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.policyService
-      .applies$(PolicyType.RequireSso)
+      .policyAppliesToActiveUser$(PolicyType.RequireSso)
       .pipe(takeUntil(this.destroy$))
       .subscribe((enabled) => {
         this.requireSsoPolicyEnabled = enabled;

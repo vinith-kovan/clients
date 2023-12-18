@@ -1,5 +1,6 @@
 import * as program from "commander";
 import * as inquirer from "inquirer";
+import { firstValueFrom } from "rxjs";
 
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -25,7 +26,9 @@ export class ExportCommand {
   async run(options: program.OptionValues): Promise<Response> {
     if (
       options.organizationid == null &&
-      (await this.policyService.policyAppliesToUser(PolicyType.DisablePersonalVaultExport))
+      (await firstValueFrom(
+        this.policyService.policyAppliesToActiveUser$(PolicyType.DisablePersonalVaultExport),
+      ))
     ) {
       return Response.badRequest(
         "One or more organization policies prevents you from exporting your personal vault.",

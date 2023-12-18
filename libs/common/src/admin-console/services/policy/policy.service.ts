@@ -46,7 +46,7 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     );
   }
 
-  applies$(policyType: PolicyType) {
+  policyAppliesToActiveUser$(policyType: PolicyType) {
     return this.get$(policyType).pipe(map((policies) => policies.length > 0));
   }
 

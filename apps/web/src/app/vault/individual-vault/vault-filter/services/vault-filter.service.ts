@@ -129,7 +129,7 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
     const headNode = this.getOrganizationFilterHead();
 
     const personalOwnershipPolicyApplies = await firstValueFrom(
-      this.policyService.applies$(PolicyType.PersonalOwnership),
+      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
     );
     if (!personalOwnershipPolicyApplies) {
       const myVaultNode = this.getOrganizationFilterMyVault();
@@ -137,7 +137,7 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
     }
 
     const singleOrgPolicyApplies = await firstValueFrom(
-      this.policyService.applies$(PolicyType.SingleOrg),
+      this.policyService.policyAppliesToActiveUser$(PolicyType.SingleOrg),
     );
     if (singleOrgPolicyApplies) {
       orgs = orgs.slice(0, 1);

@@ -2,7 +2,7 @@ import { KeyDefinitionLike, MigrationHelper, StateDefinitionLike } from "../migr
 import { IRREVERSIBLE, Migrator } from "../migrator";
 
 // Policies are stored in a Record<string, PolicyData> where the string is the PolicyId
-type ExpectedAccountType = { data?: { policies?: { encrypted?: Record<string, any> } } };
+type ExpectedAccountType = { data?: { policies?: { encrypted?: Record<string, unknown> } } };
 
 const stateDefinition: StateDefinitionLike = {
   name: "policies_disk",

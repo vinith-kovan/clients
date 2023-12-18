@@ -1,4 +1,4 @@
-import { defer } from "rxjs";
+import { defer, firstValueFrom } from "rxjs";
 
 import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "../../abstractions/vault-timeout/vault-timeout-settings.service";
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
@@ -8,6 +8,7 @@ import { UserVerificationService } from "../../auth/abstractions/user-verificati
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { StateService } from "../../platform/abstractions/state.service";
+import { UserId } from "../../types/guid";
 
 /**
  * - DISABLED: No Pin set
@@ -82,15 +83,19 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
   async getVaultTimeout(userId?: string): Promise<number> {
     const vaultTimeout = await this.stateService.getVaultTimeout({ userId });
 
-    if (
-      await this.policyService.policyAppliesToUser(PolicyType.MaximumVaultTimeout, null, userId)
-    ) {
-      const policy = await this.policyService.getAll(PolicyType.MaximumVaultTimeout, userId);
+    const vaultTimeoutPolicies =
+      userId == null
+        ? await firstValueFrom(this.policyService.get$(PolicyType.MaximumVaultTimeout))
+        : await firstValueFrom(
+            this.policyService.getForUser$(userId as UserId, PolicyType.MaximumVaultTimeout),
+          );
+
+    if (vaultTimeoutPolicies?.length) {
       // Remove negative values, and ensure it's smaller than maximum allowed value according to policy
-      let timeout = Math.min(vaultTimeout, policy[0].data.minutes);
+      let timeout = Math.min(vaultTimeout, vaultTimeoutPolicies[0].data.minutes);
 
       if (vaultTimeout == null || timeout < 0) {
-        timeout = policy[0].data.minutes;
+        timeout = vaultTimeoutPolicies[0].data.minutes;
       }
 
       // TODO @jlf0dev: Can we move this somwhere else? Maybe add it to the initialization process?
@@ -118,11 +123,15 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
 
     const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction({ userId: userId });
 
-    if (
-      await this.policyService.policyAppliesToUser(PolicyType.MaximumVaultTimeout, null, userId)
-    ) {
-      const policy = await this.policyService.getAll(PolicyType.MaximumVaultTimeout, userId);
-      const action = policy[0].data.action;
+    const vaultTimeoutPolicies =
+      userId == null
+        ? await firstValueFrom(this.policyService.get$(PolicyType.MaximumVaultTimeout))
+        : await firstValueFrom(
+            this.policyService.getForUser$(userId as UserId, PolicyType.MaximumVaultTimeout),
+          );
+
+    if (vaultTimeoutPolicies != null) {
+      const action = vaultTimeoutPolicies[0].data.action;
       // We really shouldn't need to set the value here, but multiple services relies on this value being correct.
       if (action && vaultTimeoutAction !== action) {
         await this.stateService.setVaultTimeoutAction(action, { userId: userId });

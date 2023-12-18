@@ -1,4 +1,4 @@
-import { firstValueFrom, from, map, Observable, of } from "rxjs";
+import { firstValueFrom, map, Observable, of } from "rxjs";
 
 import { ListResponse } from "../../../models/response/list.response";
 import { KeyDefinition, POLICY_DISK, StateProvider } from "../../../platform/state";
@@ -42,11 +42,20 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
    * Returns the first policy found that applies to the active user
    * @param policyType Policy type to search for
    */
-  get$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
-    return this.get_vNext$(policyType).pipe(
-      map((policies) => policies?.filter((p) => policyFilter == null || policyFilter(p))),
-      map((policies) => policies?.at(0)),
+  get$(policyType: PolicyType) {
+    return this.policies$.pipe(map((policies) => policies.filter((p) => p.type == policyType)));
+  }
+
+  getForUser$(userId: UserId, policyType: PolicyType) {
+    return this.stateProvider.getUser(userId, POLICY_POLICY).state$.pipe(
+      map((policyData) => policyRecordToArray(policyData)),
+      map((policy) => policy.filter((p) => p.type === policyType)),
+      map((policies) => policies.filter((p) => this.enforcedPolicyFilter(p))),
     );
+  }
+
+  applies$(policyType: PolicyType) {
+    return this.get$(policyType).pipe(map((policies) => policies.length > 0));
   }
 
   async getAll(type: PolicyType, userId?: UserId): Promise<Policy[]> {
@@ -61,22 +70,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
         map((policies) => policies.filter((p) => this.enforcedPolicyFilter(p))),
       ),
     );
-  }
-
-  /**
-   * TODO: this will replace get$ and getAll when PolicyServiceRefactor feature flag is removed.
-   * The policyFilter callback parameters will also be removed in favor of callers using this method
-   * to get all policies and then filtering them themselves.
-   * @param policyType
-   * @param userId
-   * @returns
-   */
-  private get_vNext$(policyType: PolicyType, userId?: UserId): Observable<Policy[]> {
-    if (userId == null) {
-      return this.policies$.pipe(map((policies) => policies.filter((p) => p.type == policyType)));
-    }
-
-    return from(this.getAll(policyType, userId));
   }
 
   async upsert(policy: PolicyData): Promise<any> {
@@ -98,28 +91,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     }
 
     this.stateProvider.getUser(userId, POLICY_POLICY).update(() => ({}));
-  }
-
-  // --- Public helper methods ---
-
-  policyAppliesToActiveUser$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
-    return this.get_vNext$(policyType).pipe(
-      map((policies) => policies.filter((p) => policyFilter == null || policyFilter(p))),
-      map((policies) => policies?.length > 0),
-    );
-  }
-
-  async policyAppliesToUser(
-    policyType: PolicyType,
-    policyFilter?: (policy: Policy) => boolean,
-    userId?: UserId,
-  ) {
-    return firstValueFrom(
-      this.get_vNext$(policyType, userId).pipe(
-        map((policies) => policies.filter((p) => policyFilter == null || policyFilter(p))),
-        map((policies) => policies?.length > 0),
-      ),
-    );
   }
 
   mapPolicyFromResponse(policyResponse: PolicyResponse): Policy {

@@ -18,15 +18,26 @@ export abstract class PolicyService {
   policies$: Observable<Policy[]>;
 
   /**
-   * @returns the first {@link Policy} found that applies to the active user.
+   * @returns all policies of a given type that apply to the active user.
    * A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
    * @param policyType the {@link PolicyType} to search for
-   * @param policyFilter Optional predicate to apply when filtering policies
    */
   get$: (policyType: PolicyType) => Observable<Policy[]>;
 
+  /**
+   * @returns all policies of a given type that apply to the specified user.
+   * A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
+   * If you just want the active user, use {@link get$} instead.
+   * @param policyType the {@link PolicyType} to search for
+   */
   getForUser$: (userId: UserId, policyType: PolicyType) => Observable<Policy[]>;
 
+  /**
+   * @returns true if the PolicyType applies to the active user, otherwise false.
+   * A policy "applies" if it is enabled and the user is not exempt (e.g. because they are an Owner).
+   * This does not take into account the policy's configuration - if that is important, use {@link get$} to get the
+   * {@link Policy} object instad and then look at Policy.data.
+   */
   applies$: (policyType: PolicyType) => Observable<boolean>;
 
   // Policy specific interfaces

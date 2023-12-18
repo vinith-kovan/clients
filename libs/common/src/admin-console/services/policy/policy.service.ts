@@ -22,14 +22,7 @@ export const POLICY_POLICY = KeyDefinition.record<PolicyData, PolicyId>(POLICY_D
 export class PolicyService implements InternalPolicyServiceAbstraction {
   private policyState = this.stateProvider.getActive(POLICY_POLICY);
 
-  /**
-   * All policies that apply to the active user
-   * TODO: make this protected, callers should use get$ because they always want to specify a type
-   */
-  policies$ = this.policyState.state$.pipe(
-    map((policyData) => policyRecordToArray(policyData)),
-    map((policies) => policies.filter((p) => this.enforcedPolicyFilter(p))),
-  );
+  policies$ = this.policyState.state$.pipe(map((policyData) => policyRecordToArray(policyData)));
 
   constructor(
     private stateProvider: StateProvider,
@@ -38,12 +31,11 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
 
   // --- Core state management methods ---
 
-  /**
-   * Returns the first policy found that applies to the active user
-   * @param policyType Policy type to search for
-   */
   get$(policyType: PolicyType) {
-    return this.policies$.pipe(map((policies) => policies.filter((p) => p.type == policyType)));
+    return this.policies$.pipe(
+      map((policies) => policies.filter((p) => p.type == policyType)),
+      map((policies) => policies.filter((p) => this.enforcedPolicyFilter(p))),
+    );
   }
 
   getForUser$(userId: UserId, policyType: PolicyType) {
@@ -95,17 +87,19 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
   // --- Policy-specific interfaces - to be deprecated ---
 
   masterPasswordPolicyOptions$(policies?: Policy[]): Observable<MasterPasswordPolicyOptions> {
-    const observable = policies ? of(policies) : this.policies$;
+    const observable = policies
+      ? of(policies.filter((p) => p.type === PolicyType.MasterPassword))
+      : this.get$(PolicyType.MasterPassword);
+
     return observable.pipe(
       map((obsPolicies) => {
         let enforcedOptions: MasterPasswordPolicyOptions = null;
-        const filteredPolicies = obsPolicies.filter((p) => p.type === PolicyType.MasterPassword);
 
-        if (filteredPolicies == null || filteredPolicies.length === 0) {
+        if (obsPolicies == null || obsPolicies.length === 0) {
           return enforcedOptions;
         }
 
-        filteredPolicies.forEach((currentPolicy) => {
+        obsPolicies.forEach((currentPolicy) => {
           if (!currentPolicy.enabled || currentPolicy.data == null) {
             return;
           }

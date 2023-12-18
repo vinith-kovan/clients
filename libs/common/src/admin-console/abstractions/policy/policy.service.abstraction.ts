@@ -12,7 +12,7 @@ import { PolicyResponse } from "../../models/response/policy.response";
 export abstract class PolicyService {
   /**
    * All {@link Policy} objects for the active user (from sync data).
-   * May include policies that are disabled or otherwise do not apply to the user.
+   * May include policies that are disabled or otherwise do not apply to the user. You probably don't want this!
    * @see {@link get$} or {@link applies$} if you want to know when a policy applies to a user.
    */
   policies$: Observable<Policy[]>;

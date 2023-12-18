@@ -36,6 +36,8 @@ export class PolicyVNextService implements InternalPolicyServiceAbstraction {
     private organizationService: OrganizationService,
   ) {}
 
+  // --- Core state management methods ---
+
   /**
    * Returns the first policy found that applies to the active user
    * @param policyType Policy type to search for
@@ -61,6 +63,45 @@ export class PolicyVNextService implements InternalPolicyServiceAbstraction {
     );
   }
 
+  /**
+   * TODO: this will replace get$ and getAll when PolicyServiceRefactor feature flag is removed.
+   * The policyFilter callback parameters will also be removed in favor of callers using this method
+   * to get all policies and then filtering them themselves.
+   * @param policyType
+   * @param userId
+   * @returns
+   */
+  private get_vNext$(policyType: PolicyType, userId?: UserId): Observable<Policy[]> {
+    if (userId == null) {
+      return this.policies$.pipe(map((policies) => policies.filter((p) => p.type == policyType)));
+    }
+
+    return from(this.getAll(policyType, userId));
+  }
+
+  async upsert(policy: PolicyData): Promise<any> {
+    await this.policyState.update((policies) => {
+      policies ??= {};
+      policies[policy.id] = policy;
+      return policies;
+    });
+  }
+
+  async replace(policies: { [id: string]: PolicyData }): Promise<void> {
+    await this.policyState.update(() => policies);
+  }
+
+  async clear(userId?: UserId): Promise<void> {
+    if (userId == null) {
+      await this.policyState.update(() => ({}));
+      return;
+    }
+
+    this.stateProvider.getUser(userId, POLICY_POLICY).update(() => ({}));
+  }
+
+  // --- Public helper methods ---
+
   policyAppliesToActiveUser$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
     return this.get_vNext$(policyType).pipe(
       map((policies) => policies.filter((p) => policyFilter == null || policyFilter(p))),
@@ -81,21 +122,20 @@ export class PolicyVNextService implements InternalPolicyServiceAbstraction {
     );
   }
 
-  /**
-   * TODO: this will replace get$ and getAll when PolicyServiceRefactor feature flag is removed.
-   * The policyFilter callback parameters will also be removed in favor of callers using this method
-   * to get all policies and then filtering them themselves.
-   * @param policyType
-   * @param userId
-   * @returns
-   */
-  private get_vNext$(policyType: PolicyType, userId?: UserId): Observable<Policy[]> {
-    if (userId == null) {
-      return this.policies$.pipe(map((policies) => policies.filter((p) => p.type == policyType)));
+  mapPolicyFromResponse(policyResponse: PolicyResponse): Policy {
+    const policyData = new PolicyData(policyResponse);
+    return new Policy(policyData);
+  }
+
+  mapPoliciesFromToken(policiesResponse: ListResponse<PolicyResponse>): Policy[] {
+    if (policiesResponse?.data == null) {
+      return null;
     }
 
-    return from(this.getAll(policyType, userId));
+    return policiesResponse.data.map((response) => this.mapPolicyFromResponse(response));
   }
+
+  // --- Policy-specific interfaces - to be deprecated ---
 
   masterPasswordPolicyOptions$(policies?: Policy[]): Observable<MasterPasswordPolicyOptions> {
     const observable = policies ? of(policies) : this.policies$;
@@ -218,39 +258,7 @@ export class PolicyVNextService implements InternalPolicyServiceAbstraction {
     return [resetPasswordPolicyOptions, policy?.enabled ?? false];
   }
 
-  mapPolicyFromResponse(policyResponse: PolicyResponse): Policy {
-    const policyData = new PolicyData(policyResponse);
-    return new Policy(policyData);
-  }
-
-  mapPoliciesFromToken(policiesResponse: ListResponse<PolicyResponse>): Policy[] {
-    if (policiesResponse?.data == null) {
-      return null;
-    }
-
-    return policiesResponse.data.map((response) => this.mapPolicyFromResponse(response));
-  }
-
-  async upsert(policy: PolicyData): Promise<any> {
-    await this.policyState.update((policies) => {
-      policies ??= {};
-      policies[policy.id] = policy;
-      return policies;
-    });
-  }
-
-  async replace(policies: { [id: string]: PolicyData }): Promise<void> {
-    await this.policyState.update(() => policies);
-  }
-
-  async clear(userId?: UserId): Promise<void> {
-    if (userId == null) {
-      await this.policyState.update(() => ({}));
-      return;
-    }
-
-    this.stateProvider.getUser(userId, POLICY_POLICY).update(() => ({}));
-  }
+  // --- Private helper methods ---
 
   private enforcedPolicyFilter(policy: Policy) {
     const org = this.organizationService.get(policy.organizationId);

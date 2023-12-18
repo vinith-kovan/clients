@@ -6,8 +6,9 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaul
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { AccountProfile } from "@bitwarden/common/platform/models/domain/account";
+
+import { StateService } from "../../core/state/state.service";
 
 @Component({
   selector: "app-header",
@@ -29,6 +30,8 @@ export class WebHeaderComponent {
   protected canLock$: Observable<boolean>;
   protected selfHosted: boolean;
   protected hostname = location.hostname;
+
+  protected showBanner: Promise<boolean>;
 
   constructor(
     private route: ActivatedRoute,
@@ -58,6 +61,8 @@ export class WebHeaderComponent {
     this.canLock$ = this.vaultTimeoutSettingsService
       .availableVaultTimeoutActions$()
       .pipe(map((actions) => actions.includes(VaultTimeoutAction.Lock)));
+
+    this.showBanner = this.stateService.getShowWebBanner();
   }
 
   protected lock() {
@@ -66,5 +71,10 @@ export class WebHeaderComponent {
 
   protected logout() {
     this.messagingService.send("logout");
+  }
+
+  protected async hideBanner() {
+    this.showBanner = Promise.resolve(false);
+    await this.stateService.setShowWebBanner(false);
   }
 }

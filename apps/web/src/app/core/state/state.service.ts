@@ -114,4 +114,22 @@ export class StateService extends BaseStateService<GlobalState, Account> {
     options = this.reconcileOptions(options, await this.defaultInMemoryOptions());
     return await super.setLastSync(value, options);
   }
+
+  async getShowWebBanner(options?: StorageOptions): Promise<boolean> {
+    return (
+      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
+        ?.showWebBanner ?? true
+    );
+  }
+
+  async setShowWebBanner(value: boolean, options?: StorageOptions): Promise<void> {
+    const globals = await this.getGlobals(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
+    );
+    globals.showWebBanner = value;
+    await this.saveGlobals(
+      globals,
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
+    );
+  }
 }

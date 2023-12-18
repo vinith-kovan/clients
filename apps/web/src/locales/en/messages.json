@@ -7433,5 +7433,11 @@
   },
   "serviceAccountAccessUpdated": {
     "message": "Service account access updated"
+  },
+  "newWebVault": {
+    "message": "Welcome to the new and improved web vault. Learn more about what’s changed."
+  },
+  "releaseBlog": {
+    "message": "Read release blog"
   }
 }

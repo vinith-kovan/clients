@@ -1,4 +1,4 @@
-import { firstValueFrom, map, Observable, of } from "rxjs";
+import { map, Observable, of } from "rxjs";
 
 import { ListResponse } from "../../../models/response/list.response";
 import { KeyDefinition, POLICY_DISK, StateProvider } from "../../../platform/state";
@@ -56,20 +56,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
 
   applies$(policyType: PolicyType) {
     return this.get$(policyType).pipe(map((policies) => policies.length > 0));
-  }
-
-  async getAll(type: PolicyType, userId?: UserId): Promise<Policy[]> {
-    if (userId == null) {
-      return await firstValueFrom(this.policies$);
-    }
-
-    return await firstValueFrom(
-      this.stateProvider.getUser(userId, POLICY_POLICY).state$.pipe(
-        map((policyData) => policyRecordToArray(policyData)),
-        map((policy) => policy.filter((p) => p.type === type)),
-        map((policies) => policies.filter((p) => this.enforcedPolicyFilter(p))),
-      ),
-    );
   }
 
   async upsert(policy: PolicyData): Promise<any> {

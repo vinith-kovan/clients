@@ -117,19 +117,22 @@ export class StateService extends BaseStateService<GlobalState, Account> {
 
   async getShowWebBanner(options?: StorageOptions): Promise<boolean> {
     return (
-      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
-        ?.showWebBanner ?? true
+      (
+        await this.getGlobals(
+          this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
+        )
+      )?.showWebBanner ?? true
     );
   }
 
   async setShowWebBanner(value: boolean, options?: StorageOptions): Promise<void> {
     const globals = await this.getGlobals(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
     );
     globals.showWebBanner = value;
     await this.saveGlobals(
       globals,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()),
     );
   }
 }

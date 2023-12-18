@@ -1,6 +1,8 @@
 import { Component, HostBinding, OnDestroy, OnInit } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { DialogService } from "@bitwarden/components";
 
 import { WebauthnLoginAdminService } from "../../core";
@@ -9,6 +11,7 @@ import { WebauthnLoginCredentialView } from "../../core/views/webauthn-login-cre
 
 import { openCreateCredentialDialog } from "./create-credential-dialog/create-credential-dialog.component";
 import { openDeleteCredentialDialogComponent } from "./delete-credential-dialog/delete-credential-dialog.component";
+import { openEnableCredentialDialogComponent } from "./enable-encryption-dialog/enable-encryption-dialog.component";
 
 @Component({
   selector: "app-webauthn-login-settings",
@@ -28,7 +31,8 @@ export class WebauthnLoginSettingsComponent implements OnInit, OnDestroy {
 
   constructor(
     private webauthnService: WebauthnLoginAdminService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private policyService: PolicyService,
   ) {}
 
   @HostBinding("attr.aria-busy")
@@ -48,7 +52,16 @@ export class WebauthnLoginSettingsComponent implements OnInit, OnDestroy {
     return this.credentials?.length >= this.MaxCredentialCount;
   }
 
+  requireSsoPolicyEnabled = false;
+
   ngOnInit(): void {
+    this.policyService
+      .policyAppliesToActiveUser$(PolicyType.RequireSso)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((enabled) => {
+        this.requireSsoPolicyEnabled = enabled;
+      });
+
     this.webauthnService
       .getCredentials$()
       .pipe(takeUntil(this.destroy$))
@@ -70,5 +83,9 @@ export class WebauthnLoginSettingsComponent implements OnInit, OnDestroy {
 
   protected deleteCredential(credentialId: string) {
     openDeleteCredentialDialogComponent(this.dialogService, { data: { credentialId } });
+  }
+
+  protected enableEncryption(credentialId: string) {
+    openEnableCredentialDialogComponent(this.dialogService, { data: { credentialId } });
   }
 }

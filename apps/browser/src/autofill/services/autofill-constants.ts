@@ -11,6 +11,7 @@ export class AutoFillConstants {
     "user id",
     "customer id",
     "login id",
+    "login",
     // German
     "benutzername",
     "benutzer name",
@@ -110,6 +111,7 @@ export class CreditCardAutoFillConstants {
     "carte-credit",
     "num-carte",
     "cb-num",
+    "card-pan",
   ];
 
   static readonly CardNumberFieldNameValues: string[] = [

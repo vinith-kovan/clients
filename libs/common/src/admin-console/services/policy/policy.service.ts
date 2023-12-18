@@ -1,84 +1,141 @@
-import { BehaviorSubject, concatMap, map, Observable, of } from "rxjs";
+import { firstValueFrom, from, map, Observable, of } from "rxjs";
 
 import { ListResponse } from "../../../models/response/list.response";
-import { StateService } from "../../../platform/abstractions/state.service";
-import { Utils } from "../../../platform/misc/utils";
+import { KeyDefinition, POLICY_DISK, StateProvider } from "../../../platform/state";
+import { PolicyId, UserId } from "../../../types/guid";
 import { OrganizationService } from "../../abstractions/organization/organization.service.abstraction";
 import { InternalPolicyService as InternalPolicyServiceAbstraction } from "../../abstractions/policy/policy.service.abstraction";
-import { OrganizationUserStatusType, OrganizationUserType, PolicyType } from "../../enums";
+import { OrganizationUserStatusType, PolicyType } from "../../enums";
 import { PolicyData } from "../../models/data/policy.data";
 import { MasterPasswordPolicyOptions } from "../../models/domain/master-password-policy-options";
-import { Organization } from "../../models/domain/organization";
 import { Policy } from "../../models/domain/policy";
 import { ResetPasswordPolicyOptions } from "../../models/domain/reset-password-policy-options";
 import { PolicyResponse } from "../../models/response/policy.response";
 
-export class PolicyService implements InternalPolicyServiceAbstraction {
-  protected _policies: BehaviorSubject<Policy[]> = new BehaviorSubject([]);
+const policyRecordToArray = (policiesMap: { [id: string]: PolicyData }) =>
+  Object.values(policiesMap || {}).map((f) => new Policy(f));
 
-  policies$ = this._policies.asObservable();
+export const POLICY_POLICY = KeyDefinition.record<PolicyData, PolicyId>(POLICY_DISK, "policies", {
+  deserializer: (policyData) => policyData,
+});
+
+export class PolicyService implements InternalPolicyServiceAbstraction {
+  private policyState = this.stateProvider.getActive(POLICY_POLICY);
+
+  /**
+   * All policies that apply to the active user
+   * TODO: make this protected, callers should use get$ because they always want to specify a type
+   */
+  policies$ = this.policyState.state$.pipe(
+    map((policyData) => policyRecordToArray(policyData)),
+    map((policies) => policies.filter((p) => this.enforcedPolicyFilter(p))),
+  );
 
   constructor(
-    protected stateService: StateService,
+    private stateProvider: StateProvider,
     private organizationService: OrganizationService,
-  ) {
-    this.stateService.activeAccountUnlocked$
-      .pipe(
-        concatMap(async (unlocked) => {
-          if (Utils.global.bitwardenContainerService == null) {
-            return;
-          }
+  ) {}
 
-          if (!unlocked) {
-            this._policies.next([]);
-            return;
-          }
+  // --- Core state management methods ---
 
-          const data = await this.stateService.getEncryptedPolicies();
-
-          await this.updateObservables(data);
-        }),
-      )
-      .subscribe();
-  }
-
-  get$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean): Observable<Policy> {
-    return this.policies$.pipe(
-      concatMap(async (policies) => {
-        const userId = await this.stateService.getUserId();
-        const appliesToCurrentUser = await this.checkPoliciesThatApplyToUser(
-          policies,
-          policyType,
-          policyFilter,
-          userId,
-        );
-        if (appliesToCurrentUser) {
-          return policies.find((policy) => policy.type === policyType && policy.enabled);
-        }
-      }),
+  /**
+   * Returns the first policy found that applies to the active user
+   * @param policyType Policy type to search for
+   */
+  get$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
+    return this.get_vNext$(policyType).pipe(
+      map((policies) => policies?.filter((p) => policyFilter == null || policyFilter(p))),
+      map((policies) => policies?.at(0)),
     );
   }
 
-  async getAll(type?: PolicyType, userId?: string): Promise<Policy[]> {
-    let response: Policy[] = [];
-    const decryptedPolicies = await this.stateService.getDecryptedPolicies({ userId: userId });
-    if (decryptedPolicies != null) {
-      response = decryptedPolicies;
-    } else {
-      const diskPolicies = await this.stateService.getEncryptedPolicies({ userId: userId });
-      for (const id in diskPolicies) {
-        if (Object.prototype.hasOwnProperty.call(diskPolicies, id)) {
-          response.push(new Policy(diskPolicies[id]));
-        }
-      }
-      await this.stateService.setDecryptedPolicies(response, { userId: userId });
+  async getAll(type: PolicyType, userId?: UserId): Promise<Policy[]> {
+    if (userId == null) {
+      return await firstValueFrom(this.policies$);
     }
-    if (type != null) {
-      return response.filter((policy) => policy.type === type);
-    } else {
-      return response;
-    }
+
+    return await firstValueFrom(
+      this.stateProvider.getUser(userId, POLICY_POLICY).state$.pipe(
+        map((policyData) => policyRecordToArray(policyData)),
+        map((policy) => policy.filter((p) => p.type === type)),
+        map((policies) => policies.filter((p) => this.enforcedPolicyFilter(p))),
+      ),
+    );
   }
+
+  /**
+   * TODO: this will replace get$ and getAll when PolicyServiceRefactor feature flag is removed.
+   * The policyFilter callback parameters will also be removed in favor of callers using this method
+   * to get all policies and then filtering them themselves.
+   * @param policyType
+   * @param userId
+   * @returns
+   */
+  private get_vNext$(policyType: PolicyType, userId?: UserId): Observable<Policy[]> {
+    if (userId == null) {
+      return this.policies$.pipe(map((policies) => policies.filter((p) => p.type == policyType)));
+    }
+
+    return from(this.getAll(policyType, userId));
+  }
+
+  async upsert(policy: PolicyData): Promise<any> {
+    await this.policyState.update((policies) => {
+      policies ??= {};
+      policies[policy.id] = policy;
+      return policies;
+    });
+  }
+
+  async replace(policies: { [id: string]: PolicyData }): Promise<void> {
+    await this.policyState.update(() => policies);
+  }
+
+  async clear(userId?: UserId): Promise<void> {
+    if (userId == null) {
+      await this.policyState.update(() => ({}));
+      return;
+    }
+
+    this.stateProvider.getUser(userId, POLICY_POLICY).update(() => ({}));
+  }
+
+  // --- Public helper methods ---
+
+  policyAppliesToActiveUser$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
+    return this.get_vNext$(policyType).pipe(
+      map((policies) => policies.filter((p) => policyFilter == null || policyFilter(p))),
+      map((policies) => policies?.length > 0),
+    );
+  }
+
+  async policyAppliesToUser(
+    policyType: PolicyType,
+    policyFilter?: (policy: Policy) => boolean,
+    userId?: UserId,
+  ) {
+    return firstValueFrom(
+      this.get_vNext$(policyType, userId).pipe(
+        map((policies) => policies.filter((p) => policyFilter == null || policyFilter(p))),
+        map((policies) => policies?.length > 0),
+      ),
+    );
+  }
+
+  mapPolicyFromResponse(policyResponse: PolicyResponse): Policy {
+    const policyData = new PolicyData(policyResponse);
+    return new Policy(policyData);
+  }
+
+  mapPoliciesFromToken(policiesResponse: ListResponse<PolicyResponse>): Policy[] {
+    if (policiesResponse?.data == null) {
+      return null;
+    }
+
+    return policiesResponse.data.map((response) => this.mapPolicyFromResponse(response));
+  }
+
+  // --- Policy-specific interfaces - to be deprecated ---
 
   masterPasswordPolicyOptions$(policies?: Policy[]): Observable<MasterPasswordPolicyOptions> {
     const observable = policies ? of(policies) : this.policies$;
@@ -136,15 +193,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
         });
 
         return enforcedOptions;
-      }),
-    );
-  }
-
-  policyAppliesToActiveUser$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
-    return this.policies$.pipe(
-      concatMap(async (policies) => {
-        const userId = await this.stateService.getUserId();
-        return await this.checkPoliciesThatApplyToUser(policies, policyType, policyFilter, userId);
       }),
     );
   }
@@ -210,88 +258,38 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     return [resetPasswordPolicyOptions, policy?.enabled ?? false];
   }
 
-  mapPolicyFromResponse(policyResponse: PolicyResponse): Policy {
-    const policyData = new PolicyData(policyResponse);
-    return new Policy(policyData);
-  }
+  // --- Private helper methods ---
 
-  mapPoliciesFromToken(policiesResponse: ListResponse<PolicyResponse>): Policy[] {
-    if (policiesResponse?.data == null) {
-      return null;
+  private enforcedPolicyFilter(policy: Policy) {
+    const org = this.organizationService.get(policy.organizationId);
+
+    // This shouldn't happen, i.e. the user should only have policies for orgs they are a member of
+    // But if it does, err on the side of enforcing the policy
+    if (org == null) {
+      return true;
     }
 
-    return policiesResponse.data.map((response) => this.mapPolicyFromResponse(response));
-  }
-
-  async policyAppliesToUser(
-    policyType: PolicyType,
-    policyFilter?: (policy: Policy) => boolean,
-    userId?: string,
-  ) {
-    const policies = await this.getAll(policyType, userId);
-
-    return this.checkPoliciesThatApplyToUser(policies, policyType, policyFilter, userId);
-  }
-
-  async upsert(policy: PolicyData): Promise<any> {
-    let policies = await this.stateService.getEncryptedPolicies();
-    if (policies == null) {
-      policies = {};
-    }
-
-    policies[policy.id] = policy;
-
-    await this.updateObservables(policies);
-    await this.stateService.setDecryptedPolicies(null);
-    await this.stateService.setEncryptedPolicies(policies);
-  }
-
-  async replace(policies: { [id: string]: PolicyData }): Promise<void> {
-    await this.updateObservables(policies);
-    await this.stateService.setDecryptedPolicies(null);
-    await this.stateService.setEncryptedPolicies(policies);
-  }
-
-  async clear(userId?: string): Promise<void> {
-    if (userId == null || userId == (await this.stateService.getUserId())) {
-      this._policies.next([]);
-    }
-    await this.stateService.setDecryptedPolicies(null, { userId: userId });
-    await this.stateService.setEncryptedPolicies(null, { userId: userId });
-  }
-
-  private isExemptFromPolicies(organization: Organization, policyType: PolicyType) {
-    if (policyType === PolicyType.MaximumVaultTimeout) {
-      return organization.type === OrganizationUserType.Owner;
-    }
-
-    return organization.canManagePolicies;
-  }
-
-  private async updateObservables(policiesMap: { [id: string]: PolicyData }) {
-    const policies = Object.values(policiesMap || {}).map((f) => new Policy(f));
-
-    this._policies.next(policies);
-  }
-
-  private async checkPoliciesThatApplyToUser(
-    policies: Policy[],
-    policyType: PolicyType,
-    policyFilter?: (policy: Policy) => boolean,
-    userId?: string,
-  ) {
-    const organizations = await this.organizationService.getAll(userId);
-    const filteredPolicies = policies.filter(
-      (p) => p.type === policyType && p.enabled && (policyFilter == null || policyFilter(p)),
+    return (
+      org.status >= OrganizationUserStatusType.Accepted &&
+      org.usePolicies &&
+      !this.isExemptFromPolicy(policy)
     );
-    const policySet = new Set(filteredPolicies.map((p) => p.organizationId));
+  }
 
-    return organizations.some(
-      (o) =>
-        o.status >= OrganizationUserStatusType.Accepted &&
-        o.usePolicies &&
-        policySet.has(o.id) &&
-        !this.isExemptFromPolicies(o, policyType),
-    );
+  /**
+   * Determines whether an orgUser is exempt from a specific policy because of their role
+   * Generally orgUsers who can manage policies are exempt from them, but some policies are stricter
+   * @returns
+   */
+  private isExemptFromPolicy(policy: Policy) {
+    const org = this.organizationService.get(policy.organizationId);
+
+    switch (policy.type) {
+      case PolicyType.MaximumVaultTimeout:
+        // Max Vault Timeout applies to everyone except owners
+        return org.isOwner;
+      default:
+        return org.canManagePolicies;
+    }
   }
 }

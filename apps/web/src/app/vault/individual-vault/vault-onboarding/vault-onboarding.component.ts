@@ -77,7 +77,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges) {
     const { currentValue, previousValue } = changes.ciphers;
-    if (this.showOnboarding && currentValue.length !== previousValue.length) {
+    if (this.showOnboarding && currentValue?.length !== previousValue?.length) {
       this.saveCompletedTasks({
         createAccount: true,
         importData: this.ciphers.length > 0,

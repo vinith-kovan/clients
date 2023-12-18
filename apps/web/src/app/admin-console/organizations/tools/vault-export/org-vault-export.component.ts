@@ -7,11 +7,11 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { EventType } from "@bitwarden/common/enums";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ConfigService } from "@bitwarden/common/platform/services/config/config.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
@@ -38,7 +38,7 @@ export class OrganizationVaultExportComponent extends ExportComponent {
     dialogService: DialogService,
     organizationService: OrganizationService,
     collectionService: CollectionService,
-    configService: ConfigService,
+    configService: ConfigServiceAbstraction,
   ) {
     super(
       i18nService,

@@ -1,6 +1,16 @@
 import { Directive, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
 import { UntypedFormBuilder, Validators } from "@angular/forms";
-import { concat, filter, map, merge, Observable, startWith, Subject, takeUntil } from "rxjs";
+import {
+  concat,
+  filter,
+  firstValueFrom,
+  map,
+  merge,
+  Observable,
+  startWith,
+  Subject,
+  takeUntil,
+} from "rxjs";
 
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import {
@@ -13,18 +23,18 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { EventType } from "@bitwarden/common/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { ConfigService } from "@bitwarden/common/platform/services/config/config.service";
 import { EncryptedExportType } from "@bitwarden/common/tools/enums/encrypted-export-type.enum";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
-import { PasswordStrengthComponent } from "../../../shared/components/password-strength/password-strength.component";
+import { PasswordStrengthComponent } from "../../password-strength/password-strength.component";
 
 @Directive()
 export class ExportComponent implements OnInit, OnDestroy {
@@ -34,7 +44,10 @@ export class ExportComponent implements OnInit, OnDestroy {
   filePasswordValue: string = null;
   formPromise: Promise<string>;
   private _disabledByPolicy = false;
-  private flexibleCollectionsEnabled: boolean;
+  protected flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
+    FeatureFlag.FlexibleCollections,
+    false,
+  );
   protected organizationId: string = null;
   protected isFromAdminConsole = false;
   organizations$: Observable<Organization[]>;
@@ -79,14 +92,10 @@ export class ExportComponent implements OnInit, OnDestroy {
     protected dialogService: DialogService,
     protected organizationService: OrganizationService,
     private collectionService: CollectionService,
-    private configService: ConfigService,
+    private configService: ConfigServiceAbstraction,
   ) {}
 
   async ngOnInit() {
-    this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.FlexibleCollections,
-    );
-
     this.policyService
       .policyAppliesToActiveUser$(PolicyType.DisablePersonalVaultExport)
       .pipe(takeUntil(this.destroy$))
@@ -106,7 +115,7 @@ export class ExportComponent implements OnInit, OnDestroy {
     } else {
       const collections = await this.collectionService.getAll();
       const orgIds = new Set(collections.filter((c) => c.manage).map((c) => c.organizationId));
-      this.organizations$ = this.flexibleCollectionsEnabled
+      this.organizations$ = (await firstValueFrom(this.flexibleCollectionsEnabled$))
         ? concat(
             this.organizationService.memberOrganizations$.pipe(
               filter((orgsList) => orgsList.some((org) => orgIds.has(org.id))),
@@ -211,7 +220,7 @@ export class ExportComponent implements OnInit, OnDestroy {
     this.onSaved.emit();
   }
 
-  protected getExportData() {
+  protected async getExportData() {
     if (
       this.format === "encrypted_json" &&
       this.fileEncryptionType === EncryptedExportType.FileEncrypted
@@ -219,13 +228,13 @@ export class ExportComponent implements OnInit, OnDestroy {
       return this.exportService.getPasswordProtectedExport(
         this.filePassword,
         this.organizationId,
-        !this.isFromAdminConsole && this.flexibleCollectionsEnabled,
+        !this.isFromAdminConsole && (await firstValueFrom(this.flexibleCollectionsEnabled$)),
       );
     }
     return this.exportService.getExport(
       this.format,
       this.organizationId,
-      !this.isFromAdminConsole && this.flexibleCollectionsEnabled,
+      !this.isFromAdminConsole && (await firstValueFrom(this.flexibleCollectionsEnabled$)),
     );
   }
 

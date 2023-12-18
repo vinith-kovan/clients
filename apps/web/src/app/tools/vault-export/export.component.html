@@ -15,7 +15,7 @@
     *ngIf="!disabledByPolicy"
   ></app-export-scope-callout>
 
-  <bit-form-field>
+  <bit-form-field *ngIf="flexibleCollectionsEnabled$ | async">
     <bit-label>{{ "exportFrom" | i18n }}</bit-label>
     <bit-select formControlName="vaultSelector">
       <bit-option [label]="'myVault' | i18n" value="myVault" icon="bwi-user" />

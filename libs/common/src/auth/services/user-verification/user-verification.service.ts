@@ -1,5 +1,4 @@
-import { PinCryptoServiceAbstraction } from "@bitwarden/auth";
-
+import { PinCryptoServiceAbstraction } from "../../../../../auth/src/core/abstractions/pin-crypto.service.abstraction";
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { StateService } from "../../../platform/abstractions/state.service";

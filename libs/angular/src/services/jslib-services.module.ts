@@ -594,7 +594,7 @@ import { ModalService } from "./modal.service";
     {
       provide: PolicyServiceAbstraction,
       useClass: PolicyService,
-      deps: [StateServiceAbstraction, OrganizationServiceAbstraction],
+      deps: [StateProvider, OrganizationServiceAbstraction],
     },
     {
       provide: InternalPolicyService,

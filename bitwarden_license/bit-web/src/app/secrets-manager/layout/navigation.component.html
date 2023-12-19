@@ -1,14 +1,5 @@
-<nav *ngIf="{ open: sidebarService.open$ | async } as sidebar">
-  <bit-nav-item
-    class="tw-block"
-    [hideActiveStyles]="true"
-    route="."
-    icon="bwi-shield"
-    *ngIf="!sidebar.open"
-  ></bit-nav-item>
-  <a *ngIf="sidebar.open" routerLink="." class="tw-mx-5 tw-mb-5 tw-block">
-    <bit-icon [icon]="logo"></bit-icon>
-  </a>
+<nav>
+  <bit-nav-logo closedIcon="bwi-shield" [openIcon]="logo" route="."></bit-nav-logo>
 
   <org-switcher [filter]="orgFilter" [hideNewButton]="true"></org-switcher>
   <bit-nav-item icon="bwi-collection" [text]="'projects' | i18n" route="projects"></bit-nav-item>
@@ -25,6 +16,204 @@
     *ngIf="isAdmin$ | async"
   ></bit-nav-item>
   <bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item [text]="'exportData' | i18n" route="settings/export"></bit-nav-item>
+  </bit-nav-group>
+
+  <!--  -->
+  <bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
+    <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
+    <bit-nav-item
+      [text]="'exportData' | i18n"
+      route="settings/export"
+    ></bit-nav-item> </bit-nav-group
+  ><bit-nav-group icon="bwi-cog" [text]="'settings' | i18n" *ngIf="isAdmin$ | async">
     <bit-nav-item [text]="'importData' | i18n" route="settings/import"></bit-nav-item>
     <bit-nav-item [text]="'exportData' | i18n" route="settings/export"></bit-nav-item>
   </bit-nav-group>

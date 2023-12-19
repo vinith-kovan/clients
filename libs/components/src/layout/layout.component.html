@@ -22,7 +22,7 @@
   <div class="tw-group tw-flex tw-w-full" [ngClass]="data.open ? 'sidebar-open' : 'sidebar-closed'">
     <aside
       id="bit-sidebar"
-      class="tw-fixed tw-inset-y-0 tw-left-0 tw-z-20 tw-flex tw-h-screen tw-flex-col tw-overflow-auto tw-bg-background-alt3 tw-pt-7 group-[.sidebar-open]:tw-w-60 md:tw-sticky"
+      class="tw-fixed tw-inset-y-0 tw-left-0 tw-z-20 tw-flex tw-h-screen tw-flex-col tw-overscroll-none tw-overflow-auto tw-bg-background-alt3 group-[.sidebar-open]:tw-w-60 md:tw-sticky"
       [ngStyle]="
         variant === 'secondary' && {
           '--color-text-alt2': 'var(--color-text-main)',

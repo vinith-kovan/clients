@@ -15,18 +15,9 @@
       (click)="navigateToImport()"
       [completed]="(onboardingTasks$ | async).importData"
     >
-      <span
-        class="tw-pl-1"
-        *ngIf="!isIndividualPolicyVault && !(onboardingTasks$ | async).importData"
-      >
-        {{ "onboardingImportDataDetailsStart" | i18n }}
-        <a (click)="emitToAddCipher()" class="link">
-          {{ "onboardingImportDataDetailsLink" | i18n }}
-        </a>
-      </span>
-      <span class="tw-pl-1" *ngIf="isIndividualPolicyVault">
-        {{ "importDataDetailsIndividual" | i18n }}
-      </span>
+      <p class="tw-pl-1">
+        {{ "onboardingImportDataDetails" | i18n }}
+      </p>
     </app-onboarding-task>
 
     <app-onboarding-task

@@ -1353,15 +1353,8 @@
   "importData": {
     "message": "Import data"
   },
-  "onboardingImportDataDetailsStart": {
-    "message": "If you don't have any data to import, you can create a ",
-    "description": "This will be used as part of a larger sentence to include a link later on. The full sentence reads 'If you don't have any data to import, you can create a new item here.'"
-  },
-  "onboardingImportDataDetailsLink": {
-    "message": "new item here."
-  },
-  "importDataDetailsIndividual": {
-    "message": "Once an administrator confirms your organization membership, you will receive an email and may import items."
+  "onboardingImportDataDetails": {
+    "message": "If you don't have any data to import, you can create a new item here. You may need to wait until your administrator confirms your organization membership."
   },
   "importError": {
     "message": "Import error"

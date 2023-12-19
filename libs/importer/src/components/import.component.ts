@@ -105,7 +105,10 @@ import { ImportLastPassComponent } from "./lastpass";
   ],
 })
 export class ImportComponent implements OnInit, OnDestroy {
-  protected flexibleCollectionsEnabled: boolean;
+  protected flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
+    FeatureFlag.FlexibleCollections,
+    false,
+  );
 
   featuredImportOptions: ImportOption[];
   importOptions: ImportOption[];
@@ -210,21 +213,36 @@ export class ImportComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.FlexibleCollections,
-    );
-
     this.setImportOptions();
 
+    await this.initializeOrganizations();
+    await this.handlePolicies();
+
+    if (this.organizationId && this.isUserAdmin(this.organizationId)) {
+      this.handleOrganizationImport();
+    } else {
+      this.handleImport();
+    }
+
+    this.formGroup.controls.format.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.format = value;
+      });
+  }
+
+  private async initializeOrganizations() {
     this.organizations$ = concat(
       this.organizationService.memberOrganizations$.pipe(
-        this.flexibleCollectionsEnabled
+        (await firstValueFrom(this.flexibleCollectionsEnabled$))
           ? canAccessImport(this.i18nService)
           : canAccessImportExport(this.i18nService),
         map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
       ),
     );
+  }
 
+  private async handlePolicies() {
     combineLatest([
       this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
       this.organizations$,
@@ -236,52 +254,52 @@ export class ImportComponent implements OnInit, OnDestroy {
           this.formGroup.disable();
         }
       });
+  }
 
-    if (this.organizationId && this.isUserAdmin(this.organizationId)) {
-      this.formGroup.controls.vaultSelector.patchValue(this.organizationId);
-      this.formGroup.controls.vaultSelector.disable();
+  private handleOrganizationImport() {
+    this.formGroup.controls.vaultSelector.patchValue(this.organizationId);
+    this.formGroup.controls.vaultSelector.disable();
 
-      this.collections$ = Utils.asyncToObservable(() =>
-        this.importCollectionService.getAllAdminCollections(this.organizationId),
-      );
+    this.collections$ = Utils.asyncToObservable(() =>
+      this.importCollectionService.getAllAdminCollections(this.organizationId),
+    );
 
-      this._isFromAC = true;
-    } else {
-      // Filter out the `no folder`-item from folderViews$
-      this.folders$ = this.folderService.folderViews$.pipe(
-        map((folders) => folders.filter((f) => f.id != null)),
-      );
-      this.formGroup.controls.targetSelector.disable();
+    this._isFromAC = true;
+  }
 
-      this.formGroup.controls.vaultSelector.valueChanges
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((value) => {
-          this.organizationId = value != "myVault" ? value : undefined;
-          if (!this._importBlockedByPolicy) {
-            this.formGroup.controls.targetSelector.enable();
-          }
-          if (value) {
-            this.collections$ = Utils.asyncToObservable(() =>
-              this.collectionService
-                .getAllDecrypted()
-                .then((c) =>
-                  c.filter(
-                    (c2) =>
-                      c2.organizationId === value &&
-                      (!this.flexibleCollectionsEnabled || c2.manage),
-                  ),
-                ),
-            );
-          }
-        });
+  private handleImport() {
+    this.folders$ = this.folderService.folderViews$.pipe(
+      map((folders) => folders.filter((f) => f.id != null)),
+    );
 
-      this.formGroup.controls.vaultSelector.setValue("myVault");
-    }
-    this.formGroup.controls.format.valueChanges
+    this.formGroup.controls.targetSelector.disable();
+
+    combineLatest([
+      this.formGroup.controls.vaultSelector.valueChanges,
+      this.flexibleCollectionsEnabled$,
+    ])
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.format = value;
+      .subscribe(([value, flexibleCollectionsEnabled]) => {
+        this.organizationId = value !== "myVault" ? value : undefined;
+
+        if (!this._importBlockedByPolicy) {
+          this.formGroup.controls.targetSelector.enable();
+        }
+
+        if (value) {
+          this.collections$ = Utils.asyncToObservable(() =>
+            this.collectionService
+              .getAllDecrypted()
+              .then((decryptedCollections) =>
+                decryptedCollections.filter(
+                  (c2) => c2.organizationId === value && (!flexibleCollectionsEnabled || c2.manage),
+                ),
+              ),
+          );
+        }
       });
+
+    this.formGroup.controls.vaultSelector.setValue("myVault");
   }
 
   submit = async () => {
@@ -304,24 +322,7 @@ export class ImportComponent implements OnInit, OnDestroy {
   }
 
   protected async performImport() {
-    if (this.organization) {
-      const confirmed = await this.dialogService.openSimpleDialog({
-        title: { key: "warning" },
-        content: { key: "importWarning", placeholders: [this.organization.name] },
-        type: "warning",
-      });
-
-      if (!confirmed) {
-        return;
-      }
-    }
-
-    if (this.importBlockedByPolicy) {
-      this.platformUtilsService.showToast(
-        "error",
-        null,
-        this.i18nService.t("personalOwnershipPolicyInEffectImports"),
-      );
+    if (!(await this.validateImport())) {
       return;
     }
 
@@ -344,30 +345,9 @@ export class ImportComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const fileEl = document.getElementById("import_input_file") as HTMLInputElement;
-    const files = fileEl.files;
-    let fileContents = this.formGroup.controls.fileContents.value;
-    if ((files == null || files.length === 0) && (fileContents == null || fileContents === "")) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("selectFile"),
-      );
-      return;
-    }
+    const importContents = await this.setImportContents();
 
-    if (files != null && files.length > 0) {
-      try {
-        const content = await this.getFileContents(files[0]);
-        if (content != null) {
-          fileContents = content;
-        }
-      } catch (e) {
-        this.logService.error(e);
-      }
-    }
-
-    if (fileContents == null || fileContents === "") {
+    if (importContents == null || importContents === "") {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
@@ -383,7 +363,7 @@ export class ImportComponent implements OnInit, OnDestroy {
     try {
       const result = await this.importService.import(
         importer,
-        fileContents,
+        importContents,
         this.organizationId,
         this.formGroup.controls.targetSelector.value,
         this.canAccessImportExport(this.organizationId) && this._isFromAC,
@@ -521,6 +501,58 @@ export class ImportComponent implements OnInit, OnDestroy {
     });
 
     return await lastValueFrom(dialog.closed);
+  }
+
+  private async validateImport(): Promise<boolean> {
+    if (this.organization) {
+      const confirmed = await this.dialogService.openSimpleDialog({
+        title: { key: "warning" },
+        content: { key: "importWarning", placeholders: [this.organization.name] },
+        type: "warning",
+      });
+
+      if (!confirmed) {
+        return false;
+      }
+    }
+
+    if (this.importBlockedByPolicy) {
+      this.platformUtilsService.showToast(
+        "error",
+        null,
+        this.i18nService.t("personalOwnershipPolicyInEffectImports"),
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  private async setImportContents(): Promise<string> {
+    const fileEl = document.getElementById("import_input_file") as HTMLInputElement;
+    const files = fileEl.files;
+    let fileContents = this.formGroup.controls.fileContents.value;
+    if ((files == null || files.length === 0) && (fileContents == null || fileContents === "")) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("selectFile"),
+      );
+      return;
+    }
+
+    if (files != null && files.length > 0) {
+      try {
+        const content = await this.getFileContents(files[0]);
+        if (content != null) {
+          fileContents = content;
+        }
+      } catch (e) {
+        this.logService.error(e);
+      }
+    }
+
+    return fileContents;
   }
 
   ngOnDestroy(): void {

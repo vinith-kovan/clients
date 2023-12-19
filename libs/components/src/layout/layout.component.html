@@ -4,6 +4,21 @@
     isOverlay: sidebarService.isOverlay$ | async
   } as data"
 >
+  <div
+    class="tw-fixed tw-z-50 tw-w-full tw-flex tw-justify-center tw-opacity-0 focus-within:tw-opacity-100 tw-pointer-events-none focus-within:tw-pointer-events-auto"
+  >
+    <nav class="tw-bg-background-alt3 tw-rounded-md tw-rounded-t-none tw-py-2 tw-text-alt2">
+      <a
+        bitLink
+        class="tw-mx-6 focus-visible:before:!tw-ring-0"
+        [fragment]="mainContentId"
+        [routerLink]="[]"
+        (click)="focusMainContent()"
+        linkType="light"
+        >{{ "skipToContent" | i18n }}</a
+      >
+    </nav>
+  </div>
   <div class="tw-group tw-flex tw-w-full" [ngClass]="data.open ? 'sidebar-open' : 'sidebar-closed'">
     <aside
       id="bit-sidebar"
@@ -40,6 +55,8 @@
       </div>
     </aside>
     <main
+      [id]="mainContentId"
+      tabindex="-1"
       class="tw-ml-14 tw-h-screen tw-min-w-0 tw-flex-1 tw-overscroll-contain tw-overflow-auto tw-bg-background tw-p-6 md:tw-ml-0"
     >
       <ng-content></ng-content>

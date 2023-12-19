@@ -1,8 +1,10 @@
 import { A11yModule } from "@angular/cdk/a11y";
 import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
+import { RouterModule } from "@angular/router";
 
 import { IconButtonModule } from "../icon-button";
+import { LinkModule } from "../link";
 import { NavigationModule } from "../navigation";
 import { SharedModule } from "../shared";
 
@@ -14,9 +16,19 @@ export type LayoutVariant = "primary" | "secondary";
   selector: "bit-layout",
   templateUrl: "layout.component.html",
   standalone: true,
-  imports: [CommonModule, SharedModule, NavigationModule, A11yModule, IconButtonModule],
+  imports: [
+    CommonModule,
+    SharedModule,
+    NavigationModule,
+    A11yModule,
+    IconButtonModule,
+    LinkModule,
+    RouterModule,
+  ],
 })
 export class LayoutComponent {
+  protected mainContentId = "main-content";
+
   @Input() variant: LayoutVariant = "primary";
 
   constructor(protected sidebarService: SidebarService) {}
@@ -30,4 +42,7 @@ export class LayoutComponent {
 
     return true;
   };
+  focusMainContent() {
+    document.getElementById(this.mainContentId)?.focus();
+  }
 }

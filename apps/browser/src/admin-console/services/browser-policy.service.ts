@@ -1,25 +1,21 @@
-import { BehaviorSubject, filter, map, Observable, switchMap, tap } from "rxjs";
-import { Jsonify } from "type-fest";
+import { filter, map, Observable, switchMap, tap } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { PolicyService } from "@bitwarden/common/admin-console/services/policy/policy.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { StateProvider } from "@bitwarden/common/platform/state";
 
-import { browserSession, sessionSync } from "../../platform/decorators/session-sync-observable";
-
-@browserSession
 export class BrowserPolicyService extends PolicyService {
-  @sessionSync({
-    initializer: (obj: Jsonify<Policy>) => Object.assign(new Policy(), obj),
-    initializeAs: "array",
-  })
-  protected _policies: BehaviorSubject<Policy[]>;
+  constructor(
+    stateProvider: StateProvider,
+    organizationService: OrganizationService,
+    private stateService: StateService,
+  ) {
+    super(stateProvider, organizationService);
 
-  constructor(stateService: StateService, organizationService: OrganizationService) {
-    super(stateService, organizationService);
-    this._policies.pipe(this.handleActivateAutofillPolicy.bind(this)).subscribe();
+    this.policies$.pipe(this.handleActivateAutofillPolicy.bind(this)).subscribe();
   }
 
   /**

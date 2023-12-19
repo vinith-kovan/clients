@@ -93,7 +93,6 @@ import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export"
 import { ImportServiceAbstraction } from "@bitwarden/importer/core";
 
 import { BrowserOrganizationService } from "../../admin-console/services/browser-organization.service";
-import { BrowserPolicyService } from "../../admin-console/services/browser-policy.service";
 import { UnauthGuardService } from "../../auth/popup/services";
 import { AutofillService } from "../../autofill/services/abstractions/autofill.service";
 import MainBackground from "../../background/main.background";
@@ -288,16 +287,6 @@ function getBgService<T>(service: keyof MainBackground) {
       provide: EventCollectionService,
       useFactory: getBgService<EventCollectionService>("eventCollectionService"),
       deps: [],
-    },
-    {
-      provide: PolicyService,
-      useFactory: (
-        stateService: StateServiceAbstraction,
-        organizationService: OrganizationService,
-      ) => {
-        return new BrowserPolicyService(stateService, organizationService);
-      },
-      deps: [StateServiceAbstraction, OrganizationService],
     },
     {
       provide: PolicyApiServiceAbstraction,

@@ -369,6 +369,8 @@ export default class MainBackground {
     );
     this.syncNotifierService = new SyncNotifierService();
     this.organizationService = new BrowserOrganizationService(this.stateService);
+
+    // TODO: this should still use BrowserPolicyService but update deps
     this.policyService = new BrowserPolicyService(this.stateService, this.organizationService);
     this.policyApiService = new PolicyApiService(
       this.policyService,

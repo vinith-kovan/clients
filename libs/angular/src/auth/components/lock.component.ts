@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import { firstValueFrom, Subject } from "rxjs";
 import { concatMap, take, takeUntil } from "rxjs/operators";
 
+import { PinCryptoServiceAbstraction } from "@bitwarden/auth";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
@@ -27,8 +28,6 @@ import { UserKey } from "@bitwarden/common/platform/models/domain/symmetric-cryp
 import { PinLockType } from "@bitwarden/common/services/vault-timeout/vault-timeout-settings.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { DialogService } from "@bitwarden/components";
-
-import { PinCryptoServiceAbstraction } from "../../../../auth/src/abstractions/pin-crypto.service.abstraction";
 
 @Directive()
 export class LockComponent implements OnInit, OnDestroy {

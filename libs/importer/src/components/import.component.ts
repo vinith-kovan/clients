@@ -516,7 +516,7 @@ export class ImportComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (this.importBlockedByPolicy) {
+    if (this.importBlockedByPolicy && (await firstValueFrom(this.organizations$)).length == 0) {
       this.platformUtilsService.showToast(
         "error",
         null,

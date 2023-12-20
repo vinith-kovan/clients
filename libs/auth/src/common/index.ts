@@ -1,5 +1,5 @@
 /**
- * This barrel file contains non-Angular exports
+ * This barrel file should only contain non-Angular exports
  */
 export * from "./abstractions";
 export * from "./models";

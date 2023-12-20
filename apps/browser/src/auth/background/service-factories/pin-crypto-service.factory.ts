@@ -1,4 +1,4 @@
-import { PinCryptoServiceAbstraction, PinCryptoService } from "@bitwarden/auth/core";
+import { PinCryptoServiceAbstraction, PinCryptoService } from "@bitwarden/auth/common";
 
 import {
   VaultTimeoutSettingsServiceInitOptions,

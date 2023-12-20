@@ -4,7 +4,7 @@ import * as path from "path";
 import * as program from "commander";
 import * as jsdom from "jsdom";
 
-import { PinCryptoServiceAbstraction, PinCryptoService } from "@bitwarden/auth/core";
+import { PinCryptoServiceAbstraction, PinCryptoService } from "@bitwarden/auth/common";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { EventUploadService as EventUploadServiceAbstraction } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";

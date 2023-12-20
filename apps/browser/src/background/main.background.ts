@@ -1,4 +1,4 @@
-import { PinCryptoServiceAbstraction, PinCryptoService } from "@bitwarden/auth";
+import { PinCryptoServiceAbstraction, PinCryptoService } from "@bitwarden/auth/common";
 import { AvatarUpdateService as AvatarUpdateServiceAbstraction } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";

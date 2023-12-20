@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 import { firstValueFrom, Subject } from "rxjs";
 import { concatMap, take, takeUntil } from "rxjs/operators";
 
-import { PinCryptoServiceAbstraction } from "@bitwarden/auth";
+import { PinCryptoServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";

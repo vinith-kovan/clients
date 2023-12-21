@@ -18,3 +18,4 @@ import { StateDefinition } from "./state-definition";
  */
 
 export const ACCOUNT_MEMORY = new StateDefinition("account", "memory");
+export const USER_DECRYPTION_OPTIONS_DISK = new StateDefinition("userDecryptionOptions", "disk");

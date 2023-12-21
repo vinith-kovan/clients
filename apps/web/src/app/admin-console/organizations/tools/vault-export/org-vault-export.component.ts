@@ -12,6 +12,7 @@ import { FileDownloadService } from "@bitwarden/common/platform/abstractions/fil
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
@@ -36,6 +37,7 @@ export class OrganizationVaultExportComponent extends ExportComponent {
     fileDownloadService: FileDownloadService,
     dialogService: DialogService,
     organizationService: OrganizationService,
+    collectionService: CollectionService,
     configService: ConfigServiceAbstraction,
   ) {
     super(
@@ -50,6 +52,7 @@ export class OrganizationVaultExportComponent extends ExportComponent {
       fileDownloadService,
       dialogService,
       organizationService,
+      collectionService,
       configService,
     );
   }
@@ -63,6 +66,7 @@ export class OrganizationVaultExportComponent extends ExportComponent {
     this.route.parent.parent.params.subscribe(async (params) => {
       this.organizationId = params.organizationId;
     });
+    this.isFromAdminConsole = true;
     await super.ngOnInit();
   }
 

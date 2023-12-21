@@ -13,6 +13,7 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { KdfType } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CollectionService as CollectionServiceAbstraction } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
@@ -49,24 +50,38 @@ export class VaultExportService implements VaultExportServiceAbstraction {
     private cryptoService: CryptoService,
     private cryptoFunctionService: CryptoFunctionService,
     private stateService: StateService,
+    private collectionService: CollectionServiceAbstraction,
   ) {}
 
-  async getExport(format: ExportFormat = "csv", organizationId?: string): Promise<string> {
-    if (organizationId) {
+  async getExport(
+    format: ExportFormat = "csv",
+    organizationId?: string,
+    isManagedExport?: boolean,
+  ): Promise<string> {
+    if (organizationId && !isManagedExport) {
       return await this.getOrganizationExport(organizationId, format);
     }
 
     if (format === "encrypted_json") {
-      return this.getEncryptedExport();
+      return isManagedExport && organizationId != null
+        ? this.getEncryptedManagedExport(organizationId)
+        : this.getEncryptedExport(organizationId);
     } else {
-      return this.getDecryptedExport(format);
+      return isManagedExport && organizationId != null
+        ? this.getDecryptedManagedExport(format, organizationId)
+        : this.getDecryptedExport(format);
     }
   }
 
-  async getPasswordProtectedExport(password: string, organizationId?: string): Promise<string> {
-    const clearText = organizationId
-      ? await this.getOrganizationExport(organizationId, "json")
-      : await this.getExport("json");
+  async getPasswordProtectedExport(
+    password: string,
+    organizationId?: string,
+    isManagedExport?: boolean,
+  ): Promise<string> {
+    const clearText =
+      organizationId && !isManagedExport
+        ? await this.getOrganizationExport(organizationId, "json")
+        : await this.getExport("json", organizationId, isManagedExport);
 
     const kdfType: KdfType = await this.stateService.getKdfType();
     const kdfConfig: KdfConfig = await this.stateService.getKdfConfig();
@@ -183,7 +198,64 @@ export class VaultExportService implements VaultExportServiceAbstraction {
     }
   }
 
-  private async getEncryptedExport(): Promise<string> {
+  private async getDecryptedManagedExport(
+    format: "json" | "csv",
+    organizationId: string,
+  ): Promise<string> {
+    let decCiphers: CipherView[] = [];
+    let decCollections: CollectionView[] = [];
+    const promises = [];
+
+    promises.push(
+      this.collectionService.getAllDecrypted().then((collections) => {
+        decCollections = collections.filter((c) => c.organizationId == organizationId && c.manage);
+      }),
+    );
+
+    promises.push(
+      this.cipherService.getAllDecrypted().then((ciphers) => {
+        decCiphers = ciphers.filter(
+          (f) =>
+            f.deletedDate == null &&
+            f.organizationId == organizationId &&
+            decCollections.find((dC) => f.collectionIds.some((cId) => dC.id === cId)),
+        );
+      }),
+    );
+
+    await Promise.all(promises);
+
+    return this.BuildOrganizationExport(format, decCollections, decCiphers);
+  }
+
+  private async getEncryptedManagedExport(organizationId: string): Promise<string> {
+    let encCiphers: Cipher[] = [];
+    let encCollections: Collection[] = [];
+    const promises = [];
+
+    promises.push(
+      this.collectionService.getAll().then((collections) => {
+        encCollections = collections.filter((c) => c.organizationId == organizationId && c.manage);
+      }),
+    );
+
+    promises.push(
+      this.cipherService.getAll().then((ciphers) => {
+        encCiphers = ciphers.filter(
+          (f) =>
+            f.deletedDate == null &&
+            f.organizationId == organizationId &&
+            encCollections.find((eC) => f.collectionIds.some((cId) => eC.id === cId)),
+        );
+      }),
+    );
+
+    await Promise.all(promises);
+
+    return this.BuildOrganizationEncryptedExport(organizationId, encCollections, encCiphers);
+  }
+
+  private async getEncryptedExport(organizationId?: string): Promise<string> {
     let folders: Folder[] = [];
     let ciphers: Cipher[] = [];
     const promises = [];
@@ -221,7 +293,7 @@ export class VaultExportService implements VaultExportServiceAbstraction {
     });
 
     ciphers.forEach((c) => {
-      if (c.organizationId != null) {
+      if (c.organizationId != organizationId) {
         return;
       }
       const cipher = new CipherWithIdExport();
@@ -277,6 +349,14 @@ export class VaultExportService implements VaultExportServiceAbstraction {
 
     await Promise.all(promises);
 
+    return this.BuildOrganizationExport(format, decCollections, decCiphers);
+  }
+
+  private BuildOrganizationExport(
+    format: "json" | "csv",
+    decCollections: CollectionView[],
+    decCiphers: CipherView[],
+  ): string {
     if (format === "csv") {
       const collectionsMap = new Map<string, CollectionView>();
       decCollections.forEach((c) => {
@@ -355,6 +435,14 @@ export class VaultExportService implements VaultExportServiceAbstraction {
 
     await Promise.all(promises);
 
+    return await this.BuildOrganizationEncryptedExport(organizationId, collections, ciphers);
+  }
+
+  private async BuildOrganizationEncryptedExport(
+    organizationId: string,
+    collections: Collection[],
+    ciphers: Cipher[],
+  ): Promise<string> {
     const orgKey = await this.cryptoService.getOrgKey(organizationId);
     const encKeyValidation = await this.cryptoService.encrypt(Utils.newGuid(), orgKey);
 

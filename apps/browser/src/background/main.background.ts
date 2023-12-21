@@ -622,6 +622,7 @@ export default class MainBackground {
       this.cryptoService,
       this.cryptoFunctionService,
       this.stateService,
+      this.collectionService,
     );
     this.notificationsService = new NotificationsService(
       this.logService,

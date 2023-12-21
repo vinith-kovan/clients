@@ -499,6 +499,7 @@ export class Main {
       this.cryptoService,
       this.cryptoFunctionService,
       this.stateService,
+      this.collectionService,
     );
 
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);

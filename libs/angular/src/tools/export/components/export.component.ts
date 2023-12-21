@@ -1,6 +1,16 @@
 import { Directive, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
 import { UntypedFormBuilder, Validators } from "@angular/forms";
-import { concat, map, merge, Observable, startWith, Subject, takeUntil } from "rxjs";
+import {
+  concat,
+  filter,
+  firstValueFrom,
+  map,
+  merge,
+  Observable,
+  startWith,
+  Subject,
+  takeUntil,
+} from "rxjs";
 
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import {
@@ -12,12 +22,15 @@ import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { EventType } from "@bitwarden/common/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncryptedExportType } from "@bitwarden/common/tools/enums/encrypted-export-type.enum";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
@@ -31,7 +44,12 @@ export class ExportComponent implements OnInit, OnDestroy {
   filePasswordValue: string = null;
   formPromise: Promise<string>;
   private _disabledByPolicy = false;
+  protected flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
+    FeatureFlag.FlexibleCollections,
+    false,
+  );
   protected organizationId: string = null;
+  protected isFromAdminConsole = false;
   organizations$: Observable<Organization[]>;
 
   protected get disabledByPolicy(): boolean {
@@ -73,16 +91,11 @@ export class ExportComponent implements OnInit, OnDestroy {
     protected fileDownloadService: FileDownloadService,
     protected dialogService: DialogService,
     protected organizationService: OrganizationService,
+    private collectionService: CollectionService,
+    private configService: ConfigServiceAbstraction,
   ) {}
 
   async ngOnInit() {
-    this.organizations$ = concat(
-      this.organizationService.memberOrganizations$.pipe(
-        canAccessImportExport(this.i18nService),
-        map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
-      ),
-    );
-
     this.policyService
       .policyAppliesToActiveUser$(PolicyType.DisablePersonalVaultExport)
       .pipe(takeUntil(this.destroy$))
@@ -94,9 +107,28 @@ export class ExportComponent implements OnInit, OnDestroy {
       });
 
     if (this.organizationId) {
+      this.organizations$ = this.organizationService.memberOrganizations$.pipe(
+        map((orgs) => orgs.filter((org) => org.id == this.organizationId)),
+      );
       this.exportForm.controls.vaultSelector.patchValue(this.organizationId);
       this.exportForm.controls.vaultSelector.disable();
     } else {
+      const collections = await this.collectionService.getAll();
+      const orgIds = new Set(collections.filter((c) => c.manage).map((c) => c.organizationId));
+      this.organizations$ = (await firstValueFrom(this.flexibleCollectionsEnabled$))
+        ? concat(
+            this.organizationService.memberOrganizations$.pipe(
+              filter((orgsList) => orgsList.some((org) => orgIds.has(org.id))),
+              map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
+            ),
+          )
+        : (this.organizations$ = concat(
+            this.organizationService.memberOrganizations$.pipe(
+              canAccessImportExport(this.i18nService),
+              map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
+            ),
+          ));
+
       this.exportForm.controls.vaultSelector.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe((value) => {
@@ -188,15 +220,22 @@ export class ExportComponent implements OnInit, OnDestroy {
     this.onSaved.emit();
   }
 
-  protected getExportData() {
+  protected async getExportData() {
     if (
       this.format === "encrypted_json" &&
       this.fileEncryptionType === EncryptedExportType.FileEncrypted
     ) {
-      return this.exportService.getPasswordProtectedExport(this.filePassword);
-    } else {
-      return this.exportService.getExport(this.format, null);
+      return this.exportService.getPasswordProtectedExport(
+        this.filePassword,
+        this.organizationId,
+        !this.isFromAdminConsole && (await firstValueFrom(this.flexibleCollectionsEnabled$)),
+      );
     }
+    return this.exportService.getExport(
+      this.format,
+      this.organizationId,
+      !this.isFromAdminConsole && (await firstValueFrom(this.flexibleCollectionsEnabled$)),
+    );
   }
 
   protected getFileName(prefix?: string) {

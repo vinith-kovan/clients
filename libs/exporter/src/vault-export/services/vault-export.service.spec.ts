@@ -10,6 +10,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncryptedString, EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { StateService } from "@bitwarden/common/platform/services/state.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
@@ -147,6 +148,7 @@ describe("VaultExportService", () => {
   let folderService: MockProxy<FolderService>;
   let cryptoService: MockProxy<CryptoService>;
   let stateService: MockProxy<StateService>;
+  let collectionService: MockProxy<CollectionService>;
 
   beforeEach(() => {
     apiService = mock<ApiService>();
@@ -155,6 +157,7 @@ describe("VaultExportService", () => {
     folderService = mock<FolderService>();
     cryptoService = mock<CryptoService>();
     stateService = mock<StateService>();
+    collectionService = mock<CollectionService>();
 
     folderService.getAllDecryptedFromState.mockResolvedValue(UserFolderViews);
     folderService.getAllFromState.mockResolvedValue(UserFolders);
@@ -169,6 +172,7 @@ describe("VaultExportService", () => {
       cryptoService,
       cryptoFunctionService,
       stateService,
+      collectionService,
     );
   });
 

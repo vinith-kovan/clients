@@ -14,13 +14,12 @@ import {
 
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
-import { SecureNoteType } from "@bitwarden/common/enums";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { SecureNoteType, CipherType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
@@ -35,6 +34,7 @@ import {
   BrowserFido2Message,
   BrowserFido2UserInterfaceSession,
 } from "../../../fido2/browser-fido2-user-interface.service";
+import { VaultPopoutType } from "../../utils/vault-popout-window";
 
 interface ViewData {
   message: BrowserFido2Message;
@@ -49,8 +49,6 @@ interface ViewData {
 export class Fido2Component implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private hasSearched = false;
-  private searchTimeout: any = null;
-  private hasLoadedAllCiphers = false;
 
   protected cipher: CipherView;
   protected searchTypeSearch = false;
@@ -280,6 +278,7 @@ export class Fido2Component implements OnInit, OnDestroy {
         uilocation: "popout",
         senderTabId: this.senderTabId,
         sessionId: this.sessionId,
+        singleActionPopout: `${VaultPopoutType.fido2Popout}_${this.sessionId}`,
       },
     });
   }
@@ -299,6 +298,7 @@ export class Fido2Component implements OnInit, OnDestroy {
         senderTabId: this.senderTabId,
         sessionId: this.sessionId,
         userVerification: data.userVerification,
+        singleActionPopout: `${VaultPopoutType.fido2Popout}_${this.sessionId}`,
       },
     });
   }

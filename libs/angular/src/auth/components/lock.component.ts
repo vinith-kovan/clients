@@ -11,10 +11,9 @@ import { InternalPolicyService } from "@bitwarden/common/admin-console/abstracti
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-reset-password-reason";
+import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { SecretVerificationRequest } from "@bitwarden/common/auth/models/request/secret-verification.request";
 import { MasterPasswordPolicyResponse } from "@bitwarden/common/auth/models/response/master-password-policy.response";
-import { HashPurpose, KeySuffixOptions } from "@bitwarden/common/enums";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -23,7 +22,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { HashPurpose, KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { UserKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { PinLockType } from "@bitwarden/common/services/vault-timeout/vault-timeout-settings.service";
@@ -323,8 +322,8 @@ export class LockComponent implements OnInit, OnDestroy {
         }
 
         if (this.requirePasswordChange()) {
-          await this.stateService.setForcePasswordResetReason(
-            ForceResetPasswordReason.WeakMasterPassword
+          await this.stateService.setForceSetPasswordReason(
+            ForceSetPasswordReason.WeakMasterPassword
           );
           this.router.navigate([this.forcePasswordResetRoute]);
           return;
@@ -377,10 +376,7 @@ export class LockComponent implements OnInit, OnDestroy {
     this.biometricText = await this.stateService.getBiometricText();
     this.email = await this.stateService.getEmail();
 
-    const webVaultUrl = this.environmentService.getWebVaultUrl();
-    const vaultUrl =
-      webVaultUrl === "https://vault.bitwarden.com" ? "https://bitwarden.com" : webVaultUrl;
-    this.webVaultHostname = Utils.getHostname(vaultUrl);
+    this.webVaultHostname = await this.environmentService.getHost();
   }
 
   /**

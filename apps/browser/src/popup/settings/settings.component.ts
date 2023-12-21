@@ -36,7 +36,8 @@ import { DialogService } from "@bitwarden/components";
 import { SetPinComponent } from "../../auth/popup/components/set-pin.component";
 import { BiometricErrors, BiometricErrorTypes } from "../../models/biometricErrors";
 import { BrowserApi } from "../../platform/browser/browser-api";
-import { PopupUtilsService } from "../services/popup-utils.service";
+import { flagEnabled } from "../../platform/flags";
+import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
 
 import { AboutComponent } from "./about.component";
 import { AwaitDesktopDialogComponent } from "./await-desktop-dialog.component";
@@ -71,6 +72,7 @@ export class SettingsComponent implements OnInit {
   }>;
   supportsBiometric: boolean;
   showChangeMasterPass = true;
+  accountSwitcherEnabled = false;
 
   form = this.formBuilder.group({
     vaultTimeout: [null as number | null],
@@ -95,12 +97,13 @@ export class SettingsComponent implements OnInit {
     private environmentService: EnvironmentService,
     private cryptoService: CryptoService,
     private stateService: StateService,
-    private popupUtilsService: PopupUtilsService,
     private modalService: ModalService,
     private userVerificationService: UserVerificationService,
     private dialogService: DialogService,
     private changeDetectorRef: ChangeDetectorRef
-  ) {}
+  ) {
+    this.accountSwitcherEnabled = flagEnabled("accountSwitching");
+  }
 
   async ngOnInit() {
     const maximumVaultTimeoutPolicy = this.policyService.get$(PolicyType.MaximumVaultTimeout);
@@ -335,7 +338,7 @@ export class SettingsComponent implements OnInit {
         // eslint-disable-next-line
         console.error(e);
 
-        if (this.platformUtilsService.isFirefox() && this.popupUtilsService.inSidebar(window)) {
+        if (this.platformUtilsService.isFirefox() && BrowserPopupUtils.inSidebar(window)) {
           await this.dialogService.openSimpleDialog({
             title: { key: "nativeMessaginPermissionSidebarTitle" },
             content: { key: "nativeMessaginPermissionSidebarDesc" },
@@ -474,7 +477,7 @@ export class SettingsComponent implements OnInit {
   async import() {
     await this.router.navigate(["/import"]);
     if (await BrowserApi.isPopupOpen()) {
-      this.popupUtilsService.popOut(window);
+      BrowserPopupUtils.openCurrentPagePopout(window);
     }
   }
 

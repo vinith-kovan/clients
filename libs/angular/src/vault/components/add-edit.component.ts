@@ -1,3 +1,4 @@
+import { DatePipe } from "@angular/common";
 import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { Observable, Subject, takeUntil, concatMap } from "rxjs";
 
@@ -10,7 +11,7 @@ import {
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { OrganizationUserStatusType, PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { EventType, SecureNoteType, UriMatchType } from "@bitwarden/common/enums";
+import { EventType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -21,8 +22,8 @@ import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.s
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { SecureNoteType, UriMatchType, CipherType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -85,6 +86,15 @@ export class AddEditComponent implements OnInit, OnDestroy {
   private personalOwnershipPolicyAppliesToActiveUser: boolean;
   private previousCipherId: string;
 
+  get fido2CredentialCreationDateValue(): string {
+    const dateCreated = this.i18nService.t("dateCreated");
+    const creationDate = this.datePipe.transform(
+      this.cipher?.login?.fido2Credentials?.[0]?.creationDate,
+      "short"
+    );
+    return `${dateCreated} ${creationDate}`;
+  }
+
   constructor(
     protected cipherService: CipherService,
     protected folderService: FolderService,
@@ -100,7 +110,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
     protected passwordRepromptService: PasswordRepromptService,
     private organizationService: OrganizationService,
     protected sendApiService: SendApiService,
-    protected dialogService: DialogService
+    protected dialogService: DialogService,
+    protected datePipe: DatePipe
   ) {
     this.typeOptions = [
       { name: i18nService.t("typeLogin"), value: CipherType.Login },

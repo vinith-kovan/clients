@@ -5,6 +5,7 @@ import { AuthenticationStatus } from "../../../auth/enums/authentication-status"
 import { FeatureFlag } from "../../../enums/feature-flag.enum";
 import { ConfigServiceAbstraction } from "../../../platform/abstractions/config/config.service.abstraction";
 import { LogService } from "../../../platform/abstractions/log.service";
+import { StateService } from "../../../platform/abstractions/state.service";
 import { Utils } from "../../../platform/misc/utils";
 import {
   Fido2AuthenticatorError,
@@ -40,11 +41,16 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
     private authenticator: Fido2AuthenticatorService,
     private configService: ConfigServiceAbstraction,
     private authService: AuthService,
+    private stateService: StateService,
     private logService?: LogService
   ) {}
 
   async isFido2FeatureEnabled(): Promise<boolean> {
-    return await this.configService.getFeatureFlag<boolean>(FeatureFlag.Fido2VaultCredentials);
+    const featureFlagEnabled = await this.configService.getFeatureFlag<boolean>(
+      FeatureFlag.Fido2VaultCredentials
+    );
+    const userEnabledPasskeys = await this.stateService.getEnablePasskeys();
+    return featureFlagEnabled && userEnabledPasskeys;
   }
 
   async createCredential(
@@ -83,6 +89,12 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
 
     const parsedOrigin = parse(params.origin, { allowPrivateDomains: true });
     params.rp.id = params.rp.id ?? parsedOrigin.hostname;
+
+    const neverDomains = await this.stateService.getNeverDomains();
+    if (neverDomains != null && parsedOrigin.hostname in neverDomains) {
+      this.logService?.warning(`[Fido2Client] Excluded domain`);
+      throw new FallbackRequestedError();
+    }
 
     if (parsedOrigin.hostname == undefined || !params.origin.startsWith("https://")) {
       this.logService?.warning(`[Fido2Client] Invalid https origin: ${params.origin}`);
@@ -187,8 +199,9 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
       attestationObject: Fido2Utils.bufferToString(makeCredentialResult.attestationObject),
       authData: Fido2Utils.bufferToString(makeCredentialResult.authData),
       clientDataJSON: Fido2Utils.bufferToString(clientDataJSONBytes),
+      publicKey: Fido2Utils.bufferToString(makeCredentialResult.publicKey),
       publicKeyAlgorithm: makeCredentialResult.publicKeyAlgorithm,
-      transports: ["internal"],
+      transports: params.rp.id === "google.com" ? ["internal", "usb"] : ["internal"],
     };
   }
 
@@ -211,14 +224,14 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
       throw new FallbackRequestedError();
     }
 
-    const { domain: effectiveDomain } = parse(params.origin, { allowPrivateDomains: true });
-    if (effectiveDomain == undefined) {
-      this.logService?.warning(`[Fido2Client] Invalid origin: ${params.origin}`);
-      throw new DOMException("'origin' is not a valid domain", "SecurityError");
-    }
-
     const parsedOrigin = parse(params.origin, { allowPrivateDomains: true });
     params.rpId = params.rpId ?? parsedOrigin.hostname;
+
+    const neverDomains = await this.stateService.getNeverDomains();
+    if (neverDomains != null && parsedOrigin.hostname in neverDomains) {
+      this.logService?.warning(`[Fido2Client] Excluded domain`);
+      throw new FallbackRequestedError();
+    }
 
     if (parsedOrigin.hostname == undefined || !params.origin.startsWith("https://")) {
       this.logService?.warning(`[Fido2Client] Invalid https origin: ${params.origin}`);
@@ -259,6 +272,11 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
         abortController
       );
     } catch (error) {
+      if (error instanceof FallbackRequestedError) {
+        this.logService?.info(`[Fido2Client] Aborting because of auto fallback`);
+        throw error;
+      }
+
       if (
         abortController.signal.aborted &&
         abortController.signal.reason === UserRequestedFallbackAbortReason
@@ -382,6 +400,7 @@ function mapToMakeCredentialParams({
     userEntity: {
       id: Fido2Utils.stringToBuffer(params.user.id),
       displayName: params.user.displayName,
+      name: params.user.name,
     },
     fallbackSupported: params.fallbackSupported,
   };

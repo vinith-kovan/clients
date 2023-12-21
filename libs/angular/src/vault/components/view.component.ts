@@ -1,3 +1,4 @@
+import { DatePipe } from "@angular/common";
 import {
   ChangeDetectorRef,
   Directive,
@@ -13,9 +14,8 @@ import { firstValueFrom } from "rxjs";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { EventType, FieldType } from "@bitwarden/common/enums";
+import { EventType } from "@bitwarden/common/enums";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -27,8 +27,9 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { EncArrayBuffer } from "@bitwarden/common/platform/models/domain/enc-array-buffer";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
+import { FieldType, CipherType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { Launchable } from "@bitwarden/common/vault/interfaces/launchable";
 import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -68,6 +69,15 @@ export class ViewComponent implements OnDestroy, OnInit {
   private previousCipherId: string;
   private passwordReprompted = false;
 
+  get fido2CredentialCreationDateValue(): string {
+    const dateCreated = this.i18nService.t("dateCreated");
+    const creationDate = this.datePipe.transform(
+      this.cipher?.login?.fido2Credentials?.[0]?.creationDate,
+      "short"
+    );
+    return `${dateCreated} ${creationDate}`;
+  }
+
   constructor(
     protected cipherService: CipherService,
     protected folderService: FolderService,
@@ -87,7 +97,8 @@ export class ViewComponent implements OnDestroy, OnInit {
     private logService: LogService,
     protected stateService: StateService,
     protected fileDownloadService: FileDownloadService,
-    protected dialogService: DialogService
+    protected dialogService: DialogService,
+    protected datePipe: DatePipe
   ) {}
 
   ngOnInit() {

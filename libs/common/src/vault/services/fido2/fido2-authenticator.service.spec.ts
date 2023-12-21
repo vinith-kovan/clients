@@ -9,6 +9,7 @@ import {
   Fido2AuthenticatorGetAssertionParams,
   Fido2AuthenticatorMakeCredentialsParams,
 } from "../../abstractions/fido2/fido2-authenticator.service.abstraction";
+import { FallbackRequestedError } from "../../abstractions/fido2/fido2-client.service.abstraction";
 import {
   Fido2UserInterfaceService,
   Fido2UserInterfaceSession,
@@ -246,6 +247,7 @@ describe("FidoAuthenticatorService", () => {
                   rpId: params.rpEntity.id,
                   rpName: params.rpEntity.name,
                   userHandle: Fido2Utils.bufferToString(params.userEntity.id),
+                  userName: params.userEntity.name,
                   counter: 0,
                   userDisplayName: params.userEntity.displayName,
                   discoverable: false,
@@ -469,7 +471,8 @@ describe("FidoAuthenticatorService", () => {
        * Spec: If credentialOptions is now empty, return an error code equivalent to "NotAllowedError" and terminate the operation.
        * Deviation: We do not throw error but instead inform the user and allow the user to fallback to browser implementation.
        **/
-      it("should inform user if no credential exists", async () => {
+      it("should inform user if no credential exists when fallback is not supported", async () => {
+        params.fallbackSupported = false;
         cipherService.getAllDecrypted.mockResolvedValue([]);
         userInterfaceSession.informCredentialNotFound.mockResolvedValue();
 
@@ -479,6 +482,17 @@ describe("FidoAuthenticatorService", () => {
         } catch {}
 
         expect(userInterfaceSession.informCredentialNotFound).toHaveBeenCalled();
+      });
+
+      it("should automatically fallback if no credential exists when fallback is supported", async () => {
+        params.fallbackSupported = true;
+        cipherService.getAllDecrypted.mockResolvedValue([]);
+        userInterfaceSession.informCredentialNotFound.mockResolvedValue();
+
+        const result = async () => await authenticator.getAssertion(params, tab);
+
+        await expect(result).rejects.toThrowError(FallbackRequestedError);
+        expect(userInterfaceSession.informCredentialNotFound).not.toHaveBeenCalled();
       });
 
       it("should inform user if credential exists but rpId does not match", async () => {
@@ -783,6 +797,7 @@ function createCipherView(
   fido2CredentialView.counter = fido2Credential.counter ?? 0;
   fido2CredentialView.userHandle =
     fido2Credential.userHandle ?? Fido2Utils.bufferToString(randomBytes(16));
+  fido2CredentialView.userName = fido2Credential.userName;
   fido2CredentialView.keyAlgorithm = fido2Credential.keyAlgorithm ?? "ECDSA";
   fido2CredentialView.keyCurve = fido2Credential.keyCurve ?? "P-256";
   fido2CredentialView.discoverable = fido2Credential.discoverable ?? true;

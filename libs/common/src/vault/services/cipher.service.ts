@@ -4,7 +4,6 @@ import { SemVer } from "semver";
 import { ApiService } from "../../abstractions/api.service";
 import { SearchService } from "../../abstractions/search.service";
 import { SettingsService } from "../../abstractions/settings.service";
-import { FieldType, UriMatchType } from "../../enums";
 import { ErrorResponse } from "../../models/response/error.response";
 import { View } from "../../models/view/view";
 import { ConfigServiceAbstraction } from "../../platform/abstractions/config/config.service.abstraction";
@@ -25,6 +24,7 @@ import {
 } from "../../platform/models/domain/symmetric-crypto-key";
 import { CipherService as CipherServiceAbstraction } from "../abstractions/cipher.service";
 import { CipherFileUploadService } from "../abstractions/file-upload/cipher-file-upload.service";
+import { FieldType, UriMatchType } from "../enums";
 import { CipherType } from "../enums/cipher-type";
 import { CipherData } from "../models/data/cipher.data";
 import { Attachment } from "../models/domain/attachment";
@@ -53,7 +53,7 @@ import { CipherView } from "../models/view/cipher.view";
 import { FieldView } from "../models/view/field.view";
 import { PasswordHistoryView } from "../models/view/password-history.view";
 
-const CIPHER_KEY_ENC_MIN_SERVER_VER = new SemVer("2023.9.1");
+const CIPHER_KEY_ENC_MIN_SERVER_VER = new SemVer("2023.12.0");
 
 export class CipherService implements CipherServiceAbstraction {
   private sortedCiphersCache: SortedCiphersCache = new SortedCiphersCache(
@@ -293,6 +293,10 @@ export class CipherService implements CipherServiceAbstraction {
     const ciphers = await this.getAll();
     const orgKeys = await this.cryptoService.getOrgKeys();
     const userKey = await this.cryptoService.getUserKeyWithLegacySupport();
+    if (orgKeys?.size === 0 && userKey == null) {
+      // return early if there are no keys to decrypt with
+      return;
+    }
 
     // Group ciphers by orgId or under 'null' for the user's ciphers
     const grouped = ciphers.reduce((agg, c) => {
@@ -1156,6 +1160,7 @@ export class CipherService implements CipherServiceAbstraction {
                   rpId: null,
                   rpName: null,
                   userHandle: null,
+                  userName: null,
                   userDisplayName: null,
                   origin: null,
                 },

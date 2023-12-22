@@ -5,7 +5,7 @@
       <span class="tw-text-sm tw-normal-case tw-text-muted" *ngIf="!loading && params.name">{{
         params.name
       }}</span>
-      <span bitBadge badgeType="secondary" *ngIf="isRevoked">{{ "revoked" | i18n }}</span>
+      <span bitBadge variant="secondary" *ngIf="isRevoked">{{ "revoked" | i18n }}</span>
     </span>
     <div bitDialogContent>
       <ng-container *ngIf="loading">
@@ -60,7 +60,10 @@
                 </div>
               </label>
             </div>
-            <div class="tw-mb-2 tw-flex tw-items-baseline">
+            <div
+              *ngIf="!(flexibleCollectionsEnabled$ | async)"
+              class="tw-mb-2 tw-flex tw-items-baseline"
+            >
               <input
                 type="radio"
                 id="userTypeManager"
@@ -408,7 +411,7 @@
           <div *ngIf="organization.useGroups" class="tw-mb-6">
             {{ "userPermissionOverrideHelper" | i18n }}
           </div>
-          <div class="tw-mb-6">
+          <div *ngIf="!(flexibleCollectionsEnabled$ | async)" class="tw-mb-6">
             <bit-form-control>
               <input type="checkbox" bitCheckbox formControlName="accessAllCollections" />
               <bit-label>

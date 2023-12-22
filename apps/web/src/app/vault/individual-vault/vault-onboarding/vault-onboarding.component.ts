@@ -13,6 +13,7 @@ import { Router } from "@angular/router";
 import { Subject, takeUntil, BehaviorSubject, take } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -44,6 +45,8 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   extensionUrl: string;
   isIndividualPolicyVault: boolean;
   private destroy$ = new Subject<void>();
+  isNewAccount: boolean;
+  private readonly onboardingReleaseDate = new Date(2023, 12, 22);
 
   protected onboardingTasks$: BehaviorSubject<VaultOnboardingTasks> =
     new BehaviorSubject<VaultOnboardingTasks>({
@@ -59,6 +62,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     protected policyService: PolicyService,
     private stateService: StateService,
     protected router: Router,
+    private apiService: ApiService,
   ) {
     this.isChrome = platformUtilsService.isChrome();
     this.isFirefox = platformUtilsService.isFirefox();
@@ -66,6 +70,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
+    this.checkCreationDate();
     this.onboardingTasks$.pipe(takeUntil(this.destroy$)).subscribe((tasks: any) => {
       this.showOnboarding = tasks !== null ? Object.values(tasks).includes(false) : true;
     });
@@ -76,19 +81,28 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    const { currentValue, previousValue } = changes.ciphers;
-    if (this.showOnboarding && currentValue?.length !== previousValue?.length) {
-      this.saveCompletedTasks({
-        createAccount: true,
-        importData: this.ciphers.length > 0,
-        installExtension: false,
-      });
+    if (changes?.ciphers) {
+      const { currentValue, previousValue } = changes.ciphers;
+      if (this.showOnboarding && currentValue?.length !== previousValue?.length) {
+        this.saveCompletedTasks({
+          createAccount: true,
+          importData: this.ciphers.length > 0,
+          installExtension: false,
+        });
+      }
     }
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  async checkCreationDate() {
+    const userProfile = await this.apiService.getProfile();
+    const profileCreationDate = new Date(userProfile.creationDate);
+
+    this.isNewAccount = this.onboardingReleaseDate < profileCreationDate ? true : false;
   }
 
   protected hideOnboarding() {

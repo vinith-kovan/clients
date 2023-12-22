@@ -28,9 +28,12 @@ export class CollectionsComponent extends BaseCollectionsComponent implements On
     this.cipherId = params?.cipherId;
   }
 
-  override async submit() {
-    await super.submit();
-    this.dialogRef.close(CollectionsDialogResult.Saved);
+  override async submit(): Promise<boolean> {
+    const success = await super.submit();
+    if (success) {
+      this.dialogRef.close(CollectionsDialogResult.Saved);
+    }
+    return;
   }
 
   check(c: CollectionView, select?: boolean) {

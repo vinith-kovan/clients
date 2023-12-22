@@ -50,7 +50,7 @@ export class CollectionsComponent implements OnInit {
     }
   }
 
-  async submit() {
+  async submit(): Promise<boolean> {
     const selectedCollectionIds = this.collections
       .filter((c) => !!(c as any).checked)
       .map((c) => c.id);
@@ -68,6 +68,7 @@ export class CollectionsComponent implements OnInit {
       await this.formPromise;
       this.onSavedCollections.emit();
       this.platformUtilsService.showToast("success", null, this.i18nService.t("editedItem"));
+      return true;
     } catch (e) {
       this.logService.error(e);
     }

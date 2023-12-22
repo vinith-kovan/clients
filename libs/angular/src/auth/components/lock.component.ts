@@ -117,9 +117,11 @@ export class LockComponent implements OnInit, OnDestroy {
       return;
     }
 
+    await this.stateService.setDeterProcessReload(true);
     const userKey = await this.cryptoService.getUserKeyFromStorage(KeySuffixOptions.Biometric);
 
     if (userKey) {
+      await this.stateService.setDeterProcessReload(false);
       await this.setUserKeyAndContinue(userKey, false);
     }
 

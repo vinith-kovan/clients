@@ -181,6 +181,14 @@ export abstract class StateService<T extends Account = Account> {
    * @deprecated For migration purposes only, use setUserKeyBiometric instead
    */
   setCryptoMasterKeyBiometric: (value: BiometricKey, options?: StorageOptions) => Promise<void>;
+  /**
+   * Gets a flag for detering process reload a single time
+   */
+  getDeterProcessReload: (options?: StorageOptions) => Promise<boolean>;
+  /**
+   * Sets a flag for detering process reload a single time
+   */
+  setDeterProcessReload: (value: boolean, options?: StorageOptions) => Promise<void>;
   getDecryptedCiphers: (options?: StorageOptions) => Promise<CipherView[]>;
   setDecryptedCiphers: (value: CipherView[], options?: StorageOptions) => Promise<void>;
   getDecryptedCollections: (options?: StorageOptions) => Promise<CollectionView[]>;

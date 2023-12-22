@@ -3,6 +3,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -14,6 +15,7 @@ describe("VaultOnboardingComponent", () => {
   let component: VaultOnboardingComponent;
   let fixture: ComponentFixture<VaultOnboardingComponent>;
   let mockPlatformUtilsService: Partial<PlatformUtilsService>;
+  let mockApiService: MockProxy<ApiService>;
   let mockStateService: MockProxy<StateService>;
   let mockPolicyService: MockProxy<PolicyService>;
   let mockI18nService: MockProxy<I18nService>;
@@ -38,6 +40,7 @@ describe("VaultOnboardingComponent", () => {
         { provide: PolicyService, useValue: mockPolicyService },
         { provide: StateService, useValue: mockStateService },
         { provide: I18nService, useValue: mockI18nService },
+        { provide: ApiService, useValue: mockApiService },
       ],
     }).compileComponents();
   });

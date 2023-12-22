@@ -1,3 +1,5 @@
+import { map, Observable } from "rxjs";
+
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "../../platform/abstractions/crypto-function.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
@@ -12,6 +14,7 @@ import {
   UserKey,
 } from "../../platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "../../types/csprng";
+import { UserDecryptionOptionsServiceAbstraction } from "../abstractions/account-decryption-options.service.abstraction";
 import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
 import { DeviceResponse } from "../abstractions/devices/responses/device.response";
 import { DevicesApiServiceAbstraction } from "../abstractions/devices-api.service.abstraction";
@@ -22,6 +25,8 @@ import {
 } from "../models/request/update-devices-trust.request";
 
 export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstraction {
+  supportsDeviceTrust$: Observable<boolean>;
+
   constructor(
     private cryptoFunctionService: CryptoFunctionService,
     private cryptoService: CryptoService,
@@ -31,7 +36,12 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
     private devicesApiService: DevicesApiServiceAbstraction,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-  ) {}
+    private userDecryptionOptions: UserDecryptionOptionsServiceAbstraction,
+  ) {
+    this.supportsDeviceTrust$ = this.userDecryptionOptions.userDecryptionOptions$.pipe(
+      map((options) => options?.trustedDeviceOption != null ?? false),
+    );
+  }
 
   /**
    * @description Retrieves the users choice to trust the device which can only happen after decryption
@@ -205,10 +215,5 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
 
       return null;
     }
-  }
-
-  async supportsDeviceTrust(): Promise<boolean> {
-    const decryptionOptions = await this.stateService.getAccountDecryptionOptions();
-    return decryptionOptions?.trustedDeviceOption != null;
   }
 }

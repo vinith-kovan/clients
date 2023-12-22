@@ -1,13 +1,13 @@
-import { Subject, take } from "rxjs";
+import { Subject } from "rxjs";
 
-import { expectEmissions } from "./expect-emissions";
+import { expectToEmit } from "./expect-to-emit";
 
 describe("expectEmissions", () => {
   it("passes if values match when there is a single emission", (done) => {
     const stream = new Subject<number>();
     const expected = [8];
 
-    stream.pipe(take(expected.length)).subscribe(expectEmissions(expected, done));
+    expectToEmit(stream, expected, done);
 
     stream.next(8);
   });
@@ -16,7 +16,7 @@ describe("expectEmissions", () => {
     const stream = new Subject<number>();
     const expected = [8, 1, 7, 2, 2];
 
-    stream.pipe(take(expected.length)).subscribe(expectEmissions(expected, done));
+    expectToEmit(stream, expected, done);
 
     stream.next(8);
     stream.next(1);
@@ -33,7 +33,7 @@ describe("expectEmissions", () => {
       done();
     };
 
-    stream.pipe(take(expected.length)).subscribe(expectEmissions(expected, fakeDone));
+    expectToEmit(stream, expected, fakeDone);
 
     stream.next(8);
     stream.next(1);

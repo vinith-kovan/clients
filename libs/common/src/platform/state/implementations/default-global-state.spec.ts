@@ -4,11 +4,11 @@
  */
 
 import { anySymbol } from "jest-mock-extended";
-import { firstValueFrom, of, take } from "rxjs";
+import { firstValueFrom, of } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import { trackEmissions, awaitAsync } from "../../../../spec";
-import { expectEmissions } from "../../../../spec/expect-emissions";
+import { expectToEmit } from "../../../../spec/expect-to-emit";
 import { FakeStorageService } from "../../../../spec/fake-storage.service";
 import { KeyDefinition, globalKeyBuilder } from "../key-definition";
 import { StateDefinition } from "../state-definition";
@@ -53,8 +53,7 @@ describe("DefaultGlobalState", () => {
 
   describe("state$", () => {
     it("should emit when storage updates", (done) => {
-      const expected = [null, newData];
-      globalState.state$.pipe(take(expected.length)).subscribe(expectEmissions(expected, done));
+      expectToEmit(globalState.state$, [null, newData], done);
 
       diskStorageService.save(globalKey, newData);
     });

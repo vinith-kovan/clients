@@ -903,14 +903,14 @@ export class StateService<
     await this.saveSecureStorageKey(partialKeys.biometricKey, value, options);
   }
 
-  async getDeterProcessReload(options?: StorageOptions): Promise<boolean> {
+  async getSkipProcessReload(options?: StorageOptions): Promise<boolean> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );
     return account?.settings?.deterProcessReload;
   }
 
-  async setDeterProcessReload(value: boolean, options?: StorageOptions): Promise<void> {
+  async setSkipProcessReload(value: boolean, options?: StorageOptions): Promise<void> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );

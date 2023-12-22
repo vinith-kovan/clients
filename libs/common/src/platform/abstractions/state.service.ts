@@ -182,13 +182,13 @@ export abstract class StateService<T extends Account = Account> {
    */
   setCryptoMasterKeyBiometric: (value: BiometricKey, options?: StorageOptions) => Promise<void>;
   /**
-   * Gets a flag for detering process reload a single time
+   * Gets a flag for skipping process reload a single time
    */
-  getDeterProcessReload: (options?: StorageOptions) => Promise<boolean>;
+  getSkipProcessReload: (options?: StorageOptions) => Promise<boolean>;
   /**
-   * Sets a flag for detering process reload a single time
+   * Sets a flag for skipping process reload a single time
    */
-  setDeterProcessReload: (value: boolean, options?: StorageOptions) => Promise<void>;
+  setSkipProcessReload: (value: boolean, options?: StorageOptions) => Promise<void>;
   getDecryptedCiphers: (options?: StorageOptions) => Promise<CipherView[]>;
   setDecryptedCiphers: (value: CipherView[], options?: StorageOptions) => Promise<void>;
   getDecryptedCollections: (options?: StorageOptions) => Promise<CollectionView[]>;

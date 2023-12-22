@@ -196,27 +196,11 @@ export class ImportComponent implements OnInit, OnDestroy {
     return this.showLastPassToggle && this.formGroup.controls.lastPassType.value === "direct";
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.setImportOptions();
 
-    this.organizations$ = concat(
-      this.organizationService.memberOrganizations$.pipe(
-        canAccessImportExport(this.i18nService),
-        map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
-      ),
-    );
-
-    combineLatest([
-      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
-      this.organizations$,
-    ])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([policyApplies, orgs]) => {
-        this._importBlockedByPolicy = policyApplies;
-        if (policyApplies && orgs.length == 0) {
-          this.formGroup.disable();
-        }
-      });
+    await this.initializeOrganizations();
+    await this.handlePolicies();
 
     if (this.organizationId) {
       this.formGroup.controls.vaultSelector.patchValue(this.organizationId);
@@ -259,6 +243,35 @@ export class ImportComponent implements OnInit, OnDestroy {
       });
   }
 
+  private async initializeOrganizations() {
+    this.organizations$ = concat(
+      this.organizationService.memberOrganizations$.pipe(
+        canAccessImportExport(this.i18nService),
+        map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
+      ),
+    );
+  }
+
+  private async handlePolicies() {
+    combineLatest([
+      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership),
+      this.organizations$,
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([policyApplies, orgs]) => {
+        this._importBlockedByPolicy = policyApplies;
+        if (policyApplies && orgs.length == 0) {
+          this.formGroup.disable();
+        }
+
+        // If there are orgs the user has access to import into set
+        // the default value to the first org in the collection.
+        if (policyApplies && orgs.length > 0) {
+          this.formGroup.controls.vaultSelector.setValue(orgs[0].id);
+        }
+      });
+  }
+
   submit = async () => {
     await this.asyncValidatorsFinished();
 
@@ -291,7 +304,7 @@ export class ImportComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (this.importBlockedByPolicy) {
+    if (this.importBlockedByPolicy && this.organizationId == null) {
       this.platformUtilsService.showToast(
         "error",
         null,

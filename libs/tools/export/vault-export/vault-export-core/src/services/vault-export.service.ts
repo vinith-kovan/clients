@@ -25,20 +25,18 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
-import { ExportHelper } from "../../export-helper";
-import {
-  BitwardenCsvExportType,
-  BitwardenCsvIndividualExportType,
-  BitwardenCsvOrgExportType,
-} from "../bitwarden-csv-export-type";
 import {
   BitwardenEncryptedIndividualJsonExport,
   BitwardenEncryptedOrgJsonExport,
   BitwardenUnEncryptedIndividualJsonExport,
   BitwardenUnEncryptedOrgJsonExport,
   BitwardenPasswordProtectedFileFormat,
-} from "../bitwarden-json-export-types";
+  BitwardenCsvExportType,
+  BitwardenCsvIndividualExportType,
+  BitwardenCsvOrgExportType,
+} from "../types";
 
+import { ExportHelper } from "./export-helper";
 import { ExportFormat, VaultExportServiceAbstraction } from "./vault-export.service.abstraction";
 
 export class VaultExportService implements VaultExportServiceAbstraction {

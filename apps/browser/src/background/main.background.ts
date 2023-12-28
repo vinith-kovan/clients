@@ -123,15 +123,12 @@ import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/sync-
 import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service";
 import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import {
-  VaultExportService,
-  VaultExportServiceAbstraction,
-} from "@bitwarden/exporter/vault-export";
-import {
   ImportApiServiceAbstraction,
   ImportApiService,
   ImportServiceAbstraction,
   ImportService,
 } from "@bitwarden/importer/core";
+import { VaultExportService, VaultExportServiceAbstraction } from "@bitwarden/vault-export-core";
 
 import { BrowserOrganizationService } from "../admin-console/services/browser-organization.service";
 import { BrowserPolicyService } from "../admin-console/services/browser-policy.service";

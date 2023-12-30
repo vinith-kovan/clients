@@ -13,8 +13,8 @@ import { BitwardenLogo } from "./bitwarden-logo";
   imports: [IconModule],
 })
 export class AnonLayoutComponent {
-  @Input()
-  title: string;
+  @Input() title: string;
+  @Input() subTitle: string;
 
   logo = BitwardenLogo;
   version: string;

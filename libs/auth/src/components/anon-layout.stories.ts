@@ -67,6 +67,26 @@ export const WithContent: Story = {
   }),
 };
 
+export const WithIcon: Story = {
+  render: (args) => ({
+    props: args,
+    template:
+      /**
+       * The projected content (i.e. the <div> ) and styling below is just a
+       * sample and could be replaced with any content and styling
+       */
+      `
+      <auth-anon-layout title="Page Title" subTitle="Subtitle here" icon="lock">
+        <div
+          class="tw-flex tw-h-80 tw-flex-col tw-items-center tw-justify-center tw-bg-secondary-100"
+        >
+          Sample Projected Content
+        </div>
+      </auth-anon-layout>
+    `,
+  }),
+};
+
 export const WithSecondaryContent: Story = {
   render: (args) => ({
     props: args,

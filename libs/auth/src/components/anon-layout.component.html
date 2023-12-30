@@ -3,6 +3,9 @@
 >
   <div class="tw-text-center">
     <div class="tw-px-8">
+      <div *ngIf="icon" class="tw-mb-8">
+        <bit-icon [icon]="iconType"></bit-icon>
+      </div>
       <bit-icon [icon]="logo" class="tw-mx-auto tw-block tw-max-w-xs"></bit-icon>
     </div>
     <h1 class="tw-mt-8 tw-text-xl tw-font-semibold sm:tw-text-2xl">{{ title }}</h1>

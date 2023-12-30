@@ -47,44 +47,43 @@ if (browserNativeWebauthnSupport) {
 
 const browserCredentials = {
   create: navigator.credentials.create.bind(
-    navigator.credentials
+    navigator.credentials,
   ) as typeof navigator.credentials.create,
   get: navigator.credentials.get.bind(navigator.credentials) as typeof navigator.credentials.get,
 };
 
-const messenger = Messenger.forDOMCommunication(window);
+const messenger = ((window as any).messenger = Messenger.forDOMCommunication(window));
 
-function isSameOriginWithAncestors() {
-  try {
-    return window.self === window.top;
-  } catch {
-    return false;
-  }
-}
+navigator.credentials.create = createWebAuthnCredential;
+navigator.credentials.get = getWebAuthnCredential;
 
-navigator.credentials.create = async (
+/**
+ * Creates a new webauthn credential.
+ *
+ * @param options Options for creating new credentials.
+ * @param abortController Abort controller to abort the request if needed.
+ * @returns Promise that resolves to the new credential object.
+ */
+async function createWebAuthnCredential(
   options?: CredentialCreationOptions,
-  abortController?: AbortController
-): Promise<Credential> => {
+  abortController?: AbortController,
+): Promise<Credential> {
+  if (!isWebauthnCall(options)) {
+    return await browserCredentials.create(options);
+  }
+
   const fallbackSupported =
-    (options?.publicKey?.authenticatorSelection.authenticatorAttachment === "platform" &&
+    (options?.publicKey?.authenticatorSelection?.authenticatorAttachment === "platform" &&
       browserNativeWebauthnPlatformAuthenticatorSupport) ||
-    (options?.publicKey?.authenticatorSelection.authenticatorAttachment !== "platform" &&
+    (options?.publicKey?.authenticatorSelection?.authenticatorAttachment !== "platform" &&
       browserNativeWebauthnSupport);
   try {
-    const isNotIframe = isSameOriginWithAncestors();
-
     const response = await messenger.request(
       {
         type: MessageType.CredentialCreationRequest,
-        data: WebauthnUtils.mapCredentialCreationOptions(
-          options,
-          window.location.origin,
-          isNotIframe,
-          fallbackSupported
-        ),
+        data: WebauthnUtils.mapCredentialCreationOptions(options, fallbackSupported),
       },
-      abortController
+      abortController,
     );
 
     if (response.type !== MessageType.CredentialCreationResponse) {
@@ -100,12 +99,23 @@ navigator.credentials.create = async (
 
     throw error;
   }
-};
+}
 
-navigator.credentials.get = async (
+/**
+ * Retrieves a webauthn credential.
+ *
+ * @param options Options for creating new credentials.
+ * @param abortController Abort controller to abort the request if needed.
+ * @returns Promise that resolves to the new credential object.
+ */
+async function getWebAuthnCredential(
   options?: CredentialRequestOptions,
-  abortController?: AbortController
-): Promise<Credential> => {
+  abortController?: AbortController,
+): Promise<Credential> {
+  if (!isWebauthnCall(options)) {
+    return await browserCredentials.get(options);
+  }
+
   const fallbackSupported = browserNativeWebauthnSupport;
 
   try {
@@ -116,14 +126,9 @@ navigator.credentials.get = async (
     const response = await messenger.request(
       {
         type: MessageType.CredentialGetRequest,
-        data: WebauthnUtils.mapCredentialRequestOptions(
-          options,
-          window.location.origin,
-          true,
-          fallbackSupported
-        ),
+        data: WebauthnUtils.mapCredentialRequestOptions(options, fallbackSupported),
       },
-      abortController
+      abortController,
     );
 
     if (response.type !== MessageType.CredentialGetResponse) {
@@ -139,24 +144,34 @@ navigator.credentials.get = async (
 
     throw error;
   }
-};
+}
+
+function isWebauthnCall(options?: CredentialCreationOptions | CredentialRequestOptions) {
+  return options && "publicKey" in options;
+}
 
 /**
  * Wait for window to be focused.
  * Safari doesn't allow scripts to trigger webauthn when window is not focused.
  *
+ * @param fallbackWait How long to wait when the script is not able to add event listeners to `window.top`. Defaults to 500ms.
  * @param timeout Maximum time to wait for focus in milliseconds. Defaults to 5 minutes.
  * @returns Promise that resolves when window is focused, or rejects if timeout is reached.
  */
-async function waitForFocus(timeout: number = 5 * 60 * 1000) {
-  if (document.hasFocus()) {
-    return;
+async function waitForFocus(fallbackWait = 500, timeout = 5 * 60 * 1000) {
+  try {
+    if (window.top.document.hasFocus()) {
+      return;
+    }
+  } catch {
+    // Cannot access window.top due to cross-origin frame, fallback to waiting
+    return await new Promise((resolve) => window.setTimeout(resolve, fallbackWait));
   }
 
   let focusListener;
   const focusPromise = new Promise<void>((resolve) => {
     focusListener = () => resolve();
-    window.addEventListener("focus", focusListener, { once: true });
+    window.top.addEventListener("focus", focusListener);
   });
 
   let timeoutId;
@@ -164,16 +179,36 @@ async function waitForFocus(timeout: number = 5 * 60 * 1000) {
     timeoutId = window.setTimeout(
       () =>
         reject(
-          new DOMException("The operation either timed out or was not allowed.", "AbortError")
+          new DOMException("The operation either timed out or was not allowed.", "AbortError"),
         ),
-      timeout
+      timeout,
     );
   });
 
   try {
     await Promise.race([focusPromise, timeoutPromise]);
   } finally {
-    window.removeEventListener("focus", focusListener);
+    window.top.removeEventListener("focus", focusListener);
     window.clearTimeout(timeoutId);
   }
 }
+
+/**
+ * Sets up a listener to handle cleanup or reconnection when the extension's
+ * context changes due to being reloaded or unloaded.
+ */
+messenger.handler = (message, abortController) => {
+  const type = message.type;
+
+  // Handle cleanup for disconnect request
+  if (type === MessageType.DisconnectRequest && browserNativeWebauthnSupport) {
+    navigator.credentials.create = browserCredentials.create;
+    navigator.credentials.get = browserCredentials.get;
+  }
+
+  // Handle reinitialization for reconnect request
+  if (type === MessageType.ReconnectRequest && browserNativeWebauthnSupport) {
+    navigator.credentials.create = createWebAuthnCredential;
+    navigator.credentials.get = getWebAuthnCredential;
+  }
+};

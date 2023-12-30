@@ -1,3 +1,4 @@
+import { DatePipe } from "@angular/common";
 import { Component, NgZone, OnChanges, OnDestroy, ViewChild } from "@angular/core";
 import { NgForm } from "@angular/forms";
 
@@ -45,7 +46,8 @@ export class AddEditComponent extends BaseAddEditComponent implements OnChanges,
     logService: LogService,
     organizationService: OrganizationService,
     sendApiService: SendApiService,
-    dialogService: DialogService
+    dialogService: DialogService,
+    datePipe: DatePipe,
   ) {
     super(
       cipherService,
@@ -62,7 +64,8 @@ export class AddEditComponent extends BaseAddEditComponent implements OnChanges,
       passwordRepromptService,
       organizationService,
       sendApiService,
-      dialogService
+      dialogService,
+      datePipe,
     );
   }
 
@@ -124,7 +127,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnChanges,
 
   openHelpReprompt() {
     this.platformUtilsService.launchUri(
-      "https://bitwarden.com/help/managing-items/#protect-individual-items"
+      "https://bitwarden.com/help/managing-items/#protect-individual-items",
     );
   }
 }

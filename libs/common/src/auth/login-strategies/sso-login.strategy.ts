@@ -14,7 +14,7 @@ import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trus
 import { KeyConnectorService } from "../abstractions/key-connector.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
-import { ForceResetPasswordReason } from "../models/domain/force-reset-password-reason";
+import { ForceSetPasswordReason } from "../models/domain/force-set-password-reason";
 import { SsoLoginCredentials } from "../models/domain/login-credentials";
 import { SsoTokenRequest } from "../models/request/identity-token/sso-token.request";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
@@ -44,7 +44,7 @@ export class SsoLoginStrategy extends LoginStrategy {
     private keyConnectorService: KeyConnectorService,
     private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     private authReqCryptoService: AuthRequestCryptoServiceAbstraction,
-    private i18nService: I18nService
+    private i18nService: I18nService,
   ) {
     super(
       cryptoService,
@@ -55,7 +55,7 @@ export class SsoLoginStrategy extends LoginStrategy {
       messagingService,
       logService,
       stateService,
-      twoFactorService
+      twoFactorService,
     );
   }
 
@@ -66,7 +66,7 @@ export class SsoLoginStrategy extends LoginStrategy {
       credentials.codeVerifier,
       credentials.redirectUrl,
       await this.buildTwoFactor(credentials.twoFactor),
-      await this.buildDeviceRequest()
+      await this.buildDeviceRequest(),
     );
 
     const [ssoAuthResult] = await this.startLogIn();
@@ -75,8 +75,8 @@ export class SsoLoginStrategy extends LoginStrategy {
     this.ssoEmail2FaSessionToken = ssoAuthResult.ssoEmail2FaSessionToken;
 
     // Auth guard currently handles redirects for this.
-    if (ssoAuthResult.forcePasswordReset == ForceResetPasswordReason.AdminForcePasswordReset) {
-      await this.stateService.setForcePasswordResetReason(ssoAuthResult.forcePasswordReset);
+    if (ssoAuthResult.forcePasswordReset == ForceSetPasswordReason.AdminForcePasswordReset) {
+      await this.stateService.setForceSetPasswordReason(ssoAuthResult.forcePasswordReset);
     }
 
     return ssoAuthResult;
@@ -200,14 +200,14 @@ export class SsoLoginStrategy extends LoginStrategy {
       if (adminAuthReqResponse.masterPasswordHash) {
         await this.authReqCryptoService.setKeysAfterDecryptingSharedMasterKeyAndHash(
           adminAuthReqResponse,
-          adminAuthReqStorable.privateKey
+          adminAuthReqStorable.privateKey,
         );
       } else {
         // if masterPasswordHash is null, we will always receive authReqResponse.key
         // as authRequestPublicKey(userKey)
         await this.authReqCryptoService.setUserKeyAfterDecryptingSharedUserKey(
           adminAuthReqResponse,
-          adminAuthReqStorable.privateKey
+          adminAuthReqStorable.privateKey,
         );
       }
 
@@ -239,7 +239,7 @@ export class SsoLoginStrategy extends LoginStrategy {
     const userKey = await this.deviceTrustCryptoService.decryptUserKeyWithDeviceKey(
       encDevicePrivateKey,
       encUserKey,
-      deviceKey
+      deviceKey,
     );
 
     if (userKey) {
@@ -267,7 +267,7 @@ export class SsoLoginStrategy extends LoginStrategy {
 
     if (!newSsoUser) {
       await this.cryptoService.setPrivateKey(
-        tokenResponse.privateKey ?? (await this.createKeyPairForOldAccount())
+        tokenResponse.privateKey ?? (await this.createKeyPairForOldAccount()),
       );
     }
   }

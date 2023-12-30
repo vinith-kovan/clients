@@ -17,7 +17,7 @@ export interface SecretsManagerSubscription {
 }
 
 export const secretsManagerSubscribeFormFactory = (
-  formBuilder: FormBuilder
+  formBuilder: FormBuilder,
 ): FormGroup<ControlsOf<SecretsManagerSubscription>> =>
   formBuilder.group({
     enabled: [false],
@@ -83,6 +83,7 @@ export class SecretsManagerSubscribeComponent implements OnInit, OnDestroy {
       case ProductType.Free:
         return this.i18nService.t("free2PersonOrganization");
       case ProductType.Teams:
+      case ProductType.TeamsStarter:
         return this.i18nService.t("planNameTeams");
       case ProductType.Enterprise:
         return this.i18nService.t("planNameEnterprise");

@@ -42,6 +42,11 @@ export class AccountComponent {
   org: OrganizationResponse;
   taxFormPromise: Promise<unknown>;
 
+  flexibleCollectionsMvpEnabled$ = this.configService.getFeatureFlag$(
+    FeatureFlag.FlexibleCollections,
+    false,
+  );
+
   flexibleCollectionsV1Enabled$ = this.configService.getFeatureFlag$(
     FeatureFlag.FlexibleCollectionsV1,
     false,
@@ -177,6 +182,13 @@ export class AccountComponent {
 
     this.platformUtilsService.showToast("success", null, this.i18nService.t("organizationUpdated"));
   };
+
+  async enableCollectionEnhancements() {
+    await this.organizationApiService.enableCollectionEnhancements(this.organizationId);
+
+    // TODO - maybe a different success message
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("organizationUpdated"));
+  }
 
   submitCollectionManagement = async () => {
     // Early exit if self-hosted

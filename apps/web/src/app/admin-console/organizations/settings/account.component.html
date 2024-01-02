@@ -52,6 +52,17 @@
     {{ "rotateApiKey" | i18n }}
   </button>
 </ng-container>
+<div
+  *ngIf="org && !loading && !org.flexibleCollections && (flexibleCollectionsMvpEnabled$ | async)"
+>
+  <h1 bitTypography="h1" class="tw-mt-16 tw-pb-2.5">{{ "collectionManagement" | i18n }}</h1>
+  <p>{{ "collectionManagementDesc" | i18n }}</p>
+  <!-- TODO: i18n -->
+  Some warning, blah blah, link to help docs, this is irreversible.
+  <button type="button" bitButton buttonType="primary" (click)="enableCollectionEnhancements()">
+    Enable collection management enhancements
+  </button>
+</div>
 <form
   *ngIf="org && !loading && org.flexibleCollections"
   [bitSubmit]="submitCollectionManagement"

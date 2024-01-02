@@ -1266,6 +1266,24 @@ describe("OverlayBackground", () => {
             ]).entries(),
           );
         });
+
+        it("copies the cipher's totp code to the clipboard after filling", async () => {
+          const cipher1 = mock<CipherView>({ id: "overlay-cipher-1" });
+          overlayBackground["overlayLoginCiphers"] = new Map([["overlay-cipher-1", cipher1]]);
+          isPasswordRepromptRequiredSpy.mockResolvedValue(false);
+          const copyToClipboardSpy = jest
+            .spyOn(overlayBackground["platformUtilsService"], "copyToClipboard")
+            .mockImplementation();
+          doAutoFillSpy.mockReturnValueOnce("totp-code");
+
+          sendPortMessage(listPortSpy, {
+            command: "fillSelectedListItem",
+            overlayCipherId: "overlay-cipher-2",
+          });
+          await flushPromises();
+
+          expect(copyToClipboardSpy).toHaveBeenCalledWith("totp-code", { window });
+        });
       });
 
       describe("getNewVaultItemDetails", () => {

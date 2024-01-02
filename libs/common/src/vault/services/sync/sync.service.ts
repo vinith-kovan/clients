@@ -10,7 +10,6 @@ import { ProviderData } from "../../../admin-console/models/data/provider.data";
 import { PolicyResponse } from "../../../admin-console/models/response/policy.response";
 import { KeyConnectorService } from "../../../auth/abstractions/key-connector.service";
 import { ForceSetPasswordReason } from "../../../auth/models/domain/force-set-password-reason";
-import { FeatureFlag } from "../../../enums/feature-flag.enum";
 import { DomainsResponse } from "../../../models/response/domains.response";
 import {
   SyncCipherNotification,
@@ -321,10 +320,7 @@ export class SyncService implements SyncServiceAbstraction {
 
     await this.setForceSetPasswordReasonIfNeeded(response);
 
-    const flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.FlexibleCollections,
-      false,
-    );
+    const flexibleCollectionsEnabled = false;
     await this.syncProfileOrganizations(response, flexibleCollectionsEnabled);
 
     const providers: { [id: string]: ProviderData } = {};

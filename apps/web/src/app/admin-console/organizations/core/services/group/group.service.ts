@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { SelectionReadOnlyRequest } from "@bitwarden/common/admin-console/models/request/selection-read-only.request";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 
@@ -26,17 +25,7 @@ export class GroupService {
    * TODO: This should be replaced with `GroupView.fromResponse` when `FeatureFlag.FlexibleCollections` is removed.
    **/
   protected async groupViewFromResponse(response: GroupResponse): Promise<GroupView> {
-    const view = GroupView.fromResponse(response);
-
-    const hasFlexibleCollections = await this.configService.getFeatureFlag(
-      FeatureFlag.FlexibleCollections,
-      false,
-    );
-    if (hasFlexibleCollections) {
-      view.accessAll = false;
-    }
-
-    return view;
+    return GroupView.fromResponse(response);
   }
 
   async get(orgId: string, groupId: string): Promise<GroupView> {

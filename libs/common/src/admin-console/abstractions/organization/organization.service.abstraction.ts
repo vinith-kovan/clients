@@ -99,8 +99,5 @@ export abstract class InternalOrganizationServiceAbstraction extends Organizatio
     organizations: { [id: string]: OrganizationData },
     flexibleCollectionsEnabled: boolean,
   ) => Promise<void>;
-  upsert: (
-    OrganizationData: OrganizationData | OrganizationData[],
-    flexibleCollectionsEnabled: boolean,
-  ) => Promise<void>;
+  upsert: (OrganizationData: OrganizationData | OrganizationData[]) => Promise<void>;
 }

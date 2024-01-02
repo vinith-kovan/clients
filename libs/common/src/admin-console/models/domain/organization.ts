@@ -72,6 +72,7 @@ export class Organization {
    * Refers to the ability for an owner/admin to access all collection items, regardless of assigned collections
    */
   allowAdminAccessToAllCollectionItems: boolean;
+  flexibleCollections: boolean;
 
   constructor(obj?: OrganizationData) {
     if (obj == null) {

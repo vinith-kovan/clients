@@ -1,6 +1,6 @@
 import * as program from "commander";
 
-import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 
 import { Response } from "../models/response";
 import { MessageResponse } from "../models/response/message.response";
@@ -32,7 +32,7 @@ export class ConfigCommand {
       const stringRes = new StringResponse(
         this.environmentService.hasBaseUrl()
           ? this.environmentService.getUrls().base
-          : "https://bitwarden.com"
+          : "https://bitwarden.com",
       );
       return Response.success(stringRes);
     }

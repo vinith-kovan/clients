@@ -1,6 +1,6 @@
 import { Directive, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
 
-import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
 /**
  * Hides the element if the user has premium.
@@ -12,7 +12,7 @@ export class NotPremiumDirective implements OnInit {
   constructor(
     private templateRef: TemplateRef<any>,
     private viewContainer: ViewContainerRef,
-    private stateService: StateService
+    private stateService: StateService,
   ) {}
 
   async ngOnInit(): Promise<void> {

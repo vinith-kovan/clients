@@ -10,13 +10,13 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { PolicyRequest } from "@bitwarden/common/admin-console/models/request/policy.request";
 import { PolicyResponse } from "@bitwarden/common/admin-console/models/response/policy.response";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
 import { BasePolicy, BasePolicyComponent } from "../policies";
 
@@ -48,7 +48,7 @@ export class PolicyEditComponent implements AfterViewInit {
     private platformUtilsService: PlatformUtilsService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private cdr: ChangeDetectorRef,
-    private logService: LogService
+    private logService: LogService,
   ) {}
 
   async ngAfterViewInit() {
@@ -68,7 +68,7 @@ export class PolicyEditComponent implements AfterViewInit {
     try {
       this.policyResponse = await this.policyApiService.getPolicy(
         this.organizationId,
-        this.policy.type
+        this.policy.type,
       );
     } catch (e) {
       if (e.statusCode === 404) {
@@ -92,13 +92,13 @@ export class PolicyEditComponent implements AfterViewInit {
       this.formPromise = this.policyApiService.putPolicy(
         this.organizationId,
         this.policy.type,
-        request
+        request,
       );
       await this.formPromise;
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("editedPolicyId", this.i18nService.t(this.policy.name))
+        this.i18nService.t("editedPolicyId", this.i18nService.t(this.policy.name)),
       );
       this.onSavedPolicy.emit();
     } catch (e) {

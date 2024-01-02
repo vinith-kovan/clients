@@ -8,28 +8,28 @@ import {
 import {
   apiServiceFactory,
   ApiServiceInitOptions,
-} from "../../../background/service_factories/api-service.factory";
+} from "../../../platform/background/service-factories/api-service.factory";
 import {
-  cryptoFunctionServiceFactory,
   CryptoFunctionServiceInitOptions,
-} from "../../../background/service_factories/crypto-function-service.factory";
+  cryptoFunctionServiceFactory,
+} from "../../../platform/background/service-factories/crypto-function-service.factory";
 import {
   CryptoServiceInitOptions,
   cryptoServiceFactory,
-} from "../../../background/service_factories/crypto-service.factory";
+} from "../../../platform/background/service-factories/crypto-service.factory";
 import {
   FactoryOptions,
   CachedServices,
   factory,
-} from "../../../background/service_factories/factory-options";
+} from "../../../platform/background/service-factories/factory-options";
 import {
   logServiceFactory,
   LogServiceInitOptions,
-} from "../../../background/service_factories/log-service.factory";
+} from "../../../platform/background/service-factories/log-service.factory";
 import {
   stateServiceFactory,
   StateServiceInitOptions,
-} from "../../../background/service_factories/state-service.factory";
+} from "../../../platform/background/service-factories/state-service.factory";
 
 import { TokenServiceInitOptions, tokenServiceFactory } from "./token-service.factory";
 
@@ -50,7 +50,7 @@ export type KeyConnectorServiceInitOptions = KeyConnectorServiceFactoryOptions &
 
 export function keyConnectorServiceFactory(
   cache: { keyConnectorService?: AbstractKeyConnectorService } & CachedServices,
-  opts: KeyConnectorServiceInitOptions
+  opts: KeyConnectorServiceInitOptions,
 ): Promise<AbstractKeyConnectorService> {
   return factory(
     cache,
@@ -65,7 +65,7 @@ export function keyConnectorServiceFactory(
         await logServiceFactory(cache, opts),
         await organizationServiceFactory(cache, opts),
         await cryptoFunctionServiceFactory(cache, opts),
-        opts.keyConnectorServiceOptions.logoutCallback
-      )
+        opts.keyConnectorServiceOptions.logoutCallback,
+      ),
   );
 }

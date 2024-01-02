@@ -3,23 +3,23 @@ import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from "@angula
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { SendComponent as BaseSendComponent } from "@bitwarden/angular/tools/send/send.component";
-import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
-import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
+import { DialogService } from "@bitwarden/components";
 
 import { BrowserComponentState } from "../../../models/browserComponentState";
-import { PopupUtilsService } from "../../../popup/services/popup-utils.service";
-import { BrowserStateService } from "../../../services/abstractions/browser-state.service";
+import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
+import { BrowserStateService } from "../../../platform/services/abstractions/browser-state.service";
 
 const ComponentId = "SendTypeComponent";
 
@@ -42,7 +42,6 @@ export class SendTypeComponent extends BaseSendComponent implements OnInit, OnDe
     ngZone: NgZone,
     policyService: PolicyService,
     searchService: SearchService,
-    private popupUtils: PopupUtilsService,
     private stateService: BrowserStateService,
     private route: ActivatedRoute,
     private location: Location,
@@ -51,7 +50,7 @@ export class SendTypeComponent extends BaseSendComponent implements OnInit, OnDe
     private router: Router,
     logService: LogService,
     sendApiService: SendApiService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService,
   ) {
     super(
       sendService,
@@ -63,7 +62,7 @@ export class SendTypeComponent extends BaseSendComponent implements OnInit, OnDe
       policyService,
       logService,
       sendApiService,
-      dialogService
+      dialogService,
     );
     super.onSuccessfulLoad = async () => {
       this.selectType(this.type);
@@ -102,7 +101,7 @@ export class SendTypeComponent extends BaseSendComponent implements OnInit, OnDe
 
       // Restore state and remove reference
       if (this.applySavedState && this.state != null) {
-        window.setTimeout(() => this.popupUtils.setContentScrollY(window, this.state?.scrollY), 0);
+        BrowserPopupUtils.setContentScrollY(window, this.state?.scrollY);
       }
       this.stateService.setBrowserSendTypeComponentState(null);
     });
@@ -163,7 +162,7 @@ export class SendTypeComponent extends BaseSendComponent implements OnInit, OnDe
 
   private async saveState() {
     this.state = {
-      scrollY: this.popupUtils.getContentScrollY(window),
+      scrollY: BrowserPopupUtils.getContentScrollY(window),
       searchText: this.searchText,
     };
     await this.stateService.setBrowserSendTypeComponentState(this.state);

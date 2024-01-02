@@ -1,26 +1,30 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
 import { TwoFactorComponent as BaseTwoFactorComponent } from "@bitwarden/angular/auth/components/two-factor.component";
-import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
+import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AppIdService } from "@bitwarden/common/abstractions/appId.service";
-import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
-import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
+import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
+import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+import { DialogService } from "@bitwarden/components";
 
-import { BrowserApi } from "../../browser/browserApi";
-import { PopupUtilsService } from "../../popup/services/popup-utils.service";
+import { BrowserApi } from "../../platform/browser/browser-api";
+import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
+
+import { closeTwoFactorAuthPopout } from "./utils/auth-popout-window";
 
 const BroadcasterSubscriptionId = "TwoFactorComponent";
 
@@ -29,8 +33,6 @@ const BroadcasterSubscriptionId = "TwoFactorComponent";
   templateUrl: "two-factor.component.html",
 })
 export class TwoFactorComponent extends BaseTwoFactorComponent implements OnInit, OnDestroy {
-  showNewWindowMessage = false;
-
   constructor(
     authService: AuthService,
     router: Router,
@@ -40,7 +42,6 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnInit
     private syncService: SyncService,
     environmentService: EnvironmentService,
     private broadcasterService: BroadcasterService,
-    private popupUtilsService: PopupUtilsService,
     stateService: StateService,
     route: ActivatedRoute,
     private messagingService: MessagingService,
@@ -48,7 +49,9 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnInit
     twoFactorService: TwoFactorService,
     appIdService: AppIdService,
     loginService: LoginService,
-    private dialogService: DialogServiceAbstraction
+    configService: ConfigServiceAbstraction,
+    private dialogService: DialogService,
+    @Inject(WINDOW) protected win: Window,
   ) {
     super(
       authService,
@@ -56,19 +59,28 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnInit
       i18nService,
       apiService,
       platformUtilsService,
-      window,
+      win,
       environmentService,
       stateService,
       route,
       logService,
       twoFactorService,
       appIdService,
-      loginService
+      loginService,
+      configService,
     );
-    super.onSuccessfulLogin = () => {
-      this.loginService.clearValues();
-      return syncService.fullSync(true);
+    super.onSuccessfulLogin = async () => {
+      syncService.fullSync(true);
     };
+
+    super.onSuccessfulLoginTde = async () => {
+      syncService.fullSync(true);
+    };
+
+    super.onSuccessfulLoginTdeNavigate = async () => {
+      this.win.close();
+    };
+
     super.successRoute = "/tabs/vault";
     // FIXME: Chromium 110 has broken WebAuthn support in extensions via an iframe
     this.webAuthnNewTab = true;
@@ -102,26 +114,34 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnInit
 
     if (
       this.selectedProviderType === TwoFactorProviderType.Email &&
-      this.popupUtilsService.inPopup(window)
+      BrowserPopupUtils.inPopup(window)
     ) {
       const confirmed = await this.dialogService.openSimpleDialog({
         title: { key: "warning" },
         content: { key: "popup2faCloseMessage" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
       if (confirmed) {
-        this.popupUtilsService.popOut(window);
+        BrowserPopupUtils.openCurrentPagePopout(window);
       }
     }
 
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     this.route.queryParams.pipe(first()).subscribe(async (qParams) => {
       if (qParams.sso === "true") {
-        super.onSuccessfulLogin = () => {
-          BrowserApi.reloadOpenWindows();
-          const thisWindow = window.open("", "_self");
-          thisWindow.close();
-          return this.syncService.fullSync(true);
+        super.onSuccessfulLogin = async () => {
+          // This is not awaited so we don't pause the application while the sync is happening.
+          // This call is executed by the service that lives in the background script so it will continue
+          // the sync even if this tab closes.
+          this.syncService.fullSync(true);
+
+          // Force sidebars (FF && Opera) to reload while exempting current window
+          // because we are just going to close the current window.
+          BrowserApi.reloadOpenWindows(true);
+
+          // We don't need this window anymore because the intent is for the user to be left
+          // on the web vault screen which tells them to continue in the browser extension (sidebar or popup)
+          await closeTwoFactorAuthPopout();
         };
       }
     });
@@ -137,7 +157,15 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnInit
   }
 
   anotherMethod() {
-    this.router.navigate(["2fa-options"]);
+    const sso = this.route.snapshot.queryParamMap.get("sso") === "true";
+
+    if (sso) {
+      // We must persist this so when the user returns to the 2FA comp, the
+      // proper onSuccessfulLogin logic is executed.
+      this.router.navigate(["2fa-options"], { queryParams: { sso: true } });
+    } else {
+      this.router.navigate(["2fa-options"]);
+    }
   }
 
   async isLinux() {

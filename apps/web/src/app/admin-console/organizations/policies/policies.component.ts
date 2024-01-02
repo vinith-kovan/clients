@@ -9,7 +9,7 @@ import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { PolicyResponse } from "@bitwarden/common/admin-console/models/response/policy.response";
 
-import { PolicyListService } from "../../../core";
+import { PolicyListService } from "../../core/policy-list.service";
 import { BasePolicy } from "../policies";
 
 import { PolicyEditComponent } from "./policy-edit.component";
@@ -37,7 +37,7 @@ export class PoliciesComponent implements OnInit {
     private organizationService: OrganizationService,
     private policyApiService: PolicyApiServiceAbstraction,
     private policyListService: PolicyListService,
-    private router: Router
+    private router: Router,
   ) {}
 
   async ngOnInit() {
@@ -93,7 +93,7 @@ export class PoliciesComponent implements OnInit {
           modal.close();
           this.load();
         });
-      }
+      },
     );
   }
 }

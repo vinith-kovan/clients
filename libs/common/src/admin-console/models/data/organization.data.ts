@@ -1,5 +1,5 @@
-import { ProductType, ProviderType } from "../../../enums";
-import { OrganizationUserStatusType, OrganizationUserType } from "../../enums";
+import { ProductType } from "../../../enums";
+import { OrganizationUserStatusType, OrganizationUserType, ProviderType } from "../../enums";
 import { PermissionsApi } from "../api/permissions.api";
 import { ProfileOrganizationResponse } from "../response/profile-organization.response";
 
@@ -22,6 +22,7 @@ export class OrganizationData {
   useCustomPermissions: boolean;
   useResetPassword: boolean;
   useSecretsManager: boolean;
+  usePasswordManager: boolean;
   useActivateAutofillPolicy: boolean;
   selfHost: boolean;
   usersGetPremium: boolean;
@@ -48,13 +49,15 @@ export class OrganizationData {
   familySponsorshipValidUntil?: Date;
   familySponsorshipToDelete?: boolean;
   accessSecretsManager: boolean;
+  limitCollectionCreationDeletion: boolean;
+  allowAdminAccessToAllCollectionItems: boolean;
 
   constructor(
     response: ProfileOrganizationResponse,
     options: {
       isMember: boolean;
       isProviderUser: boolean;
-    }
+    },
   ) {
     this.id = response.id;
     this.name = response.name;
@@ -74,6 +77,7 @@ export class OrganizationData {
     this.useCustomPermissions = response.useCustomPermissions;
     this.useResetPassword = response.useResetPassword;
     this.useSecretsManager = response.useSecretsManager;
+    this.usePasswordManager = response.usePasswordManager;
     this.useActivateAutofillPolicy = response.useActivateAutofillPolicy;
     this.selfHost = response.selfHost;
     this.usersGetPremium = response.usersGetPremium;
@@ -98,6 +102,8 @@ export class OrganizationData {
     this.familySponsorshipValidUntil = response.familySponsorshipValidUntil;
     this.familySponsorshipToDelete = response.familySponsorshipToDelete;
     this.accessSecretsManager = response.accessSecretsManager;
+    this.limitCollectionCreationDeletion = response.limitCollectionCreationDeletion;
+    this.allowAdminAccessToAllCollectionItems = response.allowAdminAccessToAllCollectionItems;
 
     this.isMember = options.isMember;
     this.isProviderUser = options.isProviderUser;

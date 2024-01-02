@@ -1,13 +1,13 @@
 import { firstValueFrom } from "rxjs";
 
-import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
@@ -24,8 +24,7 @@ import { GenerateResponse } from "../models/native-messaging/encrypted-message-r
 import { MessageResponseData } from "../models/native-messaging/encrypted-message-responses/message-response-data";
 import { SuccessStatusResponse } from "../models/native-messaging/encrypted-message-responses/success-status-response";
 import { UserStatusErrorResponse } from "../models/native-messaging/encrypted-message-responses/user-status-error-response";
-
-import { ElectronStateService } from "./electron-state.service";
+import { ElectronStateService } from "../platform/services/electron-state.service";
 
 export class EncryptedMessageHandlerService {
   constructor(
@@ -34,7 +33,7 @@ export class EncryptedMessageHandlerService {
     private cipherService: CipherService,
     private policyService: PolicyService,
     private messagingService: MessagingService,
-    private passwordGenerationService: PasswordGenerationServiceAbstraction
+    private passwordGenerationService: PasswordGenerationServiceAbstraction,
   ) {}
 
   async responseDataForCommand(commandData: DecryptedCommandData): Promise<MessageResponseData> {
@@ -96,12 +95,12 @@ export class EncryptedMessageHandlerService {
           status: authStatus === AuthenticationStatus.Unlocked ? "unlocked" : "locked",
           active: userId === activeUserId,
         };
-      })
+      }),
     );
   }
 
   private async credentialRetrievalCommandHandler(
-    payload: CredentialRetrievePayload
+    payload: CredentialRetrievePayload,
   ): Promise<CipherResponse[] | UserStatusErrorResponse> {
     if (payload.uri == null) {
       return [];
@@ -132,7 +131,7 @@ export class EncryptedMessageHandlerService {
   }
 
   private async credentialCreateCommandHandler(
-    payload: CredentialCreatePayload
+    payload: CredentialCreatePayload,
   ): Promise<SuccessStatusResponse | FailureStatusResponse | UserStatusErrorResponse> {
     const userStatus = await this.checkUserStatus(payload.userId);
     if (userStatus !== "valid") {
@@ -173,7 +172,7 @@ export class EncryptedMessageHandlerService {
   }
 
   private async credentialUpdateCommandHandler(
-    payload: CredentialUpdatePayload
+    payload: CredentialUpdatePayload,
   ): Promise<SuccessStatusResponse | FailureStatusResponse | UserStatusErrorResponse> {
     const userStatus = await this.checkUserStatus(payload.userId);
     if (userStatus !== "valid") {
@@ -191,7 +190,9 @@ export class EncryptedMessageHandlerService {
       if (cipher === null) {
         return { status: "failure" };
       }
-      const cipherView = await cipher.decrypt();
+      const cipherView = await cipher.decrypt(
+        await this.cipherService.getKeyForCipherKeyDecryption(cipher),
+      );
       cipherView.name = credentialUpdatePayload.name;
       cipherView.login.password = credentialUpdatePayload.password;
       cipherView.login.username = credentialUpdatePayload.userName;
@@ -212,7 +213,7 @@ export class EncryptedMessageHandlerService {
   }
 
   private async generateCommandHandler(
-    payload: PasswordGeneratePayload
+    payload: PasswordGeneratePayload,
   ): Promise<GenerateResponse | UserStatusErrorResponse> {
     const userStatus = await this.checkUserStatus(payload.userId);
     if (userStatus !== "valid") {

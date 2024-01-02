@@ -2,7 +2,9 @@ import { Injectable } from "@angular/core";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { SelectionReadOnlyRequest } from "@bitwarden/common/admin-console/models/request/selection-read-only.request";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 
 import { CoreOrganizationModule } from "../../core-organization.module";
 import { GroupView } from "../../views/group.view";
@@ -11,9 +13,67 @@ import { GroupRequest } from "./requests/group.request";
 import { OrganizationGroupBulkRequest } from "./requests/organization-group-bulk.request";
 import { GroupDetailsResponse, GroupResponse } from "./responses/group.response";
 
-@Injectable({ providedIn: CoreOrganizationModule })
+@Injectable({
+  providedIn: "root",
+})
 export class GroupService {
-  constructor(private apiService: ApiService) {}
+  constructor(
+    protected apiService: ApiService,
+    protected configService: ConfigServiceAbstraction,
+  ) {}
+
+  /**
+   * TODO: This should be replaced with `GroupView.fromResponse` when `FeatureFlag.FlexibleCollections` is removed.
+   **/
+  protected async groupViewFromResponse(response: GroupResponse): Promise<GroupView> {
+    const view = GroupView.fromResponse(response);
+
+    const hasFlexibleCollections = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections,
+      false,
+    );
+    if (hasFlexibleCollections) {
+      view.accessAll = false;
+    }
+
+    return view;
+  }
+
+  async get(orgId: string, groupId: string): Promise<GroupView> {
+    const r = await this.apiService.send(
+      "GET",
+      "/organizations/" + orgId + "/groups/" + groupId + "/details",
+      null,
+      true,
+      true,
+    );
+
+    return this.groupViewFromResponse(new GroupDetailsResponse(r));
+  }
+
+  async getAll(orgId: string): Promise<GroupView[]> {
+    const r = await this.apiService.send(
+      "GET",
+      "/organizations/" + orgId + "/groups",
+      null,
+      true,
+      true,
+    );
+
+    const listResponse = new ListResponse(r, GroupDetailsResponse);
+
+    return Promise.all(listResponse.data?.map((gr) => this.groupViewFromResponse(gr))) ?? [];
+  }
+}
+
+@Injectable({ providedIn: CoreOrganizationModule })
+export class InternalGroupService extends GroupService {
+  constructor(
+    protected apiService: ApiService,
+    protected configService: ConfigServiceAbstraction,
+  ) {
+    super(apiService, configService);
+  }
 
   async delete(orgId: string, groupId: string): Promise<void> {
     await this.apiService.send(
@@ -21,7 +81,7 @@ export class GroupService {
       "/organizations/" + orgId + "/groups/" + groupId,
       null,
       true,
-      false
+      false,
     );
   }
 
@@ -31,34 +91,8 @@ export class GroupService {
       "/organizations/" + orgId + "/groups",
       new OrganizationGroupBulkRequest(groupIds),
       true,
-      true
-    );
-  }
-
-  async get(orgId: string, groupId: string): Promise<GroupView> {
-    const r = await this.apiService.send(
-      "GET",
-      "/organizations/" + orgId + "/groups/" + groupId + "/details",
-      null,
       true,
-      true
     );
-
-    return GroupView.fromResponse(new GroupDetailsResponse(r));
-  }
-
-  async getAll(orgId: string): Promise<GroupView[]> {
-    const r = await this.apiService.send(
-      "GET",
-      "/organizations/" + orgId + "/groups",
-      null,
-      true,
-      true
-    );
-
-    const listResponse = new ListResponse(r, GroupDetailsResponse);
-
-    return listResponse.data?.map((gr) => GroupView.fromResponse(gr)) ?? [];
   }
 
   async save(group: GroupView): Promise<GroupView> {
@@ -67,7 +101,7 @@ export class GroupService {
     request.accessAll = group.accessAll;
     request.users = group.members;
     request.collections = group.collections.map(
-      (c) => new SelectionReadOnlyRequest(c.id, c.readOnly, c.hidePasswords)
+      (c) => new SelectionReadOnlyRequest(c.id, c.readOnly, c.hidePasswords, c.manage),
     );
 
     if (group.id == undefined) {
@@ -83,23 +117,23 @@ export class GroupService {
       "/organizations/" + organizationId + "/groups",
       request,
       true,
-      true
+      true,
     );
-    return GroupView.fromResponse(new GroupResponse(r));
+    return this.groupViewFromResponse(new GroupResponse(r));
   }
 
   private async putGroup(
     organizationId: string,
     id: string,
-    request: GroupRequest
+    request: GroupRequest,
   ): Promise<GroupView> {
     const r = await this.apiService.send(
       "PUT",
       "/organizations/" + organizationId + "/groups/" + id,
       request,
       true,
-      true
+      true,
     );
-    return GroupView.fromResponse(new GroupResponse(r));
+    return this.groupViewFromResponse(new GroupResponse(r));
   }
 }

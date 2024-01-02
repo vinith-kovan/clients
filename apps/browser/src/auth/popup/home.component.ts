@@ -4,11 +4,13 @@ import { Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
 import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components/environment-selector.component";
-import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+
+import { AccountSwitcherService } from "./account-switching/services/account-switcher.service";
 
 @Component({
   selector: "app-home",
@@ -32,7 +34,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private router: Router,
     private i18nService: I18nService,
     private environmentService: EnvironmentService,
-    private loginService: LoginService
+    private loginService: LoginService,
+    private accountSwitcherService: AccountSwitcherService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -67,13 +70,17 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
+  get availableAccounts$() {
+    return this.accountSwitcherService.availableAccounts$;
+  }
+
   submit() {
     this.formGroup.markAllAsTouched();
     if (this.formGroup.invalid) {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccured"),
-        this.i18nService.t("invalidEmail")
+        this.i18nService.t("invalidEmail"),
       );
       return;
     }

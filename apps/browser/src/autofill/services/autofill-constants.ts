@@ -11,6 +11,7 @@ export class AutoFillConstants {
     "user id",
     "customer id",
     "login id",
+    "login",
     // German
     "benutzername",
     "benutzer name",
@@ -18,6 +19,27 @@ export class AutoFillConstants {
     "e-mail adresse",
     "benutzerid",
     "benutzer id",
+  ];
+
+  static readonly TotpFieldNames: string[] = [
+    "totp",
+    "2fa",
+    "mfa",
+    "totpcode",
+    "2facode",
+    "approvals_code",
+    "code",
+    "mfacode",
+    "otc",
+    "otc-code",
+    "otp-code",
+    "otpcode",
+    "pin",
+    "security_code",
+    "twofactor",
+    "twofa",
+    "twofactorcode",
+    "verificationCode",
   ];
 
   static readonly PasswordFieldIgnoreList: string[] = [
@@ -89,6 +111,7 @@ export class CreditCardAutoFillConstants {
     "carte-credit",
     "num-carte",
     "cb-num",
+    "card-pan",
   ];
 
   static readonly CardNumberFieldNameValues: string[] = [

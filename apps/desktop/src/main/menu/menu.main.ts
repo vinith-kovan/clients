@@ -1,8 +1,8 @@
 import { app, Menu } from "electron";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
 import { UpdaterMain } from "../updater.main";
 import { WindowMain } from "../window.main";
@@ -18,7 +18,7 @@ export class MenuMain {
     private messagingService: MessagingService,
     private stateService: StateService,
     private windowMain: WindowMain,
-    private updaterMain: UpdaterMain
+    private updaterMain: UpdaterMain,
   ) {}
 
   async init() {
@@ -39,8 +39,8 @@ export class MenuMain {
         this.windowMain,
         await this.getWebVaultUrl(),
         app.getVersion(),
-        updateRequest
-      ).menu
+        updateRequest,
+      ).menu,
     );
   }
 

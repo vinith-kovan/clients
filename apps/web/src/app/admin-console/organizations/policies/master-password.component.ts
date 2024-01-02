@@ -2,11 +2,11 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 import { ControlsOf } from "@bitwarden/angular/types/controls-of";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { Utils } from "@bitwarden/common/misc/utils";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 import { BasePolicy, BasePolicyComponent } from "./base-policy.component";
 
@@ -40,7 +40,7 @@ export class MasterPasswordPolicyComponent extends BasePolicyComponent implement
   constructor(
     private formBuilder: FormBuilder,
     i18nService: I18nService,
-    private organizationService: OrganizationService
+    private organizationService: OrganizationService,
   ) {
     super();
 

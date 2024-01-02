@@ -1,7 +1,7 @@
 import { Directive, ElementRef, Input, NgZone, OnInit } from "@angular/core";
 import { take } from "rxjs/operators";
 
-import { Utils } from "@bitwarden/common/misc/utils";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 @Directive({
   selector: "[appAutofocus]",
@@ -13,7 +13,10 @@ export class AutofocusDirective implements OnInit {
 
   private autofocus: boolean;
 
-  constructor(private el: ElementRef, private ngZone: NgZone) {}
+  constructor(
+    private el: ElementRef,
+    private ngZone: NgZone,
+  ) {}
 
   ngOnInit() {
     if (!Utils.isMobileBrowser && this.autofocus) {

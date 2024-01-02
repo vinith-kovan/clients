@@ -17,7 +17,7 @@ import {
 } from "@bitwarden/components";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
-import { PreloadedEnglishI18nModule } from "../../../../../tests/preloaded-english-i18n.module";
+import { PreloadedEnglishI18nModule } from "../../../../../core/tests";
 
 import { AccessSelectorComponent, PermissionMode } from "./access-selector.component";
 import { AccessItemType, CollectionPermission } from "./access-selector.models";
@@ -138,7 +138,7 @@ describe("AccessSelectorComponent", () => {
       expect(mockChange.mock.lastCall[0]).toHaveProperty("[0].id", "123");
       expect(mockChange.mock.lastCall[0]).toHaveProperty(
         "[0].permission",
-        CollectionPermission.Edit
+        CollectionPermission.Edit,
       );
     });
 
@@ -246,7 +246,7 @@ describe("AccessSelectorComponent", () => {
         // Assert
         const colHeading = fixture.nativeElement.querySelector("#permissionColHeading");
         expect(!!colHeading).toEqual(shouldShowColumn);
-      }
+      },
     );
   });
 });

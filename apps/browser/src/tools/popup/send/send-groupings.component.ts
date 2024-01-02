@@ -1,24 +1,24 @@
 import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { SendComponent as BaseSendComponent } from "@bitwarden/angular/tools/send/send.component";
-import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
-import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+import { DialogService } from "@bitwarden/components";
 
 import { BrowserSendComponentState } from "../../../models/browserSendComponentState";
-import { PopupUtilsService } from "../../../popup/services/popup-utils.service";
-import { BrowserStateService } from "../../../services/abstractions/browser-state.service";
+import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
+import { BrowserStateService } from "../../../platform/services/abstractions/browser-state.service";
 
 const ComponentId = "SendComponent";
 
@@ -43,7 +43,6 @@ export class SendGroupingsComponent extends BaseSendComponent implements OnInit,
     ngZone: NgZone,
     policyService: PolicyService,
     searchService: SearchService,
-    private popupUtils: PopupUtilsService,
     private stateService: BrowserStateService,
     private router: Router,
     private syncService: SyncService,
@@ -51,7 +50,7 @@ export class SendGroupingsComponent extends BaseSendComponent implements OnInit,
     private broadcasterService: BroadcasterService,
     logService: LogService,
     sendApiService: SendApiService,
-    dialogService: DialogServiceAbstraction
+    dialogService: DialogService,
   ) {
     super(
       sendService,
@@ -63,7 +62,7 @@ export class SendGroupingsComponent extends BaseSendComponent implements OnInit,
       policyService,
       logService,
       sendApiService,
-      dialogService
+      dialogService,
     );
     super.onSuccessfulLoad = async () => {
       this.calculateTypeCounts();
@@ -74,7 +73,7 @@ export class SendGroupingsComponent extends BaseSendComponent implements OnInit,
   async ngOnInit() {
     // Determine Header details
     this.showLeftHeader = !(
-      this.popupUtils.inSidebar(window) && this.platformUtilsService.isFirefox()
+      BrowserPopupUtils.inSidebar(window) && this.platformUtilsService.isFirefox()
     );
     // Clear state of Send Type Component
     await this.stateService.setBrowserSendTypeComponentState(null);
@@ -97,7 +96,7 @@ export class SendGroupingsComponent extends BaseSendComponent implements OnInit,
     }
 
     if (!this.syncService.syncInProgress || restoredScopeState) {
-      window.setTimeout(() => this.popupUtils.setContentScrollY(window, this.state?.scrollY), 0);
+      BrowserPopupUtils.setContentScrollY(window, this.state?.scrollY);
     }
 
     // Load all sends if sync completed in background
@@ -172,7 +171,7 @@ export class SendGroupingsComponent extends BaseSendComponent implements OnInit,
 
   private async saveState() {
     this.state = Object.assign(new BrowserSendComponentState(), {
-      scrollY: this.popupUtils.getContentScrollY(window),
+      scrollY: BrowserPopupUtils.getContentScrollY(window),
       searchText: this.searchText,
       sends: this.sends,
       typeCounts: this.typeCounts,

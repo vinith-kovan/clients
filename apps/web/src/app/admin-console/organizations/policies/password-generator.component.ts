@@ -1,8 +1,8 @@
 import { Component } from "@angular/core";
 import { UntypedFormBuilder } from "@angular/forms";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 import { BasePolicy, BasePolicyComponent } from "./base-policy.component";
 
@@ -34,7 +34,10 @@ export class PasswordGeneratorPolicyComponent extends BasePolicyComponent {
 
   defaultTypes: { name: string; value: string }[];
 
-  constructor(private formBuilder: UntypedFormBuilder, i18nService: I18nService) {
+  constructor(
+    private formBuilder: UntypedFormBuilder,
+    i18nService: I18nService,
+  ) {
     super();
 
     this.defaultTypes = [

@@ -2,14 +2,14 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { map, Observable, Subject, takeUntil } from "rxjs";
 
-import { notAllowedValueAsync } from "@bitwarden/angular/validators/notAllowedValueAsync.validator";
+import { notAllowedValueAsync } from "@bitwarden/angular/admin-console/validators/not-allowed-value-async.validator";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { PlanSponsorshipType } from "@bitwarden/common/billing/enums/";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 interface RequestSponsorshipForm {
@@ -43,7 +43,7 @@ export class SponsoredFamiliesComponent implements OnInit, OnDestroy {
     private syncService: SyncService,
     private organizationService: OrganizationService,
     private formBuilder: FormBuilder,
-    private stateService: StateService
+    private stateService: StateService,
   ) {
     this.sponsorshipForm = this.formBuilder.group<RequestSponsorshipForm>({
       selectedSponsorshipOrgId: new FormControl("", {
@@ -61,7 +61,7 @@ export class SponsoredFamiliesComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.availableSponsorshipOrgs$ = this.organizationService.organizations$.pipe(
-      map((orgs) => orgs.filter((o) => o.familySponsorshipAvailable))
+      map((orgs) => orgs.filter((o) => o.familySponsorshipAvailable)),
     );
 
     this.availableSponsorshipOrgs$.pipe(takeUntil(this._destroy)).subscribe((orgs) => {
@@ -75,7 +75,7 @@ export class SponsoredFamiliesComponent implements OnInit, OnDestroy {
     this.anyOrgsAvailable$ = this.availableSponsorshipOrgs$.pipe(map((orgs) => orgs.length > 0));
 
     this.activeSponsorshipOrgs$ = this.organizationService.organizations$.pipe(
-      map((orgs) => orgs.filter((o) => o.familySponsorshipFriendlyName !== null))
+      map((orgs) => orgs.filter((o) => o.familySponsorshipFriendlyName !== null)),
     );
 
     this.anyActiveSponsorships$ = this.activeSponsorshipOrgs$.pipe(map((orgs) => orgs.length > 0));
@@ -95,7 +95,7 @@ export class SponsoredFamiliesComponent implements OnInit, OnDestroy {
         sponsoredEmail: this.sponsorshipForm.value.sponsorshipEmail,
         planSponsorshipType: PlanSponsorshipType.FamiliesForEnterprise,
         friendlyName: this.sponsorshipForm.value.sponsorshipEmail,
-      }
+      },
     );
 
     await this.formPromise;

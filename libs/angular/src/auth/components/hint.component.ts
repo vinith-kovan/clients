@@ -2,11 +2,11 @@ import { Directive, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { PasswordHintRequest } from "@bitwarden/common/auth/models/request/password-hint.request";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
 @Directive()
 export class HintComponent implements OnInit {
@@ -22,7 +22,7 @@ export class HintComponent implements OnInit {
     protected apiService: ApiService,
     protected platformUtilsService: PlatformUtilsService,
     private logService: LogService,
-    private loginService: LoginService
+    private loginService: LoginService,
   ) {}
 
   ngOnInit(): void {
@@ -34,7 +34,7 @@ export class HintComponent implements OnInit {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
-        this.i18nService.t("emailRequired")
+        this.i18nService.t("emailRequired"),
       );
       return;
     }
@@ -42,7 +42,7 @@ export class HintComponent implements OnInit {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
-        this.i18nService.t("invalidEmail")
+        this.i18nService.t("invalidEmail"),
       );
       return;
     }

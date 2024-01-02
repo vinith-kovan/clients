@@ -3,11 +3,11 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { VerifyEmailRequest } from "@bitwarden/common/models/request/verify-email.request";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
 @Component({
   selector: "app-verify-email-token",
@@ -22,7 +22,7 @@ export class VerifyEmailTokenComponent implements OnInit {
     private route: ActivatedRoute,
     private apiService: ApiService,
     private logService: LogService,
-    private stateService: StateService
+    private stateService: StateService,
   ) {}
 
   ngOnInit() {
@@ -31,7 +31,7 @@ export class VerifyEmailTokenComponent implements OnInit {
       if (qParams.userId != null && qParams.token != null) {
         try {
           await this.apiService.postAccountVerifyEmailToken(
-            new VerifyEmailRequest(qParams.userId, qParams.token)
+            new VerifyEmailRequest(qParams.userId, qParams.token),
           );
           if (await this.stateService.getIsAuthenticated()) {
             await this.apiService.refreshIdentityToken();

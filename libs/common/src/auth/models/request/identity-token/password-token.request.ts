@@ -1,5 +1,5 @@
 import { ClientType } from "../../../../enums";
-import { Utils } from "../../../../misc/utils";
+import { Utils } from "../../../../platform/misc/utils";
 import { CaptchaProtectedRequest } from "../captcha-protected.request";
 
 import { DeviceRequest } from "./device.request";
@@ -12,7 +12,7 @@ export class PasswordTokenRequest extends TokenRequest implements CaptchaProtect
     public masterPasswordHash: string,
     public captchaResponse: string,
     protected twoFactor: TokenTwoFactorRequest,
-    device?: DeviceRequest
+    device?: DeviceRequest,
   ) {
     super(twoFactor, device);
   }

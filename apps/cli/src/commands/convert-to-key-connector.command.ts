@@ -1,8 +1,8 @@
 import * as inquirer from "inquirer";
 
-import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { Response } from "../models/response";
@@ -14,7 +14,7 @@ export class ConvertToKeyConnectorCommand {
     private environmentService: EnvironmentService,
     private syncService: SyncService,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private logout: () => Promise<void>
+    private logout: () => Promise<void>,
   ) {}
 
   async run(): Promise<Response> {
@@ -26,8 +26,8 @@ export class ConvertToKeyConnectorCommand {
         new MessageResponse(
           "An organization you are a member of is using Key Connector. " +
             "In order to access the vault, you must opt-in to Key Connector now via the web vault. You have been logged out.",
-          null
-        )
+          null,
+        ),
       );
     }
 

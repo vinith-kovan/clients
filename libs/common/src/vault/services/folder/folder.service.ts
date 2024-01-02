@@ -1,10 +1,10 @@
 import { BehaviorSubject, concatMap } from "rxjs";
 
-import { CryptoService } from "../../../abstractions/crypto.service";
-import { I18nService } from "../../../abstractions/i18n.service";
-import { StateService } from "../../../abstractions/state.service";
-import { Utils } from "../../../misc/utils";
-import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
+import { CryptoService } from "../../../platform/abstractions/crypto.service";
+import { I18nService } from "../../../platform/abstractions/i18n.service";
+import { StateService } from "../../../platform/abstractions/state.service";
+import { Utils } from "../../../platform/misc/utils";
+import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
 import { CipherService } from "../../../vault/abstractions/cipher.service";
 import { InternalFolderService as InternalFolderServiceAbstraction } from "../../../vault/abstractions/folder/folder.service.abstraction";
 import { CipherData } from "../../../vault/models/data/cipher.data";
@@ -23,7 +23,7 @@ export class FolderService implements InternalFolderServiceAbstraction {
     private cryptoService: CryptoService,
     private i18nService: I18nService,
     private cipherService: CipherService,
-    private stateService: StateService
+    private stateService: StateService,
   ) {
     this.stateService.activeAccountUnlocked$
       .pipe(
@@ -41,7 +41,7 @@ export class FolderService implements InternalFolderServiceAbstraction {
           const data = await this.stateService.getEncryptedFolders();
 
           await this.updateObservables(data);
-        })
+        }),
       )
       .subscribe();
   }
@@ -173,7 +173,7 @@ export class FolderService implements InternalFolderServiceAbstraction {
 
     this._folders.next(folders);
 
-    if (await this.cryptoService.hasKey()) {
+    if (await this.cryptoService.hasUserKey()) {
       this._folderViews.next(await this.decryptFolders(folders));
     }
   }

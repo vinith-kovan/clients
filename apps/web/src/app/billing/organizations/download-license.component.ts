@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
-import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 
 @Component({
   selector: "app-download-license",
@@ -19,7 +19,7 @@ export class DownloadLicenseComponent {
   constructor(
     private fileDownloadService: FileDownloadService,
     private logService: LogService,
-    private organizationApiService: OrganizationApiServiceAbstraction
+    private organizationApiService: OrganizationApiServiceAbstraction,
   ) {}
 
   async submit() {
@@ -30,7 +30,7 @@ export class DownloadLicenseComponent {
     try {
       this.formPromise = this.organizationApiService.getLicense(
         this.organizationId,
-        this.installationId
+        this.installationId,
       );
       const license = await this.formPromise;
       const licenseString = JSON.stringify(license, null, 2);

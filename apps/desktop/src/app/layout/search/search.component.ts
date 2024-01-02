@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
 import { Subscription } from "rxjs";
 
-import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
 import { SearchBarService, SearchBarState } from "./search-bar.service";
 
@@ -16,7 +16,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   private activeAccountSubscription: Subscription;
 
-  constructor(private searchBarService: SearchBarService, private stateService: StateService) {
+  constructor(
+    private searchBarService: SearchBarService,
+    private stateService: StateService,
+  ) {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     this.searchBarService.state$.subscribe((state) => {
       this.state = state;

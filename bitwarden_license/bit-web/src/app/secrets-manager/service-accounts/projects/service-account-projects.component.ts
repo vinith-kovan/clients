@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatestWith, map, Observable, startWith, Subject, switchMap, takeUntil } from "rxjs";
 
-import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
+import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
 import { ServiceAccountProjectAccessPolicyView } from "../../models/view/access-policy.view";
@@ -26,7 +26,7 @@ export class ServiceAccountProjectsComponent implements OnInit, OnDestroy {
       startWith(null),
       combineLatestWith(this.route.params),
       switchMap(([_, params]) =>
-        this.accessPolicyService.getGrantedPolicies(params.serviceAccountId, params.organizationId)
+        this.accessPolicyService.getGrantedPolicies(params.serviceAccountId, params.organizationId),
       ),
       map((policies) => {
         return policies.map((policy) => {
@@ -38,10 +38,10 @@ export class ServiceAccountProjectsComponent implements OnInit, OnDestroy {
             read: policy.read,
             write: policy.write,
             icon: AccessSelectorComponent.projectIcon,
-            static: true,
+            static: false,
           } as AccessSelectorRowView;
         });
-      })
+      }),
     );
 
   protected handleCreateAccessPolicies(selected: SelectItemView[]) {
@@ -59,8 +59,18 @@ export class ServiceAccountProjectsComponent implements OnInit, OnDestroy {
     return this.accessPolicyService.createGrantedPolicies(
       this.organizationId,
       this.serviceAccountId,
-      serviceAccountProjectAccessPolicyView
+      serviceAccountProjectAccessPolicyView,
     );
+  }
+
+  protected async handleUpdateAccessPolicy(policy: AccessSelectorRowView) {
+    try {
+      return await this.accessPolicyService.updateAccessPolicy(
+        AccessSelectorComponent.getBaseAccessPolicyView(policy),
+      );
+    } catch (e) {
+      this.validationService.showError(e);
+    }
   }
 
   protected async handleDeleteAccessPolicy(policy: AccessSelectorRowView) {
@@ -74,7 +84,7 @@ export class ServiceAccountProjectsComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private validationService: ValidationService,
-    private accessPolicyService: AccessPolicyService
+    private accessPolicyService: AccessPolicyService,
   ) {}
 
   ngOnInit(): void {

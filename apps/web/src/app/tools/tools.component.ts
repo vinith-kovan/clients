@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
-import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
 @Component({
   selector: "app-tools",
@@ -10,7 +10,10 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 export class ToolsComponent implements OnInit {
   canAccessPremium = false;
 
-  constructor(private stateService: StateService, private messagingService: MessagingService) {}
+  constructor(
+    private stateService: StateService,
+    private messagingService: MessagingService,
+  ) {}
 
   async ngOnInit() {
     this.canAccessPremium = await this.stateService.getCanAccessPremium();

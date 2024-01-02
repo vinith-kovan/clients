@@ -3,8 +3,9 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { BitValidators } from "@bitwarden/components";
 
 import { ProjectView } from "../../models/view/project.view";
 import { ProjectService } from "../../projects/project.service";
@@ -17,6 +18,7 @@ export enum OperationType {
 export interface ProjectOperation {
   organizationId: string;
   operation: OperationType;
+  organizationEnabled: boolean;
   projectId?: string;
 }
 
@@ -25,7 +27,10 @@ export interface ProjectOperation {
 })
 export class ProjectDialogComponent implements OnInit {
   protected formGroup = new FormGroup({
-    name: new FormControl("", [Validators.required]),
+    name: new FormControl("", {
+      validators: [Validators.required, Validators.maxLength(500), BitValidators.trimValidator],
+      updateOn: "submit",
+    }),
   });
   protected loading = false;
 
@@ -35,7 +40,7 @@ export class ProjectDialogComponent implements OnInit {
     private projectService: ProjectService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private router: Router
+    private router: Router,
   ) {}
 
   async ngOnInit() {
@@ -59,6 +64,15 @@ export class ProjectDialogComponent implements OnInit {
   }
 
   submit = async () => {
+    if (!this.data.organizationEnabled) {
+      this.platformUtilsService.showToast(
+        "error",
+        null,
+        this.i18nService.t("projectsCannotCreate"),
+      );
+      return;
+    }
+
     this.formGroup.markAllAsTouched();
 
     if (this.formGroup.invalid) {

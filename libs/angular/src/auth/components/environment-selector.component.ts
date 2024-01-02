@@ -2,11 +2,13 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
 import { ConnectedPosition } from "@angular/cdk/overlay";
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
-import { ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/config.service.abstraction";
-import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import {
+  EnvironmentService as EnvironmentServiceAbstraction,
+  Region,
+} from "@bitwarden/common/platform/abstractions/environment.service";
 
 @Component({
   selector: "environment-selector",
@@ -17,7 +19,7 @@ import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
         "void",
         style({
           opacity: 0,
-        })
+        }),
       ),
       transition(
         "void => open",
@@ -25,8 +27,8 @@ import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
           "100ms linear",
           style({
             opacity: 1,
-          })
-        )
+          }),
+        ),
       ),
       transition("* => void", animate("100ms linear", style({ opacity: 0 }))),
     ]),
@@ -36,10 +38,9 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
   @Output() onOpenSelfHostedSettings = new EventEmitter();
   isOpen = false;
   showingModal = false;
-  selectedEnvironment: ServerEnvironment;
-  ServerEnvironmentType = ServerEnvironment;
-  euServerFlagEnabled: boolean;
-  overlayPostition: ConnectedPosition[] = [
+  selectedEnvironment: Region;
+  ServerEnvironmentType = Region;
+  overlayPosition: ConnectedPosition[] = [
     {
       originX: "start",
       originY: "bottom",
@@ -50,15 +51,15 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
   protected componentDestroyed$: Subject<void> = new Subject();
 
   constructor(
-    protected environmentService: EnvironmentService,
+    protected environmentService: EnvironmentServiceAbstraction,
     protected configService: ConfigServiceAbstraction,
-    protected router: Router
+    protected router: Router,
   ) {}
 
   async ngOnInit() {
-    this.euServerFlagEnabled = await this.configService.getFeatureFlagBool(
-      FeatureFlag.DisplayEuEnvironmentFlag
-    );
+    this.configService.serverConfig$.pipe(takeUntil(this.componentDestroyed$)).subscribe(() => {
+      this.updateEnvironmentInfo();
+    });
     this.updateEnvironmentInfo();
   }
 
@@ -67,37 +68,29 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
     this.componentDestroyed$.complete();
   }
 
-  async toggle(option: ServerEnvironment) {
+  async toggle(option: Region) {
     this.isOpen = !this.isOpen;
-    if (option === ServerEnvironment.EU) {
-      await this.environmentService.setUrls({ base: "https://vault.bitwarden.eu" });
-    } else if (option === ServerEnvironment.US) {
-      await this.environmentService.setUrls({ base: "https://vault.bitwarden.com" });
-    } else if (option === ServerEnvironment.SelfHosted) {
-      this.onOpenSelfHostedSettings.emit();
+    if (option === null) {
+      return;
     }
+
+    this.updateEnvironmentInfo();
+
+    if (option === Region.SelfHosted) {
+      this.onOpenSelfHostedSettings.emit();
+      return;
+    }
+
+    await this.environmentService.setRegion(option);
     this.updateEnvironmentInfo();
   }
 
-  updateEnvironmentInfo() {
-    const webvaultUrl = this.environmentService.getWebVaultUrl();
-    if (this.environmentService.isSelfHosted()) {
-      this.selectedEnvironment = ServerEnvironment.SelfHosted;
-    } else if (webvaultUrl != null && webvaultUrl.includes("bitwarden.eu")) {
-      this.selectedEnvironment = ServerEnvironment.EU;
-    } else {
-      this.selectedEnvironment = ServerEnvironment.US;
-    }
+  async updateEnvironmentInfo() {
+    this.selectedEnvironment = this.environmentService.selectedRegion;
   }
 
   close() {
     this.isOpen = false;
     this.updateEnvironmentInfo();
   }
-}
-
-enum ServerEnvironment {
-  US = "US",
-  EU = "EU",
-  SelfHosted = "Self-hosted",
 }

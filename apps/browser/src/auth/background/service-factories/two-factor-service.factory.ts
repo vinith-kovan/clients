@@ -5,15 +5,15 @@ import {
   FactoryOptions,
   CachedServices,
   factory,
-} from "../../../background/service_factories/factory-options";
+} from "../../../platform/background/service-factories/factory-options";
 import {
   I18nServiceInitOptions,
   i18nServiceFactory,
-} from "../../../background/service_factories/i18n-service.factory";
+} from "../../../platform/background/service-factories/i18n-service.factory";
 import {
   PlatformUtilsServiceInitOptions,
   platformUtilsServiceFactory,
-} from "../../../background/service_factories/platform-utils-service.factory";
+} from "../../../platform/background/service-factories/platform-utils-service.factory";
 
 type TwoFactorServiceFactoryOptions = FactoryOptions;
 
@@ -23,7 +23,7 @@ export type TwoFactorServiceInitOptions = TwoFactorServiceFactoryOptions &
 
 export async function twoFactorServiceFactory(
   cache: { twoFactorService?: AbstractTwoFactorService } & CachedServices,
-  opts: TwoFactorServiceInitOptions
+  opts: TwoFactorServiceInitOptions,
 ): Promise<AbstractTwoFactorService> {
   const service = await factory(
     cache,
@@ -32,8 +32,8 @@ export async function twoFactorServiceFactory(
     async () =>
       new TwoFactorService(
         await i18nServiceFactory(cache, opts),
-        await platformUtilsServiceFactory(cache, opts)
-      )
+        await platformUtilsServiceFactory(cache, opts),
+      ),
   );
   service.init();
   return service;

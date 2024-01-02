@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { AccountSettingsSettings } from "../models/domain/account";
+import { AccountSettingsSettings } from "../platform/models/domain/account";
 
 export abstract class SettingsService {
   settings$: Observable<AccountSettingsSettings>;
@@ -10,5 +10,7 @@ export abstract class SettingsService {
   getEquivalentDomains: (url: string) => Set<string>;
   setDisableFavicon: (value: boolean) => Promise<any>;
   getDisableFavicon: () => boolean;
+  setAutoFillOverlayVisibility: (value: number) => Promise<void>;
+  getAutoFillOverlayVisibility: () => Promise<number>;
   clear: (userId?: string) => Promise<void>;
 }

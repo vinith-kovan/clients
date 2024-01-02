@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from "@angu
 import { FormControl, FormGroup } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 
-import { Utils } from "@bitwarden/common/misc/utils";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 @Component({
   selector: "app-nested-checkbox",
@@ -29,7 +29,7 @@ export class NestedCheckboxComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         Object.values(this.checkboxes.controls).forEach((control) =>
-          control.setValue(value, { emitEvent: false })
+          control.setValue(value, { emitEvent: false }),
         );
       });
   }

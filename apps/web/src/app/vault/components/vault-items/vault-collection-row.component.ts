@@ -2,9 +2,10 @@ import { Component, EventEmitter, HostBinding, HostListener, Input, Output } fro
 import { ActivatedRoute, Router } from "@angular/router";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
+import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 
-import { CollectionAdminView, GroupView } from "../../../admin-console/organizations/core";
+import { GroupView } from "../../../admin-console/organizations/core";
+import { CollectionAdminView } from "../../core/views/collection-admin.view";
 
 import { VaultItemEvent } from "./vault-item-event";
 import { RowHeightClass } from "./vault-items.component";
@@ -31,7 +32,10 @@ export class VaultCollectionRowComponent {
   @Input() checked: boolean;
   @Output() checkedToggled = new EventEmitter<void>();
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+  ) {}
 
   @HostBinding("class")
   get classes() {
@@ -59,11 +63,11 @@ export class VaultCollectionRowComponent {
   }
 
   protected edit() {
-    this.onEvent.next({ type: "edit", item: this.collection });
+    this.onEvent.next({ type: "editCollection", item: this.collection });
   }
 
   protected access() {
-    this.onEvent.next({ type: "viewAccess", item: this.collection });
+    this.onEvent.next({ type: "viewCollectionAccess", item: this.collection });
   }
 
   protected deleteCollection() {

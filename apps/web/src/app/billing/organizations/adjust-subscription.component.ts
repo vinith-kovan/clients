@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationSubscriptionUpdateRequest } from "@bitwarden/common/billing/models/request/organization-subscription-update.request";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
 @Component({
   selector: "app-adjust-subscription",
@@ -27,7 +27,7 @@ export class AdjustSubscription implements OnInit {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private logService: LogService,
-    private organizationApiService: OrganizationApiServiceAbstraction
+    private organizationApiService: OrganizationApiServiceAbstraction,
   ) {}
 
   ngOnInit() {
@@ -38,11 +38,13 @@ export class AdjustSubscription implements OnInit {
 
   async submit() {
     try {
-      const seatAdjustment = this.newSeatCount - this.currentSeatCount;
-      const request = new OrganizationSubscriptionUpdateRequest(seatAdjustment, this.newMaxSeats);
-      this.formPromise = this.organizationApiService.updateSubscription(
+      const request = new OrganizationSubscriptionUpdateRequest(
+        this.additionalSeatCount,
+        this.newMaxSeats,
+      );
+      this.formPromise = this.organizationApiService.updatePasswordManagerSeats(
         this.organizationId,
-        request
+        request,
       );
 
       await this.formPromise;
@@ -50,7 +52,7 @@ export class AdjustSubscription implements OnInit {
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("subscriptionUpdated")
+        this.i18nService.t("subscriptionUpdated"),
       );
     } catch (e) {
       this.logService.error(e);
@@ -64,11 +66,19 @@ export class AdjustSubscription implements OnInit {
     }
   }
 
+  get additionalSeatCount(): number {
+    return this.newSeatCount ? this.newSeatCount - this.currentSeatCount : 0;
+  }
+
+  get additionalMaxSeatCount(): number {
+    return this.newMaxSeats ? this.newMaxSeats - this.currentSeatCount : 0;
+  }
+
   get adjustedSeatTotal(): number {
-    return this.newSeatCount * this.seatPrice;
+    return this.additionalSeatCount * this.seatPrice;
   }
 
   get maxSeatTotal(): number {
-    return this.newMaxSeats * this.seatPrice;
+    return this.additionalMaxSeatCount * this.seatPrice;
   }
 }

@@ -2,19 +2,19 @@ import * as program from "commander";
 import * as inquirer from "inquirer";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
-import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { NodeUtils } from "@bitwarden/common/misc/nodeUtils";
-import { Utils } from "@bitwarden/common/misc/utils";
-import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
+import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 import { SendAccess } from "@bitwarden/common/tools/send/models/domain/send-access";
 import { SendAccessRequest } from "@bitwarden/common/tools/send/models/request/send-access.request";
 import { SendAccessView } from "@bitwarden/common/tools/send/models/view/send-access.view";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
+import { NodeUtils } from "@bitwarden/node/node-utils";
 
 import { DownloadCommand } from "../../../commands/download.command";
 import { Response } from "../../../models/response";
@@ -31,7 +31,7 @@ export class SendReceiveCommand extends DownloadCommand {
     private cryptoFunctionService: CryptoFunctionService,
     private platformUtilsService: PlatformUtilsService,
     private environmentService: EnvironmentService,
-    private sendApiService: SendApiService
+    private sendApiService: SendApiService,
   ) {
     super(cryptoService);
   }
@@ -89,13 +89,13 @@ export class SendReceiveCommand extends DownloadCommand {
         const downloadData = await this.sendApiService.getSendFileDownloadData(
           response,
           this.sendAccessRequest,
-          apiUrl
+          apiUrl,
         );
         return await this.saveAttachmentToFile(
           downloadData.url,
           this.decKey,
           response?.file?.fileName,
-          options.output
+          options.output,
         );
       }
       default:
@@ -121,12 +121,12 @@ export class SendReceiveCommand extends DownloadCommand {
     }
   }
 
-  private async getUnlockedPassword(password: string, keyArray: ArrayBuffer) {
+  private async getUnlockedPassword(password: string, keyArray: Uint8Array) {
     const passwordHash = await this.cryptoFunctionService.pbkdf2(
       password,
       keyArray,
       "sha256",
-      100000
+      100000,
     );
     return Utils.fromBufferToB64(passwordHash);
   }
@@ -134,13 +134,13 @@ export class SendReceiveCommand extends DownloadCommand {
   private async sendRequest(
     url: string,
     id: string,
-    key: ArrayBuffer
+    key: Uint8Array,
   ): Promise<Response | SendAccessView> {
     try {
       const sendResponse = await this.sendApiService.postSendAccess(
         id,
         this.sendAccessRequest,
-        url
+        url,
       );
 
       const sendAccess = new SendAccess(sendResponse);

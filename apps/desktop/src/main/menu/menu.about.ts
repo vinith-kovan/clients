@@ -1,6 +1,6 @@
 import { BrowserWindow, clipboard, dialog, MenuItemConstructorOptions } from "electron";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 import { isMacAppStore, isSnapStore, isWindowsStore } from "../../utils";
 import { UpdaterMain } from "../updater.main";
@@ -27,7 +27,7 @@ export class AboutMenu implements IMenubarMenu {
     i18nService: I18nService,
     version: string,
     window: BrowserWindow,
-    updater: UpdaterMain
+    updater: UpdaterMain,
   ) {
     this._i18nService = i18nService;
     this._updater = updater;

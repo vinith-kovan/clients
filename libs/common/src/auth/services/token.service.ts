@@ -1,5 +1,5 @@
-import { StateService } from "../../abstractions/state.service";
-import { Utils } from "../../misc/utils";
+import { StateService } from "../../platform/abstractions/state.service";
+import { Utils } from "../../platform/misc/utils";
 import { TokenService as TokenServiceAbstraction } from "../abstractions/token.service";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
@@ -28,7 +28,7 @@ export class TokenService implements TokenServiceAbstraction {
   async setTokens(
     accessToken: string,
     refreshToken: string,
-    clientIdClientSecret: [string, string]
+    clientIdClientSecret: [string, string],
   ): Promise<any> {
     await this.setToken(accessToken);
     await this.setRefreshToken(refreshToken);

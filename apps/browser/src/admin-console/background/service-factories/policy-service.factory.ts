@@ -4,11 +4,11 @@ import {
   CachedServices,
   factory,
   FactoryOptions,
-} from "../../../background/service_factories/factory-options";
+} from "../../../platform/background/service-factories/factory-options";
 import {
   stateServiceFactory as stateServiceFactory,
   StateServiceInitOptions,
-} from "../../../background/service_factories/state-service.factory";
+} from "../../../platform/background/service-factories/state-service.factory";
 import { BrowserPolicyService } from "../../services/browser-policy.service";
 
 import {
@@ -24,7 +24,7 @@ export type PolicyServiceInitOptions = PolicyServiceFactoryOptions &
 
 export function policyServiceFactory(
   cache: { policyService?: AbstractPolicyService } & CachedServices,
-  opts: PolicyServiceInitOptions
+  opts: PolicyServiceInitOptions,
 ): Promise<AbstractPolicyService> {
   return factory(
     cache,
@@ -33,7 +33,7 @@ export function policyServiceFactory(
     async () =>
       new BrowserPolicyService(
         await stateServiceFactory(cache, opts),
-        await organizationServiceFactory(cache, opts)
-      )
+        await organizationServiceFactory(cache, opts),
+      ),
   );
 }

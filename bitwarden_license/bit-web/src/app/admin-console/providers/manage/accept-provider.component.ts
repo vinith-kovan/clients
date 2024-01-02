@@ -2,10 +2,10 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { ProviderUserAcceptRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-user-accept.request";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { BaseAcceptComponent } from "@bitwarden/web-vault/app/common/base.accept.component";
 
 @Component({
@@ -25,7 +25,7 @@ export class AcceptProviderComponent extends BaseAcceptComponent {
     route: ActivatedRoute,
     stateService: StateService,
     private apiService: ApiService,
-    platformUtilService: PlatformUtilsService
+    platformUtilService: PlatformUtilsService,
   ) {
     super(router, platformUtilService, i18nService, route, stateService);
   }
@@ -37,13 +37,13 @@ export class AcceptProviderComponent extends BaseAcceptComponent {
     await this.apiService.postProviderUserAccept(
       qParams.providerId,
       qParams.providerUserId,
-      request
+      request,
     );
     this.platformUtilService.showToast(
       "success",
       this.i18nService.t("inviteAccepted"),
       this.i18nService.t("providerInviteAcceptedDesc"),
-      { timeout: 10000 }
+      { timeout: 10000 },
     );
     this.router.navigate(["/vault"]);
   }

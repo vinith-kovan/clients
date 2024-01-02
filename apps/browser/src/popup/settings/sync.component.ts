@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 @Component({
@@ -15,7 +15,7 @@ export class SyncComponent implements OnInit {
   constructor(
     private syncService: SyncService,
     private platformUtilsService: PlatformUtilsService,
-    private i18nService: I18nService
+    private i18nService: I18nService,
   ) {}
 
   async ngOnInit() {

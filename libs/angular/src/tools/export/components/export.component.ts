@@ -1,30 +1,52 @@
-import { Directive, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
+import { Directive, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
 import { UntypedFormBuilder, Validators } from "@angular/forms";
-import { merge, takeUntil, Subject, startWith } from "rxjs";
+import { concat, map, merge, Observable, startWith, Subject, takeUntil } from "rxjs";
 
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
+import {
+  OrganizationService,
+  canAccessImportExport,
+} from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { EncryptedExportType, EventType } from "@bitwarden/common/enums";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { EventType } from "@bitwarden/common/enums";
+import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { EncryptedExportType } from "@bitwarden/common/tools/enums/encrypted-export-type.enum";
+import { DialogService } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
-import { DialogServiceAbstraction, SimpleDialogType } from "../../../services/dialog";
+import { PasswordStrengthComponent } from "../../password-strength/password-strength.component";
 
 @Directive()
 export class ExportComponent implements OnInit, OnDestroy {
   @Output() onSaved = new EventEmitter();
+  @ViewChild(PasswordStrengthComponent) passwordStrengthComponent: PasswordStrengthComponent;
 
+  filePasswordValue: string = null;
   formPromise: Promise<string>;
-  disabledByPolicy = false;
+  private _disabledByPolicy = false;
+  protected organizationId: string = null;
+  organizations$: Observable<Organization[]>;
+
+  protected get disabledByPolicy(): boolean {
+    return this._disabledByPolicy;
+  }
 
   exportForm = this.formBuilder.group({
-    format: ["json"],
+    vaultSelector: [
+      "myVault",
+      {
+        nonNullable: true,
+        validators: [Validators.required],
+      },
+    ],
+    format: ["json", Validators.required],
     secret: [""],
     filePassword: ["", Validators.required],
     confirmFilePassword: ["", Validators.required],
@@ -40,33 +62,53 @@ export class ExportComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    protected cryptoService: CryptoService,
     protected i18nService: I18nService,
     protected platformUtilsService: PlatformUtilsService,
     protected exportService: VaultExportServiceAbstraction,
     protected eventCollectionService: EventCollectionService,
     private policyService: PolicyService,
-    protected win: Window,
     private logService: LogService,
     private userVerificationService: UserVerificationService,
     private formBuilder: UntypedFormBuilder,
     protected fileDownloadService: FileDownloadService,
-    protected dialogService: DialogServiceAbstraction
+    protected dialogService: DialogService,
+    protected organizationService: OrganizationService,
   ) {}
 
   async ngOnInit() {
+    this.organizations$ = concat(
+      this.organizationService.memberOrganizations$.pipe(
+        canAccessImportExport(this.i18nService),
+        map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
+      ),
+    );
+
     this.policyService
       .policyAppliesToActiveUser$(PolicyType.DisablePersonalVaultExport)
       .pipe(takeUntil(this.destroy$))
       .subscribe((policyAppliesToActiveUser) => {
-        this.disabledByPolicy = policyAppliesToActiveUser;
+        this._disabledByPolicy = policyAppliesToActiveUser;
+        if (this.disabledByPolicy) {
+          this.exportForm.disable();
+        }
       });
 
-    await this.checkExportDisabled();
+    if (this.organizationId) {
+      this.exportForm.controls.vaultSelector.patchValue(this.organizationId);
+      this.exportForm.controls.vaultSelector.disable();
+    } else {
+      this.exportForm.controls.vaultSelector.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value) => {
+          this.organizationId = value != "myVault" ? value : undefined;
+        });
+
+      this.exportForm.controls.vaultSelector.setValue("myVault");
+    }
 
     merge(
       this.exportForm.get("format").valueChanges,
-      this.exportForm.get("fileEncryptionType").valueChanges
+      this.exportForm.get("fileEncryptionType").valueChanges,
     )
       .pipe(takeUntil(this.destroy$))
       .pipe(startWith(0))
@@ -75,12 +117,6 @@ export class ExportComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.destroy$.next();
-  }
-
-  async checkExportDisabled() {
-    if (this.disabledByPolicy) {
-      this.exportForm.disable();
-    }
   }
 
   get encryptedFormat() {
@@ -106,7 +142,7 @@ export class ExportComponent implements OnInit, OnDestroy {
       this.platformUtilsService.showToast(
         "error",
         null,
-        this.i18nService.t("personalVaultExportPolicyInEffect")
+        this.i18nService.t("personalVaultExportPolicyInEffect"),
       );
       return;
     }
@@ -136,14 +172,14 @@ export class ExportComponent implements OnInit, OnDestroy {
           " " +
           this.i18nService.t("encExportAccountWarningDesc"),
         acceptButtonText: { key: "exportVault" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
     } else {
       return await this.dialogService.openSimpleDialog({
         title: { key: "confirmVaultExport" },
         content: { key: "exportWarningDesc" },
         acceptButtonText: { key: "exportVault" },
-        type: SimpleDialogType.WARNING,
+        type: "warning",
       });
     }
   }

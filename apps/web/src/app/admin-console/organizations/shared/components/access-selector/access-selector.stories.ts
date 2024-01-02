@@ -1,6 +1,7 @@
+import { importProvidersFrom } from "@angular/core";
 import { FormBuilder, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { action } from "@storybook/addon-actions";
-import { Meta, moduleMetadata, Story } from "@storybook/angular";
+import { applicationConfig, Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
@@ -18,7 +19,7 @@ import {
   TabsModule,
 } from "@bitwarden/components";
 
-import { PreloadedEnglishI18nModule } from "../../../../../tests/preloaded-english-i18n.module";
+import { PreloadedEnglishI18nModule } from "../../../../../core/tests";
 
 import { AccessSelectorComponent } from "./access-selector.component";
 import { AccessItemType, AccessItemView, CollectionPermission } from "./access-selector.models";
@@ -39,11 +40,13 @@ export default {
         FormsModule,
         TabsModule,
         TableModule,
-        PreloadedEnglishI18nModule,
         JslibModule,
         IconButtonModule,
       ],
       providers: [],
+    }),
+    applicationConfig({
+      providers: [importProvidersFrom(PreloadedEnglishI18nModule)],
     }),
   ],
   parameters: {},
@@ -97,7 +100,7 @@ const sampleMembers = itemsFactory(10, AccessItemType.Member);
 const sampleGroups = itemsFactory(6, AccessItemType.Group);
 
 const StandaloneAccessSelectorTemplate: Story<AccessSelectorComponent> = (
-  args: AccessSelectorComponent
+  args: AccessSelectorComponent,
 ) => ({
   props: {
     items: [],
@@ -123,7 +126,7 @@ const StandaloneAccessSelectorTemplate: Story<AccessSelectorComponent> = (
 });
 
 const DialogAccessSelectorTemplate: Story<AccessSelectorComponent> = (
-  args: AccessSelectorComponent
+  args: AccessSelectorComponent,
 ) => ({
   props: {
     items: [],
@@ -335,7 +338,7 @@ GroupMembersAccess.story = {
 const fb = new FormBuilder();
 
 const ReactiveFormAccessSelectorTemplate: Story<AccessSelectorComponent> = (
-  args: AccessSelectorComponent
+  args: AccessSelectorComponent,
 ) => ({
   props: {
     items: [],

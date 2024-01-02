@@ -12,6 +12,7 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
+import BrowserPlatformUtilsService from "../../platform/services/browser-platform-utils.service";
 import { BrowserStateService } from "../../platform/services/browser-state.service";
 import { SHOW_AUTOFILL_BUTTON } from "../constants";
 import {
@@ -47,6 +48,7 @@ describe("OverlayBackground", () => {
   const settingsService = mock<SettingsService>();
   const stateService = mock<BrowserStateService>();
   const i18nService = mock<I18nService>();
+  const platformUtilsService = mock<BrowserPlatformUtilsService>();
   const initOverlayElementPorts = (options = { initList: true, initButton: true }) => {
     const { initList, initButton } = options;
     if (initButton) {
@@ -71,6 +73,7 @@ describe("OverlayBackground", () => {
       settingsService,
       stateService,
       i18nService,
+      platformUtilsService,
     );
     overlayBackground.init();
   });

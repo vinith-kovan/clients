@@ -451,7 +451,6 @@ export class Main {
       this.tokenService,
       this.policyService,
       this.stateService,
-      this.userVerificationService,
     );
 
     this.vaultTimeoutService = new VaultTimeoutService(

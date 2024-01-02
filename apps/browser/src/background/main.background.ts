@@ -529,7 +529,6 @@ export default class MainBackground {
       this.tokenService,
       this.policyService,
       this.stateService,
-      this.userVerificationService,
     );
 
     this.vaultFilterService = new VaultFilterService(

@@ -515,6 +515,10 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     });
   }
 
+  protected get flexibleCollectionsEnabled() {
+    return this.organization?.flexibleCollections;
+  }
+
   protected readonly ProductType = ProductType;
 }
 

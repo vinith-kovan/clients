@@ -1,4 +1,5 @@
 import MainBackground from "../background/main.background";
+import { registerTasks } from "../tasks/task-scheduler";
 
 import { onAlarmListener } from "./alarms/on-alarm-listener";
 import { registerAlarms } from "./alarms/register-alarms";
@@ -13,7 +14,6 @@ import {
   tabsOnReplacedListener,
   tabsOnUpdatedListener,
 } from "./listeners";
-import { registerTasks } from "./tasks/task-scheduler";
 
 if (BrowserApi.manifestVersion === 3) {
   chrome.commands.onCommand.addListener(onCommandListener);

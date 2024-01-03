@@ -1,4 +1,4 @@
-import { CachedServices } from "../background/service_factories/factory-options";
+import { CachedServices } from "../platform/background/service-factories/factory-options";
 
 import { UploadEventsTask } from "./upload-events-tasks";
 

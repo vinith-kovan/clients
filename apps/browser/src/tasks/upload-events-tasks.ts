@@ -1,10 +1,10 @@
-import { StateFactory } from "@bitwarden/common/factories/stateFactory";
-import { GlobalState } from "@bitwarden/common/models/domain/global-state";
+import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
+import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 
-import { setAlarmTime } from "../alarms/alarm-state";
-import { eventUploadServiceFactory } from "../background/service_factories/event-upload-service.factory";
-import { CachedServices } from "../background/service_factories/factory-options";
 import { Account } from "../models/account";
+import { setAlarmTime } from "../platform/alarms/alarm-state";
+import { CachedServices } from "../platform/background/service-factories/factory-options";
+import { eventUploadServiceFactory } from "../tools/background/service_factories/event-upload-service.factory";
 
 export const uploadEventAlarmName = "uploadEvents";
 

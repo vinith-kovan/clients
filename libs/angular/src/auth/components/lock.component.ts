@@ -117,11 +117,10 @@ export class LockComponent implements OnInit, OnDestroy {
       return;
     }
 
-    await this.stateService.setSkipProcessReload(true);
+    await this.stateService.setBiometricPromptCancelled(true);
     const userKey = await this.cryptoService.getUserKeyFromStorage(KeySuffixOptions.Biometric);
 
     if (userKey) {
-      await this.stateService.setSkipProcessReload(false);
       await this.setUserKeyAndContinue(userKey, false);
     }
 
@@ -312,6 +311,7 @@ export class LockComponent implements OnInit, OnDestroy {
 
   private async doContinue(evaluatePasswordAfterUnlock: boolean) {
     await this.stateService.setEverBeenUnlocked(true);
+    await this.stateService.setBiometricPromptCancelled(false);
     this.messagingService.send("unlocked");
 
     if (evaluatePasswordAfterUnlock) {

@@ -47,11 +47,6 @@ export class SystemService implements SystemServiceAbstraction {
       return;
     }
 
-    if (await this.stateService.getSkipProcessReload()) {
-      await this.stateService.setSkipProcessReload(false);
-      return;
-    }
-
     this.cancelProcessReload();
     await this.executeProcessReload();
   }

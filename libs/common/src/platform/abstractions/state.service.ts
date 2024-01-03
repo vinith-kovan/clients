@@ -182,13 +182,17 @@ export abstract class StateService<T extends Account = Account> {
    */
   setCryptoMasterKeyBiometric: (value: BiometricKey, options?: StorageOptions) => Promise<void>;
   /**
-   * Gets a flag for skipping process reload a single time
+   * Gets a flag for if the biometrics process has been cancelled.
+   * Process reload occurs when biometrics is cancelled, so we store to disk to prevent
+   * it from reprompting and creating a loop.
    */
-  getSkipProcessReload: (options?: StorageOptions) => Promise<boolean>;
+  getBiometricPromptCancelled: (options?: StorageOptions) => Promise<boolean>;
   /**
-   * Sets a flag for skipping process reload a single time
+   * Sets a flag for if the biometrics process has been cancelled.
+   * Process reload occurs when biometrics is cancelled, so we store to disk to prevent
+   * it from reprompting and creating a loop.
    */
-  setSkipProcessReload: (value: boolean, options?: StorageOptions) => Promise<void>;
+  setBiometricPromptCancelled: (value: boolean, options?: StorageOptions) => Promise<void>;
   getDecryptedCiphers: (options?: StorageOptions) => Promise<CipherView[]>;
   setDecryptedCiphers: (value: CipherView[], options?: StorageOptions) => Promise<void>;
   getDecryptedCollections: (options?: StorageOptions) => Promise<CollectionView[]>;

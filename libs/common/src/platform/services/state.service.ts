@@ -903,21 +903,21 @@ export class StateService<
     await this.saveSecureStorageKey(partialKeys.biometricKey, value, options);
   }
 
-  async getSkipProcessReload(options?: StorageOptions): Promise<boolean> {
+  async getBiometricPromptCancelled(options?: StorageOptions): Promise<boolean> {
     const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
     );
-    return account?.settings?.deterProcessReload;
+    return account?.settings?.biometricPromptCancelled;
   }
 
-  async setSkipProcessReload(value: boolean, options?: StorageOptions): Promise<void> {
+  async setBiometricPromptCancelled(value: boolean, options?: StorageOptions): Promise<void> {
     const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
     );
-    account.settings.deterProcessReload = value;
+    account.settings.biometricPromptCancelled = value;
     await this.saveAccount(
       account,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
+      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
     );
   }
 

@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 
-import { ProgressModule } from "../../../../../../../libs/components/src";
+import { ProgressModule } from "@bitwarden/components";
+
 import { SharedModule } from "../../shared.module";
 
 import { OnboardingTaskComponent } from "./onboarding-task.component";

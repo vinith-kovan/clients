@@ -10,12 +10,14 @@ import {
   OnChanges,
 } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subject, takeUntil, BehaviorSubject, take } from "rxjs";
+import { Subject, takeUntil, BehaviorSubject, firstValueFrom, Observable } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -35,18 +37,15 @@ export type VaultOnboardingTasks = {
   templateUrl: "vault-onboarding.component.html",
 })
 export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() showOnboardingAccess: boolean;
   @Input() ciphers: CipherView[];
   @Output() onAddCipher = new EventEmitter<void>();
 
-  isChrome: boolean;
-  isFirefox: boolean;
-  isSafari: boolean;
   extensionUrl: string;
   isIndividualPolicyVault: boolean;
   private destroy$ = new Subject<void>();
   isNewAccount: boolean;
   private readonly onboardingReleaseDate = new Date(2023, 12, 22);
+  showOnboardingAccess: Observable<boolean>;
 
   protected onboardingTasks$: BehaviorSubject<VaultOnboardingTasks> =
     new BehaviorSubject<VaultOnboardingTasks>({
@@ -58,19 +57,16 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   protected showOnboarding = false;
 
   constructor(
-    private platformUtilsService: PlatformUtilsService,
+    protected platformUtilsService: PlatformUtilsService,
     protected policyService: PolicyService,
     private stateService: StateService,
     protected router: Router,
     private apiService: ApiService,
-  ) {
-    this.isChrome = platformUtilsService.isChrome();
-    this.isFirefox = platformUtilsService.isFirefox();
-    this.isSafari = platformUtilsService.isSafari();
-  }
+    private configService: ConfigServiceAbstraction,
+  ) {}
 
   ngOnInit() {
-    this.checkCreationDate();
+    this.checkOnboardingFlag();
     this.onboardingTasks$.pipe(takeUntil(this.destroy$)).subscribe((tasks: any) => {
       this.showOnboarding = tasks !== null ? Object.values(tasks).includes(false) : true;
     });
@@ -96,6 +92,13 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  async checkOnboardingFlag() {
+    this.showOnboardingAccess = await this.configService.getFeatureFlag$<boolean>(
+      FeatureFlag.VaultOnboarding,
+      false,
+    );
   }
 
   async checkCreationDate() {
@@ -130,6 +133,10 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     } else if (tasksInStorage && tasksInStorage.currentStatus) {
       this.showOnboarding = Object.values(tasksInStorage.currentStatus).includes(false);
     }
+
+    if (this.showOnboarding) {
+      this.checkCreationDate();
+    }
   }
 
   private async saveCompletedTasks(vaultTasks: VaultOnboardingTasks) {
@@ -153,24 +160,23 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   setInstallExtLink() {
-    if (this.isChrome) {
+    if (this.platformUtilsService.isChrome()) {
       this.extensionUrl =
         "https://chrome.google.com/webstore/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb";
-    } else if (this.isFirefox) {
+    } else if (this.platformUtilsService.isFirefox()) {
       this.extensionUrl =
         "https://addons.mozilla.org/en-US/firefox/addon/bitwarden-password-manager/";
-    } else if (this.isSafari) {
+    } else if (this.platformUtilsService.isSafari()) {
       this.extensionUrl = "https://apps.apple.com/us/app/bitwarden/id1352778147?mt=12";
     }
   }
 
-  navigateToImport() {
+  async navigateToImport() {
     if (!this.isIndividualPolicyVault) {
-      this.onboardingTasks$.pipe(take(1), takeUntil(this.destroy$)).subscribe((onboardingTasks) => {
-        if (!onboardingTasks.importData) {
-          this.router.navigate(["tools/import"]);
-        }
-      });
+      const onboardingTasks = await firstValueFrom(this.onboardingTasks$);
+      if (!onboardingTasks.importData) {
+        this.router.navigate(["tools/import"]);
+      }
     }
   }
 

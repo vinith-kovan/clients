@@ -1,10 +1,5 @@
 <div class="container page-content">
-  <app-vault-onboarding
-    [showOnboardingAccess]="showOnboardingAccess$ | async"
-    [ciphers]="ciphers"
-    (onAddCipher)="addCipher()"
-  >
-  </app-vault-onboarding>
+  <app-vault-onboarding [ciphers]="ciphers" (onAddCipher)="addCipher()"> </app-vault-onboarding>
 
   <div class="row">
     <div class="col-3">

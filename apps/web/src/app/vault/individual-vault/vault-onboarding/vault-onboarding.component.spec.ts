@@ -5,6 +5,7 @@ import { BehaviorSubject, of } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
@@ -15,10 +16,11 @@ describe("VaultOnboardingComponent", () => {
   let component: VaultOnboardingComponent;
   let fixture: ComponentFixture<VaultOnboardingComponent>;
   let mockPlatformUtilsService: Partial<PlatformUtilsService>;
-  let mockApiService: MockProxy<ApiService>;
+  let mockApiService: Partial<ApiService>;
   let mockStateService: MockProxy<StateService>;
   let mockPolicyService: MockProxy<PolicyService>;
   let mockI18nService: MockProxy<I18nService>;
+  let mockConfigService: MockProxy<ConfigServiceAbstraction>;
   let setInstallExtLinkSpy: any;
   let individualVaultPolicyCheckSpy: any;
 
@@ -26,11 +28,11 @@ describe("VaultOnboardingComponent", () => {
     mockPolicyService = mock<PolicyService>();
     mockStateService = mock<StateService>();
     mockI18nService = mock<I18nService>();
-    mockPlatformUtilsService = {
-      isChrome: jest.fn(),
-      isFirefox: jest.fn(),
-      isSafari: jest.fn(),
+    mockPlatformUtilsService = mock<PlatformUtilsService>();
+    mockApiService = {
+      getProfile: jest.fn(),
     };
+    mockConfigService = mock<ConfigServiceAbstraction>();
 
     TestBed.configureTestingModule({
       declarations: [],
@@ -41,6 +43,7 @@ describe("VaultOnboardingComponent", () => {
         { provide: StateService, useValue: mockStateService },
         { provide: I18nService, useValue: mockI18nService },
         { provide: ApiService, useValue: mockApiService },
+        { provide: ConfigServiceAbstraction, useValue: mockConfigService },
       ],
     }).compileComponents();
   });
@@ -52,6 +55,8 @@ describe("VaultOnboardingComponent", () => {
     individualVaultPolicyCheckSpy = jest
       .spyOn(component, "individualVaultPolicyCheck")
       .mockReturnValue(undefined);
+    // (component as any).apiService.getProfile.mockResolvedValueOnce(new Date());
+    jest.spyOn(component, "checkCreationDate").mockReturnValue(null);
   });
 
   it("should create", () => {
@@ -88,7 +93,7 @@ describe("VaultOnboardingComponent", () => {
 
   describe("setInstallExtLink", () => {
     it("should set extensionUrl to Chrome Web Store when isChrome is true", () => {
-      component.isChrome = true;
+      jest.spyOn((component as any).platformUtilsService, "isChrome").mockReturnValue(true);
       const expected =
         "https://chrome.google.com/webstore/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb";
       component.ngOnInit();
@@ -96,14 +101,14 @@ describe("VaultOnboardingComponent", () => {
     });
 
     it("should set extensionUrl to Firefox Store when isFirefox is true", () => {
-      component.isFirefox = true;
+      jest.spyOn((component as any).platformUtilsService, "isFirefox").mockReturnValue(true);
       const expected = "https://addons.mozilla.org/en-US/firefox/addon/bitwarden-password-manager/";
       component.ngOnInit();
       expect(component.extensionUrl).toEqual(expected);
     });
 
     it("should set extensionUrl when isSafari is true", () => {
-      component.isSafari = true;
+      jest.spyOn((component as any).platformUtilsService, "isSafari").mockReturnValue(true);
       const expected = "https://apps.apple.com/us/app/bitwarden/id1352778147?mt=12";
       component.ngOnInit();
       expect(component.extensionUrl).toEqual(expected);
@@ -124,7 +129,7 @@ describe("VaultOnboardingComponent", () => {
   });
 
   describe("navigateToImport", () => {
-    it("should navigate to tools/import when individualPolicy and tasks.importData are both false", () => {
+    it("should navigate to tools/import when individualPolicy and tasks.importData are both false", async () => {
       component.isIndividualPolicyVault = false;
       (component as any).onboardingTasks$ = new BehaviorSubject<VaultOnboardingTasks>({
         createAccount: true,
@@ -132,8 +137,9 @@ describe("VaultOnboardingComponent", () => {
         installExtension: false,
       });
       const navigateSpy = jest.spyOn((component as any).router, "navigate").mockResolvedValue(true);
+
       const expected = ["tools/import"];
-      component.navigateToImport();
+      await component.navigateToImport();
       expect(navigateSpy).toHaveBeenCalledWith(expected);
     });
   });

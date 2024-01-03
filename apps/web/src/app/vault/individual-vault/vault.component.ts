@@ -149,10 +149,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     FeatureFlag.BulkCollectionAccess,
     false,
   );
-  protected showOnboardingAccess$ = this.configService.getFeatureFlag$(
-    FeatureFlag.VaultOnboarding,
-    false,
-  );
 
   private searchText$ = new Subject<string>();
   private refresh$ = new BehaviorSubject<void>(null);

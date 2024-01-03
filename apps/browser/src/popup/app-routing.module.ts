@@ -6,17 +6,19 @@ import {
   AuthGuard,
   lockGuard,
   tdeDecryptionRequiredGuard,
-  UnauthGuard,
+  unauthGuardFn,
 } from "@bitwarden/angular/auth/guards";
-import { canAccessFeature } from "@bitwarden/angular/guard/feature-flag.guard";
+import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag.guard";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
+import { fido2AuthGuard } from "../auth/guards/fido2-auth.guard";
+import { AccountSwitcherComponent } from "../auth/popup/account-switching/account-switcher.component";
 import { EnvironmentComponent } from "../auth/popup/environment.component";
 import { HintComponent } from "../auth/popup/hint.component";
 import { HomeComponent } from "../auth/popup/home.component";
 import { LockComponent } from "../auth/popup/lock.component";
 import { LoginDecryptionOptionsComponent } from "../auth/popup/login-decryption-options/login-decryption-options.component";
-import { LoginWithDeviceComponent } from "../auth/popup/login-with-device.component";
+import { LoginViaAuthRequestComponent } from "../auth/popup/login-via-auth-request.component";
 import { LoginComponent } from "../auth/popup/login.component";
 import { RegisterComponent } from "../auth/popup/register.component";
 import { RemovePasswordComponent } from "../auth/popup/remove-password.component";
@@ -25,12 +27,16 @@ import { SsoComponent } from "../auth/popup/sso.component";
 import { TwoFactorOptionsComponent } from "../auth/popup/two-factor-options.component";
 import { TwoFactorComponent } from "../auth/popup/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/popup/update-temp-password.component";
+import { AutofillComponent } from "../autofill/popup/settings/autofill.component";
+import BrowserPopupUtils from "../platform/popup/browser-popup-utils";
 import { GeneratorComponent } from "../tools/popup/generator/generator.component";
 import { PasswordGeneratorHistoryComponent } from "../tools/popup/generator/password-generator-history.component";
 import { SendAddEditComponent } from "../tools/popup/send/send-add-edit.component";
 import { SendGroupingsComponent } from "../tools/popup/send/send-groupings.component";
 import { SendTypeComponent } from "../tools/popup/send/send-type.component";
 import { ExportComponent } from "../tools/popup/settings/export.component";
+import { ImportBrowserComponent } from "../tools/popup/settings/import/import-browser.component";
+import { Fido2Component } from "../vault/popup/components/fido2/fido2.component";
 import { AddEditComponent } from "../vault/popup/components/vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/popup/components/vault/attachments.component";
 import { CollectionsComponent } from "../vault/popup/components/vault/collections.component";
@@ -42,8 +48,7 @@ import { VaultItemsComponent } from "../vault/popup/components/vault/vault-items
 import { ViewComponent } from "../vault/popup/components/vault/view.component";
 import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.component";
 
-import { DebounceNavigationService } from "./services/debounceNavigationService";
-import { AutofillComponent } from "./settings/autofill.component";
+import { debounceNavigationGuard } from "./services/debounce-navigation.service";
 import { ExcludedDomainsComponent } from "./settings/excluded-domains.component";
 import { FoldersComponent } from "./settings/folders.component";
 import { HelpAndFeedbackComponent } from "./settings/help-and-feedback.component";
@@ -52,6 +57,12 @@ import { PremiumComponent } from "./settings/premium.component";
 import { SettingsComponent } from "./settings/settings.component";
 import { SyncComponent } from "./settings/sync.component";
 import { TabsComponent } from "./tabs.component";
+
+const unauthRouteOverrides = {
+  homepage: () => {
+    return BrowserPopupUtils.inPopout(window) ? "/tabs/vault" : "/tabs/current";
+  },
+};
 
 const routes: Routes = [
   {
@@ -70,24 +81,30 @@ const routes: Routes = [
   {
     path: "home",
     component: HomeComponent,
-    canActivate: [UnauthGuard],
+    canActivate: [unauthGuardFn(unauthRouteOverrides)],
     data: { state: "home" },
+  },
+  {
+    path: "fido2",
+    component: Fido2Component,
+    canActivate: [fido2AuthGuard],
+    data: { state: "fido2" },
   },
   {
     path: "login",
     component: LoginComponent,
-    canActivate: [UnauthGuard],
+    canActivate: [unauthGuardFn(unauthRouteOverrides)],
     data: { state: "login" },
   },
   {
     path: "login-with-device",
-    component: LoginWithDeviceComponent,
+    component: LoginViaAuthRequestComponent,
     canActivate: [],
     data: { state: "login-with-device" },
   },
   {
     path: "admin-approval-requested",
-    component: LoginWithDeviceComponent,
+    component: LoginViaAuthRequestComponent,
     canActivate: [],
     data: { state: "login-with-device" },
   },
@@ -95,18 +112,18 @@ const routes: Routes = [
     path: "lock",
     component: LockComponent,
     canActivate: [lockGuard()],
-    data: { state: "lock" },
+    data: { state: "lock", doNotSaveUrl: true },
   },
   {
     path: "2fa",
     component: TwoFactorComponent,
-    canActivate: [UnauthGuard],
+    canActivate: [unauthGuardFn(unauthRouteOverrides)],
     data: { state: "2fa" },
   },
   {
     path: "2fa-options",
     component: TwoFactorOptionsComponent,
-    canActivate: [UnauthGuard],
+    canActivate: [unauthGuardFn(unauthRouteOverrides)],
     data: { state: "2fa-options" },
   },
   {
@@ -120,7 +137,7 @@ const routes: Routes = [
   {
     path: "sso",
     component: SsoComponent,
-    canActivate: [UnauthGuard],
+    canActivate: [unauthGuardFn(unauthRouteOverrides)],
     data: { state: "sso" },
   },
   {
@@ -137,19 +154,19 @@ const routes: Routes = [
   {
     path: "register",
     component: RegisterComponent,
-    canActivate: [UnauthGuard],
+    canActivate: [unauthGuardFn(unauthRouteOverrides)],
     data: { state: "register" },
   },
   {
     path: "hint",
     component: HintComponent,
-    canActivate: [UnauthGuard],
+    canActivate: [unauthGuardFn(unauthRouteOverrides)],
     data: { state: "hint" },
   },
   {
     path: "environment",
     component: EnvironmentComponent,
-    canActivate: [UnauthGuard],
+    canActivate: [unauthGuardFn(unauthRouteOverrides)],
     data: { state: "environment" },
   },
   {
@@ -173,14 +190,14 @@ const routes: Routes = [
   {
     path: "add-cipher",
     component: AddEditComponent,
-    canActivate: [AuthGuard, DebounceNavigationService],
+    canActivate: [AuthGuard, debounceNavigationGuard()],
     data: { state: "add-cipher" },
     runGuardsAndResolvers: "always",
   },
   {
     path: "edit-cipher",
     component: AddEditComponent,
-    canActivate: [AuthGuard, DebounceNavigationService],
+    canActivate: [AuthGuard, debounceNavigationGuard()],
     data: { state: "edit-cipher" },
     runGuardsAndResolvers: "always",
   },
@@ -213,6 +230,12 @@ const routes: Routes = [
     component: PasswordGeneratorHistoryComponent,
     canActivate: [AuthGuard],
     data: { state: "generator-history" },
+  },
+  {
+    path: "import",
+    component: ImportBrowserComponent,
+    canActivate: [AuthGuard],
+    data: { state: "import" },
   },
   {
     path: "export",
@@ -346,6 +369,11 @@ const routes: Routes = [
         data: { state: "tabs_send" },
       },
     ],
+  },
+  {
+    path: "account-switcher",
+    component: AccountSwitcherComponent,
+    data: { state: "account-switcher", doNotSaveUrl: true },
   },
 ];
 

@@ -29,7 +29,7 @@ if (BrowserApi.manifestVersion === 3) {
     "runtime.background",
     (message: { command: string }, sender, sendResponse) => {
       runtimeMessageListener(message, sender);
-    }
+    },
   );
   registerTasks();
 } else {

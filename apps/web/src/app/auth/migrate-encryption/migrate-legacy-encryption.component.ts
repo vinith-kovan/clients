@@ -8,15 +8,14 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
 import { SharedModule } from "../../shared";
-
-import { MigrateFromLegacyEncryptionService } from "./migrate-legacy-encryption.service";
+import { UserKeyRotationModule } from "../key-rotation/user-key-rotation.module";
+import { UserKeyRotationService } from "../key-rotation/user-key-rotation.service";
 
 // The master key was originally used to encrypt user data, before the user key was introduced.
 // This component is used to migrate from the old encryption scheme to the new one.
 @Component({
   standalone: true,
-  imports: [SharedModule],
-  providers: [MigrateFromLegacyEncryptionService],
+  imports: [SharedModule, UserKeyRotationModule],
   templateUrl: "migrate-legacy-encryption.component.html",
 })
 export class MigrateFromLegacyEncryptionComponent {
@@ -25,12 +24,12 @@ export class MigrateFromLegacyEncryptionComponent {
   });
 
   constructor(
+    private keyRotationService: UserKeyRotationService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private migrationService: MigrateFromLegacyEncryptionService,
     private cryptoService: CryptoService,
     private messagingService: MessagingService,
-    private logService: LogService
+    private logService: LogService,
   ) {}
 
   submit = async () => {
@@ -49,29 +48,13 @@ export class MigrateFromLegacyEncryptionComponent {
     const masterPassword = this.formGroup.value.masterPassword;
 
     try {
-      // Create new user key
-      const [newUserKey, masterKeyEncUserKey] = await this.migrationService.createNewUserKey(
-        masterPassword
-      );
-
-      // Update admin recover keys
-      await this.migrationService.updateAllAdminRecoveryKeys(masterPassword, newUserKey);
-
-      // Update emergency access
-      await this.migrationService.updateEmergencyAccesses(newUserKey);
-
-      // Update keys, folders, ciphers, and sends
-      await this.migrationService.updateKeysAndEncryptedData(
-        masterPassword,
-        newUserKey,
-        masterKeyEncUserKey
-      );
+      await this.keyRotationService.rotateUserKeyAndEncryptedData(masterPassword);
 
       this.platformUtilsService.showToast(
         "success",
         this.i18nService.t("keyUpdated"),
         this.i18nService.t("logBackInOthersToo"),
-        { timeout: 15000 }
+        { timeout: 15000 },
       );
       this.messagingService.send("logout");
     } catch (e) {

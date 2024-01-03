@@ -16,7 +16,9 @@
       [completed]="(onboardingTasks$ | async).importData"
     >
       <p class="tw-pl-1">
-        {{ "onboardingImportDataDetails" | i18n }}
+        {{ "onboardingImportDataDetailsPartOne" | i18n }}
+        <a (click)="addCipher()" class="link"> new item </a>
+        {{ "onboardingImportDataDetailsPartTwo" | i18n }}
       </p>
     </app-onboarding-task>
 

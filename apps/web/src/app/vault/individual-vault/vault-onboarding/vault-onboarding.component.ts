@@ -10,7 +10,7 @@ import {
   OnChanges,
 } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subject, takeUntil, BehaviorSubject, firstValueFrom, Observable } from "rxjs";
+import { Subject, takeUntil, BehaviorSubject, Observable } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -108,6 +108,10 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     this.isNewAccount = this.onboardingReleaseDate < profileCreationDate ? true : false;
   }
 
+  addCipher() {
+    this.onAddCipher.emit();
+  }
+
   protected hideOnboarding() {
     this.showOnboarding = false;
     this.saveCompletedTasks({
@@ -171,12 +175,9 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  async navigateToImport() {
+  navigateToImport() {
     if (!this.isIndividualPolicyVault) {
-      const onboardingTasks = await firstValueFrom(this.onboardingTasks$);
-      if (!onboardingTasks.importData) {
-        this.router.navigate(["tools/import"]);
-      }
+      this.router.navigate(["tools/import"]);
     }
   }
 

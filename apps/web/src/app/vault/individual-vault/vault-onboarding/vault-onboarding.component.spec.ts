@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { mock, MockProxy } from "jest-mock-extended";
-import { BehaviorSubject, of } from "rxjs";
+import { of } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -10,7 +10,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
-import { VaultOnboardingComponent, VaultOnboardingTasks } from "./vault-onboarding.component";
+import { VaultOnboardingComponent } from "./vault-onboarding.component";
 
 describe("VaultOnboardingComponent", () => {
   let component: VaultOnboardingComponent;
@@ -55,7 +55,6 @@ describe("VaultOnboardingComponent", () => {
     individualVaultPolicyCheckSpy = jest
       .spyOn(component, "individualVaultPolicyCheck")
       .mockReturnValue(undefined);
-    // (component as any).apiService.getProfile.mockResolvedValueOnce(new Date());
     jest.spyOn(component, "checkCreationDate").mockReturnValue(null);
   });
 
@@ -129,17 +128,13 @@ describe("VaultOnboardingComponent", () => {
   });
 
   describe("navigateToImport", () => {
-    it("should navigate to tools/import when individualPolicy and tasks.importData are both false", async () => {
+    it("should navigate to tools/import when individualPolicy is false", () => {
       component.isIndividualPolicyVault = false;
-      (component as any).onboardingTasks$ = new BehaviorSubject<VaultOnboardingTasks>({
-        createAccount: true,
-        importData: false,
-        installExtension: false,
-      });
+
       const navigateSpy = jest.spyOn((component as any).router, "navigate").mockResolvedValue(true);
 
       const expected = ["tools/import"];
-      await component.navigateToImport();
+      component.navigateToImport();
       expect(navigateSpy).toHaveBeenCalledWith(expected);
     });
   });

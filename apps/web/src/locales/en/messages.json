@@ -1353,8 +1353,13 @@
   "importData": {
     "message": "Import data"
   },
-  "onboardingImportDataDetails": {
-    "message": "If you don't have any data to import, you can create a new item here. You may need to wait until your administrator confirms your organization membership."
+  "onboardingImportDataDetailsPartOne": {
+    "message": "If you don't have any data to import, you can create a ",
+    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item here. You may need to wait until your administrator confirms your organization membership."
+  },
+  "onboardingImportDataDetailsPartTwo": {
+    "message": " here. You may need to wait until your administrator confirms your organization membership.",
+    "description": "This will be part of a larger sentence, that will read like this: If you don't have any data to import, you can create a new item here. You may need to wait until your administrator confirms your organization membership."
   },
   "importError": {
     "message": "Import error"

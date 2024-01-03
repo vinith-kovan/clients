@@ -52,9 +52,7 @@ export class PinCryptoService implements PinCryptoServiceAbstraction {
         return null;
       }
 
-      const pinValid = await this.validatePin(userKey, pin);
-
-      if (!pinValid) {
+      if (!(await this.validatePin(userKey, pin))) {
         this.logService.error(`Pin key decryption successful but pin validation failed.`);
         return null;
       }

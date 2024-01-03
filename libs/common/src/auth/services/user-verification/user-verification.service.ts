@@ -87,6 +87,11 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
         break;
       case VerificationType.Biometrics:
         return this.verifyUserByBiometrics();
+      default: {
+        // Compile-time check for exhaustive switch
+        const _exhaustiveCheck: never = verification;
+        return _exhaustiveCheck;
+      }
     }
   }
 

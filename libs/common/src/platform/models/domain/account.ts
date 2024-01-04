@@ -8,9 +8,6 @@ import { Policy } from "../../../admin-console/models/domain/policy";
 import { AdminAuthRequestStorable } from "../../../auth/models/domain/admin-auth-req-storable";
 import { EnvironmentUrls } from "../../../auth/models/domain/environment-urls";
 import { ForceSetPasswordReason } from "../../../auth/models/domain/force-set-password-reason";
-import { KeyConnectorUserDecryptionOption } from "../../../auth/models/domain/user-decryption-options/key-connector-user-decryption-option";
-import { TrustedDeviceUserDecryptionOption } from "../../../auth/models/domain/user-decryption-options/trusted-device-user-decryption-option";
-import { IdentityTokenResponse } from "../../../auth/models/response/identity-token.response";
 import { EventData } from "../../../models/data/event.data";
 import { GeneratorOptions } from "../../../tools/generator/generator-options";
 import {
@@ -291,96 +288,6 @@ export class AccountTokens {
   }
 }
 
-export class AccountDecryptionOptions {
-  hasMasterPassword: boolean;
-  trustedDeviceOption?: TrustedDeviceUserDecryptionOption;
-  keyConnectorOption?: KeyConnectorUserDecryptionOption;
-
-  constructor(init?: Partial<AccountDecryptionOptions>) {
-    if (init) {
-      Object.assign(this, init);
-    }
-  }
-
-  // TODO: these nice getters don't work because the Account object is not properly being deserialized out of
-  // JSON (the Account static fromJSON method is not running) so these getters don't exist on the
-  // account decryptions options object when pulled out of state.  This is a bug that needs to be fixed later on
-  // get hasTrustedDeviceOption(): boolean {
-  //   return this.trustedDeviceOption !== null && this.trustedDeviceOption !== undefined;
-  // }
-
-  // get hasKeyConnectorOption(): boolean {
-  //   return this.keyConnectorOption !== null && this.keyConnectorOption !== undefined;
-  // }
-
-  static fromResponse(response: IdentityTokenResponse): AccountDecryptionOptions {
-    if (response == null) {
-      return null;
-    }
-
-    const accountDecryptionOptions = new AccountDecryptionOptions();
-
-    if (response.userDecryptionOptions) {
-      // If the response has userDecryptionOptions, this means it's on a post-TDE server version and can interrogate
-      // the new decryption options.
-      const responseOptions = response.userDecryptionOptions;
-      accountDecryptionOptions.hasMasterPassword = responseOptions.hasMasterPassword;
-
-      if (responseOptions.trustedDeviceOption) {
-        accountDecryptionOptions.trustedDeviceOption = new TrustedDeviceUserDecryptionOption(
-          responseOptions.trustedDeviceOption.hasAdminApproval,
-          responseOptions.trustedDeviceOption.hasLoginApprovingDevice,
-          responseOptions.trustedDeviceOption.hasManageResetPasswordPermission,
-        );
-      }
-
-      if (responseOptions.keyConnectorOption) {
-        accountDecryptionOptions.keyConnectorOption = new KeyConnectorUserDecryptionOption(
-          responseOptions.keyConnectorOption.keyConnectorUrl,
-        );
-      }
-    } else {
-      // If the response does not have userDecryptionOptions, this means it's on a pre-TDE server version and so
-      // we must base our decryption options on the presence of the keyConnectorUrl.
-      // Note that the presence of keyConnectorUrl implies that the user does not have a master password, as in pre-TDE
-      // server versions, a master password short-circuited the addition of the keyConnectorUrl to the response.
-      // TODO: remove this check after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3537)
-      const usingKeyConnector = response.keyConnectorUrl != null;
-      accountDecryptionOptions.hasMasterPassword = !usingKeyConnector;
-      if (usingKeyConnector) {
-        accountDecryptionOptions.keyConnectorOption = new KeyConnectorUserDecryptionOption(
-          response.keyConnectorUrl,
-        );
-      }
-    }
-    return accountDecryptionOptions;
-  }
-
-  static fromJSON(obj: Jsonify<AccountDecryptionOptions>): AccountDecryptionOptions {
-    if (obj == null) {
-      return null;
-    }
-
-    const accountDecryptionOptions = Object.assign(new AccountDecryptionOptions(), obj);
-
-    if (obj.trustedDeviceOption) {
-      accountDecryptionOptions.trustedDeviceOption = new TrustedDeviceUserDecryptionOption(
-        obj.trustedDeviceOption.hasAdminApproval,
-        obj.trustedDeviceOption.hasLoginApprovingDevice,
-        obj.trustedDeviceOption.hasManageResetPasswordPermission,
-      );
-    }
-
-    if (obj.keyConnectorOption) {
-      accountDecryptionOptions.keyConnectorOption = new KeyConnectorUserDecryptionOption(
-        obj.keyConnectorOption.keyConnectorUrl,
-      );
-    }
-
-    return accountDecryptionOptions;
-  }
-}
-
 export class LoginState {
   ssoOrganizationIdentifier?: string;
 
@@ -406,7 +313,6 @@ export class Account {
   profile?: AccountProfile = new AccountProfile();
   settings?: AccountSettings = new AccountSettings();
   tokens?: AccountTokens = new AccountTokens();
-  decryptionOptions?: AccountDecryptionOptions = new AccountDecryptionOptions();
   loginState?: LoginState = new LoginState();
   adminAuthRequest?: Jsonify<AdminAuthRequestStorable> = null;
 
@@ -432,10 +338,6 @@ export class Account {
         ...new AccountTokens(),
         ...init?.tokens,
       },
-      decryptionOptions: {
-        ...new AccountDecryptionOptions(),
-        ...init?.decryptionOptions,
-      },
       loginState: {
         ...new LoginState(),
         ...init?.loginState,
@@ -454,7 +356,6 @@ export class Account {
       profile: AccountProfile.fromJSON(json?.profile),
       settings: AccountSettings.fromJSON(json?.settings),
       tokens: AccountTokens.fromJSON(json?.tokens),
-      decryptionOptions: AccountDecryptionOptions.fromJSON(json?.decryptionOptions),
       loginState: LoginState.fromJSON(json?.loginState),
       adminAuthRequest: AdminAuthRequestStorable.fromJSON(json?.adminAuthRequest),
     });

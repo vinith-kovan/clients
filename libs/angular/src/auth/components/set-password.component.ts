@@ -1,6 +1,6 @@
 import { Directive } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { of } from "rxjs";
+import { firstValueFrom, of } from "rxjs";
 import { filter, first, switchMap, tap } from "rxjs/operators";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -11,6 +11,7 @@ import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abs
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { OrganizationAutoEnrollStatusResponse } from "@bitwarden/common/admin-console/models/response/organization-auto-enroll-status.response";
+import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-decryption-options.service.abstraction";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { SetPasswordRequest } from "@bitwarden/common/auth/models/request/set-password.request";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
@@ -25,7 +26,6 @@ import {
   DEFAULT_KDF_CONFIG,
 } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { MasterKey, UserKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
@@ -63,6 +63,7 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
     stateService: StateService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private organizationUserService: OrganizationUserService,
+    private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     dialogService: DialogService,
   ) {
     super(
@@ -220,11 +221,12 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
     await this.stateService.setForceSetPasswordReason(ForceSetPasswordReason.None);
 
     // User now has a password so update account decryption options in state
-    const acctDecryptionOpts: AccountDecryptionOptions =
-      await this.stateService.getAccountDecryptionOptions();
+    const userDecryptionOpts = await firstValueFrom(
+      this.userDecryptionOptionsService.userDecryptionOptions$,
+    );
 
-    acctDecryptionOpts.hasMasterPassword = true;
-    await this.stateService.setAccountDecryptionOptions(acctDecryptionOpts);
+    userDecryptionOpts.hasMasterPassword = true;
+    await this.stateService.setAccountDecryptionOptions(userDecryptionOpts);
 
     await this.stateService.setKdfType(this.kdf);
     await this.stateService.setKdfConfig(this.kdfConfig);

@@ -12,7 +12,6 @@ export enum FeatureFlag {
   BulkCollectionAccess = "bulk-collection-access",
   KeyRotationImprovements = "key-rotation-improvements",
   FlexibleCollectionsMigration = "flexible-collections-migration",
-  FlexibleCollectionsSignup = "flexible-collections-signup",
 }
 
 // Replace this with a type safe lookup of the feature flag values in PM-2282

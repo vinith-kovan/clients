@@ -5,7 +5,7 @@ import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { StateService } from "../../platform/abstractions/state.service";
 import { Utils } from "../../platform/misc/utils";
-import { UserKey } from "../../platform/models/domain/symmetric-crypto-key";
+import { UserId } from "../../types/guid";
 import { PasswordResetEnrollmentServiceAbstraction } from "../abstractions/password-reset-enrollment.service.abstraction";
 
 export class PasswordResetEnrollmentServiceImplementation
@@ -24,13 +24,11 @@ export class PasswordResetEnrollmentServiceImplementation
       await this.organizationApiService.getAutoEnrollStatus(organizationSsoIdentifier);
 
     if (!orgAutoEnrollStatusResponse.resetPasswordEnabled) {
-      await this.enroll(orgAutoEnrollStatusResponse.id, null, null);
+      await this.enroll(orgAutoEnrollStatusResponse.id);
     }
   }
 
-  async enroll(organizationId: string): Promise<void>;
-  async enroll(organizationId: string, userId: string, userKey: UserKey): Promise<void>;
-  async enroll(organizationId: string, userId?: string, userKey?: UserKey): Promise<void> {
+  async enroll(organizationId: string): Promise<void> {
     const orgKeyResponse = await this.organizationApiService.getKeys(organizationId);
     if (orgKeyResponse == null) {
       throw new Error(this.i18nService.t("resetPasswordOrgKeysError"));
@@ -38,10 +36,14 @@ export class PasswordResetEnrollmentServiceImplementation
 
     const orgPublicKey = Utils.fromB64ToArray(orgKeyResponse.publicKey);
 
-    userId = userId ?? (await this.stateService.getUserId());
-    userKey = userKey ?? (await this.cryptoService.getUserKey(userId));
-    // RSA Encrypt user's userKey.key with organization public key
-    const encryptedKey = await this.cryptoService.rsaEncrypt(userKey.key, orgPublicKey);
+    const userId = await this.stateService.getUserId();
+    const encryptedKey = await this.cryptoService.deriveFromUserKey(
+      userId as UserId,
+      async (userKey) => {
+        // Share the user's key with the organization, so that they can reset the user's password while maintaining encrypted data
+        return await this.cryptoService.rsaEncrypt(userKey.key, orgPublicKey);
+      },
+    );
 
     const resetRequest = new OrganizationUserResetPasswordEnrollmentRequest();
     resetRequest.resetPasswordKey = encryptedKey.encryptedString;

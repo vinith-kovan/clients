@@ -1,4 +1,4 @@
-import { Observable, Subject } from "rxjs";
+import { Observable, Subject, firstValueFrom } from "rxjs";
 
 import { ApiService } from "../../abstractions/api.service";
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
@@ -18,6 +18,7 @@ import { KdfType, KeySuffixOptions } from "../../platform/enums";
 import { Utils } from "../../platform/misc/utils";
 import { MasterKey } from "../../platform/models/domain/symmetric-crypto-key";
 import { PasswordStrengthServiceAbstraction } from "../../tools/password-strength";
+import { AccountService } from "../abstractions/account.service";
 import { AuthRequestCryptoServiceAbstraction } from "../abstractions/auth-request-crypto.service.abstraction";
 import { AuthService as AuthServiceAbstraction } from "../abstractions/auth.service";
 import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
@@ -111,6 +112,7 @@ export class AuthService implements AuthServiceAbstraction {
     protected policyService: PolicyService,
     protected deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     protected authReqCryptoService: AuthRequestCryptoServiceAbstraction,
+    private accountService: AccountService,
   ) {}
 
   async logIn(
@@ -335,7 +337,9 @@ export class AuthService implements AuthServiceAbstraction {
   ): Promise<AuthRequestResponse> {
     const pubKey = Utils.fromB64ToArray(key);
 
-    const masterKey = await this.cryptoService.getMasterKey();
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+
+    const masterKey = await this.cryptoService.getMasterKey(userId);
     let keyToEncrypt;
     let encryptedMasterKeyHash = null;
 
@@ -352,7 +356,8 @@ export class AuthService implements AuthServiceAbstraction {
         );
       }
     } else {
-      const userKey = await this.cryptoService.getUserKey();
+      // TODO: this we shouldn't extract the user key here, we should rework this method to not need it.
+      const userKey = await this.cryptoService.deriveFromUserKey(userId, (userKey) => userKey);
       keyToEncrypt = userKey.key;
     }
 

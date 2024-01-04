@@ -136,12 +136,15 @@ describe("Password generator service", () => {
       const policyObservable = new BehaviorSubject<Policy>(policyInput).asObservable();
       policyService.get$.mockReturnValue(policyObservable);
       const evaluator = mock<PolicyEvaluator<any>>();
-      const strategy = mock<GeneratorStrategy<any, any>>({ evaluator: () => evaluator });
+      const strategy = mock<GeneratorStrategy<any, any>>({
+        policy: PolicyType.PasswordGenerator,
+        evaluator: () => evaluator,
+      });
       const service = new DefaultGeneratorService(strategy, policyService, null);
 
       await service.enforcePolicy({});
 
-      expect(policyService.get$).toHaveBeenCalledWith(PolicyType.PasswordGenerator);
+      expect(policyService.get$).toHaveBeenCalledWith(strategy.policy);
     });
 
     it("should evaluate the policy using the generation strategy", async () => {

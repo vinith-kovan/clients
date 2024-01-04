@@ -3,7 +3,6 @@ import { firstValueFrom, map } from "rxjs";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "../../admin-console/enums";
 import { ActiveUserStateProvider } from "../../platform/state";
 
 import { GeneratorStrategy, GeneratorService } from "./abstractions";
@@ -38,7 +37,7 @@ export class DefaultGeneratorService<GeneratorOptions, PolicyOptions>
   /** {@link GeneratorService.policy$} */
   get policy$() {
     return this.policy
-      .get$(PolicyType.PasswordGenerator)
+      .get$(this.strategy.policy)
       .pipe(map((policy) => this.strategy.toGeneratorPolicy(policy)));
   }
 

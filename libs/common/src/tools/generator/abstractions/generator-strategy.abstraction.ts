@@ -1,6 +1,6 @@
 import { PolicyType } from "../../../admin-console/enums";
-// `Policy` imported from a private module because it's part of the
-// public API of `policy.service.abstraction`.
+// FIXME: use index.ts imports once policy abstractions and models
+// implement ADR-0002
 import { Policy } from "../../../admin-console/models/domain/policy";
 import { KeyDefinition } from "../../../platform/state";
 

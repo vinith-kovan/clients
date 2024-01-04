@@ -741,7 +741,7 @@ export default class AutofillService implements AutofillServiceInterface {
         return;
       }
 
-      if (this.isExcludedType(f.type, AutoFillConstants.ExcludedAutofillTypes)) {
+      if (AutofillService.isExcludedType(f.type, AutoFillConstants.ExcludedAutofillTypes)) {
         return;
       }
 
@@ -1128,7 +1128,7 @@ export default class AutofillService implements AutofillServiceInterface {
         return;
       }
 
-      if (this.isExcludedType(f.type, AutoFillConstants.ExcludedAutofillTypes)) {
+      if (AutofillService.isExcludedType(f.type, AutoFillConstants.ExcludedAutofillTypes)) {
         return;
       }
 
@@ -1358,7 +1358,7 @@ export default class AutofillService implements AutofillServiceInterface {
    * @returns {boolean}
    * @private
    */
-  private isExcludedType(type: string, excludedTypes: string[]) {
+  static isExcludedType(type: string, excludedTypes: string[]) {
     return excludedTypes.indexOf(type) > -1;
   }
 
@@ -1499,6 +1499,10 @@ export default class AutofillService implements AutofillServiceInterface {
     const arr: AutofillField[] = [];
     pageDetails.fields.forEach((f) => {
       if (AutofillService.forCustomFieldsOnly(f)) {
+        return;
+      }
+
+      if (AutofillService.isExcludedType(f.type, AutoFillConstants.ExcludedAutofillLoginTypes)) {
         return;
       }
 

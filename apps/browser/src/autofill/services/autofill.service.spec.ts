@@ -2261,7 +2261,7 @@ describe("AutofillService", () => {
         });
         pageDetails.fields = [spanField];
         jest.spyOn(AutofillService, "forCustomFieldsOnly");
-        jest.spyOn(autofillService as any, "isExcludedType");
+        jest.spyOn(AutofillService, "isExcludedType");
 
         const value = autofillService["generateCardFillScript"](
           fillScript,
@@ -2271,7 +2271,7 @@ describe("AutofillService", () => {
         );
 
         expect(AutofillService.forCustomFieldsOnly).toHaveBeenCalledWith(spanField);
-        expect(autofillService["isExcludedType"]).not.toHaveBeenCalled();
+        expect(AutofillService["isExcludedType"]).not.toHaveBeenCalled();
         expect(value).toStrictEqual(unmodifiedFillScriptValues);
       });
 
@@ -2286,7 +2286,7 @@ describe("AutofillService", () => {
           });
           pageDetails.fields = [invalidField];
           jest.spyOn(AutofillService, "forCustomFieldsOnly");
-          jest.spyOn(autofillService as any, "isExcludedType");
+          jest.spyOn(AutofillService, "isExcludedType");
 
           const value = autofillService["generateCardFillScript"](
             fillScript,
@@ -2296,7 +2296,7 @@ describe("AutofillService", () => {
           );
 
           expect(AutofillService.forCustomFieldsOnly).toHaveBeenCalledWith(invalidField);
-          expect(autofillService["isExcludedType"]).toHaveBeenCalledWith(
+          expect(AutofillService["isExcludedType"]).toHaveBeenCalledWith(
             invalidField.type,
             AutoFillConstants.ExcludedAutofillTypes,
           );
@@ -2315,7 +2315,7 @@ describe("AutofillService", () => {
         });
         pageDetails.fields = [notViewableField];
         jest.spyOn(AutofillService, "forCustomFieldsOnly");
-        jest.spyOn(autofillService as any, "isExcludedType");
+        jest.spyOn(AutofillService, "isExcludedType");
 
         const value = autofillService["generateCardFillScript"](
           fillScript,
@@ -2325,7 +2325,7 @@ describe("AutofillService", () => {
         );
 
         expect(AutofillService.forCustomFieldsOnly).toHaveBeenCalledWith(notViewableField);
-        expect(autofillService["isExcludedType"]).toHaveBeenCalled();
+        expect(AutofillService["isExcludedType"]).toHaveBeenCalled();
         expect(value).toStrictEqual(unmodifiedFillScriptValues);
       });
     });
@@ -2410,7 +2410,7 @@ describe("AutofillService", () => {
         options.cipher.card.code = "testCode";
         options.cipher.card.brand = "testBrand";
         jest.spyOn(AutofillService, "forCustomFieldsOnly");
-        jest.spyOn(autofillService as any, "isExcludedType");
+        jest.spyOn(AutofillService, "isExcludedType");
         jest.spyOn(AutofillService as any, "isFieldMatch");
         jest.spyOn(autofillService as any, "makeScriptAction");
         jest.spyOn(AutofillService, "hasValue");
@@ -2428,7 +2428,7 @@ describe("AutofillService", () => {
         );
 
         expect(AutofillService.forCustomFieldsOnly).toHaveBeenCalledTimes(6);
-        expect(autofillService["isExcludedType"]).toHaveBeenCalledTimes(6);
+        expect(AutofillService["isExcludedType"]).toHaveBeenCalledTimes(6);
         expect(AutofillService["isFieldMatch"]).toHaveBeenCalled();
         expect(autofillService["makeScriptAction"]).toHaveBeenCalledTimes(4);
         expect(AutofillService["hasValue"]).toHaveBeenCalledTimes(6);
@@ -2877,7 +2877,7 @@ describe("AutofillService", () => {
       beforeEach(() => {
         pageDetails.fields = [];
         jest.spyOn(AutofillService, "forCustomFieldsOnly");
-        jest.spyOn(autofillService as any, "isExcludedType");
+        jest.spyOn(AutofillService, "isExcludedType");
         jest.spyOn(AutofillService as any, "isFieldMatch");
         jest.spyOn(autofillService as any, "makeScriptAction");
         jest.spyOn(autofillService as any, "makeScriptActionWithValue");
@@ -2895,7 +2895,7 @@ describe("AutofillService", () => {
         );
 
         expect(AutofillService.forCustomFieldsOnly).toHaveBeenCalledWith(customField);
-        expect(autofillService["isExcludedType"]).not.toHaveBeenCalled();
+        expect(AutofillService["isExcludedType"]).not.toHaveBeenCalled();
         expect(AutofillService["isFieldMatch"]).not.toHaveBeenCalled();
         expect(value.script).toStrictEqual([]);
       });
@@ -2912,7 +2912,7 @@ describe("AutofillService", () => {
         );
 
         expect(AutofillService.forCustomFieldsOnly).toHaveBeenCalledWith(excludedField);
-        expect(autofillService["isExcludedType"]).toHaveBeenCalledWith(
+        expect(AutofillService["isExcludedType"]).toHaveBeenCalledWith(
           excludedField.type,
           AutoFillConstants.ExcludedAutofillTypes,
         );
@@ -2932,7 +2932,7 @@ describe("AutofillService", () => {
         );
 
         expect(AutofillService.forCustomFieldsOnly).toHaveBeenCalledWith(viewableField);
-        expect(autofillService["isExcludedType"]).toHaveBeenCalled();
+        expect(AutofillService["isExcludedType"]).toHaveBeenCalled();
         expect(AutofillService["isFieldMatch"]).not.toHaveBeenCalled();
         expect(value.script).toStrictEqual([]);
       });
@@ -3314,7 +3314,7 @@ describe("AutofillService", () => {
 
   describe("isExcludedType", () => {
     it("returns true if the passed type is within the excluded type list", () => {
-      const value = autofillService["isExcludedType"](
+      const value = AutofillService["isExcludedType"](
         "hidden",
         AutoFillConstants.ExcludedAutofillTypes,
       );
@@ -3323,7 +3323,7 @@ describe("AutofillService", () => {
     });
 
     it("returns true if the passed type is within the excluded type list", () => {
-      const value = autofillService["isExcludedType"](
+      const value = AutofillService["isExcludedType"](
         "text",
         AutoFillConstants.ExcludedAutofillTypes,
       );

@@ -101,15 +101,17 @@ export class PasswordGeneratorOptionsEvaluator
 
   /** {@link PolicyEvaluator.policyInEffect} */
   get policyInEffect(): boolean {
-    return (
-      this.policy.minLength > DefaultBoundaries.length.min ||
-      this.policy.numberCount > DefaultBoundaries.minDigits.min ||
-      this.policy.specialCount > DefaultBoundaries.minSpecialCharacters.min ||
-      this.policy.useUppercase ||
-      this.policy.useLowercase ||
-      this.policy.useNumbers ||
-      this.policy.useSpecial
-    );
+    const policies = [
+      this.policy.useUppercase,
+      this.policy.useLowercase,
+      this.policy.useNumbers,
+      this.policy.useSpecial,
+      this.policy.minLength > DefaultBoundaries.length.min,
+      this.policy.numberCount > DefaultBoundaries.minDigits.min,
+      this.policy.specialCount > DefaultBoundaries.minSpecialCharacters.min,
+    ];
+
+    return policies.includes(true);
   }
 
   /** {@link PolicyEvaluator.applyPolicy} */

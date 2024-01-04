@@ -4,6 +4,7 @@ import { ProfileOrganizationResponse } from "../../admin-console/models/response
 import { ProfileProviderOrganizationResponse } from "../../admin-console/models/response/profile-provider-organization.response";
 import { ProfileProviderResponse } from "../../admin-console/models/response/profile-provider.response";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
+import { UserId } from "../../types/guid";
 import { KeySuffixOptions, KdfType, HashPurpose } from "../enums";
 import { EncArrayBuffer } from "../models/domain/enc-array-buffer";
 import { EncString } from "../models/domain/enc-string";
@@ -44,13 +45,36 @@ export abstract class CryptoService {
    * @param userId The desired user
    * @returns
    */
-  abstract keyForUser$(userId?: string): Observable<UserKey>;
+  abstract keyForUser$(userId?: UserId): Observable<UserKey>;
 
   /**
    * Retrieves an observable of the current active account user key. Null if no active user or the current active user
    * is not unlocked.
    */
   activeUserKey$: Observable<UserKey>;
+
+  /**
+   * Executes a derive callback, passing in the user key and returning the result.
+   *
+   * @example
+   * ```ts
+   * const keyToShare = await cryptoService.deriveFromUserKey(activeUserId, async (userKey) => {
+   *   await cryptoService.rsaEncrypt(userKey, publicKey);
+   * });
+   * ```
+   *
+   * @remarks
+   * Callers should not move the user key
+   * out of the calling context, but use it to derive what they need.
+   *
+   * @param userId The desired user
+   * @param derive A callback that will be called with the user key and should return a value derived from it
+   * @returns The value or promised value derived from the user key using `derive`
+   */
+  abstract deriveFromUserKey<T>(
+    userId: UserId,
+    derive: (userKey: UserKey) => T | Promise<T>,
+  ): Promise<T>;
 
   /**
    * Retrieves the user key

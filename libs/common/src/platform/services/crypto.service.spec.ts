@@ -296,4 +296,27 @@ describe("cryptoService", () => {
       });
     });
   });
+
+  describe("deriveFromUserKey", () => {
+    const mockUserKey = new SymmetricCryptoKey(new Uint8Array(64)) as UserKey;
+    const otherUserId = Utils.newGuid() as UserId;
+    const otherUserKey = new SymmetricCryptoKey(new Uint8Array(64)) as UserKey;
+
+    beforeEach(() => {
+      userKeysState.stateSubject.next({ [mockUserId]: mockUserKey, [otherUserId]: otherUserKey });
+    });
+
+    it("should provide the correct users key", async () => {
+      const actualKey = await cryptoService.deriveFromUserKey(mockUserId, (key) => key);
+
+      expect(actualKey).toEqual(mockUserKey);
+    });
+
+    it("should await derive if it is a promise", async () => {
+      const actualKey = await cryptoService.deriveFromUserKey(mockUserId, async (key) => key);
+
+      expect(actualKey).not.toBeInstanceOf(Promise);
+      expect(actualKey).toEqual(mockUserKey);
+    });
+  });
 });

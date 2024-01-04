@@ -1,5 +1,5 @@
 import * as bigInt from "big-integer";
-import { Observable, combineLatest, firstValueFrom, map } from "rxjs";
+import { Observable, combineLatest, firstValueFrom, map, timeout } from "rxjs";
 
 import { EncryptedOrganizationKeyData } from "../../admin-console/models/data/encrypted-organization-key.data";
 import { BaseEncryptedOrganizationKey } from "../../admin-console/models/domain/encrypted-organization-key";
@@ -109,6 +109,16 @@ export class CryptoService implements CryptoServiceAbstraction {
     const key = await firstValueFrom(this.activeUserKey$);
     const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
     await this.storeAdditionalKeys(key, userId);
+  }
+
+  async deriveFromUserKey<T>(userId: UserId, derive: (key: UserKey) => T | Promise<T>): Promise<T> {
+    const userKey = await firstValueFrom(this.keyForUser$(userId).pipe(timeout(500)));
+    const resultOrPromise = derive(userKey);
+
+    if (resultOrPromise instanceof Promise) {
+      return await resultOrPromise;
+    }
+    return resultOrPromise;
   }
 
   async getUserKey(userId?: UserId): Promise<UserKey> {

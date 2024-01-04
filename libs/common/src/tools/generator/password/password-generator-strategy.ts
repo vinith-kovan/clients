@@ -28,6 +28,11 @@ export class PasswordGeneratorStrategy
 
   /** {@link GeneratorStrategy.evaluator} */
   evaluator(policy: Policy): PasswordGeneratorOptionsEvaluator {
+    if (policy.type !== this.policy) {
+      const details = `Expected: ${this.policy}. Received: ${policy.type}`;
+      throw Error("Mismatched policy type. " + details);
+    }
+
     return new PasswordGeneratorOptionsEvaluator({
       minLength: policy.data.minLength,
       useUppercase: policy.data.useUpper,

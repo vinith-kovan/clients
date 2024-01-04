@@ -1,11 +1,11 @@
-import { firstValueFrom, map } from "rxjs";
+import { firstValueFrom, map, BehaviorSubject } from "rxjs";
 
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
 import { ActiveUserStateProvider } from "../../platform/state";
 
-import { GeneratorStrategy, GeneratorService } from "./abstractions";
+import { GeneratorStrategy, GeneratorService, PolicyEvaluator } from "./abstractions";
 
 /** {@link GeneratorServiceAbstraction} */
 export class DefaultGeneratorService<Options, Policy> implements GeneratorService<Options, Policy> {
@@ -20,7 +20,16 @@ export class DefaultGeneratorService<Options, Policy> implements GeneratorServic
     private strategy: GeneratorStrategy<Options, Policy>,
     private policy: PolicyService,
     private state: ActiveUserStateProvider,
-  ) {}
+  ) {
+    // cache evaluator in a behavior subject to amortize creation cost
+    // and reduce GC pressure.
+    this.policy
+      .get$(this.strategy.policy)
+      .pipe(map((policy) => this.strategy.evaluator(policy)))
+      .subscribe(this._policy$);
+  }
+
+  private _policy$: BehaviorSubject<PolicyEvaluator<Policy, Options>> = new BehaviorSubject(null);
 
   /** {@link GeneratorService.options$} */
   get options$() {
@@ -34,14 +43,12 @@ export class DefaultGeneratorService<Options, Policy> implements GeneratorServic
 
   /** {@link GeneratorService.policy$} */
   get policy$() {
-    return this.policy
-      .get$(this.strategy.policy)
-      .pipe(map((policy) => this.strategy.evaluator(policy)));
+    return this._policy$.asObservable();
   }
 
   /** {@link GeneratorService.enforcePolicy} */
   async enforcePolicy(options: Options): Promise<Options> {
-    const policy = await firstValueFrom(this.policy$);
+    const policy = await firstValueFrom(this._policy$);
     const evaluated = policy.applyPolicy(options);
     const sanitized = policy.sanitize(evaluated);
     return sanitized;

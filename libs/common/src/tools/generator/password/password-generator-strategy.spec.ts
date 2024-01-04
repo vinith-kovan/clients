@@ -5,6 +5,7 @@
 
 import { mock } from "jest-mock-extended";
 
+import { PolicyType } from "../../../admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
 import { Policy } from "../../../admin-console/models/domain/policy";
@@ -17,9 +18,19 @@ import {
 
 describe("Password generation strategy", () => {
   describe("evaluator()", () => {
-    it("should load the policy evaluator from policy$", async () => {
+    it("should throw if the policy type is incorrect", () => {
       const strategy = new PasswordGeneratorStrategy(null);
       const policy = mock<Policy>({
+        type: PolicyType.DisableSend,
+      });
+
+      expect(() => strategy.evaluator(policy)).toThrow(new RegExp("Mismatched policy type\\. .+"));
+    });
+
+    it("should map to the policy evaluator", () => {
+      const strategy = new PasswordGeneratorStrategy(null);
+      const policy = mock<Policy>({
+        type: PolicyType.PasswordGenerator,
         data: {
           minLength: 10,
           useUpper: true,

@@ -16,8 +16,8 @@ export abstract class GeneratorStrategy<Options, Policy> {
 
   /** Creates an evaluator from a generator policy.
    * @param policy The policy being evaluated.
-   * @returns a policy evaluator, or `undefined` if the policy's type
-   *          does not match the generator's policy type.
+   * @returns the policy evaluator.
+   * @throws when the policy's type does not match the generator's policy type.
    */
   evaluator: (policy: AdminPolicy) => PolicyEvaluator<Policy, Options>;
 

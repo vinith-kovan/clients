@@ -1122,6 +1122,11 @@ export default class AutofillService implements AutofillServiceInterface {
         return;
       }
 
+      // Check if the input is an untyped/mistyped search input
+      if (this.isSearchField(f)) {
+        return;
+      }
+
       for (let i = 0; i < IdentityAutoFillConstants.IdentityAttributes.length; i++) {
         const attr = IdentityAutoFillConstants.IdentityAttributes[i];
         // eslint-disable-next-line
@@ -1345,6 +1350,13 @@ export default class AutofillService implements AutofillServiceInterface {
    */
   private isExcludedType(type: string, excludedTypes: string[]) {
     return excludedTypes.indexOf(type) > -1;
+  }
+
+  private isSearchField(field: AutofillField) {
+    const matchFieldAttributeValues = [field.type, field.htmlName, field.htmlID, field.placeholder];
+    const matchPattern = new RegExp(AutoFillConstants.SearchFieldNames.join("|"), "gi");
+
+    return !!matchFieldAttributeValues.join(" ").match(matchPattern);
   }
 
   /**

@@ -42,6 +42,8 @@ export class AutoFillConstants {
     "verificationCode",
   ];
 
+  static readonly SearchFieldNames: string[] = ["search", "query"];
+
   static readonly PasswordFieldIgnoreList: string[] = [
     "onetimepassword",
     "captcha",

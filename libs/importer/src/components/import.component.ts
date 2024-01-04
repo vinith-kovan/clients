@@ -200,7 +200,6 @@ export class ImportComponent implements OnInit, OnDestroy {
     this.setImportOptions();
 
     await this.initializeOrganizations();
-    await this.handlePolicies();
 
     if (this.organizationId) {
       this.formGroup.controls.vaultSelector.patchValue(this.organizationId);
@@ -241,6 +240,8 @@ export class ImportComponent implements OnInit, OnDestroy {
       .subscribe((value) => {
         this.format = value;
       });
+
+    await this.handlePolicies();
   }
 
   private async initializeOrganizations() {

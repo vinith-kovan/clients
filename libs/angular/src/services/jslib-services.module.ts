@@ -51,6 +51,10 @@ import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/
 import { PasswordResetEnrollmentServiceAbstraction } from "@bitwarden/common/auth/abstractions/password-reset-enrollment.service.abstraction";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/common/auth/abstractions/two-factor.service";
+import {
+  InternalUserDecryptionOptionsServiceAbstraction,
+  UserDecryptionOptionsServiceAbstraction,
+} from "@bitwarden/common/auth/abstractions/user-decryption-options.service.abstraction";
 import { UserVerificationApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification-api.service.abstraction";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { WebAuthnLoginApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login-api.service.abstraction";
@@ -69,6 +73,7 @@ import { LoginService } from "@bitwarden/common/auth/services/login.service";
 import { PasswordResetEnrollmentServiceImplementation } from "@bitwarden/common/auth/services/password-reset-enrollment.service.implementation";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/two-factor.service";
+import { UserDecryptionOptionsService } from "@bitwarden/common/auth/services/user-decryption-options.service";
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
 import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
 import { WebAuthnLoginApiService } from "@bitwarden/common/auth/services/webauthn-login/webauthn-login-api.service";
@@ -184,11 +189,12 @@ import { FormValidationErrorsService } from "../platform/services/form-validatio
 import { ThemingService } from "../platform/services/theming/theming.service";
 import { AbstractThemingService } from "../platform/services/theming/theming.service.abstraction";
 
+
 import {
   LOCALES_DIRECTORY,
   LOCKED_CALLBACK,
-  LOG_MAC_FAILURES,
   LOGOUT_CALLBACK,
+  LOG_MAC_FAILURES,
   MEMORY_STORAGE,
   OBSERVABLE_DISK_STORAGE,
   OBSERVABLE_MEMORY_STORAGE,
@@ -199,11 +205,6 @@ import {
   WINDOW,
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
-import {
-  InternalUserDecryptionOptionsServiceAbstraction,
-  UserDecryptionOptionsServiceAbstraction,
-} from "@bitwarden/common/auth/abstractions/user-decryption-options.service.abstraction";
-import { UserDecryptionOptionsService } from "@bitwarden/common/auth/services/user-decryption-options.service";
 
 @NgModule({
   declarations: [],

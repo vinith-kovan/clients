@@ -1,9 +1,11 @@
 import { Directive } from "@angular/core";
 import { Router } from "@angular/router";
+import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { VerificationType } from "@bitwarden/common/auth/enums/verification-type";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
@@ -56,6 +58,7 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
     private userVerificationService: UserVerificationService,
     private router: Router,
     dialogService: DialogService,
+    private accountService: AccountService,
   ) {
     super(
       i18nService,
@@ -124,13 +127,15 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
         newMasterKey,
       );
 
-      // Grab user key
-      const userKey = await this.cryptoService.getUserKey();
+      // Grab current user
+      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
 
       // Encrypt user key with new master key
-      const newProtectedUserKey = await this.cryptoService.encryptUserKeyWithMasterKey(
-        newMasterKey,
-        userKey,
+      const newProtectedUserKey = await this.cryptoService.deriveFromUserKey(
+        userId,
+        async (userKey) => {
+          return await this.cryptoService.encryptUserKeyWithMasterKey(newMasterKey, userKey);
+        },
       );
 
       await this.performSubmitActions(newPasswordHash, newMasterKey, newProtectedUserKey);

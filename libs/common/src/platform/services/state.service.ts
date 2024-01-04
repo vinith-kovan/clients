@@ -45,7 +45,6 @@ import { ServerConfigData } from "../models/data/server-config.data";
 import {
   Account,
   AccountData,
-  AccountDecryptionOptions,
   AccountSettings,
   AccountSettingsSettings,
 } from "../models/domain/account";
@@ -1453,37 +1452,6 @@ export class StateService<
     const account = await this.getAccount(options);
 
     account.settings.trustDeviceChoiceForDecryption = value;
-
-    await this.saveAccount(account, options);
-  }
-
-  async getAccountDecryptionOptions(
-    options?: StorageOptions,
-  ): Promise<AccountDecryptionOptions | null> {
-    options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
-
-    if (options?.userId == null) {
-      return null;
-    }
-
-    const account = await this.getAccount(options);
-
-    return account?.decryptionOptions as AccountDecryptionOptions;
-  }
-
-  async setAccountDecryptionOptions(
-    value: AccountDecryptionOptions,
-    options?: StorageOptions,
-  ): Promise<void> {
-    options = this.reconcileOptions(options, await this.defaultOnDiskLocalOptions());
-
-    if (options?.userId == null) {
-      return;
-    }
-
-    const account = await this.getAccount(options);
-
-    account.decryptionOptions = value;
 
     await this.saveAccount(account, options);
   }

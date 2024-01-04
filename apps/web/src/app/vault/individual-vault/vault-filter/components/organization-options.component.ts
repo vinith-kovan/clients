@@ -13,7 +13,6 @@ import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/common/auth/
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { DialogService } from "@bitwarden/components";
 
@@ -47,7 +46,6 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
     private organizationUserService: OrganizationUserService,
     private UserDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     private dialogService: DialogService,
-    private stateService: StateService,
   ) {}
 
   async ngOnInit() {

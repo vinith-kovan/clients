@@ -22,5 +22,5 @@ export abstract class UserDecryptionOptionsServiceAbstraction {
 }
 
 export abstract class InternalUserDecryptionOptionsServiceAbstraction extends UserDecryptionOptionsServiceAbstraction {
-  abstract setUserDecryptionOptions(userDecryptionOptions: UserDecryptionOptions): void;
+  abstract setUserDecryptionOptions(userDecryptionOptions: UserDecryptionOptions): Promise<void>;
 }

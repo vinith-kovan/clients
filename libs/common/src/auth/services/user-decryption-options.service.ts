@@ -39,8 +39,7 @@ export class UserDecryptionOptionsService
     return this.stateProvider.getUser(userId, USER_DECRYPTION_OPTIONS).state$;
   }
 
-  // TODO
-  async setUserDecryptionOptions(): Promise<void> {
-    throw new Error("Method not implemented.");
+  async setUserDecryptionOptions(userDecryptionOptions: UserDecryptionOptions): Promise<void> {
+    await this.userDecryptionOptionsState.update((_) => userDecryptionOptions);
   }
 }

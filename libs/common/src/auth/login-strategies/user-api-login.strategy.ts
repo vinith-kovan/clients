@@ -9,6 +9,7 @@ import { MessagingService } from "../../platform/abstractions/messaging.service"
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { StateService } from "../../platform/abstractions/state.service";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { UserApiLoginCredentials } from "../models/domain/login-credentials";
 import { UserApiTokenRequest } from "../models/request/identity-token/user-api-token.request";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
@@ -28,6 +29,7 @@ export class UserApiLoginStrategy extends LoginStrategy {
     logService: LogService,
     stateService: StateService,
     twoFactorService: TwoFactorService,
+    userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction,
     private environmentService: EnvironmentService,
     private keyConnectorService: KeyConnectorService,
   ) {
@@ -41,6 +43,7 @@ export class UserApiLoginStrategy extends LoginStrategy {
       logService,
       stateService,
       twoFactorService,
+      userDecryptionOptionsService,
     );
   }
 

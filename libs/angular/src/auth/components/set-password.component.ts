@@ -11,7 +11,7 @@ import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abs
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { OrganizationAutoEnrollStatusResponse } from "@bitwarden/common/admin-console/models/response/organization-auto-enroll-status.response";
-import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-decryption-options.service.abstraction";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-decryption-options.service.abstraction";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { SetPasswordRequest } from "@bitwarden/common/auth/models/request/set-password.request";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
@@ -63,7 +63,7 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
     stateService: StateService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private organizationUserService: OrganizationUserService,
-    private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
+    private userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction,
     dialogService: DialogService,
   ) {
     super(
@@ -224,9 +224,8 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
     const userDecryptionOpts = await firstValueFrom(
       this.userDecryptionOptionsService.userDecryptionOptions$,
     );
-
     userDecryptionOpts.hasMasterPassword = true;
-    await this.stateService.setAccountDecryptionOptions(userDecryptionOpts);
+    await this.userDecryptionOptionsService.setUserDecryptionOptions(userDecryptionOpts);
 
     await this.stateService.setKdfType(this.kdf);
     await this.stateService.setKdfConfig(this.kdfConfig);

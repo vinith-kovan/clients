@@ -7,7 +7,7 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-conso
 import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-decryption-options.service.abstraction";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-decryption-options.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -37,7 +37,7 @@ export class SetPasswordComponent extends BaseSetPasswordComponent {
     stateService: StateService,
     organizationApiService: OrganizationApiServiceAbstraction,
     organizationUserService: OrganizationUserService,
-    userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
+    userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction,
     dialogService: DialogService,
   ) {
     super(

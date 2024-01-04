@@ -24,6 +24,7 @@ import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trus
 import { KeyConnectorService } from "../abstractions/key-connector.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { AuthenticationStatus } from "../enums/authentication-status";
 import { AuthenticationType } from "../enums/authentication-type";
 import { AuthRequestLoginStrategy } from "../login-strategies/auth-request-login.strategy";
@@ -111,6 +112,7 @@ export class AuthService implements AuthServiceAbstraction {
     protected policyService: PolicyService,
     protected deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     protected authReqCryptoService: AuthRequestCryptoServiceAbstraction,
+    protected userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction,
   ) {}
 
   async logIn(
@@ -142,6 +144,7 @@ export class AuthService implements AuthServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
+          this.userDecryptionOptionsService,
           this.passwordStrengthService,
           this.policyService,
           this,
@@ -158,6 +161,7 @@ export class AuthService implements AuthServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
+          this.userDecryptionOptionsService,
           this.keyConnectorService,
           this.deviceTrustCryptoService,
           this.authReqCryptoService,
@@ -175,6 +179,7 @@ export class AuthService implements AuthServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
+          this.userDecryptionOptionsService,
           this.environmentService,
           this.keyConnectorService,
         );
@@ -190,6 +195,7 @@ export class AuthService implements AuthServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
+          this.userDecryptionOptionsService,
           this.deviceTrustCryptoService,
         );
         break;
@@ -204,6 +210,7 @@ export class AuthService implements AuthServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
+          this.userDecryptionOptionsService,
         );
         break;
     }

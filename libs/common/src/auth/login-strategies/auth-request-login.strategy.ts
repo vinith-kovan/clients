@@ -8,6 +8,7 @@ import { StateService } from "../../platform/abstractions/state.service";
 import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { AuthResult } from "../models/domain/auth-result";
 import { AuthRequestLoginCredentials } from "../models/domain/login-credentials";
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
@@ -42,6 +43,7 @@ export class AuthRequestLoginStrategy extends LoginStrategy {
     logService: LogService,
     stateService: StateService,
     twoFactorService: TwoFactorService,
+    userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction,
     private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
   ) {
     super(
@@ -54,6 +56,7 @@ export class AuthRequestLoginStrategy extends LoginStrategy {
       logService,
       stateService,
       twoFactorService,
+      userDecryptionOptionsService,
     );
   }
 

@@ -28,11 +28,7 @@ import { CollectionView } from "../../vault/models/view/collection.view";
 import { AddEditCipherInfo } from "../../vault/types/add-edit-cipher-info";
 import { KdfType, ThemeType } from "../enums";
 import { ServerConfigData } from "../models/data/server-config.data";
-import {
-  Account,
-  AccountDecryptionOptions,
-  AccountSettingsSettings,
-} from "../models/domain/account";
+import { Account, AccountSettingsSettings } from "../models/domain/account";
 import { EncString } from "../models/domain/enc-string";
 import { StorageOptions } from "../models/domain/storage-options";
 import {
@@ -276,13 +272,6 @@ export abstract class StateService<T extends Account = Account> {
   ) => Promise<void>;
   getShouldTrustDevice: (options?: StorageOptions) => Promise<boolean | null>;
   setShouldTrustDevice: (value: boolean, options?: StorageOptions) => Promise<void>;
-  getAccountDecryptionOptions: (
-    options?: StorageOptions,
-  ) => Promise<AccountDecryptionOptions | null>;
-  setAccountDecryptionOptions: (
-    value: AccountDecryptionOptions,
-    options?: StorageOptions,
-  ) => Promise<void>;
   getEmail: (options?: StorageOptions) => Promise<string>;
   setEmail: (value: string, options?: StorageOptions) => Promise<void>;
   getEmailVerified: (options?: StorageOptions) => Promise<boolean>;

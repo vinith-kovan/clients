@@ -9,13 +9,13 @@ import { PlatformUtilsService } from "../../platform/abstractions/platform-utils
 import { StateService } from "../../platform/abstractions/state.service";
 import {
   Account,
-  AccountDecryptionOptions,
   AccountKeys,
   AccountProfile,
   AccountTokens,
 } from "../../platform/models/domain/account";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
 import { AuthResult } from "../models/domain/auth-result";
 import { ForceSetPasswordReason } from "../models/domain/force-set-password-reason";
@@ -26,6 +26,7 @@ import {
   UserApiLoginCredentials,
   WebAuthnLoginCredentials,
 } from "../models/domain/login-credentials";
+import { UserDecryptionOptions } from "../models/domain/user-decryption-options/user-decryption-options";
 import { DeviceRequest } from "../models/request/identity-token/device.request";
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
 import { SsoTokenRequest } from "../models/request/identity-token/sso-token.request";
@@ -56,6 +57,7 @@ export abstract class LoginStrategy {
     protected logService: LogService,
     protected stateService: StateService,
     protected twoFactorService: TwoFactorService,
+    protected userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction,
   ) {}
 
   abstract logIn(
@@ -151,9 +153,12 @@ export abstract class LoginStrategy {
           },
         },
         keys: accountKeys,
-        decryptionOptions: AccountDecryptionOptions.fromResponse(tokenResponse),
         adminAuthRequest: adminAuthRequest?.toJSON(),
       }),
+    );
+
+    await this.userDecryptionOptionsService.setUserDecryptionOptions(
+      UserDecryptionOptions.fromResponse(tokenResponse),
     );
   }
 

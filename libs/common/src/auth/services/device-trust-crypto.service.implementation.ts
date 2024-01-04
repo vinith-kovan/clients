@@ -36,9 +36,9 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
     private devicesApiService: DevicesApiServiceAbstraction,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private userDecryptionOptions: UserDecryptionOptionsServiceAbstraction,
+    private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
   ) {
-    this.supportsDeviceTrust$ = this.userDecryptionOptions.userDecryptionOptions$.pipe(
+    this.supportsDeviceTrust$ = this.userDecryptionOptionsService.userDecryptionOptions$.pipe(
       map((options) => options?.trustedDeviceOption != null ?? false),
     );
   }

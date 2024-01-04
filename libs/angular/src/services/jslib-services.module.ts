@@ -199,6 +199,11 @@ import {
   WINDOW,
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
+import {
+  InternalUserDecryptionOptionsServiceAbstraction,
+  UserDecryptionOptionsServiceAbstraction,
+} from "@bitwarden/common/auth/abstractions/user-decryption-options.service.abstraction";
+import { UserDecryptionOptionsService } from "@bitwarden/common/auth/services/user-decryption-options.service";
 
 @NgModule({
   declarations: [],
@@ -277,6 +282,7 @@ import { ModalService } from "./modal.service";
         PolicyServiceAbstraction,
         DeviceTrustCryptoServiceAbstraction,
         AuthRequestCryptoServiceAbstraction,
+        InternalUserDecryptionOptionsServiceAbstraction,
       ],
     },
     {
@@ -380,6 +386,15 @@ import { ModalService } from "./modal.service";
       deps: [StateServiceAbstraction],
     },
     {
+      provide: UserDecryptionOptionsServiceAbstraction,
+      useClass: UserDecryptionOptionsService,
+      deps: [StateProvider],
+    },
+    {
+      provide: InternalUserDecryptionOptionsServiceAbstraction,
+      useExisting: UserDecryptionOptionsServiceAbstraction,
+    },
+    {
       provide: TotpServiceAbstraction,
       useClass: TotpService,
       deps: [CryptoFunctionServiceAbstraction, LogService, StateServiceAbstraction],
@@ -460,6 +475,7 @@ import { ModalService } from "./modal.service";
         OrganizationServiceAbstraction,
         SendApiServiceAbstraction,
         ConfigServiceAbstraction,
+        UserDecryptionOptionsServiceAbstraction,
         LOGOUT_CALLBACK,
       ],
     },
@@ -627,6 +643,7 @@ import { ModalService } from "./modal.service";
         CryptoServiceAbstraction,
         I18nServiceAbstraction,
         UserVerificationApiServiceAbstraction,
+        UserDecryptionOptionsServiceAbstraction,
       ],
     },
     {
@@ -761,6 +778,7 @@ import { ModalService } from "./modal.service";
         DevicesApiServiceAbstraction,
         I18nServiceAbstraction,
         PlatformUtilsServiceAbstraction,
+        UserDecryptionOptionsServiceAbstraction,
       ],
     },
     {

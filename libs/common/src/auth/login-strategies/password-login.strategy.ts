@@ -13,6 +13,7 @@ import { PasswordStrengthServiceAbstraction } from "../../tools/password-strengt
 import { AuthService } from "../abstractions/auth.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { AuthResult } from "../models/domain/auth-result";
 import { ForceSetPasswordReason } from "../models/domain/force-set-password-reason";
 import { PasswordLoginCredentials } from "../models/domain/login-credentials";
@@ -54,6 +55,7 @@ export class PasswordLoginStrategy extends LoginStrategy {
     logService: LogService,
     protected stateService: StateService,
     twoFactorService: TwoFactorService,
+    userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction,
     private passwordStrengthService: PasswordStrengthServiceAbstraction,
     private policyService: PolicyService,
     private authService: AuthService,
@@ -68,6 +70,7 @@ export class PasswordLoginStrategy extends LoginStrategy {
       logService,
       stateService,
       twoFactorService,
+      userDecryptionOptionsService,
     );
   }
 

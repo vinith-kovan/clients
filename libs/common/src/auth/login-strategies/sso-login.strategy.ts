@@ -14,6 +14,7 @@ import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trus
 import { KeyConnectorService } from "../abstractions/key-connector.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { ForceSetPasswordReason } from "../models/domain/force-set-password-reason";
 import { SsoLoginCredentials } from "../models/domain/login-credentials";
 import { SsoTokenRequest } from "../models/request/identity-token/sso-token.request";
@@ -41,6 +42,7 @@ export class SsoLoginStrategy extends LoginStrategy {
     logService: LogService,
     stateService: StateService,
     twoFactorService: TwoFactorService,
+    userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction,
     private keyConnectorService: KeyConnectorService,
     private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
     private authReqCryptoService: AuthRequestCryptoServiceAbstraction,
@@ -56,6 +58,7 @@ export class SsoLoginStrategy extends LoginStrategy {
       logService,
       stateService,
       twoFactorService,
+      userDecryptionOptionsService,
     );
   }
 

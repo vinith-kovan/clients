@@ -79,10 +79,37 @@ export function trackEmissions<T>(observable: Observable<T>): T[] {
 
 function clone(value: any): any {
   if (global.structuredClone != undefined) {
-    return structuredClone(value);
+    const clone = structuredClone(value);
+    return setPrototypes(value, clone);
   } else {
     return JSON.parse(JSON.stringify(value));
   }
+}
+
+/**
+ * Recursively copies prototypes from one object to another.
+ * @param original the value to copy the prototype from
+ * @param clone the value to recursively set prototypes on
+ * @returns
+ */
+function setPrototypes<T>(original: T, clone: T): T {
+  if (typeof original !== "object" || original == null) {
+    return clone;
+  }
+
+  // return if prototype is already set
+  if (Object.getPrototypeOf(clone) === Object.getPrototypeOf(original)) {
+    return clone;
+  }
+
+  Object.setPrototypeOf(clone, Object.getPrototypeOf(original));
+  // recurse into properties to set prototypes
+  for (const prop in original) {
+    if (Object.prototype.hasOwnProperty.call(original, prop)) {
+      clone[prop] = setPrototypes(original[prop], clone[prop]);
+    }
+  }
+  return clone;
 }
 
 export async function awaitAsync(ms = 0) {

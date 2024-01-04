@@ -1,3 +1,5 @@
+import { firstValueFrom } from "rxjs";
+
 import { ApiService } from "../../../abstractions/api.service";
 import { SettingsService } from "../../../abstractions/settings.service";
 import { InternalOrganizationServiceAbstraction } from "../../../admin-console/abstractions/organization/organization.service.abstraction";
@@ -8,6 +10,7 @@ import { OrganizationData } from "../../../admin-console/models/data/organizatio
 import { PolicyData } from "../../../admin-console/models/data/policy.data";
 import { ProviderData } from "../../../admin-console/models/data/provider.data";
 import { PolicyResponse } from "../../../admin-console/models/response/policy.response";
+import { UserDecryptionOptionsServiceAbstraction } from "../../../auth/abstractions/account-decryption-options.service.abstraction";
 import { KeyConnectorService } from "../../../auth/abstractions/key-connector.service";
 import { ForceSetPasswordReason } from "../../../auth/models/domain/force-set-password-reason";
 import { FeatureFlag } from "../../../enums/feature-flag.enum";
@@ -24,7 +27,6 @@ import { LogService } from "../../../platform/abstractions/log.service";
 import { MessagingService } from "../../../platform/abstractions/messaging.service";
 import { StateService } from "../../../platform/abstractions/state.service";
 import { sequentialize } from "../../../platform/misc/sequentialize";
-import { AccountDecryptionOptions } from "../../../platform/models/domain/account";
 import { SendData } from "../../../tools/send/models/data/send.data";
 import { SendResponse } from "../../../tools/send/models/response/send.response";
 import { SendApiService } from "../../../tools/send/services/send-api.service.abstraction";
@@ -62,6 +64,7 @@ export class SyncService implements SyncServiceAbstraction {
     private organizationService: InternalOrganizationServiceAbstraction,
     private sendApiService: SendApiService,
     private configService: ConfigServiceAbstraction,
+    private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     private logoutCallback: (expired: boolean) => Promise<void>,
   ) {}
 
@@ -350,14 +353,15 @@ export class SyncService implements SyncServiceAbstraction {
       );
     }
 
-    const acctDecryptionOpts: AccountDecryptionOptions =
-      await this.stateService.getAccountDecryptionOptions();
+    const userDecryptionOptions = await firstValueFrom(
+      this.userDecryptionOptionsService.userDecryptionOptions$,
+    );
 
     // Account decryption options should never be null or undefined b/c it is always initialized
     // during the processing of the ID token response, but there might be a state issue
     // where it is being overwritten with undefined affecting browser extension + FireFox users.
     // TODO: Consider removing this once we figure out the root cause of the state issue or after the state provider refactor.
-    if (acctDecryptionOpts === null || acctDecryptionOpts === undefined) {
+    if (userDecryptionOptions === null || userDecryptionOptions === undefined) {
       this.logService.error("Sync: Account decryption options are null or undefined.");
       // Early return as a bandaid to allow the rest of the sync to continue so users can access
       // their data that they might have added from another device.
@@ -381,8 +385,8 @@ export class SyncService implements SyncServiceAbstraction {
     }
 
     if (
-      acctDecryptionOpts.trustedDeviceOption !== undefined &&
-      !acctDecryptionOpts.hasMasterPassword &&
+      userDecryptionOptions.trustedDeviceOption !== undefined &&
+      !userDecryptionOptions.hasMasterPassword &&
       hasManageResetPasswordPermission
     ) {
       // TDE user w/out MP went from having no password reset permission to having it.

@@ -5,16 +5,21 @@
 
 import { mock } from "jest-mock-extended";
 
-import { PasswordGeneratorPolicyOptions } from "../../../admin-console/models/domain/password-generator-policy-options";
+// FIXME: use index.ts imports once policy abstractions and models
+// implement ADR-0002
 import { Policy } from "../../../admin-console/models/domain/policy";
 
-import { PasswordGenerationServiceAbstraction } from "./password-generation.service.abstraction";
-import { PasswordGeneratorOptionsEvaluator } from "./password-generator-options-evaluator";
-import { PasswordGeneratorStrategy } from "./password-generator-strategy";
+import { DisabledPasswordGeneratorPolicy } from "./password-generator-policy";
+
+import {
+  PasswordGenerationServiceAbstraction,
+  PasswordGeneratorOptionsEvaluator,
+  PasswordGeneratorStrategy,
+} from ".";
 
 describe("Password generation strategy", () => {
   describe("toGeneratorPolicy()", () => {
-    it("should map the policy to PasswordGeneratorPolicyOptions", async () => {
+    it("should map the policy to PasswordGeneratorPolicy", async () => {
       const policyInput = mock<Policy>({
         data: {
           minLength: 1,
@@ -46,7 +51,7 @@ describe("Password generation strategy", () => {
     it("should load the policy from policy$", async () => {
       const strategy = new PasswordGeneratorStrategy(null);
 
-      const evaluator = strategy.evaluator(new PasswordGeneratorPolicyOptions());
+      const evaluator = strategy.evaluator(DisabledPasswordGeneratorPolicy);
 
       expect(evaluator).toBeInstanceOf(PasswordGeneratorOptionsEvaluator);
     });

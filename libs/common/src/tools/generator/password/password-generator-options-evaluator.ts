@@ -1,4 +1,4 @@
-import { PolicyEvaluator } from "../../abstractions/policy-evaluator.abstraction";
+import { PolicyEvaluator } from "..";
 
 import { PasswordGenerationOptions } from "./password-generation-options";
 import { PasswordGeneratorPolicy } from "./password-generator-policy";

@@ -6,16 +6,18 @@
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
-import { FakeActiveUserStateProvider } from "../../../spec/fake-state-provider";
+import { FakeActiveUserStateProvider } from "../../../spec";
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "../../admin-console/enums";
+// FIXME: use index.ts imports once policy abstractions and models
+// implement ADR-0002
 import { Policy } from "../../admin-console/models/domain/policy";
 import { ActiveUserState, ActiveUserStateProvider } from "../../platform/state";
-import { GeneratorStrategy } from "../abstractions/generation-strategy.abstraction";
-import { PolicyEvaluator } from "../abstractions/policy-evaluator.abstraction";
 
-import { GeneratorService } from "./generator.service";
-import { PasswordGenerationOptions } from "./password/password-generation-options";
+import { GeneratorStrategy, PolicyEvaluator } from "./abstractions";
+import { PasswordGenerationOptions } from "./password";
+
+import { DefaultGeneratorService } from ".";
 
 describe("Password generator service", () => {
   describe("options$", () => {
@@ -25,7 +27,7 @@ describe("Password generator service", () => {
       const stateProvider = mock<ActiveUserStateProvider>();
       stateProvider.get.mockReturnValue(state);
       const strategy = mock<GeneratorStrategy<any, any>>({ disk: {} });
-      const service = new GeneratorService(strategy, null, stateProvider);
+      const service = new DefaultGeneratorService(strategy, null, stateProvider);
 
       // invoke the getter. It returns the state but that's not important.
       service.options$;
@@ -41,7 +43,7 @@ describe("Password generator service", () => {
       const stateProvider = mock<ActiveUserStateProvider>();
       stateProvider.get.mockReturnValue(state);
       const strategy = mock<GeneratorStrategy<any, any>>({ disk: {} });
-      const service = new GeneratorService(strategy, null, stateProvider);
+      const service = new DefaultGeneratorService(strategy, null, stateProvider);
 
       // invoke the save. The mocks are synchronous so no need to await.
       service.saveOptions({});
@@ -54,7 +56,7 @@ describe("Password generator service", () => {
       const provider = new FakeActiveUserStateProvider();
       const strategy = mock<GeneratorStrategy<any, any>>({ disk: {} });
       provider.getFake(strategy.disk).stateSubject.next({ length: 9 });
-      const service = new GeneratorService(strategy, null, provider);
+      const service = new DefaultGeneratorService(strategy, null, provider);
 
       await service.saveOptions({ length: 10 });
 
@@ -70,7 +72,7 @@ describe("Password generator service", () => {
       const policyObservable = new BehaviorSubject<Policy>(policyInput).asObservable();
       policyService.get$.mockReturnValue(policyObservable);
       const strategy = mock<GeneratorStrategy<any, any>>({ policy: PolicyType.PasswordGenerator });
-      const service = new GeneratorService(strategy, policyService, null);
+      const service = new DefaultGeneratorService(strategy, policyService, null);
 
       // invoke the getter. It returns the policy but that's not important.
       service.policy$;
@@ -87,7 +89,7 @@ describe("Password generator service", () => {
       const strategy = mock<GeneratorStrategy<any, any>>();
       strategy.toGeneratorPolicy.mockReturnValue(expectedOutput);
 
-      const service = new GeneratorService(strategy, policyService, null);
+      const service = new DefaultGeneratorService(strategy, policyService, null);
 
       const policy = await firstValueFrom(service.policy$);
 
@@ -103,7 +105,7 @@ describe("Password generator service", () => {
       const policyObservable = new BehaviorSubject<Policy>(policyInput).asObservable();
       policyService.get$.mockReturnValue(policyObservable);
       const strategy = mock<GeneratorStrategy<any, any>>({ policy: PolicyType.PasswordGenerator });
-      const service = new GeneratorService(strategy, policyService, null);
+      const service = new DefaultGeneratorService(strategy, policyService, null);
 
       // invoke the getter. It returns the policy but that's not important.
       service.policyInEffect$;
@@ -119,7 +121,7 @@ describe("Password generator service", () => {
       const evaluator = mock<PolicyEvaluator<any>>();
       evaluator.policyInEffect = true;
       const strategy = mock<GeneratorStrategy<any, any>>({ evaluator: () => evaluator });
-      const service = new GeneratorService(strategy, policyService, null);
+      const service = new DefaultGeneratorService(strategy, policyService, null);
 
       const policy = await firstValueFrom(service.policyInEffect$);
 
@@ -135,7 +137,7 @@ describe("Password generator service", () => {
       policyService.get$.mockReturnValue(policyObservable);
       const evaluator = mock<PolicyEvaluator<any>>();
       const strategy = mock<GeneratorStrategy<any, any>>({ evaluator: () => evaluator });
-      const service = new GeneratorService(strategy, policyService, null);
+      const service = new DefaultGeneratorService(strategy, policyService, null);
 
       await service.enforcePolicy({});
 
@@ -149,7 +151,7 @@ describe("Password generator service", () => {
       policyService.get$.mockReturnValue(policyObservable);
       const evaluator = mock<PolicyEvaluator<any>>();
       const strategy = mock<GeneratorStrategy<any, any>>({ evaluator: () => evaluator });
-      const service = new GeneratorService(strategy, policyService, null);
+      const service = new DefaultGeneratorService(strategy, policyService, null);
 
       await service.enforcePolicy({});
 
@@ -161,7 +163,7 @@ describe("Password generator service", () => {
   describe("generate()", () => {
     it("should invoke the generation strategy", async () => {
       const strategy = mock<GeneratorStrategy<any, any>>();
-      const service = new GeneratorService(strategy, null, null);
+      const service = new DefaultGeneratorService(strategy, null, null);
 
       await service.generate({});
 

@@ -1,16 +1,18 @@
+import { GeneratorStrategy } from "..";
 import { PolicyType } from "../../../admin-console/enums";
-import { PasswordGeneratorPolicyOptions } from "../../../admin-console/models/domain/password-generator-policy-options";
+// FIXME: use index.ts imports once policy abstractions and models
+// implement ADR-0002
 import { Policy } from "../../../admin-console/models/domain/policy";
-import { GeneratorStrategy } from "../../abstractions/generation-strategy.abstraction";
 import { PASSWORD_SETTINGS } from "../key-definitions";
 
 import { PasswordGenerationOptions } from "./password-generation-options";
 import { PasswordGenerationServiceAbstraction } from "./password-generation.service.abstraction";
 import { PasswordGeneratorOptionsEvaluator } from "./password-generator-options-evaluator";
+import { PasswordGeneratorPolicy } from "./password-generator-policy";
 
 /** {@link GeneratorStrategy} */
 export class PasswordGeneratorStrategy
-  implements GeneratorStrategy<PasswordGenerationOptions, PasswordGeneratorPolicyOptions>
+  implements GeneratorStrategy<PasswordGenerationOptions, PasswordGeneratorPolicy>
 {
   constructor(private legacy: PasswordGenerationServiceAbstraction) {}
 
@@ -25,20 +27,22 @@ export class PasswordGeneratorStrategy
   }
 
   /** {@link GeneratorStrategy.toGeneratorPolicy} */
-  toGeneratorPolicy(policy: Policy): PasswordGeneratorPolicyOptions {
-    const policyOptions = new PasswordGeneratorPolicyOptions();
-    policyOptions.minLength = policy.data.minLength;
-    policyOptions.useUppercase = policy.data.useUpper;
-    policyOptions.useLowercase = policy.data.useLower;
-    policyOptions.useNumbers = policy.data.useNumbers;
-    policyOptions.numberCount = policy.data.minNumbers;
-    policyOptions.useSpecial = policy.data.useSpecial;
-    policyOptions.specialCount = policy.data.minSpecial;
+  toGeneratorPolicy(policy: Policy): PasswordGeneratorPolicy {
+    const policyOptions = {
+      minLength: policy.data.minLength,
+      useUppercase: policy.data.useUpper,
+      useLowercase: policy.data.useLower,
+      useNumbers: policy.data.useNumbers,
+      numberCount: policy.data.minNumbers,
+      useSpecial: policy.data.useSpecial,
+      specialCount: policy.data.minSpecial,
+    };
+
     return policyOptions;
   }
 
   /** {@link GeneratorStrategy.evaluator} */
-  evaluator(policy: PasswordGeneratorPolicyOptions): PasswordGeneratorOptionsEvaluator {
+  evaluator(policy: PasswordGeneratorPolicy): PasswordGeneratorOptionsEvaluator {
     return new PasswordGeneratorOptionsEvaluator(policy);
   }
 

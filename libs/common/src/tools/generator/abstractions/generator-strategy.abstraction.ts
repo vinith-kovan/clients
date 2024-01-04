@@ -1,6 +1,8 @@
-import { PolicyType } from "../../admin-console/enums";
-import { Policy } from "../../admin-console/models/domain/policy";
-import { KeyDefinition } from "../../platform/state";
+import { PolicyType } from "../../../admin-console/enums";
+// `Policy` imported from a private module because it's part of the
+// public API of `policy.service.abstraction`.
+import { Policy } from "../../../admin-console/models/domain/policy";
+import { KeyDefinition } from "../../../platform/state";
 
 import { PolicyEvaluator } from "./policy-evaluator.abstraction";
 

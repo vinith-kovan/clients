@@ -1,14 +1,16 @@
 import { firstValueFrom, map } from "rxjs";
 
+// FIXME: use index.ts imports once policy abstractions and models
+// implement ADR-0002
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "../../admin-console/enums";
 import { ActiveUserStateProvider } from "../../platform/state";
-import { GeneratorStrategy } from "../abstractions/generation-strategy.abstraction";
-import { GeneratorService as GeneratorServiceAbstraction } from "../abstractions/generator.service.abstraction";
+
+import { GeneratorStrategy, GeneratorService } from "./abstractions";
 
 /** {@link GeneratorServiceAbstraction} */
-export class GeneratorService<GeneratorOptions, PolicyOptions>
-  implements GeneratorServiceAbstraction<GeneratorOptions, PolicyOptions>
+export class DefaultGeneratorService<GeneratorOptions, PolicyOptions>
+  implements GeneratorService<GeneratorOptions, PolicyOptions>
 {
   /** Instantiates the generator service
    * @param strategy tailors the service to a specific generator type
@@ -23,24 +25,24 @@ export class GeneratorService<GeneratorOptions, PolicyOptions>
     private state: ActiveUserStateProvider,
   ) {}
 
-  /** {@link GeneratorServiceAbstraction.options$} */
+  /** {@link GeneratorService.options$} */
   get options$() {
     return this.state.get(this.strategy.disk).state$;
   }
 
-  /** {@link GeneratorServiceAbstraction.saveOptions} */
+  /** {@link GeneratorService.saveOptions} */
   async saveOptions(options: GeneratorOptions): Promise<void> {
     await this.state.get(this.strategy.disk).update(() => options);
   }
 
-  /** {@link GeneratorServiceAbstraction.policy$} */
+  /** {@link GeneratorService.policy$} */
   get policy$() {
     return this.policy
       .get$(PolicyType.PasswordGenerator)
       .pipe(map((policy) => this.strategy.toGeneratorPolicy(policy)));
   }
 
-  /** {@link GeneratorServiceAbstraction.policyInEffect} */
+  /** {@link GeneratorService.policyInEffect} */
   get policyInEffect$() {
     return this.policy$.pipe(
       map((policy) => this.strategy.evaluator(policy)),
@@ -48,7 +50,7 @@ export class GeneratorService<GeneratorOptions, PolicyOptions>
     );
   }
 
-  /** {@link GeneratorServiceAbstraction.enforcePolicy} */
+  /** {@link GeneratorService.enforcePolicy} */
   async enforcePolicy(options: GeneratorOptions): Promise<GeneratorOptions> {
     const policy = await firstValueFrom(this.policy$);
     const evaluator = this.strategy.evaluator(policy);
@@ -57,7 +59,7 @@ export class GeneratorService<GeneratorOptions, PolicyOptions>
     return sanitized;
   }
 
-  /** {@link GeneratorServiceAbstraction.generate} */
+  /** {@link GeneratorService.generate} */
   async generate(options: GeneratorOptions): Promise<string> {
     return await this.strategy.generate(options);
   }

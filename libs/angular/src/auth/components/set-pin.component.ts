@@ -1,7 +1,10 @@
 import { Directive, OnInit } from "@angular/core";
+import { firstValueFrom } from "rxjs";
 
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
@@ -19,6 +22,8 @@ export class SetPinComponent implements OnInit {
     private cryptoService: CryptoService,
     private userVerificationService: UserVerificationService,
     private stateService: StateService,
+    private accountService: AccountService,
+    private encryptService: EncryptService,
   ) {}
 
   async ngOnInit() {
@@ -42,9 +47,16 @@ export class SetPinComponent implements OnInit {
       await this.stateService.getKdfType(),
       await this.stateService.getKdfConfig(),
     );
-    const userKey = await this.cryptoService.getUserKey();
-    const pinProtectedKey = await this.cryptoService.encrypt(userKey.key, pinKey);
-    const encPin = await this.cryptoService.encrypt(this.pin, userKey);
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    const [pinProtectedKey, encPin] = await this.cryptoService.deriveFromUserKey(
+      userId,
+      async (userKey) => {
+        return [
+          await this.encryptService.encrypt(userKey.key, pinKey),
+          await this.encryptService.encrypt(this.pin, userKey),
+        ];
+      },
+    );
     await this.stateService.setProtectedPin(encPin.encryptedString);
     if (this.masterPassOnRestart) {
       await this.stateService.setPinKeyEncryptedUserKeyEphemeral(pinProtectedKey);

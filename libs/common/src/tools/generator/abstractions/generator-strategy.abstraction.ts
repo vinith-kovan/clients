@@ -1,30 +1,25 @@
 import { PolicyType } from "../../../admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
-import { Policy } from "../../../admin-console/models/domain/policy";
+import { Policy as AdminPolicy } from "../../../admin-console/models/domain/policy";
 import { KeyDefinition } from "../../../platform/state";
 
 import { PolicyEvaluator } from "./policy-evaluator.abstraction";
 
 /** Tailors the generator service to generate a specific kind of credentials */
-export abstract class GeneratorStrategy<Options, GeneratorPolicy> {
+export abstract class GeneratorStrategy<Options, Policy> {
   /** The key used when storing credentials on disk. */
   disk: KeyDefinition<Options>;
 
   /** Identifies the policy enforced by the generator. */
   policy: PolicyType;
 
-  /** Converts a policy to a generator policy.
-   * @param policy The policy to convert.
-   * @remarks this method is separate from `evaluator` because the
-   *          policy can be referenced without the evaluator.
-   */
-  toGeneratorPolicy: (options: Policy) => GeneratorPolicy;
-
   /** Creates an evaluator from a generator policy.
    * @param policy The policy being evaluated.
+   * @returns a policy evaluator, or `undefined` if the policy's type
+   *          does not match the generator's policy type.
    */
-  evaluator: (policy: GeneratorPolicy) => PolicyEvaluator<Options>;
+  evaluator: (policy: AdminPolicy) => PolicyEvaluator<Policy, Options>;
 
   /** Generates credentials from the given options.
    * @param options The options used to generate the credentials.

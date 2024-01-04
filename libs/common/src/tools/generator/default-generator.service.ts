@@ -8,9 +8,7 @@ import { ActiveUserStateProvider } from "../../platform/state";
 import { GeneratorStrategy, GeneratorService } from "./abstractions";
 
 /** {@link GeneratorServiceAbstraction} */
-export class DefaultGeneratorService<GeneratorOptions, PolicyOptions>
-  implements GeneratorService<GeneratorOptions, PolicyOptions>
-{
+export class DefaultGeneratorService<Options, Policy> implements GeneratorService<Options, Policy> {
   /** Instantiates the generator service
    * @param strategy tailors the service to a specific generator type
    *            (e.g. password, passphrase)
@@ -19,7 +17,7 @@ export class DefaultGeneratorService<GeneratorOptions, PolicyOptions>
    *             specified by the strategy
    */
   constructor(
-    private strategy: GeneratorStrategy<GeneratorOptions, PolicyOptions>,
+    private strategy: GeneratorStrategy<Options, Policy>,
     private policy: PolicyService,
     private state: ActiveUserStateProvider,
   ) {}
@@ -30,7 +28,7 @@ export class DefaultGeneratorService<GeneratorOptions, PolicyOptions>
   }
 
   /** {@link GeneratorService.saveOptions} */
-  async saveOptions(options: GeneratorOptions): Promise<void> {
+  async saveOptions(options: Options): Promise<void> {
     await this.state.get(this.strategy.disk).update(() => options);
   }
 
@@ -38,28 +36,19 @@ export class DefaultGeneratorService<GeneratorOptions, PolicyOptions>
   get policy$() {
     return this.policy
       .get$(this.strategy.policy)
-      .pipe(map((policy) => this.strategy.toGeneratorPolicy(policy)));
-  }
-
-  /** {@link GeneratorService.policyInEffect} */
-  get policyInEffect$() {
-    return this.policy$.pipe(
-      map((policy) => this.strategy.evaluator(policy)),
-      map((evaluator) => evaluator.policyInEffect),
-    );
+      .pipe(map((policy) => this.strategy.evaluator(policy)));
   }
 
   /** {@link GeneratorService.enforcePolicy} */
-  async enforcePolicy(options: GeneratorOptions): Promise<GeneratorOptions> {
+  async enforcePolicy(options: Options): Promise<Options> {
     const policy = await firstValueFrom(this.policy$);
-    const evaluator = this.strategy.evaluator(policy);
-    const evaluated = evaluator.applyPolicy(options);
-    const sanitized = evaluator.sanitize(evaluated);
+    const evaluated = policy.applyPolicy(options);
+    const sanitized = policy.sanitize(evaluated);
     return sanitized;
   }
 
   /** {@link GeneratorService.generate} */
-  async generate(options: GeneratorOptions): Promise<string> {
+  async generate(options: Options): Promise<string> {
     return await this.strategy.generate(options);
   }
 }

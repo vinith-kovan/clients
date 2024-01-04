@@ -9,8 +9,6 @@ import { mock } from "jest-mock-extended";
 // implement ADR-0002
 import { Policy } from "../../../admin-console/models/domain/policy";
 
-import { DisabledPasswordGeneratorPolicy } from "./password-generator-policy";
-
 import {
   PasswordGenerationServiceAbstraction,
   PasswordGeneratorOptionsEvaluator,
@@ -18,11 +16,12 @@ import {
 } from ".";
 
 describe("Password generation strategy", () => {
-  describe("toGeneratorPolicy()", () => {
-    it("should map the policy to PasswordGeneratorPolicy", async () => {
-      const policyInput = mock<Policy>({
+  describe("evaluator()", () => {
+    it("should load the policy evaluator from policy$", async () => {
+      const strategy = new PasswordGeneratorStrategy(null);
+      const policy = mock<Policy>({
         data: {
-          minLength: 1,
+          minLength: 10,
           useUpper: true,
           useLower: true,
           useNumbers: true,
@@ -31,12 +30,12 @@ describe("Password generation strategy", () => {
           minSpecial: 1,
         },
       });
-      const strategy = new PasswordGeneratorStrategy(null);
 
-      const policy = strategy.toGeneratorPolicy(policyInput);
+      const evaluator = strategy.evaluator(policy);
 
-      expect(policy).toMatchObject({
-        minLength: 1,
+      expect(evaluator).toBeInstanceOf(PasswordGeneratorOptionsEvaluator);
+      expect(evaluator.policy).toMatchObject({
+        minLength: 10,
         useUppercase: true,
         useLowercase: true,
         useNumbers: true,
@@ -44,16 +43,6 @@ describe("Password generation strategy", () => {
         useSpecial: true,
         specialCount: 1,
       });
-    });
-  });
-
-  describe("evaluator()", () => {
-    it("should load the policy from policy$", async () => {
-      const strategy = new PasswordGeneratorStrategy(null);
-
-      const evaluator = strategy.evaluator(DisabledPasswordGeneratorPolicy);
-
-      expect(evaluator).toBeInstanceOf(PasswordGeneratorOptionsEvaluator);
     });
   });
 

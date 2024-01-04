@@ -87,45 +87,13 @@ describe("Password generator service", () => {
       policyService.get$.mockReturnValue(policyObservable);
       const expectedOutput = {};
       const strategy = mock<GeneratorStrategy<any, any>>();
-      strategy.toGeneratorPolicy.mockReturnValue(expectedOutput);
+      strategy.evaluator.mockReturnValue(expectedOutput as any);
 
       const service = new DefaultGeneratorService(strategy, policyService, null);
 
       const policy = await firstValueFrom(service.policy$);
 
-      expect(strategy.toGeneratorPolicy).toHaveBeenCalledWith(policyInput);
       expect(policy).toEqual(expectedOutput);
-    });
-  });
-
-  describe("policyInEffect$", () => {
-    it("should rely upon the latest policy from the policy service", () => {
-      const policyService = mock<PolicyService>();
-      const policyInput = mock<Policy>({ data: {} });
-      const policyObservable = new BehaviorSubject<Policy>(policyInput).asObservable();
-      policyService.get$.mockReturnValue(policyObservable);
-      const strategy = mock<GeneratorStrategy<any, any>>({ policy: PolicyType.PasswordGenerator });
-      const service = new DefaultGeneratorService(strategy, policyService, null);
-
-      // invoke the getter. It returns the policy but that's not important.
-      service.policyInEffect$;
-
-      expect(policyService.get$).toHaveBeenCalledWith(strategy.policy);
-    });
-
-    it("should map the policy using the generation strategy", async () => {
-      const policyService = mock<PolicyService>();
-      const policyInput = mock<Policy>();
-      const policyObservable = new BehaviorSubject<Policy>(policyInput).asObservable();
-      policyService.get$.mockReturnValue(policyObservable);
-      const evaluator = mock<PolicyEvaluator<any>>();
-      evaluator.policyInEffect = true;
-      const strategy = mock<GeneratorStrategy<any, any>>({ evaluator: () => evaluator });
-      const service = new DefaultGeneratorService(strategy, policyService, null);
-
-      const policy = await firstValueFrom(service.policyInEffect$);
-
-      expect(policy).toEqual(true);
     });
   });
 
@@ -135,7 +103,7 @@ describe("Password generator service", () => {
       const policyInput = mock<Policy>();
       const policyObservable = new BehaviorSubject<Policy>(policyInput).asObservable();
       policyService.get$.mockReturnValue(policyObservable);
-      const evaluator = mock<PolicyEvaluator<any>>();
+      const evaluator = mock<PolicyEvaluator<any, any>>();
       const strategy = mock<GeneratorStrategy<any, any>>({
         policy: PolicyType.PasswordGenerator,
         evaluator: () => evaluator,
@@ -152,7 +120,7 @@ describe("Password generator service", () => {
       const policyInput = mock<Policy>();
       const policyObservable = new BehaviorSubject<Policy>(policyInput).asObservable();
       policyService.get$.mockReturnValue(policyObservable);
-      const evaluator = mock<PolicyEvaluator<any>>();
+      const evaluator = mock<PolicyEvaluator<any, any>>();
       const strategy = mock<GeneratorStrategy<any, any>>({ evaluator: () => evaluator });
       const service = new DefaultGeneratorService(strategy, policyService, null);
 

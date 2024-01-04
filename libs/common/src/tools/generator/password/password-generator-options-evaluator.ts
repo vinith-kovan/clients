@@ -39,7 +39,7 @@ type Boundary = {
 /** Enforces policy for password generation.
  */
 export class PasswordGeneratorOptionsEvaluator
-  implements PolicyEvaluator<PasswordGenerationOptions>
+  implements PolicyEvaluator<PasswordGeneratorPolicy, PasswordGenerationOptions>
 {
   // This design is not ideal, but it is a step towards a more robust password
   // generator. Ideally, `sanitize` would be implemented on an options class,

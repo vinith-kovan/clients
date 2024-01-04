@@ -1,5 +1,8 @@
 /** Applies policy to a generation request */
-export abstract class PolicyEvaluator<PolicyTarget> {
+export abstract class PolicyEvaluator<Policy, PolicyTarget> {
+  /** The policy to enforce */
+  policy: Policy;
+
   /** Returns true when a policy is being enforced by the evaluator.
    * @remarks `applyPolicy` should be called when a policy is not in
    *           effect to enforce the application's default policy.

@@ -26,9 +26,9 @@ export class PasswordGeneratorStrategy
     return PolicyType.PasswordGenerator;
   }
 
-  /** {@link GeneratorStrategy.toGeneratorPolicy} */
-  toGeneratorPolicy(policy: Policy): PasswordGeneratorPolicy {
-    const policyOptions = {
+  /** {@link GeneratorStrategy.evaluator} */
+  evaluator(policy: Policy): PasswordGeneratorOptionsEvaluator {
+    return new PasswordGeneratorOptionsEvaluator({
       minLength: policy.data.minLength,
       useUppercase: policy.data.useUpper,
       useLowercase: policy.data.useLower,
@@ -36,14 +36,7 @@ export class PasswordGeneratorStrategy
       numberCount: policy.data.minNumbers,
       useSpecial: policy.data.useSpecial,
       specialCount: policy.data.minSpecial,
-    };
-
-    return policyOptions;
-  }
-
-  /** {@link GeneratorStrategy.evaluator} */
-  evaluator(policy: PasswordGeneratorPolicy): PasswordGeneratorOptionsEvaluator {
-    return new PasswordGeneratorOptionsEvaluator(policy);
+    });
   }
 
   /** {@link GeneratorStrategy.generate} */

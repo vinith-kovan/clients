@@ -4,6 +4,7 @@ import AddLoginRuntimeMessage from "../notification/models/add-login-runtime-mes
 import ChangePasswordRuntimeMessage from "../notification/models/change-password-runtime-message";
 import { FormData } from "../services/abstractions/autofill.service";
 import { GlobalSettings, UserSettings } from "../types";
+import { getFromLocalStorage, setupExtensionDisconnectAction } from "../utils";
 
 interface HTMLElementWithFormOpId extends HTMLElement {
   formOpId: string;
@@ -86,6 +87,7 @@ async function loadNotificationBar() {
 
   // Look up the active user id from storage
   const activeUserIdKey = "activeUserId";
+  const globalStorageKey = "global";
   let activeUserId: string;
 
   const activeUserStorageValue = await getFromLocalStorage(activeUserIdKey);
@@ -97,7 +99,9 @@ async function loadNotificationBar() {
   const userSettingsStorageValue = await getFromLocalStorage(activeUserId);
   if (userSettingsStorageValue[activeUserId]) {
     const userSettings: UserSettings = userSettingsStorageValue[activeUserId].settings;
-    const globalSettings: GlobalSettings = await getFromLocalStorage("global");
+    const globalSettings: GlobalSettings = (await getFromLocalStorage(globalStorageKey))[
+      globalStorageKey
+    ];
 
     // Do not show the notification bar on the Bitwarden vault
     // because they can add logins and change passwords there
@@ -121,6 +125,8 @@ async function loadNotificationBar() {
       }
     }
   }
+
+  setupExtensionDisconnectAction(handleExtensionDisconnection);
 
   if (!showNotificationBar) {
     return;
@@ -999,11 +1005,23 @@ async function loadNotificationBar() {
     return theEl === document;
   }
 
-  // End Helper Functions
-}
+  function handleExtensionDisconnection(port: chrome.runtime.Port) {
+    closeBar(false);
+    clearTimeout(domObservationCollectTimeoutId);
+    clearTimeout(collectPageDetailsTimeoutId);
+    clearTimeout(handlePageChangeTimeoutId);
+    observer?.disconnect();
+    observer = null;
+    watchedForms.forEach((wf: WatchedForm) => {
+      const form = wf.formEl;
+      form.removeEventListener("submit", formSubmitted, false);
+      const submitButton = getSubmitButton(
+        form,
+        unionSets(logInButtonNames, changePasswordButtonNames),
+      );
+      submitButton?.removeEventListener("click", formSubmitted, false);
+    });
+  }
 
-async function getFromLocalStorage(keys: string | string[]): Promise<Record<string, any>> {
-  return new Promise((resolve) => {
-    chrome.storage.local.get(keys, (storage: Record<string, any>) => resolve(storage));
-  });
+  // End Helper Functions
 }

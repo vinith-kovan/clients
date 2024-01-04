@@ -1,9 +1,19 @@
+/**
+ * @jest-environment ../shared/test.environment.ts
+ */
+
 import { mock } from "jest-mock-extended";
 import { firstValueFrom } from "rxjs";
 
-import { FakeActiveUserState, FakeSingleUserState } from "../../../spec/fake-state";
+import { trackEmissions } from "../../../spec";
+import {
+  FakeActiveUserState,
+  FakeGlobalState,
+  FakeSingleUserState,
+} from "../../../spec/fake-state";
 import { FakeStateProvider } from "../../../spec/fake-state-provider";
 import { AccountService } from "../../auth/abstractions/account.service";
+import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { CsprngArray } from "../../types/csprng";
 import { UserId } from "../../types/guid";
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
@@ -19,7 +29,7 @@ import {
   SymmetricCryptoKey,
   UserKey,
 } from "../models/domain/symmetric-crypto-key";
-import { CryptoService, USER_EVER_HAD_USER_KEY } from "../services/crypto.service";
+import { CryptoService, USER_EVER_HAD_USER_KEY, USER_KEYS_KEY } from "../services/crypto.service";
 
 describe("cryptoService", () => {
   let cryptoService: CryptoService;
@@ -31,11 +41,16 @@ describe("cryptoService", () => {
   const stateService = mock<StateService>();
   const accountService = mock<AccountService>();
   let stateProvider: FakeStateProvider;
+  let userKeysState: FakeGlobalState<Record<UserId, UserKey>>;
 
   const mockUserId = Utils.newGuid() as UserId;
 
   beforeEach(() => {
     stateProvider = new FakeStateProvider();
+    userKeysState = stateProvider.global.mockFor(USER_KEYS_KEY);
+
+    // initialize state
+    userKeysState.stateSubject.next({});
 
     cryptoService = new CryptoService(
       cryptoFunctionService,
@@ -79,13 +94,13 @@ describe("cryptoService", () => {
     it("sets the Auto key if the User Key if not set", async () => {
       const autoKeyB64 =
         "IT5cA1i5Hncd953pb00E58D2FqJX+fWTj4AvoI67qkGHSQPgulAqKv+LaKRAo9Bg0xzP9Nw00wk4TqjMmGSM+g==";
+      const autoKey = new SymmetricCryptoKey(Utils.fromB64ToArray(autoKeyB64)) as UserKey;
       stateService.getUserKeyAutoUnlock.mockResolvedValue(autoKeyB64);
+      const emissions = trackEmissions(cryptoService.keyForUser$(mockUserId));
 
       const userKey = await cryptoService.getUserKey(mockUserId);
 
-      expect(stateService.setUserKey).toHaveBeenCalledWith(expect.any(SymmetricCryptoKey), {
-        userId: mockUserId,
-      });
+      expect(emissions).toEqual([undefined, autoKey]);
       expect(userKey.keyB64).toEqual(autoKeyB64);
     });
   });
@@ -166,10 +181,31 @@ describe("cryptoService", () => {
       everHadUserKeyState.stateSubject.next(null);
     });
 
+    it("should throw if key is null", async () => {
+      await expect(cryptoService.setUserKey(null, mockUserId)).rejects.toThrow();
+    });
+
     it("should set everHadUserKey if key is not null to true", async () => {
       await cryptoService.setUserKey(mockUserKey, mockUserId);
 
       expect(await firstValueFrom(everHadUserKeyState.state$)).toBe(true);
+    });
+
+    it("should emit the new key", async () => {
+      const emissions = trackEmissions(cryptoService.keyForUser$(mockUserId));
+      await cryptoService.setUserKey(mockUserKey, mockUserId);
+
+      expect(emissions).toEqual([undefined, mockUserKey]);
+    });
+
+    it("should update account status", async () => {
+      await cryptoService.setUserKey(mockUserKey, mockUserId);
+
+      expect(accountService.setAccountStatus).toHaveBeenCalledWith(
+        mockUserId,
+        AuthenticationStatus.Unlocked,
+      );
+      expect(accountService.setAccountStatus).toHaveBeenCalledTimes(1);
     });
 
     describe("Auto Key refresh", () => {

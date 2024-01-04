@@ -37,6 +37,21 @@ export abstract class CryptoService {
    * i.e. has ever been unlocked/decrypted. This is key for differentiating between TDE locked and standard locked states.
    */
   everHadUserKey$: Observable<boolean>;
+
+  /**
+   * Retrieves an observable that emits updates to the provided user's key.
+   * User keys encrypt and decrypt user-account level data.
+   * @param userId The desired user
+   * @returns
+   */
+  abstract keyForUser$(userId?: string): Observable<UserKey>;
+
+  /**
+   * Retrieves an observable of the current active account user key. Null if no active user or the current active user
+   * is not unlocked.
+   */
+  activeUserKey$: Observable<UserKey>;
+
   /**
    * Retrieves the user key
    * @param userId The desired user

@@ -1,5 +1,5 @@
 import * as bigInt from "big-integer";
-import { firstValueFrom, map } from "rxjs";
+import { Observable, combineLatest, firstValueFrom, map } from "rxjs";
 
 import { EncryptedOrganizationKeyData } from "../../admin-console/models/data/encrypted-organization-key.data";
 import { BaseEncryptedOrganizationKey } from "../../admin-console/models/domain/encrypted-organization-key";
@@ -7,6 +7,7 @@ import { ProfileOrganizationResponse } from "../../admin-console/models/response
 import { ProfileProviderOrganizationResponse } from "../../admin-console/models/response/profile-provider-organization.response";
 import { ProfileProviderResponse } from "../../admin-console/models/response/profile-provider.response";
 import { AccountService } from "../../auth/abstractions/account.service";
+import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { KdfConfig } from "../../auth/models/domain/kdf-config";
 import { Utils } from "../../platform/misc/utils";
 import { UserId } from "../../types/guid";
@@ -39,17 +40,40 @@ import {
   SymmetricCryptoKey,
   UserKey,
 } from "../models/domain/symmetric-crypto-key";
-import { ActiveUserState, CRYPTO_DISK, KeyDefinition, StateProvider } from "../state";
+import {
+  ActiveUserState,
+  CRYPTO_DISK,
+  CRYPTO_MEMORY,
+  GlobalState,
+  KeyDefinition,
+  StateProvider,
+} from "../state";
 
 export const USER_EVER_HAD_USER_KEY = new KeyDefinition<boolean>(CRYPTO_DISK, "everHadUserKey", {
   deserializer: (obj) => obj,
 });
 
+export const USER_KEYS_KEY = "userKeys";
+const GLOBAL_USER_KEYS = KeyDefinition.record<UserKey, UserId>(CRYPTO_MEMORY, USER_KEYS_KEY, {
+  deserializer: (obj) => SymmetricCryptoKey.fromJSON(obj) as UserKey,
+});
+
 export class CryptoService implements CryptoServiceAbstraction {
   private activeUserEverHadUserKey: ActiveUserState<boolean>;
+  private userKeys: GlobalState<Record<UserId, UserKey>>;
 
   get everHadUserKey$() {
     return this.activeUserEverHadUserKey.state$.pipe(map((x) => x ?? false));
+  }
+
+  get activeUserKey$() {
+    return combineLatest([this.accountService.activeAccount$, this.userKeys.state$]).pipe(
+      map(([account, keys]) => (account == null ? null : keys[account.id])),
+    );
+  }
+
+  keyForUser$(userId: UserId): Observable<UserKey> {
+    return this.userKeys.state$.pipe(map((x) => x[userId]));
   }
 
   constructor(
@@ -62,22 +86,29 @@ export class CryptoService implements CryptoServiceAbstraction {
     protected stateProvider: StateProvider,
   ) {
     this.activeUserEverHadUserKey = stateProvider.getActive(USER_EVER_HAD_USER_KEY);
+    this.userKeys = stateProvider.getGlobal(GLOBAL_USER_KEYS);
   }
 
   async setUserKey(key: UserKey, userId?: UserId): Promise<void> {
+    if (key == null) {
+      throw new Error("Do not set null keys, instead call clearUserKey");
+    }
+
     // TODO: make this non-nullable in signature
     userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
-    if (key != null) {
-      // Key should never be null anyway
-      this.stateProvider.getUser(userId, USER_EVER_HAD_USER_KEY).update(() => true);
-    }
-    await this.stateService.setUserKey(key, { userId: userId });
+    this.stateProvider.getUser(userId, USER_EVER_HAD_USER_KEY).update(() => true);
+    await this.userKeys.update((x) => ({ ...(x ?? {}), [userId]: key }));
+
+    // user key presence is used to indicate unlocked vs locked state
+    await this.accountService.setAccountStatus(userId, AuthenticationStatus.Unlocked);
+
     await this.storeAdditionalKeys(key, userId);
   }
 
   async refreshAdditionalKeys(): Promise<void> {
-    const key = await this.getUserKey();
-    await this.setUserKey(key);
+    const key = await firstValueFrom(this.activeUserKey$);
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    await this.storeAdditionalKeys(key, userId);
   }
 
   async getUserKey(userId?: UserId): Promise<UserKey> {
@@ -216,7 +247,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     masterKey: MasterKey,
     userKey?: UserKey,
   ): Promise<[UserKey, EncString]> {
-    userKey ||= await this.getUserKey();
+    userKey ||= await firstValueFrom(this.activeUserKey$);
     return await this.buildProtectedSymmetricKey(masterKey, userKey.key);
   }
 

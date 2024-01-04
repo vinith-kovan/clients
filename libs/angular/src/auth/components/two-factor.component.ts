@@ -1,6 +1,7 @@
 import { Directive, Inject, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
 import * as DuoWebSDK from "duo_web_sdk";
+import { firstValueFrom } from "rxjs";
 import { first } from "rxjs/operators";
 
 // eslint-disable-next-line no-restricted-imports
@@ -9,10 +10,12 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
+import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-decryption-options.service.abstraction";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { TrustedDeviceUserDecryptionOption } from "@bitwarden/common/auth/models/domain/user-decryption-options/trusted-device-user-decryption-option";
+import { UserDecryptionOptions } from "@bitwarden/common/auth/models/domain/user-decryption-options/user-decryption-options";
 import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
 import { TwoFactorEmailRequest } from "@bitwarden/common/auth/models/request/two-factor-email.request";
 import { TwoFactorProviders } from "@bitwarden/common/auth/services/two-factor.service";
@@ -25,7 +28,6 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { AccountDecryptionOptions } from "@bitwarden/common/platform/models/domain/account";
 
 import { CaptchaProtectedComponent } from "./captcha-protected.component";
 
@@ -72,6 +74,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     protected twoFactorService: TwoFactorService,
     protected appIdService: AppIdService,
     protected loginService: LoginService,
+    protected userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     protected configService: ConfigServiceAbstraction,
   ) {
     super(environmentService, i18nService, platformUtilsService);
@@ -246,22 +249,23 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
       return await this.handleForcePasswordReset(this.orgIdentifier);
     }
 
-    const acctDecryptionOpts: AccountDecryptionOptions =
-      await this.stateService.getAccountDecryptionOptions();
+    const userDecryptionOpts = await firstValueFrom(
+      this.userDecryptionOptionsService.userDecryptionOptions$,
+    );
 
-    const tdeEnabled = await this.isTrustedDeviceEncEnabled(acctDecryptionOpts.trustedDeviceOption);
+    const tdeEnabled = await this.isTrustedDeviceEncEnabled(userDecryptionOpts.trustedDeviceOption);
 
     if (tdeEnabled) {
       return await this.handleTrustedDeviceEncryptionEnabled(
         authResult,
         this.orgIdentifier,
-        acctDecryptionOpts,
+        userDecryptionOpts,
       );
     }
 
     // User must set password if they don't have one and they aren't using either TDE or key connector.
     const requireSetPassword =
-      !acctDecryptionOpts.hasMasterPassword && acctDecryptionOpts.keyConnectorOption === undefined;
+      !userDecryptionOpts.hasMasterPassword && userDecryptionOpts.keyConnectorOption === undefined;
 
     if (requireSetPassword || authResult.resetMasterPassword) {
       // Change implies going no password -> password in this case
@@ -289,12 +293,12 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
   private async handleTrustedDeviceEncryptionEnabled(
     authResult: AuthResult,
     orgIdentifier: string,
-    acctDecryptionOpts: AccountDecryptionOptions,
+    userDecryptionOpts: UserDecryptionOptions,
   ): Promise<void> {
     // If user doesn't have a MP, but has reset password permission, they must set a MP
     if (
-      !acctDecryptionOpts.hasMasterPassword &&
-      acctDecryptionOpts.trustedDeviceOption.hasManageResetPasswordPermission
+      !userDecryptionOpts.hasMasterPassword &&
+      userDecryptionOpts.trustedDeviceOption.hasManageResetPasswordPermission
     ) {
       // Set flag so that auth guard can redirect to set password screen after decryption (trusted or untrusted device)
       // Note: we cannot directly navigate to the set password screen in this scenario as we are in a pre-decryption state, and

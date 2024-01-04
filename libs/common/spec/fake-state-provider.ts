@@ -13,19 +13,33 @@ import { UserId } from "../src/types/guid";
 import { FakeActiveUserState, FakeGlobalState, FakeSingleUserState } from "./fake-state";
 
 export class FakeGlobalStateProvider implements GlobalStateProvider {
-  states: Map<string, GlobalState<unknown>> = new Map();
+  establishedMocks: Map<string, FakeGlobalState<unknown>> = new Map();
+  states: Map<string, FakeGlobalState<unknown>> = new Map();
   get<T>(keyDefinition: KeyDefinition<T>): GlobalState<T> {
-    let result = this.states.get(keyDefinition.buildCacheKey("global")) as GlobalState<T>;
+    let result = this.states.get(keyDefinition.buildCacheKey("global"));
 
     if (result == null) {
-      result = new FakeGlobalState<T>();
+      // Look for established mock
+      if (this.establishedMocks.has(keyDefinition.key)) {
+        result = this.establishedMocks.get(keyDefinition.key);
+      } else {
+        result = new FakeGlobalState<T>();
+      }
       this.states.set(keyDefinition.buildCacheKey("global"), result);
     }
-    return result;
+    result.keyDefinition = keyDefinition;
+    return result as GlobalState<T>;
   }
 
   getFake<T>(keyDefinition: KeyDefinition<T>): FakeGlobalState<T> {
     return this.get(keyDefinition) as FakeGlobalState<T>;
+  }
+
+  mockFor<T>(keyDefinitionKey: string): FakeGlobalState<T> {
+    if (!this.establishedMocks.has(keyDefinitionKey)) {
+      this.establishedMocks.set(keyDefinitionKey, new FakeGlobalState<T>());
+    }
+    return this.establishedMocks.get(keyDefinitionKey) as FakeGlobalState<T>;
   }
 }
 

@@ -5,6 +5,7 @@ import {
   GlobalState,
   SingleUserState,
   ActiveUserState,
+  KeyDefinition,
 } from "../src/platform/state";
 // eslint-disable-next-line import/no-restricted-paths -- using unexposed options for clean typing in test class
 import { StateUpdateOptions } from "../src/platform/state/state-update-options";
@@ -59,6 +60,19 @@ export class FakeGlobalState<T> implements GlobalState<T> {
 
   get state$() {
     return this.stateSubject.asObservable();
+  }
+
+  private _keyDefinition: KeyDefinition<T> | null = null;
+  get keyDefinition() {
+    if (this._keyDefinition == null) {
+      throw new Error(
+        "Key definition not yet set, usually this means your sut has not asked for this state yet",
+      );
+    }
+    return this._keyDefinition;
+  }
+  set keyDefinition(value: KeyDefinition<T>) {
+    this._keyDefinition = value;
   }
 }
 

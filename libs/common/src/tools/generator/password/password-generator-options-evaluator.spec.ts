@@ -1,6 +1,11 @@
+/**
+ * include structuredClone in test environment.
+ * @jest-environment ../../../../shared/test.environment.ts
+ */
+
 import { PasswordGeneratorPolicyOptions } from "../../../admin-console/models/domain/password-generator-policy-options";
 
-import { PasswordGenerationOptions } from "./password-generator-options";
+import { PasswordGenerationOptions } from "./password-generation-options";
 import {
   DefaultBoundaries,
   PasswordGeneratorOptionsEvaluator,
@@ -163,6 +168,71 @@ describe("Password generator options builder", () => {
         expect(builder.length.min).toBeGreaterThanOrEqual(expectedLength);
       },
     );
+  });
+
+  describe("policyInEffect", () => {
+    it("should return false when the policy has no effect", () => {
+      const policy = new PasswordGeneratorPolicyOptions();
+      const builder = new PasswordGeneratorOptionsEvaluator(policy);
+
+      expect(builder.policyInEffect).toEqual(false);
+    });
+
+    it("should return true when the policy has a minlength greater than the default boundary", () => {
+      const policy = new PasswordGeneratorPolicyOptions();
+      policy.minLength = DefaultBoundaries.length.min + 1;
+      const builder = new PasswordGeneratorOptionsEvaluator(policy);
+
+      expect(builder.policyInEffect).toEqual(true);
+    });
+
+    it("should return true when the policy has a number count greater than the default boundary", () => {
+      const policy = new PasswordGeneratorPolicyOptions();
+      policy.numberCount = DefaultBoundaries.minDigits.min + 1;
+      const builder = new PasswordGeneratorOptionsEvaluator(policy);
+
+      expect(builder.policyInEffect).toEqual(true);
+    });
+
+    it("should return true when the policy has a special character count greater than the default boundary", () => {
+      const policy = new PasswordGeneratorPolicyOptions();
+      policy.specialCount = DefaultBoundaries.minSpecialCharacters.min + 1;
+      const builder = new PasswordGeneratorOptionsEvaluator(policy);
+
+      expect(builder.policyInEffect).toEqual(true);
+    });
+
+    it("should return true when the policy has uppercase enabled", () => {
+      const policy = new PasswordGeneratorPolicyOptions();
+      policy.useUppercase = true;
+      const builder = new PasswordGeneratorOptionsEvaluator(policy);
+
+      expect(builder.policyInEffect).toEqual(true);
+    });
+
+    it("should return true when the policy has lowercase enabled", () => {
+      const policy = new PasswordGeneratorPolicyOptions();
+      policy.useLowercase = true;
+      const builder = new PasswordGeneratorOptionsEvaluator(policy);
+
+      expect(builder.policyInEffect).toEqual(true);
+    });
+
+    it("should return true when the policy has numbers enabled", () => {
+      const policy = new PasswordGeneratorPolicyOptions();
+      policy.useNumbers = true;
+      const builder = new PasswordGeneratorOptionsEvaluator(policy);
+
+      expect(builder.policyInEffect).toEqual(true);
+    });
+
+    it("should return true when the policy has special characters enabled", () => {
+      const policy = new PasswordGeneratorPolicyOptions();
+      policy.useSpecial = true;
+      const builder = new PasswordGeneratorOptionsEvaluator(policy);
+
+      expect(builder.policyInEffect).toEqual(true);
+    });
   });
 
   describe("applyPolicy(options)", () => {

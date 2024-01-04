@@ -18,3 +18,6 @@ import { StateDefinition } from "./state-definition";
  */
 
 export const ACCOUNT_MEMORY = new StateDefinition("account", "memory");
+
+export const GENERATOR_DISK = new StateDefinition("generator", "disk");
+export const GENERATOR_MEMORY = new StateDefinition("generator", "memory");

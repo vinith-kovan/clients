@@ -51,15 +51,19 @@ export class AutoFillConstants {
     "forgot",
   ];
 
-  static readonly ExcludedAutofillTypes: string[] = [
-    "radio",
-    "checkbox",
+  static readonly ExcludedAutofillLoginTypes: string[] = [
     "hidden",
     "file",
     "button",
     "image",
     "reset",
     "search",
+  ];
+
+  static readonly ExcludedAutofillTypes: string[] = [
+    "radio",
+    "checkbox",
+    ...AutoFillConstants.ExcludedAutofillLoginTypes,
   ];
 }
 

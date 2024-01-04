@@ -480,6 +480,11 @@ export default class AutofillService implements AutofillServiceInterface {
           return;
         }
 
+        // Check if the input is an untyped/mistyped search input
+        if (AutofillService.isSearchField(field)) {
+          return;
+        }
+
         const matchingIndex = this.findMatchingFieldIndex(field, fieldNames);
         if (matchingIndex > -1) {
           const matchingField: FieldView = fields[matchingIndex];
@@ -737,6 +742,11 @@ export default class AutofillService implements AutofillServiceInterface {
       }
 
       if (this.isExcludedType(f.type, AutoFillConstants.ExcludedAutofillTypes)) {
+        return;
+      }
+
+      // Check if the input is an untyped/mistyped search input
+      if (AutofillService.isSearchField(f)) {
         return;
       }
 
@@ -1123,7 +1133,7 @@ export default class AutofillService implements AutofillServiceInterface {
       }
 
       // Check if the input is an untyped/mistyped search input
-      if (this.isSearchField(f)) {
+      if (AutofillService.isSearchField(f)) {
         return;
       }
 
@@ -1352,7 +1362,7 @@ export default class AutofillService implements AutofillServiceInterface {
     return excludedTypes.indexOf(type) > -1;
   }
 
-  private isSearchField(field: AutofillField) {
+  static isSearchField(field: AutofillField) {
     const matchFieldAttributeValues = [field.type, field.htmlName, field.htmlID, field.placeholder];
     const matchPattern = new RegExp(AutoFillConstants.SearchFieldNames.join("|"), "gi");
 
@@ -1489,6 +1499,11 @@ export default class AutofillService implements AutofillServiceInterface {
     const arr: AutofillField[] = [];
     pageDetails.fields.forEach((f) => {
       if (AutofillService.forCustomFieldsOnly(f)) {
+        return;
+      }
+
+      // Check if the input is an untyped/mistyped search input
+      if (AutofillService.isSearchField(f)) {
         return;
       }
 

@@ -1,5 +1,6 @@
 import { matches, mock } from "jest-mock-extended";
 
+import { mockStaticAccountFor } from "../../../spec/fake-account-service";
 import { DeviceType } from "../../enums";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "../../platform/abstractions/crypto-function.service";
@@ -16,12 +17,14 @@ import {
   UserKey,
 } from "../../platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "../../types/csprng";
+import { UserId } from "../../types/guid";
 import { DeviceResponse } from "../abstractions/devices/responses/device.response";
 import { DevicesApiServiceAbstraction } from "../abstractions/devices-api.service.abstraction";
 import { UpdateDevicesTrustRequest } from "../models/request/update-devices-trust.request";
 import { ProtectedDeviceResponse } from "../models/response/protected-device.response";
 
 import { DeviceTrustCryptoService } from "./device-trust-crypto.service.implementation";
+
 describe("deviceTrustCryptoService", () => {
   let deviceTrustCryptoService: DeviceTrustCryptoService;
 
@@ -33,6 +36,7 @@ describe("deviceTrustCryptoService", () => {
   const devicesApiService = mock<DevicesApiServiceAbstraction>();
   const i18nService = mock<I18nService>();
   const platformUtilsService = mock<PlatformUtilsService>();
+  const accountService = mockStaticAccountFor("mockId" as UserId);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -46,6 +50,7 @@ describe("deviceTrustCryptoService", () => {
       devicesApiService,
       i18nService,
       platformUtilsService,
+      accountService,
     );
   });
 
@@ -211,8 +216,7 @@ describe("deviceTrustCryptoService", () => {
 
       let makeDeviceKeySpy: jest.SpyInstance;
       let rsaGenerateKeyPairSpy: jest.SpyInstance;
-      let cryptoSvcGetUserKeySpy: jest.SpyInstance;
-      let cryptoSvcRsaEncryptSpy: jest.SpyInstance;
+      let encryptSvcRsaEncryptSpy: jest.SpyInstance;
       let encryptServiceEncryptSpy: jest.SpyInstance;
       let appIdServiceGetAppIdSpy: jest.SpyInstance;
       let devicesApiServiceUpdateTrustedDeviceKeysSpy: jest.SpyInstance;
@@ -258,12 +262,12 @@ describe("deviceTrustCryptoService", () => {
           .spyOn(cryptoFunctionService, "rsaGenerateKeyPair")
           .mockResolvedValue(mockDeviceRsaKeyPair);
 
-        cryptoSvcGetUserKeySpy = jest
-          .spyOn(cryptoService, "getUserKey")
-          .mockResolvedValue(mockUserKey);
+        cryptoService.deriveFromUserKey.mockImplementation(async (userId, callback) => {
+          return await callback(mockUserKey);
+        });
 
-        cryptoSvcRsaEncryptSpy = jest
-          .spyOn(cryptoService, "rsaEncrypt")
+        encryptSvcRsaEncryptSpy = jest
+          .spyOn(encryptService, "rsaEncrypt")
           .mockResolvedValue(mockDevicePublicKeyEncryptedUserKey);
 
         encryptServiceEncryptSpy = jest
@@ -288,19 +292,13 @@ describe("deviceTrustCryptoService", () => {
 
       it("calls the required methods with the correct arguments and returns a DeviceResponse", async () => {
         const response = await deviceTrustCryptoService.trustDevice();
-
         expect(makeDeviceKeySpy).toHaveBeenCalledTimes(1);
         expect(rsaGenerateKeyPairSpy).toHaveBeenCalledTimes(1);
-        expect(cryptoSvcGetUserKeySpy).toHaveBeenCalledTimes(1);
-
-        expect(cryptoSvcRsaEncryptSpy).toHaveBeenCalledTimes(1);
-
+        expect(encryptSvcRsaEncryptSpy).toHaveBeenCalledTimes(1);
         // RsaEncrypt must be called w/ a user key array buffer of 64 bytes
-        const userKeyKey: Uint8Array = cryptoSvcRsaEncryptSpy.mock.calls[0][0];
+        const userKeyKey: Uint8Array = encryptSvcRsaEncryptSpy.mock.calls[0][0];
         expect(userKeyKey.byteLength).toBe(64);
-
         expect(encryptServiceEncryptSpy).toHaveBeenCalledTimes(2);
-
         expect(appIdServiceGetAppIdSpy).toHaveBeenCalledTimes(1);
         expect(devicesApiServiceUpdateTrustedDeviceKeysSpy).toHaveBeenCalledTimes(1);
         expect(devicesApiServiceUpdateTrustedDeviceKeysSpy).toHaveBeenCalledWith(
@@ -309,24 +307,21 @@ describe("deviceTrustCryptoService", () => {
           mockUserKeyEncryptedDevicePublicKey.encryptedString,
           mockDeviceKeyEncryptedDevicePrivateKey.encryptedString,
         );
-
         expect(response).toBeInstanceOf(DeviceResponse);
         expect(response).toEqual(mockDeviceResponse);
       });
 
       it("throws specific error if user key is not found", async () => {
-        // setup the spy to return null
-        cryptoSvcGetUserKeySpy.mockResolvedValue(null);
+        // setup derive from user key to return null
+        mockUserKey = null;
         // check if the expected error is thrown
         await expect(deviceTrustCryptoService.trustDevice()).rejects.toThrow(
           "User symmetric key not found",
         );
 
-        // reset the spy
-        cryptoSvcGetUserKeySpy.mockReset();
+        // set up derive from user key to return undefined
+        mockUserKey = undefined;
 
-        // setup the spy to return undefined
-        cryptoSvcGetUserKeySpy.mockResolvedValue(undefined);
         // check if the expected error is thrown
         await expect(deviceTrustCryptoService.trustDevice()).rejects.toThrow(
           "User symmetric key not found",
@@ -345,13 +340,8 @@ describe("deviceTrustCryptoService", () => {
           errorText: "rsaGenerateKeyPair error",
         },
         {
-          method: "getUserKey",
-          spy: () => cryptoSvcGetUserKeySpy,
-          errorText: "getUserKey error",
-        },
-        {
           method: "rsaEncrypt",
-          spy: () => cryptoSvcRsaEncryptSpy,
+          spy: () => encryptSvcRsaEncryptSpy,
           errorText: "rsaEncrypt error",
         },
         {

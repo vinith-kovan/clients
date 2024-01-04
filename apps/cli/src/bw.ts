@@ -337,6 +337,7 @@ export class Main {
       this.devicesApiService,
       this.i18nService,
       this.platformUtilsService,
+      this.accountService,
     );
 
     this.authRequestCryptoService = new AuthRequestCryptoServiceImplementation(this.cryptoService);

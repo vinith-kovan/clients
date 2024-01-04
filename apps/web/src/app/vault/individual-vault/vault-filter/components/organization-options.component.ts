@@ -9,6 +9,7 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
+import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-decryption-options.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -44,6 +45,7 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
     private logService: LogService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private organizationUserService: OrganizationUserService,
+    private UserDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     private dialogService: DialogService,
     private stateService: StateService,
   ) {}
@@ -56,7 +58,7 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
     combineLatest([
       this.organization$,
       resetPasswordPolicies$,
-      this.stateService.getAccountDecryptionOptions(),
+      this.UserDecryptionOptionsService.userDecryptionOptions$,
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([organization, resetPasswordPolicies, decryptionOptions]) => {

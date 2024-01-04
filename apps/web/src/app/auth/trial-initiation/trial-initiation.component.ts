@@ -44,6 +44,7 @@ enum ValidLayoutParams {
   cnetcmpgnteams = "cnetcmpgnteams",
   abmenterprise = "abmenterprise",
   abmteams = "abmteams",
+  secretsManager = "secretsManager",
 }
 
 @Component({
@@ -77,6 +78,7 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
     ValidOrgParams.individual,
   ];
   layouts = ValidLayoutParams;
+  orgTypes = ValidOrgParams;
   referenceData: ReferenceEventRequest;
   @ViewChild("stepper", { static: false }) verticalStepper: VerticalStepperComponent;
 
@@ -256,6 +258,15 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
     }
 
     return this.org;
+  }
+
+  get freeTrialText() {
+    const translationKey =
+      this.layout === this.layouts.secretsManager
+        ? "startYour7DayFreeTrialOfBitwardenSecretsManagerFor"
+        : "startYour7DayFreeTrialOfBitwardenFor";
+
+    return this.i18nService.t(translationKey, this.org);
   }
 
   private setupFamilySponsorship(sponsorshipToken: string) {

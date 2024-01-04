@@ -15,6 +15,7 @@ import {
 } from "../../platform/models/domain/symmetric-crypto-key";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { AuthResult } from "../models/domain/auth-result";
 import { WebAuthnLoginCredentials } from "../models/domain/login-credentials";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
@@ -34,6 +35,7 @@ describe("WebAuthnLoginStrategy", () => {
   let logService!: MockProxy<LogService>;
   let stateService!: MockProxy<StateService>;
   let twoFactorService!: MockProxy<TwoFactorService>;
+  let userDecryptionOptionsService: MockProxy<InternalUserDecryptionOptionsServiceAbstraction>;
 
   let webAuthnLoginStrategy!: WebAuthnLoginStrategy;
 
@@ -68,6 +70,7 @@ describe("WebAuthnLoginStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
+    userDecryptionOptionsService = mock<InternalUserDecryptionOptionsServiceAbstraction>();
 
     tokenService.getTwoFactorToken.mockResolvedValue(null);
     appIdService.getAppId.mockResolvedValue(deviceId);
@@ -83,6 +86,7 @@ describe("WebAuthnLoginStrategy", () => {
       logService,
       stateService,
       twoFactorService,
+      userDecryptionOptionsService,
     );
 
     // Create credentials

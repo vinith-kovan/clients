@@ -11,7 +11,6 @@ import { StateService } from "../../platform/abstractions/state.service";
 import { Utils } from "../../platform/misc/utils";
 import {
   Account,
-  AccountDecryptionOptions,
   AccountKeys,
   AccountProfile,
   AccountTokens,
@@ -31,10 +30,12 @@ import { CsprngArray } from "../../types/csprng";
 import { AuthService } from "../abstractions/auth.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
 import { AuthResult } from "../models/domain/auth-result";
 import { ForceSetPasswordReason } from "../models/domain/force-set-password-reason";
 import { PasswordLoginCredentials } from "../models/domain/login-credentials";
+import { UserDecryptionOptions } from "../models/domain/user-decryption-options/user-decryption-options";
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
 import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
 import { IdentityCaptchaResponse } from "../models/response/identity-captcha.response";
@@ -106,6 +107,7 @@ describe("LoginStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
+  let userDecryptionOptionsService: MockProxy<InternalUserDecryptionOptionsServiceAbstraction>;
   let authService: MockProxy<AuthService>;
   let policyService: MockProxy<PolicyService>;
   let passwordStrengthService: MockProxy<PasswordStrengthServiceAbstraction>;
@@ -123,6 +125,7 @@ describe("LoginStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
+    userDecryptionOptionsService = mock<InternalUserDecryptionOptionsServiceAbstraction>();
     authService = mock<AuthService>();
     policyService = mock<PolicyService>();
     passwordStrengthService = mock<PasswordStrengthService>();
@@ -141,6 +144,7 @@ describe("LoginStrategy", () => {
       logService,
       stateService,
       twoFactorService,
+      userDecryptionOptionsService,
       passwordStrengthService,
       policyService,
       authService,
@@ -190,8 +194,10 @@ describe("LoginStrategy", () => {
             },
           },
           keys: new AccountKeys(),
-          decryptionOptions: AccountDecryptionOptions.fromResponse(idTokenResponse),
         }),
+      );
+      expect(userDecryptionOptionsService.setUserDecryptionOptions).toHaveBeenCalledWith(
+        UserDecryptionOptions.fromResponse(idTokenResponse),
       );
       expect(messagingService.send).toHaveBeenCalledWith("loggedIn");
     });

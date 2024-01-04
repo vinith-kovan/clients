@@ -23,6 +23,7 @@ import { CsprngArray } from "../../types/csprng";
 import { AuthService } from "../abstractions/auth.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
 import { ForceSetPasswordReason } from "../models/domain/force-set-password-reason";
 import { PasswordLoginCredentials } from "../models/domain/login-credentials";
@@ -59,6 +60,7 @@ describe("PasswordLoginStrategy", () => {
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
   let authService: MockProxy<AuthService>;
+  let userDecryptionOptionsService: MockProxy<InternalUserDecryptionOptionsServiceAbstraction>;
   let policyService: MockProxy<PolicyService>;
   let passwordStrengthService: MockProxy<PasswordStrengthServiceAbstraction>;
 
@@ -76,6 +78,7 @@ describe("PasswordLoginStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
+    userDecryptionOptionsService = mock<InternalUserDecryptionOptionsServiceAbstraction>();
     authService = mock<AuthService>();
     policyService = mock<PolicyService>();
     passwordStrengthService = mock<PasswordStrengthService>();
@@ -104,6 +107,7 @@ describe("PasswordLoginStrategy", () => {
       logService,
       stateService,
       twoFactorService,
+      userDecryptionOptionsService,
       passwordStrengthService,
       policyService,
       authService,

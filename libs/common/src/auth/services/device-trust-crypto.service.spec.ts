@@ -1,4 +1,5 @@
 import { matches, mock } from "jest-mock-extended";
+import { BehaviorSubject } from "rxjs";
 
 import { DeviceType } from "../../enums";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
@@ -18,6 +19,8 @@ import {
 import { CsprngArray } from "../../types/csprng";
 import { DeviceResponse } from "../abstractions/devices/responses/device.response";
 import { DevicesApiServiceAbstraction } from "../abstractions/devices-api.service.abstraction";
+import { UserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
+import { UserDecryptionOptions } from "../models/domain/user-decryption-options/user-decryption-options";
 import { UpdateDevicesTrustRequest } from "../models/request/update-devices-trust.request";
 import { ProtectedDeviceResponse } from "../models/response/protected-device.response";
 
@@ -33,9 +36,15 @@ describe("deviceTrustCryptoService", () => {
   const devicesApiService = mock<DevicesApiServiceAbstraction>();
   const i18nService = mock<I18nService>();
   const platformUtilsService = mock<PlatformUtilsService>();
+  const userDecryptionOptionsService = mock<UserDecryptionOptionsServiceAbstraction>();
+
+  const decryptionOptions = new BehaviorSubject<UserDecryptionOptions>(null);
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    decryptionOptions.next({} as any);
+    userDecryptionOptionsService.userDecryptionOptions$ = decryptionOptions;
 
     deviceTrustCryptoService = new DeviceTrustCryptoService(
       cryptoFunctionService,
@@ -46,6 +55,7 @@ describe("deviceTrustCryptoService", () => {
       devicesApiService,
       i18nService,
       platformUtilsService,
+      userDecryptionOptionsService,
     );
   });
 

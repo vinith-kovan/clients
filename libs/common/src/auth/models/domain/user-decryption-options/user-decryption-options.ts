@@ -32,16 +32,16 @@ export class UserDecryptionOptions {
       return null;
     }
 
-    const accountDecryptionOptions = new UserDecryptionOptions();
+    const decryptionOptions = new UserDecryptionOptions();
 
     if (response.userDecryptionOptions) {
       // If the response has userDecryptionOptions, this means it's on a post-TDE server version and can interrogate
       // the new decryption options.
       const responseOptions = response.userDecryptionOptions;
-      accountDecryptionOptions.hasMasterPassword = responseOptions.hasMasterPassword;
+      decryptionOptions.hasMasterPassword = responseOptions.hasMasterPassword;
 
       if (responseOptions.trustedDeviceOption) {
-        accountDecryptionOptions.trustedDeviceOption = new TrustedDeviceUserDecryptionOption(
+        decryptionOptions.trustedDeviceOption = new TrustedDeviceUserDecryptionOption(
           responseOptions.trustedDeviceOption.hasAdminApproval,
           responseOptions.trustedDeviceOption.hasLoginApprovingDevice,
           responseOptions.trustedDeviceOption.hasManageResetPasswordPermission,
@@ -49,7 +49,7 @@ export class UserDecryptionOptions {
       }
 
       if (responseOptions.keyConnectorOption) {
-        accountDecryptionOptions.keyConnectorOption = new KeyConnectorUserDecryptionOption(
+        decryptionOptions.keyConnectorOption = new KeyConnectorUserDecryptionOption(
           responseOptions.keyConnectorOption.keyConnectorUrl,
         );
       }
@@ -60,14 +60,14 @@ export class UserDecryptionOptions {
       // server versions, a master password short-circuited the addition of the keyConnectorUrl to the response.
       // TODO: remove this check after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3537)
       const usingKeyConnector = response.keyConnectorUrl != null;
-      accountDecryptionOptions.hasMasterPassword = !usingKeyConnector;
+      decryptionOptions.hasMasterPassword = !usingKeyConnector;
       if (usingKeyConnector) {
-        accountDecryptionOptions.keyConnectorOption = new KeyConnectorUserDecryptionOption(
+        decryptionOptions.keyConnectorOption = new KeyConnectorUserDecryptionOption(
           response.keyConnectorUrl,
         );
       }
     }
-    return accountDecryptionOptions;
+    return decryptionOptions;
   }
 
   static fromJSON(obj: Jsonify<UserDecryptionOptions>): UserDecryptionOptions {
@@ -75,10 +75,10 @@ export class UserDecryptionOptions {
       return null;
     }
 
-    const accountDecryptionOptions = Object.assign(new UserDecryptionOptions(), obj);
+    const decryptionOptions = Object.assign(new UserDecryptionOptions(), obj);
 
     if (obj.trustedDeviceOption) {
-      accountDecryptionOptions.trustedDeviceOption = new TrustedDeviceUserDecryptionOption(
+      decryptionOptions.trustedDeviceOption = new TrustedDeviceUserDecryptionOption(
         obj.trustedDeviceOption.hasAdminApproval,
         obj.trustedDeviceOption.hasLoginApprovingDevice,
         obj.trustedDeviceOption.hasManageResetPasswordPermission,
@@ -86,11 +86,11 @@ export class UserDecryptionOptions {
     }
 
     if (obj.keyConnectorOption) {
-      accountDecryptionOptions.keyConnectorOption = new KeyConnectorUserDecryptionOption(
+      decryptionOptions.keyConnectorOption = new KeyConnectorUserDecryptionOption(
         obj.keyConnectorOption.keyConnectorUrl,
       );
     }
 
-    return accountDecryptionOptions;
+    return decryptionOptions;
   }
 }

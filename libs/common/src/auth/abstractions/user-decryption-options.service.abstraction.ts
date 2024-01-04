@@ -1,4 +1,4 @@
-﻿import { Observable } from "rxjs";
+import { Observable } from "rxjs";
 
 import { UserDecryptionOptions } from "../models/domain/user-decryption-options/user-decryption-options";
 

@@ -17,6 +17,7 @@ import { CsprngArray } from "../../types/csprng";
 import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { AuthRequestLoginCredentials } from "../models/domain/login-credentials";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
@@ -33,6 +34,7 @@ describe("AuthRequestLoginStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
+  let userDecryptionOptions: MockProxy<InternalUserDecryptionOptionsServiceAbstraction>;
   let deviceTrustCryptoService: MockProxy<DeviceTrustCryptoServiceAbstraction>;
 
   let authRequestLoginStrategy: AuthRequestLoginStrategy;
@@ -60,6 +62,7 @@ describe("AuthRequestLoginStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
+    userDecryptionOptions = mock<InternalUserDecryptionOptionsServiceAbstraction>();
     deviceTrustCryptoService = mock<DeviceTrustCryptoServiceAbstraction>();
 
     tokenService.getTwoFactorToken.mockResolvedValue(null);
@@ -76,6 +79,7 @@ describe("AuthRequestLoginStrategy", () => {
       logService,
       stateService,
       twoFactorService,
+      userDecryptionOptions,
       deviceTrustCryptoService,
     );
 

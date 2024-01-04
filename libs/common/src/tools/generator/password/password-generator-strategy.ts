@@ -14,6 +14,9 @@ import { PasswordGeneratorPolicy } from "./password-generator-policy";
 export class PasswordGeneratorStrategy
   implements GeneratorStrategy<PasswordGenerationOptions, PasswordGeneratorPolicy>
 {
+  /** instantiates the password generator strategy.
+   *  @param legacy generates the password
+   */
   constructor(private legacy: PasswordGenerationServiceAbstraction) {}
 
   /** {@link GeneratorStrategy.disk} */

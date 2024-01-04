@@ -14,10 +14,10 @@ import {
   UserKey,
 } from "../../platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "../../types/csprng";
-import { UserDecryptionOptionsServiceAbstraction } from "../abstractions/account-decryption-options.service.abstraction";
 import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
 import { DeviceResponse } from "../abstractions/devices/responses/device.response";
 import { DevicesApiServiceAbstraction } from "../abstractions/devices-api.service.abstraction";
+import { UserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { SecretVerificationRequest } from "../models/request/secret-verification.request";
 import {
   DeviceKeysUpdateRequest,

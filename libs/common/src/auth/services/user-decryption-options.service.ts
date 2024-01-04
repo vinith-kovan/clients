@@ -7,7 +7,7 @@ import {
   USER_DECRYPTION_OPTIONS_DISK,
 } from "../../platform/state";
 import { UserId } from "../../types/guid";
-import { InternalUserDecryptionOptionsServiceAbstraction as InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/account-decryption-options.service.abstraction";
+import { InternalUserDecryptionOptionsServiceAbstraction as InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { UserDecryptionOptions } from "../models/domain/user-decryption-options/user-decryption-options";
 
 export const USER_DECRYPTION_OPTIONS = new KeyDefinition<UserDecryptionOptions>(

@@ -10,8 +10,8 @@ import { OrganizationData } from "../../../admin-console/models/data/organizatio
 import { PolicyData } from "../../../admin-console/models/data/policy.data";
 import { ProviderData } from "../../../admin-console/models/data/provider.data";
 import { PolicyResponse } from "../../../admin-console/models/response/policy.response";
-import { UserDecryptionOptionsServiceAbstraction } from "../../../auth/abstractions/account-decryption-options.service.abstraction";
 import { KeyConnectorService } from "../../../auth/abstractions/key-connector.service";
+import { UserDecryptionOptionsServiceAbstraction } from "../../../auth/abstractions/user-decryption-options.service.abstraction";
 import { ForceSetPasswordReason } from "../../../auth/models/domain/force-set-password-reason";
 import { FeatureFlag } from "../../../enums/feature-flag.enum";
 import { DomainsResponse } from "../../../models/response/domains.response";

@@ -53,7 +53,20 @@
   </button>
 </ng-container>
 <form
-  *ngIf="org && !loading && (flexibleCollectionsEnabled$ | async)"
+  *ngIf="
+    org && !loading && !org.flexibleCollections && (flexibleCollectionsMigrationEnabled$ | async)
+  "
+>
+  <!-- TODO: design to advise on layout and wording -->
+  <h1 bitTypography="h1" class="tw-mt-16 tw-pb-2.5">{{ "collectionManagement" | i18n }}</h1>
+  <p>{{ "collectionManagementDesc" | i18n }}</p>
+  <button type="button" bitButton buttonType="primary" [bitAction]="enableCollectionEnhancements">
+    <!-- TODO: i18n once wording is decided -->
+    Enable collection management enhancements
+  </button>
+</form>
+<form
+  *ngIf="org && !loading && org.flexibleCollections"
   [bitSubmit]="submitCollectionManagement"
   [formGroup]="collectionManagementFormGroup"
 >

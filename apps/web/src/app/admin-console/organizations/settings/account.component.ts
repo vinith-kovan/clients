@@ -41,10 +41,12 @@ export class AccountComponent {
   canUseApi = false;
   org: OrganizationResponse;
   taxFormPromise: Promise<unknown>;
-  flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
-    FeatureFlag.FlexibleCollections,
+
+  protected flexibleCollectionsMigrationEnabled$ = this.configService.getFeatureFlag$(
+    FeatureFlag.FlexibleCollectionsMigration,
     false,
   );
+
   flexibleCollectionsV1Enabled$ = this.configService.getFeatureFlag$(
     FeatureFlag.FlexibleCollectionsV1,
     false,
@@ -178,6 +180,13 @@ export class AccountComponent {
 
     await this.organizationApiService.save(this.organizationId, request);
 
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("organizationUpdated"));
+  };
+
+  enableCollectionEnhancements = async () => {
+    await this.organizationApiService.enableCollectionEnhancements(this.organizationId);
+
+    // TODO - design to advise on a success message
     this.platformUtilsService.showToast("success", null, this.i18nService.t("organizationUpdated"));
   };
 

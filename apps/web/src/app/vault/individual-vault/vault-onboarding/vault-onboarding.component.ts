@@ -44,7 +44,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   isIndividualPolicyVault: boolean;
   private destroy$ = new Subject<void>();
   isNewAccount: boolean;
-  private readonly onboardingReleaseDate = new Date(2023, 12, 22);
+  private readonly onboardingReleaseDate = new Date("2023-12-22");
   showOnboardingAccess: Observable<boolean>;
 
   protected onboardingTasks$: BehaviorSubject<VaultOnboardingTasks> =
@@ -77,9 +77,8 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes?.ciphers) {
-      const { currentValue, previousValue } = changes.ciphers;
-      if (this.showOnboarding && currentValue?.length !== previousValue?.length) {
+    if (this.showOnboarding && changes?.ciphers) {
+      if (this.showOnboarding) {
         this.saveCompletedTasks({
           createAccount: true,
           importData: this.ciphers.length > 0,
@@ -106,6 +105,10 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
     const profileCreationDate = new Date(userProfile.creationDate);
 
     this.isNewAccount = this.onboardingReleaseDate < profileCreationDate ? true : false;
+
+    if (!this.isNewAccount) {
+      this.hideOnboarding();
+    }
   }
 
   addCipher() {

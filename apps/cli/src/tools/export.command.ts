@@ -10,6 +10,7 @@ import {
   ExportFormat,
   EXPORT_FORMATS,
   VaultExportServiceAbstraction,
+  OrgVaultExportServiceAbstraction,
 } from "@bitwarden/exporter/vault-export";
 
 import { Response } from "../models/response";
@@ -20,6 +21,7 @@ export class ExportCommand {
     private exportService: VaultExportServiceAbstraction,
     private policyService: PolicyService,
     private eventCollectionService: EventCollectionService,
+    private orgExportService: OrgVaultExportServiceAbstraction,
   ) {}
 
   async run(options: program.OptionValues): Promise<Response> {
@@ -64,13 +66,21 @@ export class ExportCommand {
 
   private async getProtectedExport(passwordOption: string | boolean, organizationId?: string) {
     const password = await this.promptPassword(passwordOption);
-    return password == null
-      ? await this.exportService.getExport("encrypted_json", organizationId)
-      : await this.exportService.getPasswordProtectedExport(password, organizationId);
+    if (password == null) {
+      return organizationId == null
+        ? await this.exportService.getExport("encrypted_json")
+        : await this.orgExportService.getOrganizationExport(organizationId, "encrypted_json");
+    } else {
+      return organizationId == null
+        ? await this.exportService.getPasswordProtectedExport(password)
+        : await this.orgExportService.getPasswordProtectedExport(password, organizationId);
+    }
   }
 
   private async getUnprotectedExport(format: ExportFormat, organizationId?: string) {
-    return this.exportService.getExport(format, organizationId);
+    return organizationId == null
+      ? this.exportService.getExport(format)
+      : this.orgExportService.getOrganizationExport(organizationId, format);
   }
 
   private async saveFile(

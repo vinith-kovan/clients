@@ -87,6 +87,8 @@ import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/sync-
 import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service";
 import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import {
+  OrgVaultExportServiceAbstraction,
+  OrganizationVaultExportService,
   VaultExportService,
   VaultExportServiceAbstraction,
 } from "@bitwarden/exporter/vault-export";
@@ -145,6 +147,7 @@ export class Main {
   importService: ImportServiceAbstraction;
   importApiService: ImportApiServiceAbstraction;
   exportService: VaultExportServiceAbstraction;
+  orgExportService: OrgVaultExportServiceAbstraction;
   searchService: SearchService;
   cryptoFunctionService: NodeCryptoFunctionService;
   encryptService: EncryptServiceImplementation;
@@ -496,6 +499,13 @@ export class Main {
     );
     this.exportService = new VaultExportService(
       this.folderService,
+      this.cipherService,
+      this.cryptoService,
+      this.cryptoFunctionService,
+      this.stateService,
+    );
+
+    this.orgExportService = new OrganizationVaultExportService(
       this.cipherService,
       this.apiService,
       this.cryptoService,

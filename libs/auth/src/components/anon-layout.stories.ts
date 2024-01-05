@@ -34,20 +34,15 @@ export default {
       ],
     }),
   ],
+  args: {
+    title: "The Page Title",
+    subTitle: "The subtitle",
+  },
 } as Meta;
 
 type Story = StoryObj<AnonLayoutComponent>;
 
-export const Empty: Story = {
-  render: (args) => ({
-    props: args,
-    template: /* HTML */ `
-      <auth-anon-layout title="Page Title" subTitle="Subtitle here"> </auth-anon-layout>
-    `,
-  }),
-};
-
-export const WithContent: Story = {
+export const WithPrimaryContent: Story = {
   render: (args) => ({
     props: args,
     template:
@@ -56,31 +51,12 @@ export const WithContent: Story = {
        * sample and could be replaced with any content and styling
        */
       `
-      <auth-anon-layout title="Page Title" subTitle="Subtitle here">
+      <auth-anon-layout [title]="title" [subTitle]="subTitle">
         <div
-          class="tw-flex tw-h-80 tw-flex-col tw-items-center tw-justify-center tw-bg-secondary-100"
+          class="tw-bg-secondary-100"
         >
-          Sample Projected Content
-        </div>
-      </auth-anon-layout>
-    `,
-  }),
-};
-
-export const WithIcon: Story = {
-  render: (args) => ({
-    props: args,
-    template:
-      /**
-       * The projected content (i.e. the <div> ) and styling below is just a
-       * sample and could be replaced with any content and styling
-       */
-      `
-      <auth-anon-layout title="Page Title" subTitle="Subtitle here" icon="lock">
-        <div
-          class="tw-flex tw-h-80 tw-flex-col tw-items-center tw-justify-center tw-bg-secondary-100"
-        >
-          Sample Projected Content
+          <div class="tw-font-bold">Primary Projected Content</div>
+          <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus illum vero, placeat recusandae esse ratione eius minima veniam nemo, quas beatae! Impedit molestiae alias sapiente explicabo. Sapiente corporis ipsa numquam?</div>
         </div>
       </auth-anon-layout>
     `,
@@ -93,15 +69,16 @@ export const WithSecondaryContent: Story = {
     template:
       // Notice that slot="secondary" is requred to project any secondary content:
       `
-      <auth-anon-layout title="Page Title" subTitle="Subtitle here">
+      <auth-anon-layout [title]="title" [subTitle]="subTitle">
         <div
-          class="tw-flex tw-h-80 tw-flex-col tw-items-center tw-justify-center tw-bg-secondary-100"
+          class="tw-bg-secondary-100"
         >
-          Sample Projected Content
+          <div class="tw-font-bold">Primary Projected Content</div>
+          <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus illum vero, placeat recusandae esse ratione eius minima veniam nemo, quas beatae! Impedit molestiae alias sapiente explicabo. Sapiente corporis ipsa numquam?</div>
         </div>
 
-        <div slot="secondary">
-          <h3 class="tw-mb-3 tw-text-xl sm:tw-text-2xl tw-font-semibold">Secondary Content</h3>
+        <div slot="secondary" class="text-center">
+          <div class="tw-font-bold tw-mb-2">Secondary Projected Content (optional)</div>
           <button bitButton>Perform Action</button>
         </div>
       </auth-anon-layout>
@@ -113,18 +90,34 @@ export const WithLongContent: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <auth-anon-layout title="Page Title" subTitle="Subtitle here Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, quod est?
-      ">
+      <auth-anon-layout title="Page Title lorem ipsum dolor consectetur sit amet expedita quod est" subTitle="Subtitle here Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, quod est?">
         <div
           class="tw-bg-secondary-100"
         >
-          Sample Projected Content Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias laborum nostrum natus. Expedita, quod est?   Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias laborum nostrum natus. Expedita, quod est?   Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias laborum nostrum natus. Expedita, quod est?   Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias laborum nostrum natus. Expedita, quod est?   Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias laborum nostrum natus. Expedita, quod est?   Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias laborum nostrum natus. Expedita, quod est?   Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias laborum nostrum natus. Expedita, quod est?   Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias laborum nostrum natus. Expedita, quod est?
+          <div class="tw-font-bold">Primary Projected Content</div>
+          <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus illum vero, placeat recusandae esse ratione eius minima veniam nemo, quas beatae! Impedit molestiae alias sapiente explicabo. Sapiente corporis ipsa numquam? Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
         </div>
 
-        <div slot="secondary">
-          <h3 class="tw-mb-3 tw-text-xl sm:tw-text-2xl tw-font-semibold">Secondary Content</h3>
+        <div slot="secondary" class="text-center">
+          <div class="tw-font-bold tw-mb-2">Secondary Projected Content (optional)</div>
           <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias laborum nostrum natus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias laborum nostrum natus. Expedita, quod est?          </p>
           <button bitButton>Perform Action</button>
+        </div>
+      </auth-anon-layout>
+    `,
+  }),
+};
+
+export const WithIcon: Story = {
+  render: (args) => ({
+    props: args,
+    template: `
+      <auth-anon-layout [title]="title" [subTitle]="subTitle" icon="lock">
+        <div
+          class="tw-bg-secondary-100"
+        >
+          <div class="tw-font-bold">Primary Projected Content</div>
+          <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus illum vero, placeat recusandae esse ratione eius minima veniam nemo, quas beatae! Impedit molestiae alias sapiente explicabo. Sapiente corporis ipsa numquam?</div>
         </div>
       </auth-anon-layout>
     `,

@@ -1,0 +1,32 @@
+<form [formGroup]="verificationForm" [bitSubmit]="submit">
+  <bit-dialog>
+    <span bitDialogTitle>
+      {{
+        dialogParams.dialogTitle
+          ? (dialogParams.dialogTitle | i18n)
+          : ("defaultUserVerificationDialogTitle" | i18n)
+      }}</span
+    >
+    <ng-container bitDialogContent>
+      <p bitTypography="body1" *ngIf="dialogParams.dialogBodyText">
+        {{ dialogParams.dialogBodyText | i18n }}
+      </p>
+      <app-user-verification-form
+        [(invalidSecret)]="invalidSecret"
+        formControlName="secret"
+      ></app-user-verification-form>
+    </ng-container>
+    <ng-container bitDialogFooter>
+      <button type="submit" bitButton bitFormButton buttonType="primary">
+        {{
+          dialogParams.confirmButtonText
+            ? (dialogParams.confirmButtonText | i18n)
+            : ("defaultUserVerificationDialogConfirmBtnText" | i18n)
+        }}
+      </button>
+      <button type="button" bitButton bitFormButton buttonType="secondary" bitDialogClose>
+        {{ "cancel" | i18n }}
+      </button>
+    </ng-container>
+  </bit-dialog>
+</form>

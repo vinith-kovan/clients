@@ -169,6 +169,8 @@ import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import {
   VaultExportService,
   VaultExportServiceAbstraction,
+  OrganizationVaultExportService,
+  OrgVaultExportServiceAbstraction,
 } from "@bitwarden/exporter/vault-export";
 import {
   ImportApiService,
@@ -539,6 +541,17 @@ import { ModalService } from "./modal.service";
       useClass: VaultExportService,
       deps: [
         FolderServiceAbstraction,
+        CipherServiceAbstraction,
+        ApiServiceAbstraction,
+        CryptoServiceAbstraction,
+        CryptoFunctionServiceAbstraction,
+        StateServiceAbstraction,
+      ],
+    },
+    {
+      provide: OrgVaultExportServiceAbstraction,
+      useClass: OrganizationVaultExportService,
+      deps: [
         CipherServiceAbstraction,
         ApiServiceAbstraction,
         CryptoServiceAbstraction,

@@ -623,7 +623,6 @@ export default class MainBackground {
     this.exportService = new VaultExportService(
       this.folderService,
       this.cipherService,
-      this.apiService,
       this.cryptoService,
       this.cryptoFunctionService,
       this.stateService,

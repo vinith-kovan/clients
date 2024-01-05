@@ -13,7 +13,10 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService } from "@bitwarden/components";
-import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
+import {
+  OrgVaultExportServiceAbstraction,
+  VaultExportServiceAbstraction,
+} from "@bitwarden/exporter/vault-export";
 
 import { ExportComponent } from "../../../../tools/vault-export/export.component";
 
@@ -37,6 +40,7 @@ export class OrganizationVaultExportComponent extends ExportComponent {
     dialogService: DialogService,
     organizationService: OrganizationService,
     configService: ConfigServiceAbstraction,
+    private orgExportService: OrgVaultExportServiceAbstraction,
   ) {
     super(
       i18nService,
@@ -68,9 +72,12 @@ export class OrganizationVaultExportComponent extends ExportComponent {
 
   getExportData() {
     if (this.isFileEncryptedExport) {
-      return this.exportService.getPasswordProtectedExport(this.filePassword, this.organizationId);
+      return this.orgExportService.getPasswordProtectedExport(
+        this.filePassword,
+        this.organizationId,
+      );
     } else {
-      return this.exportService.getOrganizationExport(this.organizationId, this.format);
+      return this.orgExportService.getOrganizationExport(this.organizationId, this.format);
     }
   }
 

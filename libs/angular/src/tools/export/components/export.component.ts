@@ -195,7 +195,7 @@ export class ExportComponent implements OnInit, OnDestroy {
     ) {
       return this.exportService.getPasswordProtectedExport(this.filePassword);
     } else {
-      return this.exportService.getExport(this.format, null);
+      return this.exportService.getExport(this.format);
     }
   }
 

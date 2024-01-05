@@ -39,6 +39,8 @@ import {
   stateServiceFactory,
 } from "../../../platform/background/service-factories/state-service.factory";
 
+import { userDecryptionOptionsServiceFactory } from "./user-decryption-options-service.factory";
+
 type DeviceTrustCryptoServiceFactoryOptions = FactoryOptions;
 
 export type DeviceTrustCryptoServiceInitOptions = DeviceTrustCryptoServiceFactoryOptions &
@@ -69,6 +71,7 @@ export function deviceTrustCryptoServiceFactory(
         await devicesApiServiceFactory(cache, opts),
         await i18nServiceFactory(cache, opts),
         await platformUtilsServiceFactory(cache, opts),
+        await userDecryptionOptionsServiceFactory(cache, opts),
       ),
   );
 }

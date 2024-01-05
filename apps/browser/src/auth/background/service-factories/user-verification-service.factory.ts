@@ -20,6 +20,10 @@ import {
 } from "../../../platform/background/service-factories/state-service.factory";
 
 import {
+  userDecryptionOptionsServiceFactory,
+  UserDecryptionOptionsServiceInitOptions,
+} from "./user-decryption-options-service.factory";
+import {
   UserVerificationApiServiceInitOptions,
   userVerificationApiServiceFactory,
 } from "./user-verification-api-service.factory";
@@ -30,7 +34,8 @@ export type UserVerificationServiceInitOptions = UserVerificationServiceFactoryO
   StateServiceInitOptions &
   CryptoServiceInitOptions &
   I18nServiceInitOptions &
-  UserVerificationApiServiceInitOptions;
+  UserVerificationApiServiceInitOptions &
+  UserDecryptionOptionsServiceInitOptions;
 
 export function userVerificationServiceFactory(
   cache: { userVerificationService?: AbstractUserVerificationService } & CachedServices,
@@ -46,6 +51,7 @@ export function userVerificationServiceFactory(
         await cryptoServiceFactory(cache, opts),
         await i18nServiceFactory(cache, opts),
         await userVerificationApiServiceFactory(cache, opts),
+        await userDecryptionOptionsServiceFactory(cache, opts),
       ),
   );
 }

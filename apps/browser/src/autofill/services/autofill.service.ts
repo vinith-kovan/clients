@@ -737,16 +737,7 @@ export default class AutofillService implements AutofillServiceInterface {
     const fillFields: { [id: string]: AutofillField } = {};
 
     pageDetails.fields.forEach((f) => {
-      if (AutofillService.forCustomFieldsOnly(f)) {
-        return;
-      }
-
-      if (AutofillService.isExcludedType(f.type, AutoFillConstants.ExcludedAutofillTypes)) {
-        return;
-      }
-
-      // Check if the input is an untyped/mistyped search input
-      if (AutofillService.isSearchField(f)) {
+      if (AutofillService.isExcludedField(f, AutoFillConstants.ExcludedAutofillTypes)) {
         return;
       }
 
@@ -1124,16 +1115,7 @@ export default class AutofillService implements AutofillServiceInterface {
     const fillFields: { [id: string]: AutofillField } = {};
 
     pageDetails.fields.forEach((f) => {
-      if (AutofillService.forCustomFieldsOnly(f)) {
-        return;
-      }
-
-      if (AutofillService.isExcludedType(f.type, AutoFillConstants.ExcludedAutofillTypes)) {
-        return;
-      }
-
-      // Check if the input is an untyped/mistyped search input
-      if (AutofillService.isSearchField(f)) {
+      if (AutofillService.isExcludedField(f, AutoFillConstants.ExcludedAutofillTypes)) {
         return;
       }
 
@@ -1358,15 +1340,32 @@ export default class AutofillService implements AutofillServiceInterface {
    * @returns {boolean}
    * @private
    */
-  static isExcludedType(type: string, excludedTypes: string[]) {
+  private static isExcludedType(type: string, excludedTypes: string[]) {
     return excludedTypes.indexOf(type) > -1;
   }
 
-  static isSearchField(field: AutofillField) {
+  private static isSearchField(field: AutofillField) {
     const matchFieldAttributeValues = [field.type, field.htmlName, field.htmlID, field.placeholder];
     const matchPattern = new RegExp(AutoFillConstants.SearchFieldNames.join("|"), "gi");
 
-    return !!matchFieldAttributeValues.join(" ").match(matchPattern);
+    return Boolean(matchFieldAttributeValues.join(" ").match(matchPattern));
+  }
+
+  static isExcludedField(field: AutofillField, excludedTypes: string[]) {
+    if (AutofillService.forCustomFieldsOnly(field)) {
+      return true;
+    }
+
+    if (this.isExcludedType(field.type, excludedTypes)) {
+      return true;
+    }
+
+    // Check if the input is an untyped/mistyped search input
+    if (this.isSearchField(field)) {
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -1498,16 +1497,7 @@ export default class AutofillService implements AutofillServiceInterface {
   ) {
     const arr: AutofillField[] = [];
     pageDetails.fields.forEach((f) => {
-      if (AutofillService.forCustomFieldsOnly(f)) {
-        return;
-      }
-
-      if (AutofillService.isExcludedType(f.type, AutoFillConstants.ExcludedAutofillLoginTypes)) {
-        return;
-      }
-
-      // Check if the input is an untyped/mistyped search input
-      if (AutofillService.isSearchField(f)) {
+      if (AutofillService.isExcludedField(f, AutoFillConstants.ExcludedAutofillLoginTypes)) {
         return;
       }
 

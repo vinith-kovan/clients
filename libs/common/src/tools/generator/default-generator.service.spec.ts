@@ -15,7 +15,7 @@ import { Policy } from "../../admin-console/models/domain/policy";
 import { ActiveUserState, ActiveUserStateProvider, KeyDefinition } from "../../platform/state";
 
 import { GeneratorStrategy, PolicyEvaluator } from "./abstractions";
-import { PASSPHRASE_SETTINGS } from "./key-definitions";
+import { PASSPHRASE_SETTINGS, PASSWORD_SETTINGS } from "./key-definitions";
 import { PasswordGenerationOptions } from "./password";
 
 import { DefaultGeneratorService } from ".";
@@ -89,12 +89,12 @@ describe("Password generator service", () => {
     it("should update the state at strategy.key", async () => {
       const policy = mockPolicyService();
       const [provider, state] = mockStateProvider();
-      const strategy = mockGeneratorStrategy();
+      const strategy = mockGeneratorStrategy({ disk: PASSWORD_SETTINGS });
       const service = new DefaultGeneratorService(strategy, policy, provider);
 
       await service.saveOptions({});
 
-      expect(provider.get).toHaveBeenCalledWith(strategy.disk);
+      expect(provider.get).toHaveBeenCalledWith(PASSWORD_SETTINGS);
       expect(state.update).toHaveBeenCalled();
     });
 

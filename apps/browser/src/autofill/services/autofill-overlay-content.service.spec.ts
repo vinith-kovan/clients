@@ -106,7 +106,7 @@ describe("AutofillOverlayContentService", () => {
       expect(window.addEventListener).toHaveBeenCalledWith("focusout", handleFormFieldBlurEventSpy);
     });
 
-    it("sets up mutation observers for the body and html element", () => {
+    it("sets up mutation observers for the body element", () => {
       jest
         .spyOn(globalThis, "MutationObserver")
         .mockImplementation(() => mock<MutationObserver>({ observe: jest.fn() }));
@@ -118,11 +118,6 @@ describe("AutofillOverlayContentService", () => {
         autofillOverlayContentService as any,
         "handleBodyElementMutationObserverUpdate",
       );
-      const handleDocumentElementMutationObserverUpdateSpy = jest.spyOn(
-        autofillOverlayContentService as any,
-        "handleDocumentElementMutationObserverUpdate",
-      );
-
       autofillOverlayContentService.init();
 
       expect(setupMutationObserverSpy).toHaveBeenCalledTimes(1);
@@ -133,10 +128,6 @@ describe("AutofillOverlayContentService", () => {
       expect(globalThis.MutationObserver).toHaveBeenNthCalledWith(
         2,
         handleBodyElementMutationObserverUpdateSpy,
-      );
-      expect(globalThis.MutationObserver).toHaveBeenNthCalledWith(
-        3,
-        handleDocumentElementMutationObserverUpdateSpy,
       );
     });
   });
@@ -1543,13 +1534,9 @@ describe("AutofillOverlayContentService", () => {
     it("disconnects all mutation observers", () => {
       autofillOverlayContentService["setupMutationObserver"]();
       jest.spyOn(autofillOverlayContentService["bodyElementMutationObserver"], "disconnect");
-      jest.spyOn(autofillOverlayContentService["documentElementMutationObserver"], "disconnect");
 
       autofillOverlayContentService.destroy();
 
-      expect(
-        autofillOverlayContentService["documentElementMutationObserver"].disconnect,
-      ).toHaveBeenCalled();
       expect(
         autofillOverlayContentService["bodyElementMutationObserver"].disconnect,
       ).toHaveBeenCalled();

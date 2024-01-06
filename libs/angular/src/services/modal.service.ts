@@ -36,7 +36,7 @@ export class ModalService {
   async openViewRef<T>(
     componentType: Type<T>,
     viewContainerRef: ViewContainerRef,
-    setComponentParameters: (component: T) => void = null
+    setComponentParameters: (component: T) => void = null,
   ): Promise<[ModalRef, T]> {
     const [modalRef, modalComponentRef] = this.openInternal(viewContainerRef, componentType);
     modalComponentRef.instance.setComponentParameters = setComponentParameters;
@@ -54,7 +54,7 @@ export class ModalService {
 
   protected openInternal(
     viewContainerRef: ViewContainerRef,
-    componentType: Type<any>
+    componentType: Type<any>,
   ): [ModalRef, ComponentRef<any>] {
     const [modalRef, componentRef] = this.createModalComponent(viewContainerRef);
     componentRef.instance.childComponentType = componentType;
@@ -96,7 +96,7 @@ export class ModalService {
       dialogEl.style.zIndex = `${this.modalCount}050`;
 
       const modals = Array.from(
-        el.querySelectorAll('.modal-backdrop, .modal *[data-dismiss="modal"]')
+        el.querySelectorAll('.modal-backdrop, .modal *[data-dismiss="modal"]'),
       );
       for (const closeElement of modals) {
         closeElement.addEventListener("click", () => {
@@ -116,7 +116,7 @@ export class ModalService {
   }
 
   protected createModalComponent(
-    viewContainerRef: ViewContainerRef
+    viewContainerRef: ViewContainerRef,
   ): [ModalRef, ComponentRef<any>] {
     const modalRef = new ModalRef();
 

@@ -32,7 +32,7 @@ export class DynamicModalComponent implements AfterViewInit, OnDestroy {
     private cd: ChangeDetectorRef,
     private el: ElementRef<HTMLElement>,
     private focusTrapFactory: ConfigurableFocusTrapFactory,
-    public modalRef: ModalRef
+    public modalRef: ModalRef,
   ) {}
 
   ngAfterViewInit() {
@@ -44,7 +44,7 @@ export class DynamicModalComponent implements AfterViewInit, OnDestroy {
 
     this.modalRef.created(this.el.nativeElement);
     this.focusTrap = this.focusTrapFactory.create(
-      this.el.nativeElement.querySelector(".modal-dialog")
+      this.el.nativeElement.querySelector(".modal-dialog"),
     );
     if (this.el.nativeElement.querySelector("[appAutoFocus]") == null) {
       this.focusTrap.focusFirstTabbableElementWhenReady();

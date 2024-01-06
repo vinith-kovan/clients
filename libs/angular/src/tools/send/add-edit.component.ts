@@ -11,6 +11,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncArrayBuffer } from "@bitwarden/common/platform/models/domain/enc-array-buffer";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 import { Send } from "@bitwarden/common/tools/send/models/domain/send";
@@ -67,7 +68,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
   disableHideEmail = false;
   send: SendView;
   hasPassword: boolean;
-  password: string;
   showPassword = false;
   formPromise: Promise<any>;
   deletePromise: Promise<any>;
@@ -115,11 +115,11 @@ export class AddEditComponent implements OnInit, OnDestroy {
     protected stateService: StateService,
     protected sendApiService: SendApiService,
     protected dialogService: DialogService,
-    protected formBuilder: FormBuilder
+    protected formBuilder: FormBuilder,
   ) {
     this.typeOptions = [
-      { name: i18nService.t("sendTypeFile"), value: SendType.File },
-      { name: i18nService.t("sendTypeText"), value: SendType.Text },
+      { name: i18nService.t("sendTypeFile"), value: SendType.File, premium: true },
+      { name: i18nService.t("sendTypeText"), value: SendType.Text, premium: false },
     ];
     this.sendLinkBaseUrl = this.environmentService.getSendUrl();
   }
@@ -154,8 +154,13 @@ export class AddEditComponent implements OnInit, OnDestroy {
       .policyAppliesToActiveUser$(PolicyType.SendOptions, (p) => p.data.disableHideEmail)
       .pipe(takeUntil(this.destroy$))
       .subscribe((policyAppliesToActiveUser) => {
-        if ((this.disableHideEmail = policyAppliesToActiveUser)) {
+        if (
+          (this.disableHideEmail = policyAppliesToActiveUser) &&
+          !this.formGroup.controls.hideEmail.value
+        ) {
           this.formGroup.controls.hideEmail.disable();
+        } else {
+          this.formGroup.controls.hideEmail.enable();
         }
       });
 
@@ -207,9 +212,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
         this.send = await send.decrypt();
         this.type = this.send.type;
         this.updateFormValues();
-        if (this.send.hideEmail) {
-          this.formGroup.controls.hideEmail.enable();
-        }
       } else {
         this.send = new SendView();
         this.send.type = this.type;
@@ -236,7 +238,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
-        this.i18nService.t("sendDisabledWarning")
+        this.i18nService.t("sendDisabledWarning"),
       );
       return false;
     }
@@ -252,11 +254,11 @@ export class AddEditComponent implements OnInit, OnDestroy {
     this.send.disabled = this.formGroup.controls.disabled.value;
     this.send.type = this.type;
 
-    if (this.send.name == null || this.send.name === "") {
+    if (Utils.isNullOrWhitespace(this.send.name)) {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
-        this.i18nService.t("nameRequired")
+        this.i18nService.t("nameRequired"),
       );
       return false;
     }
@@ -269,7 +271,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
         this.platformUtilsService.showToast(
           "error",
           this.i18nService.t("errorOccurred"),
-          this.i18nService.t("selectFile")
+          this.i18nService.t("selectFile"),
         );
         return;
       }
@@ -280,17 +282,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
         this.platformUtilsService.showToast(
           "error",
           this.i18nService.t("errorOccurred"),
-          this.i18nService.t("maxFileSize")
+          this.i18nService.t("maxFileSize"),
         );
         return;
       }
     }
 
-    if (
-      this.formGroup.controls.password.value != null &&
-      this.formGroup.controls.password.value.trim() === ""
-    ) {
-      this.password = null;
+    if (Utils.isNullOrWhitespace(this.send.password)) {
+      this.send.password = null;
     }
 
     this.formPromise = this.encryptSend(file).then(async (encSend) => {
@@ -310,7 +309,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t(this.editMode ? "editedSend" : "createdSend")
+        this.i18nService.t(this.editMode ? "editedSend" : "createdSend"),
       );
     });
     try {
@@ -379,12 +378,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   protected async encryptSend(file: File): Promise<[Send, EncArrayBuffer]> {
-    const sendData = await this.sendService.encrypt(
-      this.send,
-      file,
-      this.formGroup.controls.password.value,
-      null
-    );
+    const sendData = await this.sendService.encrypt(this.send, file, this.send.password, null);
 
     // Parse dates
     try {
@@ -420,7 +414,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
       hideEmail: this.send?.hideEmail ?? false,
       disabled: this.send?.disabled ?? false,
       type: this.send.type ?? this.type,
-      password: "",
+      password: null,
 
       selectedDeletionDatePreset: this.editMode ? DatePreset.Custom : DatePreset.SevenDays,
       selectedExpirationDatePreset: this.editMode ? DatePreset.Custom : DatePreset.Never,
@@ -430,9 +424,13 @@ export class AddEditComponent implements OnInit, OnDestroy {
           : null,
       defaultDeletionDateTime: this.datePipe.transform(
         new Date(this.send.deletionDate),
-        "yyyy-MM-ddTHH:mm"
+        "yyyy-MM-ddTHH:mm",
       ),
     });
+
+    if (this.send.hideEmail) {
+      this.formGroup.controls.hideEmail.enable();
+    }
   }
 
   private async handleCopyLinkToClipboard() {
@@ -441,7 +439,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t(this.editMode ? "editedSend" : "createdSend")
+        this.i18nService.t(this.editMode ? "editedSend" : "createdSend"),
       );
     } else {
       await this.dialogService.openSimpleDialog({
@@ -473,7 +471,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
         const now = new Date();
         const milliseconds = now.setTime(
           now.getTime() +
-            (this.formGroup.controls.selectedExpirationDatePreset.value as number) * 60 * 60 * 1000
+            (this.formGroup.controls.selectedExpirationDatePreset.value as number) * 60 * 60 * 1000,
         );
         return new Date(milliseconds).toString();
       }
@@ -491,7 +489,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
         const now = new Date();
         const milliseconds = now.setTime(
           now.getTime() +
-            (this.formGroup.controls.selectedDeletionDatePreset.value as number) * 60 * 60 * 1000
+            (this.formGroup.controls.selectedDeletionDatePreset.value as number) * 60 * 60 * 1000,
         );
         return new Date(milliseconds).toString();
       }

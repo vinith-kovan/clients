@@ -1,5 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import {
   AbstractStorageService,
@@ -14,6 +15,7 @@ import { Account } from "../../models/account";
 import { BrowserComponentState } from "../../models/browserComponentState";
 import { BrowserGroupingsComponentState } from "../../models/browserGroupingsComponentState";
 import { BrowserSendComponentState } from "../../models/browserSendComponentState";
+import { BrowserApi } from "../browser/browser-api";
 import { browserSession, sessionSync } from "../decorators/session-sync-observable";
 
 import { BrowserStateService as StateServiceAbstraction } from "./abstractions/browser-state.service";
@@ -41,7 +43,8 @@ export class BrowserStateService
     memoryStorageService: AbstractMemoryStorageService,
     logService: LogService,
     stateFactory: StateFactory<GlobalState, Account>,
-    useAccountCache = true
+    accountService: AccountService,
+    useAccountCache = true,
   ) {
     super(
       storageService,
@@ -49,14 +52,15 @@ export class BrowserStateService
       memoryStorageService,
       logService,
       stateFactory,
-      useAccountCache
+      accountService,
+      useAccountCache,
     );
 
     // TODO: This is a hack to fix having a disk cache on both the popup and
     // the background page that can get out of sync. We need to work out the
     // best way to handle caching with multiple instances of the state service.
     if (useAccountCache) {
-      chrome.storage.onChanged.addListener((changes, namespace) => {
+      BrowserApi.storageChangeListener((changes, namespace) => {
         if (namespace === "local") {
           for (const key of Object.keys(changes)) {
             if (key !== "accountActivity" && this.accountDiskCache.value[key]) {
@@ -65,7 +69,29 @@ export class BrowserStateService
           }
         }
       });
+
+      BrowserApi.addListener(
+        chrome.runtime.onMessage,
+        (message: { command: string }, _, respond) => {
+          if (message.command === "initializeDiskCache") {
+            respond(JSON.stringify(this.accountDiskCache.value));
+          }
+        },
+      );
     }
+  }
+
+  override async initAccountState(): Promise<void> {
+    if (this.isRecoveredSession && this.useAccountCache) {
+      // request cache initialization
+
+      const response = await BrowserApi.sendMessageWithResponse<string>("initializeDiskCache");
+      this.accountDiskCache.next(JSON.parse(response));
+
+      return;
+    }
+
+    await super.initAccountState();
   }
 
   async addAccount(account: Account) {
@@ -84,7 +110,7 @@ export class BrowserStateService
   }
 
   async getBrowserGroupingComponentState(
-    options?: StorageOptions
+    options?: StorageOptions,
   ): Promise<BrowserGroupingsComponentState> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
@@ -93,20 +119,20 @@ export class BrowserStateService
 
   async setBrowserGroupingComponentState(
     value: BrowserGroupingsComponentState,
-    options?: StorageOptions
+    options?: StorageOptions,
   ): Promise<void> {
     const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions())
+      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );
     account.groupings = value;
     await this.saveAccount(
       account,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions())
+      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );
   }
 
   async getBrowserVaultItemsComponentState(
-    options?: StorageOptions
+    options?: StorageOptions,
   ): Promise<BrowserComponentState> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
@@ -115,15 +141,15 @@ export class BrowserStateService
 
   async setBrowserVaultItemsComponentState(
     value: BrowserComponentState,
-    options?: StorageOptions
+    options?: StorageOptions,
   ): Promise<void> {
     const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions())
+      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );
     account.ciphers = value;
     await this.saveAccount(
       account,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions())
+      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );
   }
 
@@ -135,15 +161,15 @@ export class BrowserStateService
 
   async setBrowserSendComponentState(
     value: BrowserSendComponentState,
-    options?: StorageOptions
+    options?: StorageOptions,
   ): Promise<void> {
     const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions())
+      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );
     account.send = value;
     await this.saveAccount(
       account,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions())
+      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );
   }
 
@@ -155,15 +181,15 @@ export class BrowserStateService
 
   async setBrowserSendTypeComponentState(
     value: BrowserComponentState,
-    options?: StorageOptions
+    options?: StorageOptions,
   ): Promise<void> {
     const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions())
+      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );
     account.sendType = value;
     await this.saveAccount(
       account,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions())
+      this.reconcileOptions(options, await this.defaultInMemoryOptions()),
     );
   }
 
@@ -171,7 +197,7 @@ export class BrowserStateService
   // to delete the cache in the constructor above.
   protected override async saveAccountToDisk(
     account: Account,
-    options: StorageOptions
+    options: StorageOptions,
   ): Promise<void> {
     const storageLocation = options.useSecureStorage
       ? this.secureStorageService

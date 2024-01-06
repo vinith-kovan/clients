@@ -12,7 +12,10 @@ export class ModalService extends BaseModalService {
   el: any = null;
   modalOpen = false;
 
-  constructor(injector: Injector, private messagingService: MessagingService) {
+  constructor(
+    injector: Injector,
+    private messagingService: MessagingService,
+  ) {
     super(injector);
   }
 

@@ -140,7 +140,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   get subscriptionLineItems() {
     return this.lineItems.map((lineItem: BillingSubscriptionItemResponse) => ({
       name: lineItem.name,
-      amount: this.discountPrice(lineItem.amount),
+      amount: this.discountPrice(lineItem.amount, lineItem.productId),
       quantity: lineItem.quantity,
       interval: lineItem.interval,
       sponsoredSubscriptionItem: lineItem.sponsoredSubscriptionItem,
@@ -404,9 +404,12 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     }
   };
 
-  discountPrice = (price: number) => {
+  discountPrice = (price: number, productId: string = null) => {
     const discount =
-      !!this.customerDiscount && this.customerDiscount.active
+      this.customerDiscount?.active &&
+      (!productId ||
+        !this.customerDiscount.appliesTo.length ||
+        this.customerDiscount.appliesTo.includes(productId))
         ? price * (this.customerDiscount.percentOff / 100)
         : 0;
 

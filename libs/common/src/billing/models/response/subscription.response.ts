@@ -41,7 +41,7 @@ export class BillingSubscriptionResponse extends BaseResponse {
 
   constructor(response: any) {
     super(response);
-    this.trialEndDate = this.getResponseProperty("TrialStartDate");
+    this.trialStartDate = this.getResponseProperty("TrialStartDate");
     this.trialEndDate = this.getResponseProperty("TrialEndDate");
     this.periodStartDate = this.getResponseProperty("PeriodStartDate");
     this.periodEndDate = this.getResponseProperty("PeriodEndDate");
@@ -57,6 +57,7 @@ export class BillingSubscriptionResponse extends BaseResponse {
 }
 
 export class BillingSubscriptionItemResponse extends BaseResponse {
+  productId: string;
   name: string;
   amount: number;
   quantity: number;
@@ -67,6 +68,7 @@ export class BillingSubscriptionItemResponse extends BaseResponse {
 
   constructor(response: any) {
     super(response);
+    this.productId = this.getResponseProperty("ProductId");
     this.name = this.getResponseProperty("Name");
     this.amount = this.getResponseProperty("Amount");
     this.quantity = this.getResponseProperty("Quantity");

@@ -25,13 +25,13 @@ import { AsyncActionsModule, FormFieldModule, IconButtonModule } from "@bitwarde
  * Use UserVerificationService to verify the user's input.
  */
 @Component({
-  selector: "app-user-verification-form",
-  templateUrl: "user-verification-form.component.html",
+  selector: "app-user-verification-form-input",
+  templateUrl: "user-verification-form-input.component.html",
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: UserVerificationFormComponent,
+      useExisting: UserVerificationFormInputComponent,
     },
   ],
   animations: [
@@ -50,7 +50,7 @@ import { AsyncActionsModule, FormFieldModule, IconButtonModule } from "@bitwarde
   ],
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class UserVerificationFormComponent implements ControlValueAccessor, OnInit, OnDestroy {
+export class UserVerificationFormInputComponent implements ControlValueAccessor, OnInit, OnDestroy {
   private _invalidSecret = false;
   @Input()
   get invalidSecret() {

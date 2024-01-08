@@ -11,10 +11,10 @@
       <p bitTypography="body1" *ngIf="dialogParams.dialogBodyText">
         {{ dialogParams.dialogBodyText | i18n }}
       </p>
-      <app-user-verification-form
+      <app-user-verification-form-input
         [(invalidSecret)]="invalidSecret"
         formControlName="secret"
-      ></app-user-verification-form>
+      ></app-user-verification-form-input>
     </ng-container>
     <ng-container bitDialogFooter>
       <button type="submit" bitButton bitFormButton buttonType="primary">

@@ -1,11 +1,6 @@
 import { firstValueFrom } from "rxjs";
 
-import {
-  ActiveUserState,
-  ActiveUserStateProvider,
-  KeyDefinition,
-  SSO_DISK,
-} from "../../platform/state";
+import { GlobalState, KeyDefinition, SSO_DISK, StateProvider } from "../../platform/state";
 
 /**
  * Uses disk storage so that the code verifier can be persisted across sso redirects.
@@ -29,14 +24,14 @@ const ORGANIZATION_IDENTIFIER = new KeyDefinition<string>(SSO_DISK, "ssoOrganiza
 });
 
 export class SsoLoginService {
-  private codeVerifierState: ActiveUserState<string>;
-  private ssoState: ActiveUserState<string>;
-  private organizationIdentifierState: ActiveUserState<string>;
+  private codeVerifierState: GlobalState<string>;
+  private ssoState: GlobalState<string>;
+  private organizationIdentifierState: GlobalState<string>;
 
-  constructor(private stateProvider: ActiveUserStateProvider) {
-    this.codeVerifierState = this.stateProvider.get(CODE_VERIFIER);
-    this.ssoState = this.stateProvider.get(SSO_STATE);
-    this.organizationIdentifierState = this.stateProvider.get(ORGANIZATION_IDENTIFIER);
+  constructor(private stateProvider: StateProvider) {
+    this.codeVerifierState = this.stateProvider.getGlobal(CODE_VERIFIER);
+    this.ssoState = this.stateProvider.getGlobal(SSO_STATE);
+    this.organizationIdentifierState = this.stateProvider.getGlobal(ORGANIZATION_IDENTIFIER);
   }
 
   async getCodeVerifier(): Promise<string> {

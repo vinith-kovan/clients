@@ -122,12 +122,18 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async getUserKey(userId?: UserId): Promise<UserKey> {
-    let userKey = await this.stateService.getUserKey({ userId: userId });
+    let userKey: UserKey;
+    if (userId == null) {
+      userKey = await firstValueFrom(this.activeUserKey$);
+    } else {
+      userKey = await firstValueFrom(this.keyForUser$(userId).pipe(timeout(500)));
+    }
+
     if (userKey) {
       return userKey;
     }
 
-    // If the user has set their vault timeout to 'Never', we can load the user key from storage
+    // TODO: Update with state providers
     if (await this.hasUserKeyStored(KeySuffixOptions.Auto, userId)) {
       userKey = await this.getKeyFromStorage(KeySuffixOptions.Auto, userId);
       if (userKey) {

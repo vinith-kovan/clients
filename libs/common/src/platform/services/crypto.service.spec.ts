@@ -73,21 +73,17 @@ describe("cryptoService", () => {
 
   describe("getUserKey", () => {
     let mockUserKey: UserKey;
-    let stateSvcGetUserKey: jest.SpyInstance;
 
     beforeEach(() => {
       const mockRandomBytes = new Uint8Array(64) as CsprngArray;
       mockUserKey = new SymmetricCryptoKey(mockRandomBytes) as UserKey;
-
-      stateSvcGetUserKey = jest.spyOn(stateService, "getUserKey");
     });
 
     it("returns the User Key if available", async () => {
-      stateSvcGetUserKey.mockResolvedValue(mockUserKey);
+      userKeysState.stateSubject.next({ [mockUserId]: mockUserKey });
 
       const userKey = await cryptoService.getUserKey(mockUserId);
 
-      expect(stateSvcGetUserKey).toHaveBeenCalledWith({ userId: mockUserId });
       expect(userKey).toEqual(mockUserKey);
     });
 
@@ -108,7 +104,6 @@ describe("cryptoService", () => {
   describe("getUserKeyWithLegacySupport", () => {
     let mockUserKey: UserKey;
     let mockMasterKey: MasterKey;
-    let stateSvcGetUserKey: jest.SpyInstance;
     let stateSvcGetMasterKey: jest.SpyInstance;
 
     beforeEach(() => {
@@ -116,23 +111,20 @@ describe("cryptoService", () => {
       mockUserKey = new SymmetricCryptoKey(mockRandomBytes) as UserKey;
       mockMasterKey = new SymmetricCryptoKey(new Uint8Array(64) as CsprngArray) as MasterKey;
 
-      stateSvcGetUserKey = jest.spyOn(stateService, "getUserKey");
       stateSvcGetMasterKey = jest.spyOn(stateService, "getMasterKey");
     });
 
     it("returns the User Key if available", async () => {
-      stateSvcGetUserKey.mockResolvedValue(mockUserKey);
-
+      userKeysState.stateSubject.next({ [mockUserId]: mockUserKey });
       const userKey = await cryptoService.getUserKeyWithLegacySupport(mockUserId);
 
-      expect(stateSvcGetUserKey).toHaveBeenCalledWith({ userId: mockUserId });
       expect(stateSvcGetMasterKey).not.toHaveBeenCalled();
 
       expect(userKey).toEqual(mockUserKey);
     });
 
     it("returns the user's master key when User Key is not available", async () => {
-      stateSvcGetUserKey.mockResolvedValue(null);
+      userKeysState.stateSubject.next({ [mockUserId]: null });
       stateSvcGetMasterKey.mockResolvedValue(mockMasterKey);
 
       const userKey = await cryptoService.getUserKeyWithLegacySupport(mockUserId);

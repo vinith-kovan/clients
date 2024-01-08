@@ -1,5 +1,3 @@
-import { firstValueFrom } from "rxjs";
-
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "../../platform/abstractions/crypto-function.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
@@ -14,7 +12,6 @@ import {
   UserKey,
 } from "../../platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "../../types/csprng";
-import { AccountService } from "../abstractions/account.service";
 import { DeviceTrustCryptoServiceAbstraction } from "../abstractions/device-trust-crypto.service.abstraction";
 import { DeviceResponse } from "../abstractions/devices/responses/device.response";
 import { DevicesApiServiceAbstraction } from "../abstractions/devices-api.service.abstraction";
@@ -34,7 +31,6 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
     private devicesApiService: DevicesApiServiceAbstraction,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private accountService: AccountService,
   ) {}
 
   /**
@@ -59,9 +55,12 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
   }
 
   async trustDevice(): Promise<DeviceResponse> {
-    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
-    if (!userId) {
-      throw new Error("User not found");
+    // Attempt to get user key
+    const userKey: UserKey = await this.cryptoService.getUserKey();
+
+    // If user key is not found, throw error
+    if (!userKey) {
+      throw new Error("User symmetric key not found");
     }
 
     // Generate deviceKey
@@ -75,22 +74,16 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
       devicePublicKeyEncryptedUserKey,
       userKeyEncryptedDevicePublicKey,
       deviceKeyEncryptedDevicePrivateKey,
-    ] = await this.cryptoService.deriveFromUserKey(userId, async (userKey) => {
-      // If user key is not found, throw error
-      if (!userKey) {
-        throw new Error("User symmetric key not found");
-      }
+    ] = await Promise.all([
+      // Encrypt user key with the DevicePublicKey
+      this.cryptoService.rsaEncrypt(userKey.key, devicePublicKey),
 
-      return Promise.all([
-        this.encryptService.rsaEncrypt(userKey.key, devicePublicKey),
+      // Encrypt devicePublicKey with user key
+      this.encryptService.encrypt(devicePublicKey, userKey),
 
-        // Encrypt devicePublicKey with user key
-        this.encryptService.encrypt(devicePublicKey, userKey),
-
-        // Encrypt devicePrivateKey with deviceKey
-        this.encryptService.encrypt(devicePrivateKey, deviceKey),
-      ]);
-    });
+      // Encrypt devicePrivateKey with deviceKey
+      this.encryptService.encrypt(devicePrivateKey, deviceKey),
+    ]);
 
     // Send encrypted keys to server
     const deviceIdentifier = await this.appIdService.getAppId();

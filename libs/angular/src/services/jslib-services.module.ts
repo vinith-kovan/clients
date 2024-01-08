@@ -761,7 +761,6 @@ import { ModalService } from "./modal.service";
         DevicesApiServiceAbstraction,
         I18nServiceAbstraction,
         PlatformUtilsServiceAbstraction,
-        AccountServiceAbstraction,
       ],
     },
     {

@@ -28,7 +28,7 @@ const ORGANIZATION_IDENTIFIER = new KeyDefinition<string>(SSO_DISK, "ssoOrganiza
   deserializer: (organizationIdentifier) => organizationIdentifier,
 });
 
-export class SsoService {
+export class SsoLoginService {
   private codeVerifierState: ActiveUserState<string>;
   private ssoState: ActiveUserState<string>;
   private organizationIdentifierState: ActiveUserState<string>;

@@ -1,4 +1,4 @@
-export abstract class SsoServiceAbstraction {
+export abstract class SsoLoginServiceAbstraction {
   /**
    * Gets the code verifier used for SSO.
    *
@@ -43,7 +43,7 @@ export abstract class SsoServiceAbstraction {
    * Gets the value of the user's organization identifier.
    *
    * This is used during the SSO flow to identify the organization that the user is attempting to log in to.
-   * Do not use this value outside of the SSO flow.
+   * Do not use this value outside of the SSO login flow.
    * @returns The user's organization identifier.
    */
   getOrganizationIdentifier: () => Promise<string>;
@@ -51,7 +51,7 @@ export abstract class SsoServiceAbstraction {
    * Sets the value of the user's organization identifier.
    *
    * This is used during the SSO flow to identify the organization that the user is attempting to log in to.
-   * Do not use this value outside of the SSO flow.
+   * Do not use this value outside of the SSO login flow.
    */
   setOrganizationIdentifier: (organizationIdentifier: string) => Promise<void>;
 }

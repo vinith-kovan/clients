@@ -6,4 +6,4 @@ export * from "./password-callout/password-callout.component";
 
 // user verification
 export * from "./user-verification/user-verification-dialog.component";
-export * from "./user-verification/user-verification-form.component";
+export * from "./user-verification/user-verification-form-input.component";

@@ -78,6 +78,7 @@ export abstract class CryptoService {
 
   /**
    * Retrieves the user key
+   * @deprecated use deriveFromUserKey instead
    * @param userId The desired user
    * @returns The user key
    */

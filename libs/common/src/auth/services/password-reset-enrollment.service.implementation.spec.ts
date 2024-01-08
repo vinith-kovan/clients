@@ -82,9 +82,32 @@ describe("PasswordResetEnrollmentServiceImplementation", () => {
       const encryptedKey = { encryptedString: "encryptedString" };
       organizationApiService.getKeys.mockResolvedValue(orgKeyResponse as any);
       stateService.getUserId.mockResolvedValue("userId");
-      cryptoService.deriveFromUserKey.mockResolvedValue(encryptedKey as any);
+      cryptoService.getUserKey.mockResolvedValue({ key: "key" } as any);
+      cryptoService.rsaEncrypt.mockResolvedValue(encryptedKey as any);
 
       await service.enroll("orgId");
+
+      expect(
+        organizationUserService.putOrganizationUserResetPasswordEnrollment,
+      ).toHaveBeenCalledWith(
+        "orgId",
+        "userId",
+        expect.objectContaining({
+          resetPasswordKey: encryptedKey.encryptedString,
+        }),
+      );
+    });
+
+    it("should enroll the user when a user id and key is provided", async () => {
+      const orgKeyResponse = {
+        publicKey: "publicKey",
+        privateKey: "privateKey",
+      };
+      const encryptedKey = { encryptedString: "encryptedString" };
+      organizationApiService.getKeys.mockResolvedValue(orgKeyResponse as any);
+      cryptoService.rsaEncrypt.mockResolvedValue(encryptedKey as any);
+
+      await service.enroll("orgId", "userId", { key: "key" } as any);
 
       expect(
         organizationUserService.putOrganizationUserResetPasswordEnrollment,

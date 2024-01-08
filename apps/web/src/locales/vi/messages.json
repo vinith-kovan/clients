@@ -612,13 +612,13 @@
     "message": "Đăng nhập bằng mật khẩu chính"
   },
   "readingPasskeyLoading": {
-    "message": "Reading passkey..."
+    "message": "Đang đọc passkey..."
   },
   "readingPasskeyLoadingInfo": {
-    "message": "Keep this window open and follow prompts from your browser."
+    "message": "Giữ cửa sổ này mở và làm theo lời nhắc từ trình duyệt của bạn."
   },
   "useADifferentLogInMethod": {
-    "message": "Use a different log in method"
+    "message": "Dùng phương thức đăng nhập khác"
   },
   "loginWithPasskey": {
     "message": "Log in with passkey"
@@ -674,8 +674,8 @@
   "encryptionNotSupported": {
     "message": "Encryption not supported"
   },
-  "encryptionNotEnabled": {
-    "message": "Encryption not enabled"
+  "enablePasskeyEncryption": {
+    "message": "Thiết lập mã hóa"
   },
   "usedForEncryption": {
     "message": "Used for encryption"
@@ -1074,6 +1074,9 @@
   "export": {
     "message": "Xuất"
   },
+  "exportFrom": {
+    "message": "Xuất từ"
+  },
   "exportVault": {
     "message": "Xuất kho"
   },
@@ -1149,6 +1152,9 @@
   },
   "length": {
     "message": "Độ dài"
+  },
+  "passwordMinLength": {
+    "message": "Độ dài mật khẩu tối thiểu"
   },
   "uppercase": {
     "message": "Chữ hoa (A-Z)",
@@ -3542,12 +3548,12 @@
       }
     }
   },
-  "subscriptionFamiliesPlan": {
-    "message": "You cannot invite more than $COUNT$ members without upgrading your plan. Please contact Customer Support to upgrade.",
+  "subscriptionUpgrade": {
+    "message": "You cannot invite more than $COUNT$ members without upgrading your plan.",
     "placeholders": {
       "count": {
         "content": "$1",
-        "example": "6"
+        "example": "2"
       }
     }
   },
@@ -6662,7 +6668,7 @@
     }
   },
   "teamsStarterPlanInvLimitReachedManageBilling": {
-    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Contact Customer Support to upgrade your plan and invite more members.",
+    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Upgrade to your plan to invite more members.",
     "placeholders": {
       "seatcount": {
         "content": "$1",
@@ -7322,6 +7328,9 @@
   "limitCollectionCreationDeletionDesc": {
     "message": "Limit collection creation and deletion to owners and admins"
   },
+  "allowAdminAccessToAllCollectionItemsDesc": {
+    "message": "Chủ sở hữu và quản trị viên có thể quản lý tất cả các bộ sưu tập và mục"
+  },
   "collectionManagementUpdated": {
     "message": "Collection management behavior saved"
   },
@@ -7386,6 +7395,9 @@
   "alreadyHaveAccount": {
     "message": "Already have an account?"
   },
+  "skipToContent": {
+    "message": "Vào nội dung chính"
+  },
   "customBillingStart": {
     "message": "Custom billing is not reflected. Visit the "
   },
@@ -7403,6 +7415,15 @@
   },
   "passkeyNotCopiedAlert": {
     "message": "The passkey will not be copied to the cloned item. Do you want to continue cloning this item?"
+  },
+  "modifiedCollectionManagement": {
+    "message": "Cài đặt quản lý bộ sưu tập đã sửa đổi $ID$.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "Unique ID"
+      }
+    }
   },
   "seeDetailedInstructions": {
     "message": "See detailed instructions on our help site at",
@@ -7422,5 +7443,11 @@
   },
   "seatLimitReachedContactYourProvider": {
     "message": "Số ghế sử dụng hàng tháng đã đạt đến giới hạn. Liên hệ nhà cung cấp để mua thêm."
+  },
+  "collectionAccessRestricted": {
+    "message": "Collection access is restricted"
+  },
+  "serviceAccountAccessUpdated": {
+    "message": "Service account access updated"
   }
 }

@@ -132,6 +132,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     FeatureFlag.BulkCollectionAccess,
     false,
   );
+  protected flexibleCollectionsEnabled: boolean;
 
   private searchText$ = new Subject<string>();
   private refresh$ = new BehaviorSubject<void>(null);
@@ -750,10 +751,11 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async deleteCollection(collection: CollectionView): Promise<void> {
-    if (
-      !this.organization.canDeleteAssignedCollections &&
-      !this.organization.canDeleteAnyCollection
-    ) {
+    const flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections,
+      false,
+    );
+    if (!collection.canDelete(this.organization, flexibleCollectionsEnabled)) {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
@@ -814,7 +816,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       data: {
         permanent: this.filter.type === "trash",
         cipherIds: ciphers.map((c) => c.id),
-        collectionIds: collections.map((c) => c.id),
+        collections: collections,
         organization,
       },
     });

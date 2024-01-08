@@ -37,7 +37,9 @@ import {
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { ProductType } from "@bitwarden/common/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
+import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -124,6 +126,7 @@ export class PeopleComponent
     private router: Router,
     private groupService: GroupService,
     private collectionService: CollectionService,
+    private configService: ConfigServiceAbstraction,
   ) {
     super(
       apiService,
@@ -241,8 +244,17 @@ export class PeopleComponent
       collectionsPromise,
     ]);
 
+    const flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.FlexibleCollections,
+      false,
+    );
+
     return usersResponse.data?.map<OrganizationUserView>((r) => {
       const userView = OrganizationUserView.fromResponse(r);
+
+      if (flexibleCollectionsEnabled) {
+        userView.accessAll = false;
+      }
 
       userView.groupNames = userView.groups
         .map((g) => groupNamesMap.get(g))
@@ -364,17 +376,6 @@ export class PeopleComponent
     return `${product}InvLimitReached${this.getManageBillingText()}`;
   }
 
-  private getDialogTitle(productType: ProductType): string {
-    switch (productType) {
-      case ProductType.Free:
-        return "upgrade";
-      case ProductType.TeamsStarter:
-        return "contactSupportShort";
-      default:
-        throw new Error(`Unsupported product type: ${productType}`);
-    }
-  }
-
   private getDialogContent(): string {
     return this.i18nService.t(
       this.getProductKey(this.organization.planProductType),
@@ -387,7 +388,13 @@ export class PeopleComponent
       return this.i18nService.t("ok");
     }
 
-    return this.i18nService.t(this.getDialogTitle(this.organization.planProductType));
+    const productType = this.organization.planProductType;
+
+    if (productType !== ProductType.Free && productType !== ProductType.TeamsStarter) {
+      throw new Error(`Unsupported product type: ${productType}`);
+    }
+
+    return this.i18nService.t("upgrade");
   }
 
   private async handleDialogClose(result: boolean | undefined): Promise<void> {
@@ -395,19 +402,16 @@ export class PeopleComponent
       return;
     }
 
-    switch (this.organization.planProductType) {
-      case ProductType.Free:
-        await this.router.navigate(
-          ["/organizations", this.organization.id, "billing", "subscription"],
-          { queryParams: { upgrade: true } },
-        );
-        break;
-      case ProductType.TeamsStarter:
-        window.open("https://bitwarden.com/contact/", "_blank");
-        break;
-      default:
-        throw new Error(`Unsupported product type: ${this.organization.planProductType}`);
+    const productType = this.organization.planProductType;
+
+    if (productType !== ProductType.Free && productType !== ProductType.TeamsStarter) {
+      throw new Error(`Unsupported product type: ${this.organization.planProductType}`);
     }
+
+    await this.router.navigate(
+      ["/organizations", this.organization.id, "billing", "subscription"],
+      { queryParams: { upgrade: true } },
+    );
   }
 
   private async showSeatLimitReachedDialog(): Promise<void> {

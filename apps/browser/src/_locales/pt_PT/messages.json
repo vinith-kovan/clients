@@ -268,6 +268,9 @@
   "length": {
     "message": "Comprimento"
   },
+  "passwordMinLength": {
+    "message": "Comprimento mínimo da palavra-passe"
+  },
   "uppercase": {
     "message": "Maiúsculas (A-Z)"
   },
@@ -323,6 +326,9 @@
   "password": {
     "message": "Palavra-passe"
   },
+  "totp": {
+    "message": "Segredo de autenticação"
+  },
   "passphrase": {
     "message": "Frase de acesso"
   },
@@ -365,6 +371,9 @@
   "unlockMethodNeededToChangeTimeoutActionDesc": {
     "message": "Configure um método de desbloqueio para alterar a ação de tempo limite do seu cofre."
   },
+  "unlockMethodNeeded": {
+    "message": "Definir um método de desbloqueio nas Definições"
+  },
   "rateExtension": {
     "message": "Avaliar a extensão"
   },
@@ -404,6 +413,9 @@
   },
   "lockNow": {
     "message": "Bloquear agora"
+  },
+  "lockAll": {
+    "message": "Bloquear tudo"
   },
   "immediately": {
     "message": "Imediatamente"
@@ -502,6 +514,18 @@
   },
   "autofillError": {
     "message": "Não é possível preencher automaticamente o item selecionado nesta página. Em vez disso, copie e cole as informações."
+  },
+  "totpCaptureError": {
+    "message": "Não é possível digitalizar o código QR a partir da página Web atual"
+  },
+  "totpCaptureSuccess": {
+    "message": "Chave de autenticação adicionada"
+  },
+  "totpCapture": {
+    "message": "Digitalize o código QR do autenticador a partir da página Web atual"
+  },
+  "copyTOTP": {
+    "message": "Copiar Chave de autenticação (TOTP)"
   },
   "loggedOut": {
     "message": "Sessão terminada"
@@ -1027,6 +1051,12 @@
   "showAutoFillMenuOnFormFieldsDescAlt": {
     "message": "Aplica-se a todas as contas com sessão iniciada."
   },
+  "turnOffBrowserBuiltInPasswordManagerSettings": {
+    "message": "Desative as definições do gestor de palavras-passe incorporado do seu navegador para evitar conflitos."
+  },
+  "turnOffBrowserBuiltInPasswordManagerSettingsLink": {
+    "message": "Editar as definições do navegador."
+  },
   "autofillOverlayVisibilityOff": {
     "message": "Desligado",
     "description": "Overlay setting select option for disabling autofill overlay"
@@ -1130,6 +1160,9 @@
   },
   "faviconDesc": {
     "message": "Mostrar uma imagem reconhecível junto a cada credencial."
+  },
+  "faviconDescAlt": {
+    "message": "Mostrar uma imagem reconhecível junto a cada credencial. Aplica-se a todas as contas com sessão iniciada."
   },
   "enableBadgeCounter": {
     "message": "Mostrar distintivo de contador"
@@ -1707,7 +1740,7 @@
     "placeholders": {
       "domain": {
         "content": "$1",
-        "example": "googlecom"
+        "example": "google.com"
       }
     }
   },
@@ -2479,6 +2512,38 @@
     "message": "Alternar colapso",
     "description": "Toggling an expand/collapse state."
   },
+  "filelessImport": {
+    "message": "Importar os seus dados para o Bitwarden?",
+    "description": "Default notification title for triggering a fileless import."
+  },
+  "lpFilelessImport": {
+    "message": "Proteger os seus dados LastPass e importar para o Bitwarden?",
+    "description": "LastPass specific notification title for triggering a fileless import."
+  },
+  "lpCancelFilelessImport": {
+    "message": "Guardar como ficheiro não encriptado",
+    "description": "LastPass specific notification button text for cancelling a fileless import."
+  },
+  "startFilelessImport": {
+    "message": "Importar para o Bitwarden",
+    "description": "Notification button text for starting a fileless import."
+  },
+  "importing": {
+    "message": "A importar...",
+    "description": "Notification message for when an import is in progress."
+  },
+  "dataSuccessfullyImported": {
+    "message": "Dados importados com sucesso!",
+    "description": "Notification message for when an import has completed successfully."
+  },
+  "dataImportFailed": {
+    "message": "Erro de importação. Verifique a consola para obter detalhes.",
+    "description": "Notification message for when an import has failed."
+  },
+  "importNetworkError": {
+    "message": "Erro de rede encontrado durante a importação.",
+    "description": "Notification message for when an import has failed due to a network error."
+  },
   "aliasDomain": {
     "message": "Alias de domínio"
   },
@@ -2493,6 +2558,9 @@
   "turnOffMasterPasswordPromptToEditField": {
     "message": "Desativar o pedido para reintroduzir a palavra-passe mestra para editar este campo",
     "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
+  },
+  "skipToContent": {
+    "message": "Avançar para o conteúdo"
   },
   "bitwardenOverlayButton": {
     "message": "Botão de menu de preenchimento automático Bitwarden",
@@ -2538,35 +2606,11 @@
     "message": "Menu de preenchimento automático Bitwarden disponível. Prima a tecla de seta para baixo para selecionar.",
     "description": "Screen reader text for announcing when the overlay opens on the page"
   },
-  "overrideBrowserAutofillTitle": {
-    "message": "Anular o preenchimento automático do navegador?",
-    "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillDescription": {
-    "message": "Deixar esta definição desativada pode causar conflitos entre o menu de preenchimento automático do Bitwarden e o do seu navegador.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillPrivacyRequiredDescription": {
-    "message": "Deixar esta configuração desativada pode causar conflitos entre o menu de preenchimento automático do Bitwarden e o do seu navegador. Ativar esta opção reiniciará a extensão Bitwarden.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
   "turnOn": {
     "message": "Ativar"
   },
   "ignore": {
     "message": "Ignorar"
-  },
-  "overrideBrowserAutoFillSettings": {
-    "message": "Substituir as definições de preenchimento automático do navegador",
-    "description": "Label for the setting that allows overriding the default browser autofill settings"
-  },
-  "extensionPrivacyPermissionNotGrantedTitle": {
-    "message": "Não é possível anular o preenchimento automático do navegador",
-    "description": "Title for the dialog that appears when the user has not granted the extension permission to set privacy settings"
-  },
-  "extensionPrivacyPermissionNotGrantedDescription": {
-    "message": "O Bitwarden deve ter acesso à permissão de privacidade da extensão para substituir as definições de preenchimento automático do navegador.",
-    "description": "Description for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "importData": {
     "message": "Importar dados",
@@ -2679,6 +2723,9 @@
   "confirmFilePassword": {
     "message": "Confirmar a palavra-passe do ficheiro"
   },
+  "typePasskey": {
+    "message": "Chave de acesso"
+  },
   "passkeyNotCopied": {
     "message": "A chave de acesso não será copiada"
   },
@@ -2726,9 +2773,6 @@
   },
   "yourPasskeyIsLocked": {
     "message": "É necessária a autenticação para utilizar a chave de acesso. Verifique a sua identidade para continuar."
-  },
-  "useBrowserName": {
-    "message": "Utilizar o navegador"
   },
   "multifactorAuthenticationCancelled": {
     "message": "Autenticação multifator cancelada"
@@ -2793,5 +2837,56 @@
   },
   "lastPassYubikeyDesc": {
     "message": "Insira a YubiKey associada à sua conta LastPass na porta USB do seu computador e, em seguida, toque no respetivo botão."
+  },
+  "switchAccount": {
+    "message": "Mudar de conta"
+  },
+  "switchAccounts": {
+    "message": "Mudar de contas"
+  },
+  "switchToAccount": {
+    "message": "Mudar para conta"
+  },
+  "activeAccount": {
+    "message": "Conta ativa"
+  },
+  "availableAccounts": {
+    "message": "Contas disponíveis"
+  },
+  "accountLimitReached": {
+    "message": "Limite de contas atingido. Termine a sessão de uma das contas para adicionar outra."
+  },
+  "active": {
+    "message": "ativa"
+  },
+  "locked": {
+    "message": "bloqueado"
+  },
+  "unlocked": {
+    "message": "desbloqueado"
+  },
+  "server": {
+    "message": "servidor"
+  },
+  "hostedAt": {
+    "message": "hospedado em"
+  },
+  "useDeviceOrHardwareKey": {
+    "message": "Utilize o seu dispositivo ou chave de hardware"
+  },
+  "justOnce": {
+    "message": "Apenas uma vez"
+  },
+  "alwaysForThisSite": {
+    "message": "Sempre para este site"
+  },
+  "domainAddedToExcludedDomains": {
+    "message": "$DOMAIN$ adicionado aos domínios excluídos.",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
   }
 }

@@ -268,6 +268,9 @@
   "length": {
     "message": "Uzunluq"
   },
+  "passwordMinLength": {
+    "message": "Minimal parol uzunluğu"
+  },
   "uppercase": {
     "message": "Böyük hərf (A-Z)"
   },
@@ -323,6 +326,9 @@
   "password": {
     "message": "Parol"
   },
+  "totp": {
+    "message": "Kimlik doğrulayıcı sirri"
+  },
   "passphrase": {
     "message": "Parol ifadəsi"
   },
@@ -365,6 +371,9 @@
   "unlockMethodNeededToChangeTimeoutActionDesc": {
     "message": "Anbar vaxt bitməsi əməliyyatınızı dəyişdirmək üçün bir kilid açma üsulu qurun."
   },
+  "unlockMethodNeeded": {
+    "message": "Ayarlarda bir kilid açma üsulu qurun"
+  },
   "rateExtension": {
     "message": "Uzantını qiymətləndir"
   },
@@ -404,6 +413,9 @@
   },
   "lockNow": {
     "message": "İndi kilidlə"
+  },
+  "lockAll": {
+    "message": "Hamısını kilidlə"
   },
   "immediately": {
     "message": "Dərhal"
@@ -502,6 +514,18 @@
   },
   "autofillError": {
     "message": "Bu səhifədə seçilmiş element avto-doldurulmur. Əvəzində məlumatları kopyalayıb yapışdırın."
+  },
+  "totpCaptureError": {
+    "message": "Hazırkı veb səhifədən QR kodu skan edilə bilmir"
+  },
+  "totpCaptureSuccess": {
+    "message": "Kimlik doğrulayıcı açarı əlavə edildi"
+  },
+  "totpCapture": {
+    "message": "Hazırkı veb sahifədən kimlik doğrulayıcı QR kodunu skan et"
+  },
+  "copyTOTP": {
+    "message": "Kimlik doğrulayıcı açarını kopyala (TOTP)"
   },
   "loggedOut": {
     "message": "Çıxış edildi"
@@ -1027,6 +1051,12 @@
   "showAutoFillMenuOnFormFieldsDescAlt": {
     "message": "Giriş etmiş bütün hesablara aiddir."
   },
+  "turnOffBrowserBuiltInPasswordManagerSettings": {
+    "message": "Ziddiyyətləri önləmək üçün brauzerinizin daxili parol meneceri ayarlarını söndürün."
+  },
+  "turnOffBrowserBuiltInPasswordManagerSettingsLink": {
+    "message": "Brauzer ayarlarına düzəliş et."
+  },
   "autofillOverlayVisibilityOff": {
     "message": "Bağlı",
     "description": "Overlay setting select option for disabling autofill overlay"
@@ -1130,6 +1160,9 @@
   },
   "faviconDesc": {
     "message": "Hər girişin yanında tanına bilən təsvir göstər."
+  },
+  "faviconDescAlt": {
+    "message": "Hər bir giriş elementinin yanında tanına bilən bir təsvir göstər. Giriş etmiş bütün hesablara aiddir."
   },
   "enableBadgeCounter": {
     "message": "Nişan sayğacını göstər"
@@ -1707,7 +1740,7 @@
     "placeholders": {
       "domain": {
         "content": "$1",
-        "example": "googlecom"
+        "example": "google.com"
       }
     }
   },
@@ -2479,6 +2512,38 @@
     "message": "Yığcamlaşdırmanı aç/bağla",
     "description": "Toggling an expand/collapse state."
   },
+  "filelessImport": {
+    "message": "Datanız Bitwarden-ə köçürülsün?",
+    "description": "Default notification title for triggering a fileless import."
+  },
+  "lpFilelessImport": {
+    "message": "LastPass datanızı qoruyub Bitwarden-ə köçürürsünüz?",
+    "description": "LastPass specific notification title for triggering a fileless import."
+  },
+  "lpCancelFilelessImport": {
+    "message": "Şifrələnməmiş fayl olaraq saxla",
+    "description": "LastPass specific notification button text for cancelling a fileless import."
+  },
+  "startFilelessImport": {
+    "message": "Bitwarden-ə köçür",
+    "description": "Notification button text for starting a fileless import."
+  },
+  "importing": {
+    "message": "Daxilə köçürülür...",
+    "description": "Notification message for when an import is in progress."
+  },
+  "dataSuccessfullyImported": {
+    "message": "Data uğurla daxilə köçürüldü!",
+    "description": "Notification message for when an import has completed successfully."
+  },
+  "dataImportFailed": {
+    "message": "Daxilə köçürmə xətası. Detallar üçün konsolu yoxlayın.",
+    "description": "Notification message for when an import has failed."
+  },
+  "importNetworkError": {
+    "message": "Daxilə köçürmə zamanı şəbəkə xətası baş verdi.",
+    "description": "Notification message for when an import has failed due to a network error."
+  },
   "aliasDomain": {
     "message": "Domen ləqəbi"
   },
@@ -2493,6 +2558,9 @@
   "turnOffMasterPasswordPromptToEditField": {
     "message": "Bu sahəyə düzəliş etmək üçün \"Ana parolu təkrar soruş\"u söndürün",
     "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
+  },
+  "skipToContent": {
+    "message": "Məzmunu ötür"
   },
   "bitwardenOverlayButton": {
     "message": "Bitwarden avto-doldurma menyu düyməsi",
@@ -2538,35 +2606,11 @@
     "message": "Bitwarden avto-doldurma menyusu mövcuddur. Seçmək üçün aşağı ox düyməsinə basın.",
     "description": "Screen reader text for announcing when the overlay opens on the page"
   },
-  "overrideBrowserAutofillTitle": {
-    "message": "Brauzerin avto-doldurması yararsız edilsin?",
-    "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillDescription": {
-    "message": "Bu ayarın söndürülməsi, \"Bitwarden\"in və brauzerinizin avto-doldurma menyuları arasında ziddiyyətlərə səbəb ola bilər.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillPrivacyRequiredDescription": {
-    "message": "Bu ayarın söndürülməsi, \"Bitwarden\"in və brauzerinizin avto-doldurma menyuları arasında ziddiyyətlərə səbəb ola bilər. Bunu işə salmaq, Bitwarden uzantısını yenidən başladacaq.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
   "turnOn": {
     "message": "İşə sal"
   },
   "ignore": {
     "message": "Yox say"
-  },
-  "overrideBrowserAutoFillSettings": {
-    "message": "Brauzerin avto-doldurma ayarlarını yararsız et",
-    "description": "Label for the setting that allows overriding the default browser autofill settings"
-  },
-  "extensionPrivacyPermissionNotGrantedTitle": {
-    "message": "Brauzerin avto-doldurması yararsız edilə bilmir",
-    "description": "Title for the dialog that appears when the user has not granted the extension permission to set privacy settings"
-  },
-  "extensionPrivacyPermissionNotGrantedDescription": {
-    "message": "Bitwarden, brauzerin avto-doldurma ayarlarını yararsız etmək üçün uzantının gizlilik icazəsinə müraciət etməlidir.",
-    "description": "Description for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "importData": {
     "message": "Datanı daxilə köçür",
@@ -2679,6 +2723,9 @@
   "confirmFilePassword": {
     "message": "Fayl parolunu təsdiqlə"
   },
+  "typePasskey": {
+    "message": "Keçid açarı"
+  },
   "passkeyNotCopied": {
     "message": "Keçid açarı kopyalanmır"
   },
@@ -2726,9 +2773,6 @@
   },
   "yourPasskeyIsLocked": {
     "message": "Keçid açarını istifadə etmək üçün kimlik doğrulama tələb olunur. Davam etmək üçün kimliyinizi doğrulayın."
-  },
-  "useBrowserName": {
-    "message": "Brauzer istifadə et"
   },
   "multifactorAuthenticationCancelled": {
     "message": "Çox faktorlu kimlik doğrulama ləğv edildi"
@@ -2793,5 +2837,56 @@
   },
   "lastPassYubikeyDesc": {
     "message": "LastPass hesabınızla əlaqələndirilmiş \"YubiKey\"i kompüterinizin USB yuvasına taxın, daha sonra düyməsinə basın."
+  },
+  "switchAccount": {
+    "message": "Hesabı dəyişdir"
+  },
+  "switchAccounts": {
+    "message": "Hesabları dəyişdir"
+  },
+  "switchToAccount": {
+    "message": "Hesaba keç"
+  },
+  "activeAccount": {
+    "message": "Aktiv hesab"
+  },
+  "availableAccounts": {
+    "message": "Mövcud hesablar"
+  },
+  "accountLimitReached": {
+    "message": "Hesab limiti keçildi. Başqa bir hesab əlavə etmək üçün bir hesabdan çıxış edin."
+  },
+  "active": {
+    "message": "aktiv"
+  },
+  "locked": {
+    "message": "kilidli"
+  },
+  "unlocked": {
+    "message": "kilidi açılmış"
+  },
+  "server": {
+    "message": "server"
+  },
+  "hostedAt": {
+    "message": "sahiblik edən"
+  },
+  "useDeviceOrHardwareKey": {
+    "message": "Cihazınızı və ya avadanlıq açarınızı istifadə edin"
+  },
+  "justOnce": {
+    "message": "Yalnız bir dəfə"
+  },
+  "alwaysForThisSite": {
+    "message": "Bu sayt üçün həmişə"
+  },
+  "domainAddedToExcludedDomains": {
+    "message": "$DOMAIN$, istisna domenlərə əlavə edildi.",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
   }
 }

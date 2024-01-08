@@ -268,6 +268,9 @@
   "length": {
     "message": "Délka"
   },
+  "passwordMinLength": {
+    "message": "Minimální délka hesla"
+  },
   "uppercase": {
     "message": "Velká písmena (A-Z)"
   },
@@ -323,6 +326,9 @@
   "password": {
     "message": "Heslo"
   },
+  "totp": {
+    "message": "Tajný klíč autentizace"
+  },
   "passphrase": {
     "message": "Heslová fráze"
   },
@@ -365,6 +371,9 @@
   "unlockMethodNeededToChangeTimeoutActionDesc": {
     "message": "Nastavte metodu odemknutí, abyste změnili časový limit Vašeho trezoru."
   },
+  "unlockMethodNeeded": {
+    "message": "Nastavit metodu odemknutí v Nastavení"
+  },
   "rateExtension": {
     "message": "Ohodnotit rozšíření"
   },
@@ -404,6 +413,9 @@
   },
   "lockNow": {
     "message": "Zamknout nyní"
+  },
+  "lockAll": {
+    "message": "Zamknout vše"
   },
   "immediately": {
     "message": "Okamžitě"
@@ -502,6 +514,18 @@
   },
   "autofillError": {
     "message": "Vybrané přihlašovací údaje nelze na této stránce automaticky vyplnit. Zkopírujte a vložte své přihlašovací údaje ručně."
+  },
+  "totpCaptureError": {
+    "message": "Nelze naskenovat QR kód z aktuální webové stránky"
+  },
+  "totpCaptureSuccess": {
+    "message": "Byl přidán autentizační klíč"
+  },
+  "totpCapture": {
+    "message": "Naskenovat QR kód z aktuální webové stránky"
+  },
+  "copyTOTP": {
+    "message": "Kopírovat autentizační klíč (TOTP)"
   },
   "loggedOut": {
     "message": "Odhlášení"
@@ -679,7 +703,7 @@
     "message": "Zobrazit volby v kontextovém menu"
   },
   "contextMenuItemDesc": {
-    "message": "Použijte pravé tlačítko pro přístup k vytvoření hesla a odpovídajícímu přihlášení pro tuto stránku. "
+    "message": "Použijte pravé tlačítko pro přístup k vytvoření hesla a odpovídajícímu přihlášení pro tuto stránku."
   },
   "contextMenuItemDescAlt": {
     "message": "Použije pravé tlačítko pro přístup k vytvoření hesla a odpovídajícímu přihlášení pro tuto stránku. Platí pro všechny přihlášené účty."
@@ -1027,6 +1051,12 @@
   "showAutoFillMenuOnFormFieldsDescAlt": {
     "message": "Použije se na všechny přihlášené účty."
   },
+  "turnOffBrowserBuiltInPasswordManagerSettings": {
+    "message": "Abyste se vyhnuli konfliktům, vypněte v nastavení Vašeho prohlížeče zabudovaný správce hesel."
+  },
+  "turnOffBrowserBuiltInPasswordManagerSettingsLink": {
+    "message": "Upravit nastavení prohlížeče"
+  },
   "autofillOverlayVisibilityOff": {
     "message": "VYP.",
     "description": "Overlay setting select option for disabling autofill overlay"
@@ -1130,6 +1160,9 @@
   },
   "faviconDesc": {
     "message": "Zobrazí rozeznatelný obrázek vedle každého přihlášení."
+  },
+  "faviconDescAlt": {
+    "message": "Zobrazí rozeznatelný obrázek vedle každého přihlášení. Platí pro všechny přihlášené účty."
   },
   "enableBadgeCounter": {
     "message": "Zobrazovat počet uložených přihlašovacích údajů na stránce"
@@ -1707,7 +1740,7 @@
     "placeholders": {
       "domain": {
         "content": "$1",
-        "example": "googlecom"
+        "example": "google.com"
       }
     }
   },
@@ -2264,7 +2297,7 @@
     "message": "Jak na automatické vyplňování"
   },
   "autofillSelectInfoWithCommand": {
-    "message": "Select an item from this screen, use the shortcut $COMMAND$, or explore other options in settings.",
+    "message": "Vyberte položku z této obrazovky, použijte zkratku $COMMAND$ nebo prozkoumejte další volby v nastavení.",
     "placeholders": {
       "command": {
         "content": "$1",
@@ -2273,7 +2306,7 @@
     }
   },
   "autofillSelectInfoWithoutCommand": {
-    "message": "Select an item from this screen, or explore other options in settings."
+    "message": "Vyberte položku z této obrazovky nebo prozkoumejte další volby v nastavení."
   },
   "gotIt": {
     "message": "Rozumím"
@@ -2479,6 +2512,38 @@
     "message": "Přepnout sbalení",
     "description": "Toggling an expand/collapse state."
   },
+  "filelessImport": {
+    "message": "Importovat data do Bitwardenu?",
+    "description": "Default notification title for triggering a fileless import."
+  },
+  "lpFilelessImport": {
+    "message": "Chránit Vaše data LastPass a importovat do Bitwardenu?",
+    "description": "LastPass specific notification title for triggering a fileless import."
+  },
+  "lpCancelFilelessImport": {
+    "message": "Uložit jako nešifrovaný soubor",
+    "description": "LastPass specific notification button text for cancelling a fileless import."
+  },
+  "startFilelessImport": {
+    "message": "Importovat do Bitwardenu",
+    "description": "Notification button text for starting a fileless import."
+  },
+  "importing": {
+    "message": "Importování...",
+    "description": "Notification message for when an import is in progress."
+  },
+  "dataSuccessfullyImported": {
+    "message": "Data byla úspěšně importována!",
+    "description": "Notification message for when an import has completed successfully."
+  },
+  "dataImportFailed": {
+    "message": "Chyba při importu. Podrobnosti naleznete v konzoli.",
+    "description": "Notification message for when an import has failed."
+  },
+  "importNetworkError": {
+    "message": "Při importu došlo k chybě sítě.",
+    "description": "Notification message for when an import has failed due to a network error."
+  },
   "aliasDomain": {
     "message": "Doména aliasu"
   },
@@ -2493,6 +2558,9 @@
   "turnOffMasterPasswordPromptToEditField": {
     "message": "Pro úpravu tohoto pole vypněte požadavek na hlavní heslo",
     "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
+  },
+  "skipToContent": {
+    "message": "Přeskočit na obsah"
   },
   "bitwardenOverlayButton": {
     "message": "Tlačítko nabídky automatického vyplňování Bitwardenu",
@@ -2538,35 +2606,11 @@
     "message": "Nabídka automatického vyplňování Bitwardenu. Pro výběr stiskněte šipku dolů.",
     "description": "Screen reader text for announcing when the overlay opens on the page"
   },
-  "overrideBrowserAutofillTitle": {
-    "message": "Přepsat automatické vyplnění prohlížeče?",
-    "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillDescription": {
-    "message": "Ponechání tohoto nastavení ve vypnutém stavu může způsobit konflikty mezi nabídkou automatického vyplňování Bitwardenu a Vaším prohlížečem.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillPrivacyRequiredDescription": {
-    "message": "Ponechání tohoto nastavení ve vypnutém stavu může způsobit konflikty mezi nabídkou automatického vyplňování Bitwardenu a Vaším prohlížečem. Zapnutím tohoto rozšíření dojde k restartování doplňku Bitwardenu.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
   "turnOn": {
     "message": "Zapnout"
   },
   "ignore": {
     "message": "Ignorovat"
-  },
-  "overrideBrowserAutoFillSettings": {
-    "message": "Přepsat nastavení automatického vyplnění prohlížeče",
-    "description": "Label for the setting that allows overriding the default browser autofill settings"
-  },
-  "extensionPrivacyPermissionNotGrantedTitle": {
-    "message": "Nelze přepsat automatické vyplnění prohlížeče",
-    "description": "Title for the dialog that appears when the user has not granted the extension permission to set privacy settings"
-  },
-  "extensionPrivacyPermissionNotGrantedDescription": {
-    "message": "Bitwarden musí mít přístup k ochraně osobních údajů doplňku pro přepsání nastavení automatického vyplňování prohlížeče.",
-    "description": "Description for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "importData": {
     "message": "Importovat data",
@@ -2679,6 +2723,9 @@
   "confirmFilePassword": {
     "message": "Potvrzení hesla souboru"
   },
+  "typePasskey": {
+    "message": "Přístupový klíč"
+  },
   "passkeyNotCopied": {
     "message": "Přístupový klíč nebude zkopírován"
   },
@@ -2726,9 +2773,6 @@
   },
   "yourPasskeyIsLocked": {
     "message": "Pro použití přístupového klíče je vyžadováno ověření. Chcete-li pokračovat, ověřte svou identitu."
-  },
-  "useBrowserName": {
-    "message": "Použít prohlížeč"
   },
   "multifactorAuthenticationCancelled": {
     "message": "Vícefázové ověření zrušeno"
@@ -2793,5 +2837,56 @@
   },
   "lastPassYubikeyDesc": {
     "message": "Vložte YubiKey spojený s Vaším účtem LastPass do USB portu Vašeho počítače a stiskněte jeho tlačítko."
+  },
+  "switchAccount": {
+    "message": "Přepnout účet"
+  },
+  "switchAccounts": {
+    "message": "Přepnout účty"
+  },
+  "switchToAccount": {
+    "message": "Přepnout na účet"
+  },
+  "activeAccount": {
+    "message": "Aktivní účet"
+  },
+  "availableAccounts": {
+    "message": "Dostupné účty"
+  },
+  "accountLimitReached": {
+    "message": "Byl dosažen limit účtu. Pro přidání dalšího účtu se odhlaste."
+  },
+  "active": {
+    "message": "aktivní"
+  },
+  "locked": {
+    "message": "uzamčeno"
+  },
+  "unlocked": {
+    "message": "odemčeno"
+  },
+  "server": {
+    "message": "server"
+  },
+  "hostedAt": {
+    "message": "hostováno na"
+  },
+  "useDeviceOrHardwareKey": {
+    "message": "Použijte Vaše zařízení nebo hardwarový klíč"
+  },
+  "justOnce": {
+    "message": "Jen jednou"
+  },
+  "alwaysForThisSite": {
+    "message": "Vždy pro tuto stránku"
+  },
+  "domainAddedToExcludedDomains": {
+    "message": "$DOMAIN$ přidán do vyloučených domén.",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
   }
 }

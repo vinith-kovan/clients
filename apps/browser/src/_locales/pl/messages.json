@@ -268,6 +268,9 @@
   "length": {
     "message": "Długość"
   },
+  "passwordMinLength": {
+    "message": "Minimalna długość hasła"
+  },
   "uppercase": {
     "message": "Wielkie litery (A-Z)"
   },
@@ -323,6 +326,9 @@
   "password": {
     "message": "Hasło"
   },
+  "totp": {
+    "message": "Sekret uwierzytelniania"
+  },
   "passphrase": {
     "message": "Hasło wyrazowe"
   },
@@ -365,6 +371,9 @@
   "unlockMethodNeededToChangeTimeoutActionDesc": {
     "message": "Ustaw metodę odblokowania, aby zmienić czas blokowania sejfu."
   },
+  "unlockMethodNeeded": {
+    "message": "Ustaw metodę odblokowania w Ustawieniach"
+  },
   "rateExtension": {
     "message": "Oceń rozszerzenie"
   },
@@ -404,6 +413,9 @@
   },
   "lockNow": {
     "message": "Zablokuj"
+  },
+  "lockAll": {
+    "message": "Zablokuj wszystko"
   },
   "immediately": {
     "message": "Natychmiast"
@@ -502,6 +514,18 @@
   },
   "autofillError": {
     "message": "Nie można zastosować autouzupełnienia na tej stronie. Skopiuj i wklej informacje ręcznie."
+  },
+  "totpCaptureError": {
+    "message": "Nie można zeskanować kodu QR z bieżącej strony"
+  },
+  "totpCaptureSuccess": {
+    "message": "Klucz uwierzytelniający został dodany"
+  },
+  "totpCapture": {
+    "message": "Zeskanuj kod QR z bieżącej strony"
+  },
+  "copyTOTP": {
+    "message": "Kopiuj klucz uwierzytelniający (TOTP)"
   },
   "loggedOut": {
     "message": "Wylogowano"
@@ -1027,6 +1051,12 @@
   "showAutoFillMenuOnFormFieldsDescAlt": {
     "message": "Dotyczy wszystkich zalogowanych kont."
   },
+  "turnOffBrowserBuiltInPasswordManagerSettings": {
+    "message": "Wyłącz wbudowany w przeglądarkę menedżera haseł, aby uniknąć konfliktów."
+  },
+  "turnOffBrowserBuiltInPasswordManagerSettingsLink": {
+    "message": "Edytuj ustawienia przeglądarki."
+  },
   "autofillOverlayVisibilityOff": {
     "message": "Wył.",
     "description": "Overlay setting select option for disabling autofill overlay"
@@ -1130,6 +1160,9 @@
   },
   "faviconDesc": {
     "message": "Pokaż rozpoznawalny obraz obok danych logowania."
+  },
+  "faviconDescAlt": {
+    "message": "Pokaż rozpoznawalny obraz obok każdego logowania. Dotyczy wszystkich zalogowanych kont."
   },
   "enableBadgeCounter": {
     "message": "Pokaż licznik na ikonie"
@@ -1707,7 +1740,7 @@
     "placeholders": {
       "domain": {
         "content": "$1",
-        "example": "googlecom"
+        "example": "google.com"
       }
     }
   },
@@ -2479,6 +2512,38 @@
     "message": "Zwiń/rozwiń",
     "description": "Toggling an expand/collapse state."
   },
+  "filelessImport": {
+    "message": "Zaimportować Twoje dane do Bitwarden?",
+    "description": "Default notification title for triggering a fileless import."
+  },
+  "lpFilelessImport": {
+    "message": "Ochronić Twoje dane LastPass i zaimportować do Bitwarden?",
+    "description": "LastPass specific notification title for triggering a fileless import."
+  },
+  "lpCancelFilelessImport": {
+    "message": "Zapisz jako niezaszyfrowany plik",
+    "description": "LastPass specific notification button text for cancelling a fileless import."
+  },
+  "startFilelessImport": {
+    "message": "Importuj do Bitwarden",
+    "description": "Notification button text for starting a fileless import."
+  },
+  "importing": {
+    "message": "Importowanie...",
+    "description": "Notification message for when an import is in progress."
+  },
+  "dataSuccessfullyImported": {
+    "message": "Dane pomyślnie zaimportowane!",
+    "description": "Notification message for when an import has completed successfully."
+  },
+  "dataImportFailed": {
+    "message": "Błąd podczas importowania. Sprawdź konsolę, aby uzyskać szczegółowe informacje.",
+    "description": "Notification message for when an import has failed."
+  },
+  "importNetworkError": {
+    "message": "Wystąpił błąd sieci podczas importu.",
+    "description": "Notification message for when an import has failed due to a network error."
+  },
   "aliasDomain": {
     "message": "Domena aliasu"
   },
@@ -2493,6 +2558,9 @@
   "turnOffMasterPasswordPromptToEditField": {
     "message": "Wyłącz prośbę o podanie hasła głównego, aby edytować to pole",
     "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
+  },
+  "skipToContent": {
+    "message": "Przejdź do treści"
   },
   "bitwardenOverlayButton": {
     "message": "Przycisk menu autouzupełniania Bitwarden",
@@ -2538,35 +2606,11 @@
     "message": "Dostępne menu autouzupełniania Bitwarden. Naciśnij przycisk strzałki w dół, aby wybrać.",
     "description": "Screen reader text for announcing when the overlay opens on the page"
   },
-  "overrideBrowserAutofillTitle": {
-    "message": "Zastąpić automatyczne wypełnianie przeglądarki?",
-    "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillDescription": {
-    "message": "Pozostawienie tego ustawienia jako wyłączonego może spowodować konflikty pomiędzy menu autouzupełniania Bitwarden a przeglądarką.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillPrivacyRequiredDescription": {
-    "message": "Pozostawienie tego ustawienia jako wyłączonego może spowodować konflikty pomiędzy menu autouzupełniania Bitwarden a przeglądarką. Włączenie tego spowoduje ponowne uruchomienie rozszerzenia Bitwarden.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
   "turnOn": {
     "message": "Włącz"
   },
   "ignore": {
     "message": "Ignoruj"
-  },
-  "overrideBrowserAutoFillSettings": {
-    "message": "Nadpisz ustawienia autouzupełniania przeglądarki",
-    "description": "Label for the setting that allows overriding the default browser autofill settings"
-  },
-  "extensionPrivacyPermissionNotGrantedTitle": {
-    "message": "Nie można napisać autouzupełniania przeglądarki",
-    "description": "Title for the dialog that appears when the user has not granted the extension permission to set privacy settings"
-  },
-  "extensionPrivacyPermissionNotGrantedDescription": {
-    "message": "Bitwarden musi mieć dostęp do uprawnień prywatności rozszerzenia, aby nadpisać ustawienia autouzupełniania przeglądarki.",
-    "description": "Description for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "importData": {
     "message": "Importuj dane",
@@ -2679,6 +2723,9 @@
   "confirmFilePassword": {
     "message": "Potwierdź hasło pliku"
   },
+  "typePasskey": {
+    "message": "Passkey"
+  },
   "passkeyNotCopied": {
     "message": "Passkey nie zostanie skopiowany"
   },
@@ -2726,9 +2773,6 @@
   },
   "yourPasskeyIsLocked": {
     "message": "Wymagane uwierzytelnienie aby używać passkey. Sprawdź swoją tożsamość, aby kontynuować."
-  },
-  "useBrowserName": {
-    "message": "Użyj przeglądarki"
   },
   "multifactorAuthenticationCancelled": {
     "message": "Uwierzytelnianie wieloskładnikowe zostało anulowane"
@@ -2793,5 +2837,56 @@
   },
   "lastPassYubikeyDesc": {
     "message": "Włóż YubiKey powiązany z Twoim kontem LastPass do portu USB komputera, a następnie naciśnij jego przycisk."
+  },
+  "switchAccount": {
+    "message": "Przełącz konto"
+  },
+  "switchAccounts": {
+    "message": "Przełącz konta"
+  },
+  "switchToAccount": {
+    "message": "Przełącz na konto"
+  },
+  "activeAccount": {
+    "message": "Aktywne konto"
+  },
+  "availableAccounts": {
+    "message": "Dostępne konta"
+  },
+  "accountLimitReached": {
+    "message": "Limit kont został osiągnięty. Wyloguj się z konta, aby dodać inne."
+  },
+  "active": {
+    "message": "aktywne"
+  },
+  "locked": {
+    "message": "zablokowane"
+  },
+  "unlocked": {
+    "message": "odblokowane"
+  },
+  "server": {
+    "message": "serwer"
+  },
+  "hostedAt": {
+    "message": "hostowany w"
+  },
+  "useDeviceOrHardwareKey": {
+    "message": "Użyj swojego urządzenia lub klucza sprzętowego"
+  },
+  "justOnce": {
+    "message": "Tylko raz"
+  },
+  "alwaysForThisSite": {
+    "message": "Zawsze dla tej witryny"
+  },
+  "domainAddedToExcludedDomains": {
+    "message": "$DOMAIN$ dodana do wykluczonych domen.",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
   }
 }

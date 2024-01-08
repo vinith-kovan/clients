@@ -674,8 +674,8 @@
   "encryptionNotSupported": {
     "message": "Şifrələmə dəstəklənmir"
   },
-  "encryptionNotEnabled": {
-    "message": "Şifrələmə fəal deyil"
+  "enablePasskeyEncryption": {
+    "message": "Şifrələməni qur"
   },
   "usedForEncryption": {
     "message": "Şifrələmə üçün istifadə edilir"
@@ -1074,6 +1074,9 @@
   "export": {
     "message": "İxrac et"
   },
+  "exportFrom": {
+    "message": "Buradan xaricə köçür"
+  },
   "exportVault": {
     "message": "Anbarı ixrac et"
   },
@@ -1149,6 +1152,9 @@
   },
   "length": {
     "message": "Uzunluq"
+  },
+  "passwordMinLength": {
+    "message": "Minimal parol uzunluğu"
   },
   "uppercase": {
     "message": "Böyük hərf (A-Z)",
@@ -3542,12 +3548,12 @@
       }
     }
   },
-  "subscriptionFamiliesPlan": {
-    "message": "Planınızı yüksəltmədən $COUNT$ istifadəçidən çoxunu dəvət edə bilməzsiniz. Lütfən yüksəltmək üçün Müştəri Dəstəyi ilə əlaqə saxlayın.",
+  "subscriptionUpgrade": {
+    "message": "Planınızı yüksəltmədən $COUNT$ üzvdən çoxunu dəvət edə bilməzsiniz.",
     "placeholders": {
       "count": {
         "content": "$1",
-        "example": "6"
+        "example": "2"
       }
     }
   },
@@ -6662,7 +6668,7 @@
     }
   },
   "teamsStarterPlanInvLimitReachedManageBilling": {
-    "message": "Teams Starter planlarında ən çox $SEATCOUNT$ üzv ola bilər. Planınızı yüksəltmək və daha çox üzv dəvət etmək üçün Müştəri Dəstəyi ilə əlaqə saxlayın.",
+    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Upgrade to your plan to invite more members.",
     "placeholders": {
       "seatcount": {
         "content": "$1",
@@ -7322,6 +7328,9 @@
   "limitCollectionCreationDeletionDesc": {
     "message": "Kolleksiya yaradılmasını və silinməsini sahibləri və adminləri ilə məhdudlaşdır"
   },
+  "allowAdminAccessToAllCollectionItemsDesc": {
+    "message": "Sahiblər və adminlər bütün kolleksiyaları və elementləri idarə edə bilər"
+  },
   "collectionManagementUpdated": {
     "message": "Kolleksiya idarəetmə davranışı saxlanıldı"
   },
@@ -7386,6 +7395,9 @@
   "alreadyHaveAccount": {
     "message": "Artıq bir hesabınız var?"
   },
+  "skipToContent": {
+    "message": "Məzmunu ötür"
+  },
   "customBillingStart": {
     "message": "Özəl faktura əks olunmur. Son faktura üçün "
   },
@@ -7403,6 +7415,15 @@
   },
   "passkeyNotCopiedAlert": {
     "message": "Keçid açarı, klonlanmış elementə kopyalanmayacaq. Bu elementi klonlamağa davam etmək istəyirsiniz?"
+  },
+  "modifiedCollectionManagement": {
+    "message": "Kolleksiya idarəetmə ayarı $ID$ dəyişdirildi.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "Unique ID"
+      }
+    }
   },
   "seeDetailedInstructions": {
     "message": "Kömək saytımızda detallı təlimatlara baxın",
@@ -7422,5 +7443,11 @@
   },
   "seatLimitReachedContactYourProvider": {
     "message": "Yer limitinə çatıldı. Əlavə yer satın almaq üçün provayderinizlə əlaqə saxlayın."
+  },
+  "collectionAccessRestricted": {
+    "message": "Kolleksiya müraciəti məhdudlaşdırıldı"
+  },
+  "serviceAccountAccessUpdated": {
+    "message": "Xidmət hesabına müraciət güncəlləndi"
   }
 }

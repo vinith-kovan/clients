@@ -268,6 +268,9 @@
   "length": {
     "message": "Длина"
   },
+  "passwordMinLength": {
+    "message": "Минимальная длина пароля"
+  },
   "uppercase": {
     "message": "Прописные буквы (A-Z)"
   },
@@ -323,6 +326,9 @@
   "password": {
     "message": "Пароль"
   },
+  "totp": {
+    "message": "Секрет аутентификатора"
+  },
   "passphrase": {
     "message": "Парольная фраза"
   },
@@ -365,6 +371,9 @@
   "unlockMethodNeededToChangeTimeoutActionDesc": {
     "message": "Настройте способ разблокировки для изменения действия по тайм-ауту хранилища."
   },
+  "unlockMethodNeeded": {
+    "message": "Установите способ разблокировки в настройках"
+  },
   "rateExtension": {
     "message": "Оценить расширение"
   },
@@ -404,6 +413,9 @@
   },
   "lockNow": {
     "message": "Заблокировать"
+  },
+  "lockAll": {
+    "message": "Заблокировать все"
   },
   "immediately": {
     "message": "Немедленно"
@@ -502,6 +514,18 @@
   },
   "autofillError": {
     "message": "Не удалось автоматически заполнить выбранный элемент на этой странице. Скопируйте и вставьте логин/пароль из своего хранилища."
+  },
+  "totpCaptureError": {
+    "message": "Не удается сосканировать QR-код с текущей веб-страницы"
+  },
+  "totpCaptureSuccess": {
+    "message": "Ключ аутентификатора добавлен"
+  },
+  "totpCapture": {
+    "message": "Сканировать QR-код аутентификатора с текущей веб-страницы"
+  },
+  "copyTOTP": {
+    "message": "Скопировать ключ аутентификатора (TOTP)"
   },
   "loggedOut": {
     "message": "Вы вышли из хранилища"
@@ -1027,6 +1051,12 @@
   "showAutoFillMenuOnFormFieldsDescAlt": {
     "message": "Применяется ко всем авторизованным аккаунтам."
   },
+  "turnOffBrowserBuiltInPasswordManagerSettings": {
+    "message": "Отключите встроенный в браузер менеджер паролей, чтобы избежать конфликтов."
+  },
+  "turnOffBrowserBuiltInPasswordManagerSettingsLink": {
+    "message": "Изменить настройки браузера."
+  },
   "autofillOverlayVisibilityOff": {
     "message": "Выкл",
     "description": "Overlay setting select option for disabling autofill overlay"
@@ -1130,6 +1160,9 @@
   },
   "faviconDesc": {
     "message": "Отображать узнаваемое изображение рядом с каждым логином."
+  },
+  "faviconDescAlt": {
+    "message": "Показывать узнаваемое изображение рядом с каждым логином. Применяется ко всем авторизованным аккаунтам."
   },
   "enableBadgeCounter": {
     "message": "Показать счетчик на значке"
@@ -1707,7 +1740,7 @@
     "placeholders": {
       "domain": {
         "content": "$1",
-        "example": "googlecom"
+        "example": "google.com"
       }
     }
   },
@@ -2479,6 +2512,38 @@
     "message": "Свернуть/развернуть",
     "description": "Toggling an expand/collapse state."
   },
+  "filelessImport": {
+    "message": "Импортировать данные в Bitwarden?",
+    "description": "Default notification title for triggering a fileless import."
+  },
+  "lpFilelessImport": {
+    "message": "Защитить данные LastPass и импортировать их в Bitwarden?",
+    "description": "LastPass specific notification title for triggering a fileless import."
+  },
+  "lpCancelFilelessImport": {
+    "message": "Сохранить как незашифрованный файл",
+    "description": "LastPass specific notification button text for cancelling a fileless import."
+  },
+  "startFilelessImport": {
+    "message": "Импортировать в Bitwarden",
+    "description": "Notification button text for starting a fileless import."
+  },
+  "importing": {
+    "message": "Импорт...",
+    "description": "Notification message for when an import is in progress."
+  },
+  "dataSuccessfullyImported": {
+    "message": "Данные успешно импортированы!",
+    "description": "Notification message for when an import has completed successfully."
+  },
+  "dataImportFailed": {
+    "message": "Ошибка импорта. Проверьте консоль для получения подробной информации.",
+    "description": "Notification message for when an import has failed."
+  },
+  "importNetworkError": {
+    "message": "Во время импорта возникла сетевая ошибка.",
+    "description": "Notification message for when an import has failed due to a network error."
+  },
   "aliasDomain": {
     "message": "Псевдоним домена"
   },
@@ -2493,6 +2558,9 @@
   "turnOffMasterPasswordPromptToEditField": {
     "message": "Для редактирования этого поля отключите повторный запрос мастер-пароля",
     "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
+  },
+  "skipToContent": {
+    "message": "Перейти к содержимому"
   },
   "bitwardenOverlayButton": {
     "message": "Кнопка меню автозаполнения Bitwarden",
@@ -2538,35 +2606,11 @@
     "message": "Доступно меню автозаполнения Bitwarden. Для выбора нажмите клавишу со стрелкой вниз.",
     "description": "Screen reader text for announcing when the overlay opens on the page"
   },
-  "overrideBrowserAutofillTitle": {
-    "message": "Переопределить автозаполнение браузера?",
-    "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillDescription": {
-    "message": "Отключение этого параметра может привести к конфликту между меню автозаполнения Bitwarden и меню вашего браузера.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillPrivacyRequiredDescription": {
-    "message": "Отключение этого параметра может привести к конфликту между меню автозаполнения Bitwarden и меню браузера. Включение этого параметра приведет к перезапуску расширения Bitwarden.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
   "turnOn": {
     "message": "Включить"
   },
   "ignore": {
     "message": "Игнорировать"
-  },
-  "overrideBrowserAutoFillSettings": {
-    "message": "Переопределить настройки автозаполнения браузера",
-    "description": "Label for the setting that allows overriding the default browser autofill settings"
-  },
-  "extensionPrivacyPermissionNotGrantedTitle": {
-    "message": "Невозможно переопределить автозаполнение браузера",
-    "description": "Title for the dialog that appears when the user has not granted the extension permission to set privacy settings"
-  },
-  "extensionPrivacyPermissionNotGrantedDescription": {
-    "message": "Bitwarden должен иметь доступ к полномочиям конфиденциальности расширения для переопределения настроек автозаполнения браузера.",
-    "description": "Description for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "importData": {
     "message": "Импорт данных",
@@ -2679,6 +2723,9 @@
   "confirmFilePassword": {
     "message": "Подтвердите пароль к файлу"
   },
+  "typePasskey": {
+    "message": "Ключ доступа"
+  },
   "passkeyNotCopied": {
     "message": "Ключ доступа не будет скопирован"
   },
@@ -2726,9 +2773,6 @@
   },
   "yourPasskeyIsLocked": {
     "message": "Для использования ключа доступа необходима аутентификация. Для продолжения работы подтвердите свою личность."
-  },
-  "useBrowserName": {
-    "message": "Использовать браузер"
   },
   "multifactorAuthenticationCancelled": {
     "message": "Многофакторная аутентификация отменена"
@@ -2793,5 +2837,56 @@
   },
   "lastPassYubikeyDesc": {
     "message": "Вставьте YubiKey, связанный с аккаунтом LastPass, в USB-порт компьютера и нажмите на его кнопку."
+  },
+  "switchAccount": {
+    "message": "Сменить аккаунт"
+  },
+  "switchAccounts": {
+    "message": "Сменить аккаунты"
+  },
+  "switchToAccount": {
+    "message": "Переключиться на аккаунт"
+  },
+  "activeAccount": {
+    "message": "Активный аккаунт"
+  },
+  "availableAccounts": {
+    "message": "Доступные аккаунты"
+  },
+  "accountLimitReached": {
+    "message": "Достигнут лимит аккаунтов. Выйдите, чтобы добавить другой."
+  },
+  "active": {
+    "message": "активный"
+  },
+  "locked": {
+    "message": "заблокирован"
+  },
+  "unlocked": {
+    "message": "разблокирован"
+  },
+  "server": {
+    "message": "сервер"
+  },
+  "hostedAt": {
+    "message": "под управлением"
+  },
+  "useDeviceOrHardwareKey": {
+    "message": "Используйте ваше устройство или аппаратный ключ"
+  },
+  "justOnce": {
+    "message": "Только сейчас"
+  },
+  "alwaysForThisSite": {
+    "message": "Всегда для этого сайта"
+  },
+  "domainAddedToExcludedDomains": {
+    "message": "$DOMAIN$ добавлен в исключенные домены.",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
   }
 }

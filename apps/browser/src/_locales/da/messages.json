@@ -268,6 +268,9 @@
   "length": {
     "message": "Længde"
   },
+  "passwordMinLength": {
+    "message": "Minimumslængde på adgangskode"
+  },
   "uppercase": {
     "message": "Store bogstaver (A-Z)"
   },
@@ -323,6 +326,9 @@
   "password": {
     "message": "Adgangskode"
   },
+  "totp": {
+    "message": "Godkendelseshemmelighed"
+  },
   "passphrase": {
     "message": "Adgangssætning"
   },
@@ -365,6 +371,9 @@
   "unlockMethodNeededToChangeTimeoutActionDesc": {
     "message": "Opsæt en oplåsningsmetode til at ændre bokstimeouthandlingen."
   },
+  "unlockMethodNeeded": {
+    "message": "Opsæt en oplåsningsmetode i Indstillinger"
+  },
   "rateExtension": {
     "message": "Bedøm udvidelsen"
   },
@@ -404,6 +413,9 @@
   },
   "lockNow": {
     "message": "Lås nu"
+  },
+  "lockAll": {
+    "message": "Lås alle"
   },
   "immediately": {
     "message": "Straks"
@@ -502,6 +514,18 @@
   },
   "autofillError": {
     "message": "Ikke i stand til at auto-udfylde det valgte element på denne side. Kopiér og indsæt dataene i stedet for."
+  },
+  "totpCaptureError": {
+    "message": "Kan ikke skanne QR-koden fra den aktuelle webside"
+  },
+  "totpCaptureSuccess": {
+    "message": "Godkendelsesnøgle tilføjet"
+  },
+  "totpCapture": {
+    "message": "Skan godkendelses QR-kode fra den aktuelle webside"
+  },
+  "copyTOTP": {
+    "message": "Kopiér godkendelsesnøgle (TOTP)"
   },
   "loggedOut": {
     "message": "Logget ud"
@@ -1027,6 +1051,12 @@
   "showAutoFillMenuOnFormFieldsDescAlt": {
     "message": "Gælder for alle indloggede konti."
   },
+  "turnOffBrowserBuiltInPasswordManagerSettings": {
+    "message": "Slå indstillingerne til webbrowsers indbyggede adgangskodehåndtering fra for at undgå konflikter."
+  },
+  "turnOffBrowserBuiltInPasswordManagerSettingsLink": {
+    "message": "Redigér webbrowserindstillinger."
+  },
   "autofillOverlayVisibilityOff": {
     "message": "Fra",
     "description": "Overlay setting select option for disabling autofill overlay"
@@ -1130,6 +1160,9 @@
   },
   "faviconDesc": {
     "message": "Vis et genkendeligt billede ud for hvert login."
+  },
+  "faviconDescAlt": {
+    "message": "Vis et genkendeligt billede ved siden af hvert login. Gælder for alle indloggede konti."
   },
   "enableBadgeCounter": {
     "message": "Vis badge-tæller"
@@ -1707,7 +1740,7 @@
     "placeholders": {
       "domain": {
         "content": "$1",
-        "example": "googlecom"
+        "example": "google.com"
       }
     }
   },
@@ -2479,6 +2512,38 @@
     "message": "Fold sammen/ud",
     "description": "Toggling an expand/collapse state."
   },
+  "filelessImport": {
+    "message": "Importér data til Bitwarden?",
+    "description": "Default notification title for triggering a fileless import."
+  },
+  "lpFilelessImport": {
+    "message": "Beskyt LastPass-data og importér dem til Bitwarden?",
+    "description": "LastPass specific notification title for triggering a fileless import."
+  },
+  "lpCancelFilelessImport": {
+    "message": "Gem som ukrypteret fil",
+    "description": "LastPass specific notification button text for cancelling a fileless import."
+  },
+  "startFilelessImport": {
+    "message": "Importér til Bitwarden",
+    "description": "Notification button text for starting a fileless import."
+  },
+  "importing": {
+    "message": "Importerer...",
+    "description": "Notification message for when an import is in progress."
+  },
+  "dataSuccessfullyImported": {
+    "message": "Data er nu importeret!",
+    "description": "Notification message for when an import has completed successfully."
+  },
+  "dataImportFailed": {
+    "message": "Fejl under import. Tjek konsollen for detaljer.",
+    "description": "Notification message for when an import has failed."
+  },
+  "importNetworkError": {
+    "message": "Netværksfejl opstod under import.",
+    "description": "Notification message for when an import has failed due to a network error."
+  },
   "aliasDomain": {
     "message": "Aliasdomæne"
   },
@@ -2493,6 +2558,9 @@
   "turnOffMasterPasswordPromptToEditField": {
     "message": "Slå anmodning om hovedadgangskode igen fra for at redigere dette felt",
     "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
+  },
+  "skipToContent": {
+    "message": "Spring til indhold"
   },
   "bitwardenOverlayButton": {
     "message": "Bitwarden autoudfyld-menuknap",
@@ -2538,35 +2606,11 @@
     "message": "Bitwarden autoudfyld-menu tilgængelig. Tryk på pil ned-tasten for at vælge.",
     "description": "Screen reader text for announcing when the overlay opens on the page"
   },
-  "overrideBrowserAutofillTitle": {
-    "message": "Tilsidesæt browser-autoudfyldning?",
-    "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillDescription": {
-    "message": "Lades denne indstilling deaktiveret, kan det forårsage konflikter mellem Bitwardens autoudfyld-menu og webbrowsere.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillPrivacyRequiredDescription": {
-    "message": "Lades denne indstilling deaktiveret, kan det forårsage konflikter mellem Bitwardens autoudfyld-menu og webbrowsere. Aktiveres indstillingen, genstartes Bitwarden-udvidelsen.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
   "turnOn": {
     "message": "Slå til"
   },
   "ignore": {
     "message": "Ignorér"
-  },
-  "overrideBrowserAutoFillSettings": {
-    "message": "Tilsidesæt webbrowser autoudfyld-indstillinger",
-    "description": "Label for the setting that allows overriding the default browser autofill settings"
-  },
-  "extensionPrivacyPermissionNotGrantedTitle": {
-    "message": "Kan ikke tilsidesætte webbrowser-autoudfyld",
-    "description": "Title for the dialog that appears when the user has not granted the extension permission to set privacy settings"
-  },
-  "extensionPrivacyPermissionNotGrantedDescription": {
-    "message": "Bitwarden skal kunne tilgå udvidelsens fortrolighedstilladelse for at tilsidesætte indstillinger for webbrowser-autoudfyld.",
-    "description": "Description for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "importData": {
     "message": "Importér data",
@@ -2679,6 +2723,9 @@
   "confirmFilePassword": {
     "message": "Bekræft filadgangskode"
   },
+  "typePasskey": {
+    "message": "Adgangsnøgle"
+  },
   "passkeyNotCopied": {
     "message": "Adgangsnøglen kopieres ikke"
   },
@@ -2726,9 +2773,6 @@
   },
   "yourPasskeyIsLocked": {
     "message": "Godkendelse kræves for brug af adgangsnøgle. Bekræft din identitet for at fortsætte."
-  },
-  "useBrowserName": {
-    "message": "Benyt webbrowser"
   },
   "multifactorAuthenticationCancelled": {
     "message": "Multifaktorgodkendelse afbrudt"
@@ -2793,5 +2837,56 @@
   },
   "lastPassYubikeyDesc": {
     "message": "Indsæt den til LastPass-kontoen tilknyttede YubiKey i computers USB-port, og tryk dernæst på dens knap."
+  },
+  "switchAccount": {
+    "message": "Skift konto"
+  },
+  "switchAccounts": {
+    "message": "Skift konti"
+  },
+  "switchToAccount": {
+    "message": "Skift til konto"
+  },
+  "activeAccount": {
+    "message": "Aktiv konto"
+  },
+  "availableAccounts": {
+    "message": "Tilgængelige konti"
+  },
+  "accountLimitReached": {
+    "message": "Kontokvote nået. Log ud af en konto for at tilføje en anden."
+  },
+  "active": {
+    "message": "aktiv"
+  },
+  "locked": {
+    "message": "låst"
+  },
+  "unlocked": {
+    "message": "oplåst"
+  },
+  "server": {
+    "message": "server"
+  },
+  "hostedAt": {
+    "message": "hostet hos"
+  },
+  "useDeviceOrHardwareKey": {
+    "message": "Brug din enhed eller hardwarenøgle"
+  },
+  "justOnce": {
+    "message": "Kun én gang"
+  },
+  "alwaysForThisSite": {
+    "message": "Altid for dette websted"
+  },
+  "domainAddedToExcludedDomains": {
+    "message": "$DOMAIN$ føjet til undtagne domæner.",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
   }
 }

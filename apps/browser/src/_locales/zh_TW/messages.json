@@ -268,6 +268,9 @@
   "length": {
     "message": "長度"
   },
+  "passwordMinLength": {
+    "message": "Minimum password length"
+  },
   "uppercase": {
     "message": "大寫 (A-Z)"
   },
@@ -323,6 +326,9 @@
   "password": {
     "message": "密碼"
   },
+  "totp": {
+    "message": "Authenticator secret"
+  },
   "passphrase": {
     "message": "密碼短語"
   },
@@ -365,6 +371,9 @@
   "unlockMethodNeededToChangeTimeoutActionDesc": {
     "message": "設定一個解鎖方式來變更您的密碼庫逾時動作。"
   },
+  "unlockMethodNeeded": {
+    "message": "Set up an unlock method in Settings"
+  },
   "rateExtension": {
     "message": "為本套件評分"
   },
@@ -404,6 +413,9 @@
   },
   "lockNow": {
     "message": "立即鎖定"
+  },
+  "lockAll": {
+    "message": "Lock all"
   },
   "immediately": {
     "message": "立即"
@@ -502,6 +514,18 @@
   },
   "autofillError": {
     "message": "無法在此頁面自動填入所選項目。請手動複製貼上。"
+  },
+  "totpCaptureError": {
+    "message": "Unable to scan QR code from the current webpage"
+  },
+  "totpCaptureSuccess": {
+    "message": "Authenticator key added"
+  },
+  "totpCapture": {
+    "message": "Scan authenticator QR code from current webpage"
+  },
+  "copyTOTP": {
+    "message": "Copy Authenticator key (TOTP)"
   },
   "loggedOut": {
     "message": "已登出"
@@ -1027,6 +1051,12 @@
   "showAutoFillMenuOnFormFieldsDescAlt": {
     "message": "適用於所有已登入的帳戶。"
   },
+  "turnOffBrowserBuiltInPasswordManagerSettings": {
+    "message": "Turn off your browser’s built in password manager settings to avoid conflicts."
+  },
+  "turnOffBrowserBuiltInPasswordManagerSettingsLink": {
+    "message": "Edit browser settings."
+  },
   "autofillOverlayVisibilityOff": {
     "message": "關閉",
     "description": "Overlay setting select option for disabling autofill overlay"
@@ -1130,6 +1160,9 @@
   },
   "faviconDesc": {
     "message": "在每個登入資料旁顯示一個可辨識的圖片。"
+  },
+  "faviconDescAlt": {
+    "message": "Show a recognizable image next to each login. Applies to all logged in accounts."
   },
   "enableBadgeCounter": {
     "message": "顯示圖示計數器"
@@ -1707,7 +1740,7 @@
     "placeholders": {
       "domain": {
         "content": "$1",
-        "example": "googlecom"
+        "example": "google.com"
       }
     }
   },
@@ -2479,6 +2512,38 @@
     "message": "切換折疊",
     "description": "Toggling an expand/collapse state."
   },
+  "filelessImport": {
+    "message": "Import your data to Bitwarden?",
+    "description": "Default notification title for triggering a fileless import."
+  },
+  "lpFilelessImport": {
+    "message": "Protect your LastPass data and import to Bitwarden?",
+    "description": "LastPass specific notification title for triggering a fileless import."
+  },
+  "lpCancelFilelessImport": {
+    "message": "Save as unencrypted file",
+    "description": "LastPass specific notification button text for cancelling a fileless import."
+  },
+  "startFilelessImport": {
+    "message": "Import to Bitwarden",
+    "description": "Notification button text for starting a fileless import."
+  },
+  "importing": {
+    "message": "Importing...",
+    "description": "Notification message for when an import is in progress."
+  },
+  "dataSuccessfullyImported": {
+    "message": "Data successfully imported!",
+    "description": "Notification message for when an import has completed successfully."
+  },
+  "dataImportFailed": {
+    "message": "Error importing. Check console for details.",
+    "description": "Notification message for when an import has failed."
+  },
+  "importNetworkError": {
+    "message": "Network error encountered during import.",
+    "description": "Notification message for when an import has failed due to a network error."
+  },
   "aliasDomain": {
     "message": "別名網域"
   },
@@ -2493,6 +2558,9 @@
   "turnOffMasterPasswordPromptToEditField": {
     "message": "關閉主密碼重新提示以編輯此欄位",
     "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
+  },
+  "skipToContent": {
+    "message": "Skip to content"
   },
   "bitwardenOverlayButton": {
     "message": "Bitwarden 自動填入選單按鈕",
@@ -2538,35 +2606,11 @@
     "message": "Bitwarden 自動填入選單可用。按下箭頭鍵來選擇。",
     "description": "Screen reader text for announcing when the overlay opens on the page"
   },
-  "overrideBrowserAutofillTitle": {
-    "message": "覆蓋瀏覽器的自動填入？",
-    "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillDescription": {
-    "message": "關閉此設定可能會導致 Bitwarden 自動填入選單與您的瀏覽器產生衝突。",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
-  "overrideBrowserAutofillPrivacyRequiredDescription": {
-    "message": "關閉此設定可能會導致 Bitwarden 自動填入選單與您的瀏覽器產生衝突。開啟此選項將會重新啟動 Bitwarden 擴充功能。",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
   "turnOn": {
     "message": "開啟"
   },
   "ignore": {
     "message": "忽略"
-  },
-  "overrideBrowserAutoFillSettings": {
-    "message": "覆蓋瀏覽器的自動填入設定",
-    "description": "Label for the setting that allows overriding the default browser autofill settings"
-  },
-  "extensionPrivacyPermissionNotGrantedTitle": {
-    "message": "無法覆蓋瀏覽器的自動填入",
-    "description": "Title for the dialog that appears when the user has not granted the extension permission to set privacy settings"
-  },
-  "extensionPrivacyPermissionNotGrantedDescription": {
-    "message": "Bitwarden 必須取得擴充功能的隱私權限才能覆蓋瀏覽器的自動填入設定。",
-    "description": "Description for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "importData": {
     "message": "匯入資料",
@@ -2679,6 +2723,9 @@
   "confirmFilePassword": {
     "message": "確認檔案密碼"
   },
+  "typePasskey": {
+    "message": "Passkey"
+  },
   "passkeyNotCopied": {
     "message": "密碼金鑰不會被複製"
   },
@@ -2726,9 +2773,6 @@
   },
   "yourPasskeyIsLocked": {
     "message": "使用密碼金鑰需要身分驗證。請驗證您的身份以繼續。"
-  },
-  "useBrowserName": {
-    "message": "使用瀏覽器"
   },
   "multifactorAuthenticationCancelled": {
     "message": "多因素驗證已取消"
@@ -2793,5 +2837,56 @@
   },
   "lastPassYubikeyDesc": {
     "message": "將與您的 LastPass 帳戶關聯的 YubiKey 插入電腦的 USB 連接埠，然後觸摸其按鈕。"
+  },
+  "switchAccount": {
+    "message": "Switch account"
+  },
+  "switchAccounts": {
+    "message": "Switch accounts"
+  },
+  "switchToAccount": {
+    "message": "Switch to account"
+  },
+  "activeAccount": {
+    "message": "Active account"
+  },
+  "availableAccounts": {
+    "message": "Available accounts"
+  },
+  "accountLimitReached": {
+    "message": "Account limit reached. Log out of an account to add another."
+  },
+  "active": {
+    "message": "active"
+  },
+  "locked": {
+    "message": "locked"
+  },
+  "unlocked": {
+    "message": "unlocked"
+  },
+  "server": {
+    "message": "server"
+  },
+  "hostedAt": {
+    "message": "hosted at"
+  },
+  "useDeviceOrHardwareKey": {
+    "message": "Use your device or hardware key"
+  },
+  "justOnce": {
+    "message": "Just once"
+  },
+  "alwaysForThisSite": {
+    "message": "Always for this site"
+  },
+  "domainAddedToExcludedDomains": {
+    "message": "$DOMAIN$ added to excluded domains.",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
   }
 }

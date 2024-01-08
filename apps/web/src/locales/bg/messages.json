@@ -674,8 +674,8 @@
   "encryptionNotSupported": {
     "message": "Шифроването не се поддържа"
   },
-  "encryptionNotEnabled": {
-    "message": "Шифроването не е включено"
+  "enablePasskeyEncryption": {
+    "message": "Настройване на шифроването"
   },
   "usedForEncryption": {
     "message": "Използва се за шифроване"
@@ -1074,6 +1074,9 @@
   "export": {
     "message": "Изнасяне"
   },
+  "exportFrom": {
+    "message": "Изнасяне от"
+  },
   "exportVault": {
     "message": "Изнасяне на трезора"
   },
@@ -1149,6 +1152,9 @@
   },
   "length": {
     "message": "Дължина"
+  },
+  "passwordMinLength": {
+    "message": "Минимална дължина на паролата"
   },
   "uppercase": {
     "message": "Главни букви (A-Z)",
@@ -3542,12 +3548,12 @@
       }
     }
   },
-  "subscriptionFamiliesPlan": {
-    "message": "Не можете да поканите повече от $COUNT$ потребители без да надградите плана си. Свържете се с поддръжката за надграждане.",
+  "subscriptionUpgrade": {
+    "message": "Не можете да поканите повече от $COUNT$ членове без да надградите плана си.",
     "placeholders": {
       "count": {
         "content": "$1",
-        "example": "6"
+        "example": "2"
       }
     }
   },
@@ -5835,7 +5841,7 @@
     "description": "the text, 'SCIM', is an acronymn and should not be translated."
   },
   "inputRequired": {
-    "message": "Полето е задължтелно да бъде попълнено."
+    "message": "Полето е задължително да бъде попълнено."
   },
   "inputEmail": {
     "message": "Въведеният в полето текст не е адрес на е-поща."
@@ -6662,7 +6668,7 @@
     }
   },
   "teamsStarterPlanInvLimitReachedManageBilling": {
-    "message": "Стартовите екипни планове може да имат не повече от $SEATCOUNT$ членове. Свържете се с поддръжката, ако искате да надградите плана си и да каните повече членове.",
+    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Upgrade to your plan to invite more members.",
     "placeholders": {
       "seatcount": {
         "content": "$1",
@@ -7322,6 +7328,9 @@
   "limitCollectionCreationDeletionDesc": {
     "message": "Ограничаване на създаването и изтриването на колекции, така че да може да се извършва само от собствениците и администраторите"
   },
+  "allowAdminAccessToAllCollectionItemsDesc": {
+    "message": "Собствениците и администраторите могат да управляват всички колекции и елементи"
+  },
   "collectionManagementUpdated": {
     "message": "Поведението за управлението на колекциите е запазено"
   },
@@ -7386,6 +7395,9 @@
   "alreadyHaveAccount": {
     "message": "Вече имате регистрация?"
   },
+  "skipToContent": {
+    "message": "Прескачане към съдържанието"
+  },
   "customBillingStart": {
     "message": "Персонализираното таксуване не е отразено. Посетете страницата за "
   },
@@ -7403,6 +7415,15 @@
   },
   "passkeyNotCopiedAlert": {
     "message": "Секретният ключ няма да бъде копиран в клонирания елемент. Искате ли да продължите с клонирането на елемента?"
+  },
+  "modifiedCollectionManagement": {
+    "message": "Настройката за управление на колекции е променена: $ID$.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "Unique ID"
+      }
+    }
   },
   "seeDetailedInstructions": {
     "message": "Може да намерите подробни инструкции в помощния ни уеб сайт на адрес",
@@ -7422,5 +7443,11 @@
   },
   "seatLimitReachedContactYourProvider": {
     "message": "Достигнат е максималният брой потребители. Свържете се с доставчика си, за да закупи допълнителни места."
+  },
+  "collectionAccessRestricted": {
+    "message": "Достъпът до колекцията е ограничен"
+  },
+  "serviceAccountAccessUpdated": {
+    "message": "Достъпът на сервизния акаунт е променен"
   }
 }

@@ -674,8 +674,8 @@
   "encryptionNotSupported": {
     "message": "Encriptação não suportada"
   },
-  "encryptionNotEnabled": {
-    "message": "Encriptação não ativada"
+  "enablePasskeyEncryption": {
+    "message": "Configurar a encriptação"
   },
   "usedForEncryption": {
     "message": "Utilizado para encriptação"
@@ -1074,6 +1074,9 @@
   "export": {
     "message": "Exportar"
   },
+  "exportFrom": {
+    "message": "Exportar de"
+  },
   "exportVault": {
     "message": "Exportar cofre"
   },
@@ -1149,6 +1152,9 @@
   },
   "length": {
     "message": "Comprimento"
+  },
+  "passwordMinLength": {
+    "message": "Comprimento mínimo da palavra-passe"
   },
   "uppercase": {
     "message": "Maiúsculas (A-Z)",
@@ -3542,12 +3548,12 @@
       }
     }
   },
-  "subscriptionFamiliesPlan": {
-    "message": "Não pode convidar mais do que $COUNT$ membros sem atualizar o seu plano. Contacte o Apoio ao cliente para atualizar.",
+  "subscriptionUpgrade": {
+    "message": "Não pode convidar mais do que $COUNT$ membros sem atualizar o seu plano.",
     "placeholders": {
       "count": {
         "content": "$1",
-        "example": "6"
+        "example": "2"
       }
     }
   },
@@ -6662,7 +6668,7 @@
     }
   },
   "teamsStarterPlanInvLimitReachedManageBilling": {
-    "message": "Os planos Teams Starter podem ter até $SEATCOUNT$ membros. Contacte o Apoio ao Cliente para atualizar o seu plano e convidar mais membros.",
+    "message": "Os planos Teams Starter podem ter até $SEATCOUNT$ membros. Atualize o seu plano para convidar mais membros.",
     "placeholders": {
       "seatcount": {
         "content": "$1",
@@ -7322,6 +7328,9 @@
   "limitCollectionCreationDeletionDesc": {
     "message": "Limitar a criação e eliminação de coleções aos proprietários e administradores"
   },
+  "allowAdminAccessToAllCollectionItemsDesc": {
+    "message": "Os proprietários e administradores podem gerir todas as coleções e itens"
+  },
   "collectionManagementUpdated": {
     "message": "Comportamento de gestão de coleções guardado"
   },
@@ -7386,6 +7395,9 @@
   "alreadyHaveAccount": {
     "message": "Já tem uma conta?"
   },
+  "skipToContent": {
+    "message": "Avançar para o conteúdo"
+  },
   "customBillingStart": {
     "message": "A faturação personalizada não é refletida. Visite a "
   },
@@ -7403,6 +7415,15 @@
   },
   "passkeyNotCopiedAlert": {
     "message": "A chave de acesso não será copiada para o item duplicado. Pretende ainda assim duplicar este item?"
+  },
+  "modifiedCollectionManagement": {
+    "message": "Definição de gestão de coleções modificada $ID$.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "Unique ID"
+      }
+    }
   },
   "seeDetailedInstructions": {
     "message": "Consulte as instruções detalhadas no nosso site de ajuda em",
@@ -7422,5 +7443,11 @@
   },
   "seatLimitReachedContactYourProvider": {
     "message": "O limite de lugares foi atingido. Contacte o seu fornecedor para adquirir lugares adicionais."
+  },
+  "collectionAccessRestricted": {
+    "message": "O acesso à coleção é restrito"
+  },
+  "serviceAccountAccessUpdated": {
+    "message": "Acesso à conta de serviço atualizado"
   }
 }

@@ -15,7 +15,7 @@ on:
       - '.github/workflows/build-web.yml'
   push:
     branches:
-      - 'master'
+      - 'main'
       - 'rc'
       - 'hotfix-rc-web'
     paths:
@@ -97,6 +97,8 @@ jobs:
             npm_command: "build:bit:euprd"
           - name: "cloud-euqa"
             npm_command: "build:bit:euqa"
+          - name: "cloud-usdev"
+            npm_command: "build:bit:usdev"
 
     steps:
       - name: Checkout repo
@@ -170,7 +172,7 @@ jobs:
 
       - name: Check Branch to Publish
         env:
-          PUBLISH_BRANCHES: "master,rc,hotfix-rc-web"
+          PUBLISH_BRANCHES: "main,rc,hotfix-rc-web"
         id: publish-branch-check
         run: |
           IFS="," read -a publish_branches <<< $PUBLISH_BRANCHES
@@ -218,7 +220,7 @@ jobs:
             IMAGE_TAG=$(echo "${GITHUB_REF:11}" | sed "s#/#-#g")
           fi
 
-          if [[ "$IMAGE_TAG" == "master" ]]; then
+          if [[ "$IMAGE_TAG" == "main" ]]; then
             IMAGE_TAG=dev
           fi
 
@@ -259,7 +261,7 @@ jobs:
 
   crowdin-push:
     name: Crowdin Push
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     needs: build-artifacts
     runs-on: ubuntu-22.04
     steps:
@@ -286,10 +288,43 @@ jobs:
           CROWDIN_PROJECT_ID: "308189"
         with:
           config: apps/web/crowdin.yml
-          crowdin_branch_name: master
+          crowdin_branch_name: main
           upload_sources: true
           upload_translations: false
 
+  trigger-web-vault-deploy:
+    name: Trigger web vault deploy
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-22.04
+    needs: build-artifacts
+    steps:
+      - name: Login to Azure - CI Subscription
+        uses: Azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2 # v1.4.7
+        with:
+          creds: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
+
+      - name: Retrieve github PAT secrets
+        id: retrieve-secret-pat
+        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        with:
+          keyvault: "bitwarden-ci"
+          secrets: "github-pat-bitwarden-devops-bot-repo-scope"
+
+      - name: Trigger web vault deploy
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
+        with:
+          github-token: ${{ steps.retrieve-secret-pat.outputs.github-pat-bitwarden-devops-bot-repo-scope }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'bitwarden',
+              repo: 'clients',
+              workflow_id: 'deploy-web.yml',
+              ref: 'main',
+              inputs: {
+                'environment': 'USDEV',
+                'branch-or-tag': 'main'
+              }
+            })
 
   check-failures:
     name: Check for failures
@@ -301,15 +336,17 @@ jobs:
       - build-artifacts
       - build-containers
       - crowdin-push
+      - trigger-web-vault-deploy
     steps:
       - name: Check if any job failed
-        if: ${{ (github.ref == 'refs/heads/master') || (github.ref == 'refs/heads/rc') }}
+        if: ${{ (github.ref == 'refs/heads/main') || (github.ref == 'refs/heads/rc') }}
         env:
           CLOC_STATUS: ${{ needs.cloc.result }}
           SETUP_STATUS: ${{ needs.setup.result }}
           ARTIFACT_STATUS: ${{ needs.build-artifacts.result }}
           BUILD_CONTAINERS_STATUS: ${{ needs.build-containers.result }}
           CROWDIN_PUSH_STATUS: ${{ needs.crowdin-push.result }}
+          TRIGGER_WEB_VAULT_DEPLOY_STATUS: ${{ needs.trigger-web-vault-deploy.result }}
         run: |
           if [ "$CLOC_STATUS" = "failure" ]; then
               exit 1
@@ -322,6 +359,8 @@ jobs:
           elif [ "$BUILD_CONTAINERS_STATUS" = "failure" ]; then
               exit 1
           elif [ "$CROWDIN_PUSH_STATUS" = "failure" ]; then
+              exit 1
+          elif [ "$TRIGGER_WEB_VAULT_DEPLOY_STATUS" = "failure" ]; then
               exit 1
           fi
 

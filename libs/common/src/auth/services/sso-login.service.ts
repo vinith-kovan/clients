@@ -1,6 +1,12 @@
 import { firstValueFrom } from "rxjs";
 
-import { GlobalState, KeyDefinition, SSO_DISK, StateProvider } from "../../platform/state";
+import {
+  ActiveUserState,
+  GlobalState,
+  KeyDefinition,
+  SSO_DISK,
+  StateProvider,
+} from "../../platform/state";
 
 /**
  * Uses disk storage so that the code verifier can be persisted across sso redirects.
@@ -26,12 +32,14 @@ const ORGANIZATION_IDENTIFIER = new KeyDefinition<string>(SSO_DISK, "ssoOrganiza
 export class SsoLoginService {
   private codeVerifierState: GlobalState<string>;
   private ssoState: GlobalState<string>;
-  private organizationIdentifierState: GlobalState<string>;
+  private orgIdentifierState: GlobalState<string>;
+  private activeUserOrgIdentifierState: ActiveUserState<string>;
 
   constructor(private stateProvider: StateProvider) {
     this.codeVerifierState = this.stateProvider.getGlobal(CODE_VERIFIER);
     this.ssoState = this.stateProvider.getGlobal(SSO_STATE);
-    this.organizationIdentifierState = this.stateProvider.getGlobal(ORGANIZATION_IDENTIFIER);
+    this.orgIdentifierState = this.stateProvider.getGlobal(ORGANIZATION_IDENTIFIER);
+    this.activeUserOrgIdentifierState = this.stateProvider.getActive(ORGANIZATION_IDENTIFIER);
   }
 
   async getCodeVerifier(): Promise<string> {
@@ -51,10 +59,18 @@ export class SsoLoginService {
   }
 
   async getOrganizationIdentifier(): Promise<string> {
-    return await firstValueFrom(this.organizationIdentifierState.state$);
+    return await firstValueFrom(this.orgIdentifierState.state$);
   }
 
   async setOrganizationIdentifier(organizationIdentifier: string): Promise<void> {
-    await this.organizationIdentifierState.update((_) => organizationIdentifier);
+    await this.orgIdentifierState.update((_) => organizationIdentifier);
+  }
+
+  async getActiveUserOrganizationIdentifier(): Promise<string> {
+    return await firstValueFrom(this.activeUserOrgIdentifierState.state$);
+  }
+
+  async setActiveUserOrganizationIdentifier(organizationIdentifier: string): Promise<void> {
+    await this.activeUserOrgIdentifierState.update((_) => organizationIdentifier);
   }
 }

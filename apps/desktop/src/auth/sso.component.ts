@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { SsoComponent as BaseSsoComponent } from "@bitwarden/angular/auth/components/sso.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -20,6 +21,7 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 })
 export class SsoComponent extends BaseSsoComponent {
   constructor(
+    ssoLoginService: SsoLoginServiceAbstraction,
     authService: AuthService,
     router: Router,
     i18nService: I18nService,
@@ -35,6 +37,7 @@ export class SsoComponent extends BaseSsoComponent {
     configService: ConfigServiceAbstraction,
   ) {
     super(
+      ssoLoginService,
       authService,
       router,
       i18nService,

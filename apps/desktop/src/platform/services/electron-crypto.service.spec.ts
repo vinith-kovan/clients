@@ -10,8 +10,11 @@ import {
   SymmetricCryptoKey,
   UserKey,
 } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { USER_KEYS_KEY } from "@bitwarden/common/platform/services/crypto.service";
 import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { UserId } from "@bitwarden/common/types/guid";
+
+import { FakeGlobalState } from "../../../../../libs/common/spec/fake-state";
 
 import { ElectronCryptoService } from "./electron-crypto.service";
 import { ElectronStateService } from "./electron-state.service.abstraction";
@@ -26,11 +29,16 @@ describe("electronCryptoService", () => {
   const stateService = mock<ElectronStateService>();
   const accountService = mock<AccountService>();
   let stateProvider: FakeStateProvider;
+  let userKeysState: FakeGlobalState<Record<UserId, UserKey>>;
 
   const mockUserId = "mock user id" as UserId;
 
   beforeEach(() => {
     stateProvider = new FakeStateProvider();
+    userKeysState = stateProvider.global.mockFor(USER_KEYS_KEY);
+
+    // initialize state
+    userKeysState.stateSubject.next({});
 
     electronCryptoService = new ElectronCryptoService(
       cryptoFunctionService,

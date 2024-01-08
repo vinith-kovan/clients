@@ -8,6 +8,7 @@ import { OrganizationCreateModule } from "../../admin-console/organizations/crea
 import { RegisterFormModule } from "../../auth/register-form/register-form.module";
 import { PaymentComponent, TaxInfoComponent } from "../../billing";
 import { BillingComponent } from "../../billing/accounts/trial-initiation/billing.component";
+import { SecretsManagerTrialBillingComponent } from "../../billing/accounts/trial-initiation/secrets-manager-trial-billing.component";
 import { EnvironmentSelectorModule } from "../../components/environment-selector/environment-selector.module";
 import { SharedModule } from "../../shared";
 
@@ -46,6 +47,7 @@ import { VerticalStepperModule } from "./vertical-stepper/vertical-stepper.modul
     EnvironmentSelectorModule,
     PaymentComponent,
     TaxInfoComponent,
+    SecretsManagerTrialBillingComponent,
   ],
   declarations: [
     TrialInitiationComponent,

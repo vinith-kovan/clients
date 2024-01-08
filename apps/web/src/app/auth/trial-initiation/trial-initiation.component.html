@@ -93,13 +93,24 @@
             </app-vertical-step>
             <app-vertical-step label="Billing" [subLabel]="billingSubLabel">
               <app-billing
-                *ngIf="stepper.selectedIndex === 2"
+                *ngIf="stepper.selectedIndex === 2 && layout !== layouts.secretsManager"
                 [plan]="plan"
                 [product]="product"
                 [orgInfoForm]="orgInfoFormGroup"
                 (previousStep)="previousStep()"
                 (onTrialBillingSuccess)="billingSuccess($event)"
               ></app-billing>
+              <app-secrets-manager-trial-billing
+                *ngIf="stepper.selectedIndex === 2 && layout === layouts.secretsManager"
+                [organizationInfo]="{
+                  name: orgInfoFormGroup.get('name').value,
+                  email: orgInfoFormGroup.get('email').value
+                }"
+                [subscriptionType]="TrialSubscriptionType.Teams"
+                (steppedBack)="previousStep()"
+                (organizationCreated)="subscribedToSecretsManager($event)"
+              >
+              </app-secrets-manager-trial-billing>
             </app-vertical-step>
             <app-vertical-step label="Confirmation Details" [applyBorder]="false">
               <app-trial-confirmation-details

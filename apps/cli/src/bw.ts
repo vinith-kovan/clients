@@ -360,7 +360,6 @@ export class Main {
       this.policyService,
       this.deviceTrustCryptoService,
       this.authRequestCryptoService,
-      this.accountService,
     );
 
     this.configApiService = new ConfigApiService(this.apiService, this.authService);

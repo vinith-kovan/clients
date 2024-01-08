@@ -1,6 +1,6 @@
 import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -15,32 +15,20 @@ import {
   DialogService,
 } from "@bitwarden/components";
 
-import { UserVerificationFormComponent } from "./user-verification-form.component";
+import { UserVerificationFormInputComponent } from "./user-verification-form-input.component";
 
-/*
- * @param dialogTitle - the title of the dialog
- * @param dialogBodyText - the body text of the dialog
- * @param confirmButtonText - the text of the confirm button
- * @param verificationTypes - the allowed verification types.
- * If you don't specify this, the user will be able to use any available verification type.
+/**
+ * Parameters for configuring the user verification dialog.
+ * @param {string} [dialogTitle] - The title of the dialog. Optional. Defaults to "Verification required"
+ * @param {string} [dialogBodyText] - The body text of the dialog. Optional.
+ * @param {string} [confirmButtonText] - The text of the confirm button. Optional. Defaults to "Submit"
+ * @param {boolean} [clientSideOnlyVerification] - Indicates whether the verification is only performed client-side. Optional.
  */
 export type UserVerificationDialogParams = {
   dialogTitle?: string;
   dialogBodyText?: string;
   confirmButtonText?: string;
-  verificationTypes: "server" | "client" | "serverAndClient";
-};
-
-type UserVerificationOptions = {
-  server: {
-    otp: boolean;
-    masterPassword: boolean;
-  };
-  client: {
-    masterPassword: boolean;
-    pin: boolean;
-    biometrics: boolean;
-  };
+  clientSideOnlyVerification?: boolean;
 };
 
 @Component({
@@ -53,10 +41,10 @@ type UserVerificationOptions = {
     ButtonModule,
     DialogModule,
     AsyncActionsModule,
-    UserVerificationFormComponent,
+    UserVerificationFormInputComponent,
   ],
 })
-export class UserVerificationDialogComponent implements OnInit {
+export class UserVerificationDialogComponent {
   verificationForm = this.formBuilder.group({
     secret: this.formBuilder.control<Verification | null>(null),
   });
@@ -66,18 +54,6 @@ export class UserVerificationDialogComponent implements OnInit {
   }
 
   invalidSecret = false;
-
-  userVerificationOptions: UserVerificationOptions = {
-    server: {
-      otp: false,
-      masterPassword: false,
-    },
-    client: {
-      masterPassword: false,
-      pin: false,
-      biometrics: true,
-    },
-  };
 
   constructor(
     @Inject(DIALOG_DATA) public dialogParams: UserVerificationDialogParams,
@@ -89,39 +65,9 @@ export class UserVerificationDialogComponent implements OnInit {
   ) {}
 
   static open(dialogService: DialogService, data: UserVerificationDialogParams) {
-    return dialogService.open(UserVerificationDialogComponent, {
+    return dialogService.open<boolean>(UserVerificationDialogComponent, {
       data,
     });
-  }
-
-  async ngOnInit() {
-    // determine verification types based on if dialogParams.verificationTypes value
-
-    // TOOD: will need some loading state while we determine user verification options
-    // TODO: move this into own function most likely.
-    // TODO: should this even be determined here or in the form component?
-
-    const userHasMasterPassword =
-      await this.userVerificationService.hasMasterPasswordAndMasterKeyHash();
-
-    switch (this.dialogParams.verificationTypes) {
-      case "server":
-        // only server-side verification
-        this.userVerificationOptions.server.masterPassword = userHasMasterPassword;
-        this.userVerificationOptions.server.otp = !userHasMasterPassword;
-        break;
-      case "client":
-        // only client-side verification
-        this.userVerificationOptions.client.masterPassword = userHasMasterPassword;
-
-        // if clients must determine if the user has a MP or not.
-
-        break;
-      case "serverAndClient":
-        // both server-side and client-side verification
-
-        break;
-    }
   }
 
   submit = async () => {

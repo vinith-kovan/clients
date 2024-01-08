@@ -14,6 +14,8 @@ export type UserVerification = "discouraged" | "preferred" | "required";
  * and for returning the results of the latter operations to the Web Authentication API's callers.
  */
 export abstract class Fido2ClientService {
+  isFido2FeatureEnabled: (hostname: string, origin: string) => Promise<boolean>;
+
   /**
    * Allows WebAuthn Relying Party scripts to request the creation of a new public key credential source.
    * For more information please see: https://www.w3.org/TR/webauthn-3/#sctn-createCredential
@@ -25,7 +27,7 @@ export abstract class Fido2ClientService {
   createCredential: (
     params: CreateCredentialParams,
     tab: chrome.tabs.Tab,
-    abortController?: AbortController
+    abortController?: AbortController,
   ) => Promise<CreateCredentialResult>;
 
   /**
@@ -40,10 +42,8 @@ export abstract class Fido2ClientService {
   assertCredential: (
     params: AssertCredentialParams,
     tab: chrome.tabs.Tab,
-    abortController?: AbortController
+    abortController?: AbortController,
   ) => Promise<AssertCredentialResult>;
-
-  isFido2FeatureEnabled: () => Promise<boolean>;
 }
 
 /**
@@ -103,6 +103,7 @@ export interface CreateCredentialParams {
   user: {
     id: string; // b64 encoded
     displayName: string;
+    name: string;
   };
   /** Forwarded to user interface */
   fallbackSupported: boolean;
@@ -121,6 +122,7 @@ export interface CreateCredentialResult {
   clientDataJSON: string;
   attestationObject: string;
   authData: string;
+  publicKey: string;
   publicKeyAlgorithm: number;
   transports: string[];
 }

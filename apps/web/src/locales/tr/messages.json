@@ -611,8 +611,23 @@
   "loginWithMasterPassword": {
     "message": "Ana parola ile giriş yap"
   },
+  "readingPasskeyLoading": {
+    "message": "Geçiş anahtarı okunuyor..."
+  },
+  "readingPasskeyLoadingInfo": {
+    "message": "Bu pencereyi açık tutun ve tarayıcınızdan gelen talimatları uygulayın."
+  },
+  "useADifferentLogInMethod": {
+    "message": "Başka bir giriş yöntemi kullan"
+  },
   "loginWithPasskey": {
     "message": "Geçiş anahtarıyla giriş yap"
+  },
+  "invalidPasskeyPleaseTryAgain": {
+    "message": "Geçersiz geçiş anahtarı. Lütfen tekrar deneyin."
+  },
+  "twoFactorForPasskeysNotSupportedOnClientUpdateToLogIn": {
+    "message": "Geçiş anahtarları için 2FA desteklebmiyor. Giriş yapmak için uygulamayı güncelleyin."
   },
   "loginWithPasskeyInfo": {
     "message": "Parola kullanmadan otomatik olarak giriş yapmanızı sağlayacak bir geçiş anahtarı kullanabilirsiniz. Kimliğinizi doğrulamak için yüz tanıma veya parmak izi gibi biyometri özellikleri ya da başka bir FIDO2 güvenlik yöntemi kullanılacaktır."
@@ -659,8 +674,8 @@
   "encryptionNotSupported": {
     "message": "Şifreleme desteklenmiyor"
   },
-  "encryptionNotEnabled": {
-    "message": "Şifreleme etkin değil"
+  "enablePasskeyEncryption": {
+    "message": "Şifreleme ayarla"
   },
   "usedForEncryption": {
     "message": "Şifreleme için kullanılır"
@@ -1059,6 +1074,9 @@
   "export": {
     "message": "Dışarı aktar"
   },
+  "exportFrom": {
+    "message": "Dışa aktarılacak konum"
+  },
   "exportVault": {
     "message": "Kasayı dışa aktar"
   },
@@ -1134,6 +1152,9 @@
   },
   "length": {
     "message": "Uzunluk"
+  },
+  "passwordMinLength": {
+    "message": "Minimum parola uzunluğu"
   },
   "uppercase": {
     "message": "Büyük harf (A-Z)",
@@ -3527,12 +3548,12 @@
       }
     }
   },
-  "subscriptionFamiliesPlan": {
-    "message": "Paketinizi yükseltmeden en fazla $COUNT$ üye davet edebilirsiniz. Yükseltme yapmak için lütfen müşteri hizmetleri ile iletişime geçin.",
+  "subscriptionUpgrade": {
+    "message": "Paketinizi yükseltmeden $COUNT$ üyeden fazlasını davet edemezsiniz.",
     "placeholders": {
       "count": {
         "content": "$1",
-        "example": "6"
+        "example": "2"
       }
     }
   },
@@ -6647,7 +6668,7 @@
     }
   },
   "teamsStarterPlanInvLimitReachedManageBilling": {
-    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Contact Customer Support to upgrade your plan and invite more members.",
+    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Upgrade to your plan to invite more members.",
     "placeholders": {
       "seatcount": {
         "content": "$1",
@@ -7307,6 +7328,9 @@
   "limitCollectionCreationDeletionDesc": {
     "message": "Koleksiyon oluşturma ve silme işlemlerini sahipler ve yöneticilerle sınırlandırın"
   },
+  "allowAdminAccessToAllCollectionItemsDesc": {
+    "message": "Sahipler ve yöneticiler tüm koleksiyonları ve öğeleri yönetebilir"
+  },
   "collectionManagementUpdated": {
     "message": "Collection management behavior saved"
   },
@@ -7371,6 +7395,9 @@
   "alreadyHaveAccount": {
     "message": "Zaten hesabınız var mı?"
   },
+  "skipToContent": {
+    "message": "İçeriğe geç"
+  },
   "customBillingStart": {
     "message": "Özel faturalandırma yansıtılmıyor. Ziyaret edin "
   },
@@ -7389,6 +7416,15 @@
   "passkeyNotCopiedAlert": {
     "message": "Geçiş anahtarı klonlanan öğeye kopyalanmayacaktır. Bu öğeyi klonlamaya devam etmek istiyor musunuz?"
   },
+  "modifiedCollectionManagement": {
+    "message": "Koleksiyon yönetimi ayarı $ID$ değiştirildi.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "Unique ID"
+      }
+    }
+  },
   "seeDetailedInstructions": {
     "message": "Ayrıntılı talimatları yardım sitemizde bulabilirsiniz:",
     "description": "This is followed a by a hyperlink to the help website."
@@ -7398,5 +7434,20 @@
   },
   "unexpectedErrorSend": {
     "message": "Bu Gönderim yüklenirken beklenmeyen bir hata oluştu. Daha sonra tekrar deneyin."
+  },
+  "seatLimitReached": {
+    "message": "Seat limit has been reached"
+  },
+  "contactYourProvider": {
+    "message": "Contact your provider to purchase additional seats."
+  },
+  "seatLimitReachedContactYourProvider": {
+    "message": "Seat limit has been reached. Contact your provider to purchase additional seats."
+  },
+  "collectionAccessRestricted": {
+    "message": "Koleksiyona erişim kısıtlı"
+  },
+  "serviceAccountAccessUpdated": {
+    "message": "Hizmet hesabı erişimi güncellendi"
   }
 }

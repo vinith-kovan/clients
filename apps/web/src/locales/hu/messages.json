@@ -611,8 +611,23 @@
   "loginWithMasterPassword": {
     "message": "Bejelentkezés mesterjelszóval"
   },
+  "readingPasskeyLoading": {
+    "message": "Jelszó beolvasása..."
+  },
+  "readingPasskeyLoadingInfo": {
+    "message": "Tartsuk nyitva ezt az ablakot és kövessük a böngésző utasításait."
+  },
+  "useADifferentLogInMethod": {
+    "message": "Más bejelentkezési mód használata"
+  },
   "loginWithPasskey": {
     "message": "Bejelentkezés jelszóval"
+  },
+  "invalidPasskeyPleaseTryAgain": {
+    "message": "Érvénytelen jelszó. Próbálja újra."
+  },
+  "twoFactorForPasskeysNotSupportedOnClientUpdateToLogIn": {
+    "message": "A 2FA a jelszónál nem támogatott. A bejelentkezéshez frissítsük az alkalmazást."
   },
   "loginWithPasskeyInfo": {
     "message": "Használjunk generált jelszót, amely automatikusan, jelszó nélkül bejelentkeztet. A biometrikus adatok, például az arcfelismerés vagy az ujjlenyomat, vagy más FIDO2 biztonsági módszer igazolja személyazonosságot."
@@ -659,8 +674,8 @@
   "encryptionNotSupported": {
     "message": "A titkosítás nem támogatott."
   },
-  "encryptionNotEnabled": {
-    "message": "A titkosítás nem engedélyezett."
+  "enablePasskeyEncryption": {
+    "message": "Titkosítás beállítása"
   },
   "usedForEncryption": {
     "message": "Használat titkosításhoz"
@@ -1059,6 +1074,9 @@
   "export": {
     "message": "Exportálás"
   },
+  "exportFrom": {
+    "message": "Exportálás innen:"
+  },
   "exportVault": {
     "message": "Széf exportálása"
   },
@@ -1134,6 +1152,9 @@
   },
   "length": {
     "message": "Hossz"
+  },
+  "passwordMinLength": {
+    "message": "Minimum jelszó hosszúság"
   },
   "uppercase": {
     "message": "Nagybetűs (A-Z)",
@@ -3527,12 +3548,12 @@
       }
     }
   },
-  "subscriptionFamiliesPlan": {
-    "message": "$COUNT$ felhasználónál több nem hívható meg magasabb szintű előfizetés nélkül. Az áttéréshez vegyük fel a kapcsolatot a vevőszolgálattal.",
+  "subscriptionUpgrade": {
+    "message": "$COUNT$ tagnál több nem hívható meg a magasabb szintű csomag nélkül.",
     "placeholders": {
       "count": {
         "content": "$1",
-        "example": "6"
+        "example": "2"
       }
     }
   },
@@ -6647,7 +6668,7 @@
     }
   },
   "teamsStarterPlanInvLimitReachedManageBilling": {
-    "message": "A Teams Starter csomagok legfeljebb $SEATCOUNT$ tagot tartalmazhatnak. Lépjünk kapcsolatba az ügyfélszolgálattal a csomag frissítéséhez és további tagok meghívásához.",
+    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Upgrade to your plan to invite more members.",
     "placeholders": {
       "seatcount": {
         "content": "$1",
@@ -7307,6 +7328,9 @@
   "limitCollectionCreationDeletionDesc": {
     "message": "A gyűjtemény létrehozásának és törlésének korlátozása tulajdonosokra és adminisztrátorokra"
   },
+  "allowAdminAccessToAllCollectionItemsDesc": {
+    "message": "Owners and admins can manage all collections and items"
+  },
   "collectionManagementUpdated": {
     "message": "A gyűjtemény kezelési viselkedés mentésre került."
   },
@@ -7371,6 +7395,9 @@
   "alreadyHaveAccount": {
     "message": "Van már saját fiók?"
   },
+  "skipToContent": {
+    "message": "Ugrás a tartalomra"
+  },
   "customBillingStart": {
     "message": "Az egyedi számlázás nem jelenik meg. Keressük fel "
   },
@@ -7389,6 +7416,15 @@
   "passkeyNotCopiedAlert": {
     "message": "A hozzáférési kulcs nem kerül másolásra a klónozott elembe. Folytatjuk ennek az elemnek a klónozását?"
   },
+  "modifiedCollectionManagement": {
+    "message": "Módosított gyűjteménykezelési beállítás: $ID$.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "Unique ID"
+      }
+    }
+  },
   "seeDetailedInstructions": {
     "message": "Tekintsük meg a részletes utasításokat a súgó oldalon:",
     "description": "This is followed a by a hyperlink to the help website."
@@ -7398,5 +7434,20 @@
   },
   "unexpectedErrorSend": {
     "message": "Váratlan hiba történt a Send betöltésekor. Próbáljuk újra később."
+  },
+  "seatLimitReached": {
+    "message": "A hely korlát elérésre került."
+  },
+  "contactYourProvider": {
+    "message": "További helyek vásárlásához forduljunk a  szolgáltatóhoz."
+  },
+  "seatLimitReachedContactYourProvider": {
+    "message": "A helyek száma elérésre került.  További helyek vásárlásához forduljunk a szolgáltatóhoz."
+  },
+  "collectionAccessRestricted": {
+    "message": "A gyűjtemény elérése korlátozott."
+  },
+  "serviceAccountAccessUpdated": {
+    "message": "A szolgáltatás fiók elérése frissítésre került."
   }
 }

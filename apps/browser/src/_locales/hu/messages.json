@@ -268,6 +268,9 @@
   "length": {
     "message": "Hossz"
   },
+  "passwordMinLength": {
+    "message": "Minimum jelszó hosszúság"
+  },
   "uppercase": {
     "message": "Nagybetűs (A-Z)"
   },
@@ -323,6 +326,9 @@
   "password": {
     "message": "Jelszó"
   },
+  "totp": {
+    "message": "Hitelesítő titkos kulcs"
+  },
   "passphrase": {
     "message": "Kulcskifejezés"
   },
@@ -365,6 +371,9 @@
   "unlockMethodNeededToChangeTimeoutActionDesc": {
     "message": "Állítsunk be egy feloldási módot a széf időkifutási műveletének módosításához."
   },
+  "unlockMethodNeeded": {
+    "message": "Feloldási mód beállítása a Beállításokban"
+  },
   "rateExtension": {
     "message": "Bővítmény értékelése"
   },
@@ -404,6 +413,9 @@
   },
   "lockNow": {
     "message": "Zárolás most"
+  },
+  "lockAll": {
+    "message": "Összes zárolása"
   },
   "immediately": {
     "message": "Azonnal"
@@ -502,6 +514,18 @@
   },
   "autofillError": {
     "message": "Nem sikerült automatikusan kitölteni a bejelentkezést ezen a weboldalon. Helyette másold/illeszt be a felhasználóneved és/vagy a jelszavadat."
+  },
+  "totpCaptureError": {
+    "message": "Az aktuális weboldalól nem lehet szkennelni a QR kódot."
+  },
+  "totpCaptureSuccess": {
+    "message": "A hitelesítő kulcs hozzáadásra került."
+  },
+  "totpCapture": {
+    "message": "Hitelesítő QR kód szkennelése az aktuális weboldalról"
+  },
+  "copyTOTP": {
+    "message": "Hitelesítő kód másolása (TOTP)"
   },
   "loggedOut": {
     "message": "Kijelentkezett"
@@ -619,6 +643,9 @@
   "addLoginNotificationDesc": {
     "message": "A \"Bejelentkezés értesítés hozzáadása\" automatikusan felajánlja a bejelentkezés széfbe mentését az első bejelentkezéskor."
   },
+  "addLoginNotificationDescAlt": {
+    "message": "Egy elem hozzáadásának kérése, ha az nem található a széfben. Minden bejelentkezett fiókra vonatkozik."
+  },
   "showCardsCurrentTab": {
     "message": "Kártyák megjelenítése a Fül oldalon"
   },
@@ -651,6 +678,15 @@
   "changedPasswordNotificationDesc": {
     "message": "A bejelentkezési jelszó frissítésének kérése a webhelyen történő változás érzékelésekor."
   },
+  "changedPasswordNotificationDescAlt": {
+    "message": "A bejelentkezési jelszó frissítésének kérése, ha változást lett érzékelve egy webhelyen. Minden bejelentkezett fiókra vonatkozik."
+  },
+  "enableUsePasskeys": {
+    "message": "Kérés a jhozzáférési kulcs mentésére és használatára"
+  },
+  "usePasskeysDesc": {
+    "message": "Kérés az új hozzáféréi kulcsok mentésére vagy bejelentkezés a széfben tárolt hozzáférési kulcsokkal. Minden bejelentkezett fiókra vonatkozik."
+  },
   "notificationChangeDesc": {
     "message": "Frissítésre kerüljön a jelszó a Bitwardenben?"
   },
@@ -669,6 +705,9 @@
   "contextMenuItemDesc": {
     "message": "Másodlagos kattintással férhetünk hozzá a webhely jelszó-generálásához és a egyező bejelentkezésekhez."
   },
+  "contextMenuItemDescAlt": {
+    "message": "Másodlagos kattintással eléérhető a jelszógenerálás és a megfelelő bejelentkezési adatok a webhelyhez. Minden bejelentkezett fiókra vonatkozik."
+  },
   "defaultUriMatchDetection": {
     "message": "Alapértelmezett URI egyezés érzékelés",
     "description": "Default URI match detection for auto-fill."
@@ -681,6 +720,9 @@
   },
   "themeDesc": {
     "message": "Az alkalmazás színtémájának megváltoztatása."
+  },
+  "themeDescAlt": {
+    "message": "Az alkalmazás színtéma módosítása. Minden bejelentkezett fiókra vonatkozik."
   },
   "dark": {
     "message": "Sötét",
@@ -1002,6 +1044,31 @@
   "environmentSaved": {
     "message": "A környezeti webcímek mentésre kerültek."
   },
+  "showAutoFillMenuOnFormFields": {
+    "message": "Automatikus kitöltés menü megjelenítése az űrlapmezőkön",
+    "description": "Represents the message for allowing the user to enable the auto-fill overlay"
+  },
+  "showAutoFillMenuOnFormFieldsDescAlt": {
+    "message": "Minden bejelentkezett fiókra vonatkozik."
+  },
+  "turnOffBrowserBuiltInPasswordManagerSettings": {
+    "message": "Az ütközések elkerülése érdekében kapcsoljuk ki a böngésző beépített jelszókezelő beállításait."
+  },
+  "turnOffBrowserBuiltInPasswordManagerSettingsLink": {
+    "message": "A böngésző beállítások szerkesztése."
+  },
+  "autofillOverlayVisibilityOff": {
+    "message": "Ki",
+    "description": "Overlay setting select option for disabling autofill overlay"
+  },
+  "autofillOverlayVisibilityOnFieldFocus": {
+    "message": "When field is selected (on focus)",
+    "description": "Overlay appearance select option for showing the field on focus of the input element"
+  },
+  "autofillOverlayVisibilityOnButtonClick": {
+    "message": "Ha az automatikus kitöltés menü került kiválasztásra",
+    "description": "Overlay appearance select option for showing the field on click of the overlay icon"
+  },
   "enableAutoFillOnPageLoad": {
     "message": "Automatikus kitöltés oldalbetöltésnél"
   },
@@ -1093,6 +1160,9 @@
   },
   "faviconDesc": {
     "message": "Felismerhető kép megjelenítése minden bejelentkezés mellett."
+  },
+  "faviconDescAlt": {
+    "message": "Minden bejelentkezés mellett egy felismerhető kép megjelenítése. Minden bejelentkezett fiókra vonatkozik."
   },
   "enableBadgeCounter": {
     "message": "Számláló jelvény megjelenítése"
@@ -1252,9 +1322,6 @@
   },
   "typeIdentity": {
     "message": "Személyazonosság"
-  },
-  "typePasskey": {
-    "message": "Hozzáférési kulcs"
   },
   "passwordHistory": {
     "message": "Jelszó előzmények"
@@ -1665,12 +1732,15 @@
   "excludedDomainsDesc": {
     "message": "A Bitwarden nem fogja kérni a domainek bejelentkezési adatainak mentését. A változások életbe lépéséhez frissíteni kell az oldalt."
   },
+  "excludedDomainsDescAlt": {
+    "message": "A Bitwarden nem kéri a bejelentkezési adatok mentését ezeknél a tartományoknál az összes bejelentkezési fiókra vonatkozva. A változtatások életbe lépéséhez frissíteni kell az oldalt."
+  },
   "excludedDomainsInvalidDomain": {
     "message": "$DOMAIN$ nem érvényes domain.",
     "placeholders": {
       "domain": {
         "content": "$1",
-        "example": "googlecom"
+        "example": "google.com"
       }
     }
   },
@@ -2227,7 +2297,7 @@
     "message": "Az automatikus kitöltés működése"
   },
   "autofillSelectInfoWithCommand": {
-    "message": "Válasszunk egy elemet ezen az oldalon vagy használjuk a parancsikont: $COMMAND$.",
+    "message": "Select an item from this screen, use the shortcut $COMMAND$, or explore other options in settings.",
     "placeholders": {
       "command": {
         "content": "$1",
@@ -2236,7 +2306,7 @@
     }
   },
   "autofillSelectInfoWithoutCommand": {
-    "message": "Válasszunk egy elemet ezen az oldalon vagy állítsunk be parancsikont a beállításokban."
+    "message": "Select an item from this screen, or explore other options in settings."
   },
   "gotIt": {
     "message": "Rendben"
@@ -2442,6 +2512,38 @@
     "message": "Összezárás váltás",
     "description": "Toggling an expand/collapse state."
   },
+  "filelessImport": {
+    "message": "Adatok importálása a Bitwardenbe?",
+    "description": "Default notification title for triggering a fileless import."
+  },
+  "lpFilelessImport": {
+    "message": "A LastPass adatok megvédése és importálása a Bitwardenbe?",
+    "description": "LastPass specific notification title for triggering a fileless import."
+  },
+  "lpCancelFilelessImport": {
+    "message": "Mentés titkosítatlan fájlként",
+    "description": "LastPass specific notification button text for cancelling a fileless import."
+  },
+  "startFilelessImport": {
+    "message": "Importálás a Bitwardenbe",
+    "description": "Notification button text for starting a fileless import."
+  },
+  "importing": {
+    "message": "Importálás...",
+    "description": "Notification message for when an import is in progress."
+  },
+  "dataSuccessfullyImported": {
+    "message": "Az adatok sikeresen importálásra kerültek.",
+    "description": "Notification message for when an import has completed successfully."
+  },
+  "dataImportFailed": {
+    "message": "Hiba történt az importálás során. A részletekért ellenőrizzük a konzolt.",
+    "description": "Notification message for when an import has failed."
+  },
+  "importNetworkError": {
+    "message": "Hálózati hiba történt az importálás során.",
+    "description": "Notification message for when an import has failed due to a network error."
+  },
   "aliasDomain": {
     "message": "Áldomain"
   },
@@ -2456,6 +2558,59 @@
   "turnOffMasterPasswordPromptToEditField": {
     "message": "Kapcsoljuk ki a mesterjelszó újbóli bekérését a mező szerkesztéséhez.",
     "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
+  },
+  "skipToContent": {
+    "message": "Ugrás a tartalomra"
+  },
+  "bitwardenOverlayButton": {
+    "message": "Bitwarden auto-fill menu button",
+    "description": "Page title for the iframe containing the overlay button"
+  },
+  "toggleBitwardenVaultOverlay": {
+    "message": "Toggle Bitwarden auto-fill menu",
+    "description": "Screen reader and tool tip label for the overlay button"
+  },
+  "bitwardenVault": {
+    "message": "Bitwarden automatikus kitöltési menü",
+    "description": "Page title in overlay"
+  },
+  "unlockYourAccountToViewMatchingLogins": {
+    "message": "Unlock your account to view matching logins",
+    "description": "Text to display in overlay when the account is locked."
+  },
+  "unlockAccount": {
+    "message": "Fiók feloldása",
+    "description": "Button text to display in overlay when the account is locked."
+  },
+  "fillCredentialsFor": {
+    "message": "Töltse kia hitelesítő adatokat",
+    "description": "Screen reader text for when overlay item is in focused"
+  },
+  "partialUsername": {
+    "message": "Részleges felhasználónév",
+    "description": "Screen reader text for when a login item is focused where a partial username is displayed. SR will announce this phrase before reading the text of the partial username"
+  },
+  "noItemsToShow": {
+    "message": "Nincsenek megjeleníthető elemek",
+    "description": "Text to show in overlay if there are no matching items"
+  },
+  "newItem": {
+    "message": "Új elem",
+    "description": "Button text to display in overlay when there are no matching items"
+  },
+  "addNewVaultItem": {
+    "message": "Elem hozzáadása",
+    "description": "Screen reader text (aria-label) for new item button in overlay"
+  },
+  "bitwardenOverlayMenuAvailable": {
+    "message": "Bitwarden auto-fill menu available. Press the down arrow key to select.",
+    "description": "Screen reader text for announcing when the overlay opens on the page"
+  },
+  "turnOn": {
+    "message": "Bekapcsolás"
+  },
+  "ignore": {
+    "message": "Mellőz"
   },
   "importData": {
     "message": "Adatok importálása",
@@ -2568,6 +2723,9 @@
   "confirmFilePassword": {
     "message": "Fájl jelszó megerősítés"
   },
+  "typePasskey": {
+    "message": "Hozzáférési kulcs"
+  },
   "passkeyNotCopied": {
     "message": "A hozzáférési kulcs nem kerül másolásra."
   },
@@ -2615,9 +2773,6 @@
   },
   "yourPasskeyIsLocked": {
     "message": "A hozzáférési kulcs használatához hitelesítés szükséges. A személyazonosság ellenőrzése szükséges a folytatáshoz."
-  },
-  "useBrowserName": {
-    "message": "Böngésző használata"
   },
   "multifactorAuthenticationCancelled": {
     "message": "A többtényezős hitelesítés megszakításra került."
@@ -2682,5 +2837,56 @@
   },
   "lastPassYubikeyDesc": {
     "message": "Illesszük be a LastPass-fiókhoz társított YubiKey eszközt a számítógép USB portjába, majd érintsük meg annak gombját."
+  },
+  "switchAccount": {
+    "message": "Fiók váltása"
+  },
+  "switchAccounts": {
+    "message": "Fiókok váltása"
+  },
+  "switchToAccount": {
+    "message": "Váltás fiókra"
+  },
+  "activeAccount": {
+    "message": "Aktív fiók"
+  },
+  "availableAccounts": {
+    "message": "Elérhető fiókok"
+  },
+  "accountLimitReached": {
+    "message": "A fiók korlát elérésre került. Jelentkezzünk ki egy fiókból egy másik hozzáadásához."
+  },
+  "active": {
+    "message": "aktív"
+  },
+  "locked": {
+    "message": "zárolt"
+  },
+  "unlocked": {
+    "message": "feloldott"
+  },
+  "server": {
+    "message": "szerver"
+  },
+  "hostedAt": {
+    "message": "tárolva:"
+  },
+  "useDeviceOrHardwareKey": {
+    "message": "Saját eszköz vagy hardverkulcs használata"
+  },
+  "justOnce": {
+    "message": "Csak egyszer"
+  },
+  "alwaysForThisSite": {
+    "message": "Ennél a webhelynél mindig"
+  },
+  "domainAddedToExcludedDomains": {
+    "message": "$DOMAIN$ bekerült a kizárt tartományokba.",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
   }
 }

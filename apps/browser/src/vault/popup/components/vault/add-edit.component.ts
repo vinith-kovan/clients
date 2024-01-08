@@ -1,6 +1,7 @@
-import { Location } from "@angular/common";
+import { DatePipe, Location } from "@angular/common";
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import qrcodeParser from "qrcode-parser";
 import { firstValueFrom } from "rxjs";
 import { first } from "rxjs/operators";
 
@@ -18,7 +19,7 @@ import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.s
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { CipherType } from "@bitwarden/common/vault/enums";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { DialogService } from "@bitwarden/components";
 import { PasswordRepromptService } from "@bitwarden/vault";
@@ -65,7 +66,8 @@ export class AddEditComponent extends BaseAddEditComponent {
     passwordRepromptService: PasswordRepromptService,
     logService: LogService,
     sendApiService: SendApiService,
-    dialogService: DialogService
+    dialogService: DialogService,
+    datePipe: DatePipe,
   ) {
     super(
       cipherService,
@@ -82,7 +84,9 @@ export class AddEditComponent extends BaseAddEditComponent {
       passwordRepromptService,
       organizationService,
       sendApiService,
-      dialogService
+      dialogService,
+      window,
+      datePipe,
     );
   }
 
@@ -182,7 +186,7 @@ export class AddEditComponent extends BaseAddEditComponent {
       BrowserFido2UserInterfaceSession.confirmNewCredentialResponse(
         sessionId,
         this.cipher.id,
-        userVerification
+        userVerification,
       );
       return true;
     }
@@ -305,7 +309,7 @@ export class AddEditComponent extends BaseAddEditComponent {
 
   private async handleFido2UserVerification(
     sessionId: string,
-    userVerification: boolean
+    userVerification: boolean,
   ): Promise<boolean> {
     // We are bypassing user verification pending implementation of PIN and biometric support.
     return true;
@@ -322,7 +326,7 @@ export class AddEditComponent extends BaseAddEditComponent {
       this.platformUtilsService.showToast(
         "info",
         null,
-        this.i18nService.t("passwordRepromptDisabledAutofillOnPageLoad")
+        this.i18nService.t("passwordRepromptDisabledAutofillOnPageLoad"),
       );
       return;
     }
@@ -330,14 +334,36 @@ export class AddEditComponent extends BaseAddEditComponent {
     this.platformUtilsService.showToast(
       "info",
       null,
-      this.i18nService.t("autofillOnPageLoadSetToDefault")
+      this.i18nService.t("autofillOnPageLoadSetToDefault"),
     );
   }
 
   private inAddEditPopoutWindow() {
     return BrowserPopupUtils.inSingleActionPopout(
       window,
-      this.singleActionKey || VaultPopoutType.addEditVaultItem
+      this.singleActionKey || VaultPopoutType.addEditVaultItem,
     );
+  }
+
+  async captureTOTPFromTab() {
+    try {
+      const screenshot = await BrowserApi.captureVisibleTab();
+      const data = await qrcodeParser(screenshot);
+      const url = new URL(data.toString());
+      if (url.protocol == "otpauth:" && url.searchParams.has("secret")) {
+        this.cipher.login.totp = data.toString();
+        this.platformUtilsService.showToast(
+          "success",
+          null,
+          this.i18nService.t("totpCaptureSuccess"),
+        );
+      }
+    } catch (e) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("totpCaptureError"),
+      );
+    }
   }
 }

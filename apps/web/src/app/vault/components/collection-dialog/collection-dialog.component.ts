@@ -3,7 +3,6 @@ import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from "@angula
 import { AbstractControl, FormBuilder, Validators } from "@angular/forms";
 import {
   combineLatest,
-  firstValueFrom,
   from,
   map,
   Observable,
@@ -72,7 +71,12 @@ export enum CollectionDialogAction {
 export class CollectionDialogComponent implements OnInit, OnDestroy {
   protected flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
     FeatureFlag.FlexibleCollections,
-    false
+    false,
+  );
+
+  protected flexibleCollectionsV1Enabled$ = this.configService.getFeatureFlag$(
+    FeatureFlag.FlexibleCollectionsV1,
+    false,
   );
 
   private destroy$ = new Subject<void>();
@@ -94,6 +98,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     selectedOrg: "",
   });
   protected PermissionMode = PermissionMode;
+  protected showDeleteButton = false;
 
   constructor(
     @Inject(DIALOG_DATA) private params: CollectionDialogParams,
@@ -107,7 +112,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     private organizationUserService: OrganizationUserService,
     private dialogService: DialogService,
     private changeDetectorRef: ChangeDetectorRef,
-    private configService: ConfigServiceAbstraction
+    private configService: ConfigServiceAbstraction,
   ) {
     this.tabIndex = params.initialTab ?? CollectionDialogTabType.Info;
   }
@@ -123,8 +128,8 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
         map((orgs) =>
           orgs
             .filter((o) => o.canCreateNewCollections && !o.isProviderUser)
-            .sort(Utils.getSortFunction(this.i18nService, "name"))
-        )
+            .sort(Utils.getSortFunction(this.i18nService, "name")),
+        ),
       );
       // patchValue will trigger a call to loadOrg() in this case, so no need to call it again here
       this.formGroup.patchValue({ selectedOrg: this.params.organizationId });
@@ -133,15 +138,11 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
       this.formGroup.patchValue({ selectedOrg: this.params.organizationId });
       await this.loadOrg(this.params.organizationId, this.params.collectionIds);
     }
-
-    if (await firstValueFrom(this.flexibleCollectionsEnabled$)) {
-      this.formGroup.controls.access.addValidators(validateCanManagePermission);
-    }
   }
 
   async loadOrg(orgId: string, collectionIds: string[]) {
     const organization$ = of(this.organizationService.get(orgId)).pipe(
-      shareReplay({ refCount: true, bufferSize: 1 })
+      shareReplay({ refCount: true, bufferSize: 1 }),
     );
     const groups$ = organization$.pipe(
       switchMap((organization) => {
@@ -150,7 +151,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
         }
 
         return this.groupService.getAll(orgId);
-      })
+      }),
     );
     combineLatest({
       organization: organization$,
@@ -161,14 +162,23 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
       groups: groups$,
       users: this.organizationUserService.getAllUsers(orgId),
       flexibleCollections: this.flexibleCollectionsEnabled$,
+      flexibleCollectionsV1: this.flexibleCollectionsV1Enabled$,
     })
       .pipe(takeUntil(this.formGroup.controls.selectedOrg.valueChanges), takeUntil(this.destroy$))
       .subscribe(
-        ({ organization, collections, collectionDetails, groups, users, flexibleCollections }) => {
+        ({
+          organization,
+          collections,
+          collectionDetails,
+          groups,
+          users,
+          flexibleCollections,
+          flexibleCollectionsV1,
+        }) => {
           this.organization = organization;
           this.accessItems = [].concat(
             groups.map(mapGroupToAccessItemView),
-            users.data.map(mapUserToAccessItemView)
+            users.data.map(mapUserToAccessItemView),
           );
 
           // Force change detection to update the access selector's items
@@ -198,21 +208,20 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
               parent,
               access: accessSelections,
             });
+
+            this.showDeleteButton = this.collection.canDelete(organization, flexibleCollections);
           } else {
             this.nestOptions = collections;
             const parent = collections.find((c) => c.id === this.params.parentCollectionId);
-            const currentOrgUserId = users.data.find(
-              (u) => u.userId === this.organization?.userId
-            )?.id;
+            const currentOrgUserId = users.data.find((u) => u.userId === this.organization?.userId)
+              ?.id;
             const initialSelection: AccessItemValue[] =
-              currentOrgUserId !== undefined
+              currentOrgUserId !== undefined && flexibleCollections
                 ? [
                     {
                       id: currentOrgUserId,
                       type: AccessItemType.Member,
-                      permission: flexibleCollections
-                        ? CollectionPermission.Manage
-                        : CollectionPermission.Edit,
+                      permission: CollectionPermission.Manage,
                     },
                   ]
                 : [];
@@ -223,8 +232,15 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
             });
           }
 
+          if (flexibleCollectionsV1 && !organization.allowAdminAccessToAllCollectionItems) {
+            this.formGroup.controls.access.addValidators(validateCanManagePermission);
+          } else {
+            this.formGroup.controls.access.removeValidators(validateCanManagePermission);
+          }
+          this.formGroup.controls.access.updateValueAndValidity();
+
           this.loading = false;
-        }
+        },
       );
   }
 
@@ -250,13 +266,13 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
         this.platformUtilsService.showToast(
           "error",
           null,
-          this.i18nService.t("fieldOnTabRequiresAttention", this.i18nService.t("collectionInfo"))
+          this.i18nService.t("fieldOnTabRequiresAttention", this.i18nService.t("collectionInfo")),
         );
       } else if (this.tabIndex === CollectionDialogTabType.Info && accessTabError) {
         this.platformUtilsService.showToast(
           "error",
           null,
-          this.i18nService.t("fieldOnTabRequiresAttention", this.i18nService.t("access"))
+          this.i18nService.t("fieldOnTabRequiresAttention", this.i18nService.t("access")),
         );
       }
       return;
@@ -287,8 +303,8 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
       null,
       this.i18nService.t(
         this.editMode ? "editedCollectionId" : "createdCollectionId",
-        collectionView.name
-      )
+        collectionView.name,
+      ),
     );
 
     this.close(CollectionDialogAction.Saved, savedCollection);
@@ -310,7 +326,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     this.platformUtilsService.showToast(
       "success",
       null,
-      this.i18nService.t("deletedCollectionId", this.collection?.name)
+      this.i18nService.t("deletedCollectionId", this.collection?.name),
     );
 
     this.close(CollectionDialogAction.Deleted, this.collection);
@@ -348,7 +364,7 @@ function mapToAccessSelections(collectionDetails: CollectionAdminView): AccessIt
       id: selection.id,
       type: AccessItemType.Member,
       permission: convertToPermission(selection),
-    }))
+    })),
   );
 }
 
@@ -369,10 +385,10 @@ function validateCanManagePermission(control: AbstractControl) {
  */
 export function openCollectionDialog(
   dialogService: DialogService,
-  config: DialogConfig<CollectionDialogParams>
+  config: DialogConfig<CollectionDialogParams>,
 ) {
   return dialogService.open<CollectionDialogResult, CollectionDialogParams>(
     CollectionDialogComponent,
-    config
+    config,
   );
 }

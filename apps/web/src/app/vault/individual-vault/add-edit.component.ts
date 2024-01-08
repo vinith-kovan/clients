@@ -4,7 +4,6 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/vault/components/add-edit.component";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { EventType, ProductType } from "@bitwarden/common/enums";
@@ -18,7 +17,8 @@ import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.s
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
+import { CipherType } from "@bitwarden/common/vault/enums";
 import { Launchable } from "@bitwarden/common/vault/interfaces/launchable";
 import { DialogService } from "@bitwarden/components";
 import { PasswordRepromptService } from "@bitwarden/vault";
@@ -43,15 +43,6 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
   protected totpInterval: number;
   protected override componentName = "app-vault-add-edit";
 
-  get fido2CredentialCreationDateValue(): string {
-    const dateCreated = this.i18nService.t("dateCreated");
-    const creationDate = this.datePipe.transform(
-      this.cipher?.login?.fido2Credentials?.[0]?.creationDate,
-      "short"
-    );
-    return `${dateCreated} ${creationDate}`;
-  }
-
   constructor(
     cipherService: CipherService,
     folderService: FolderService,
@@ -70,7 +61,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     passwordRepromptService: PasswordRepromptService,
     sendApiService: SendApiService,
     dialogService: DialogService,
-    private datePipe: DatePipe
+    datePipe: DatePipe,
   ) {
     super(
       cipherService,
@@ -87,7 +78,9 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
       passwordRepromptService,
       organizationService,
       sendApiService,
-      dialogService
+      dialogService,
+      window,
+      datePipe,
     );
   }
 
@@ -137,7 +130,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     if (this.editMode && this.showPasswordCount) {
       this.eventCollectionService.collect(
         EventType.Cipher_ClientToggledPasswordVisible,
-        this.cipherId
+        this.cipherId,
       );
     }
   }
@@ -150,16 +143,16 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     this.platformUtilsService.launchUri(uri.launchUri);
   }
 
-  copy(value: string, typeI18nKey: string, aType: string) {
+  async copy(value: string, typeI18nKey: string, aType: string): Promise<boolean> {
     if (value == null) {
-      return;
+      return false;
     }
 
     this.platformUtilsService.copyToClipboard(value, { window: window });
     this.platformUtilsService.showToast(
       "info",
       null,
-      this.i18nService.t("valueCopied", this.i18nService.t(typeI18nKey))
+      this.i18nService.t("valueCopied", this.i18nService.t(typeI18nKey)),
     );
 
     if (this.editMode) {
@@ -170,10 +163,12 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
       } else if (aType === "H_Field") {
         this.eventCollectionService.collect(
           EventType.Cipher_ClientCopiedHiddenField,
-          this.cipherId
+          this.cipherId,
         );
       }
     }
+
+    return true;
   }
 
   async generatePassword(): Promise<boolean> {

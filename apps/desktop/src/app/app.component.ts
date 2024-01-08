@@ -43,7 +43,7 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { CipherType } from "@bitwarden/common/vault/enums";
 import { DialogService } from "@bitwarden/components";
 
 import { DeleteAccountComponent } from "../auth/delete-account.component";
@@ -113,6 +113,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  private accountCleanUpInProgress: { [userId: string]: boolean } = {};
+
   constructor(
     private broadcasterService: BroadcasterService,
     private folderService: InternalFolderService,
@@ -143,7 +145,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private keyConnectorService: KeyConnectorService,
     private userVerificationService: UserVerificationService,
     private configService: ConfigServiceAbstraction,
-    private dialogService: DialogService
+    private dialogService: DialogService,
   ) {}
 
   ngOnInit() {
@@ -203,7 +205,7 @@ export class AppComponent implements OnInit, OnDestroy {
             Promise.all(
               Object.keys(accounts)
                 .filter((u) => u !== currentUser)
-                .map((u) => this.vaultTimeoutService.lock(u))
+                .map((u) => this.vaultTimeoutService.lock(u)),
             );
             break;
           }
@@ -232,8 +234,10 @@ export class AppComponent implements OnInit, OnDestroy {
           case "syncStarted":
             break;
           case "syncCompleted":
-            await this.updateAppMenu();
-            this.configService.triggerServerConfigFetch();
+            if (message.successfully) {
+              this.updateAppMenu();
+              this.configService.triggerServerConfigFetch();
+            }
             break;
           case "openSettings":
             await this.openModal<SettingsComponent>(SettingsComponent, this.settingsRef);
@@ -243,19 +247,19 @@ export class AppComponent implements OnInit, OnDestroy {
             break;
           case "showFingerprintPhrase": {
             const fingerprint = await this.cryptoService.getFingerprint(
-              await this.stateService.getUserId()
+              await this.stateService.getUserId(),
             );
             const dialogRef = FingerprintDialogComponent.open(this.dialogService, { fingerprint });
             await firstValueFrom(dialogRef.closed);
             break;
           }
           case "deleteAccount":
-            this.modalService.open(DeleteAccountComponent, { replaceTopModal: true });
+            DeleteAccountComponent.open(this.dialogService);
             break;
           case "openPasswordHistory":
             await this.openModal<PasswordGeneratorHistoryComponent>(
               PasswordGeneratorHistoryComponent,
-              this.passwordHistoryRef
+              this.passwordHistoryRef,
             );
             break;
           case "showToast":
@@ -292,7 +296,7 @@ export class AppComponent implements OnInit, OnDestroy {
             });
             if (emailVerificationConfirmed) {
               this.platformUtilsService.launchUri(
-                "https://bitwarden.com/help/create-bitwarden-account/"
+                "https://bitwarden.com/help/create-bitwarden-account/",
               );
             }
             break;
@@ -303,13 +307,13 @@ export class AppComponent implements OnInit, OnDestroy {
               this.platformUtilsService.showToast(
                 "success",
                 null,
-                this.i18nService.t("syncingComplete")
+                this.i18nService.t("syncingComplete"),
               );
             } catch {
               this.platformUtilsService.showToast(
                 "error",
                 null,
-                this.i18nService.t("syncingFailed")
+                this.i18nService.t("syncingFailed"),
               );
             }
             break;
@@ -395,7 +399,11 @@ export class AppComponent implements OnInit, OnDestroy {
             break;
           case "openLoginApproval":
             if (message.notificationId != null) {
-              await this.openLoginApproval(message.notificationId);
+              this.dialogService.closeAll();
+              const dialogRef = LoginApprovalComponent.open(this.dialogService, {
+                notificationId: message.notificationId,
+              });
+              await firstValueFrom(dialogRef.closed);
             }
             break;
           case "redrawMenu":
@@ -417,7 +425,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     const [modal, childComponent] = await this.modalService.openViewRef(
       ExportComponent,
-      this.exportVaultModalRef
+      this.exportVaultModalRef,
     );
     this.modal = modal;
 
@@ -438,7 +446,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const [modal, childComponent] = await this.modalService.openViewRef(
       FolderAddEditComponent,
       this.folderAddEditModalRef,
-      (comp) => (comp.folderId = null)
+      (comp) => (comp.folderId = null),
     );
     this.modal = modal;
 
@@ -460,21 +468,8 @@ export class AppComponent implements OnInit, OnDestroy {
     [this.modal] = await this.modalService.openViewRef(
       GeneratorComponent,
       this.generatorModalRef,
-      (comp) => (comp.comingFromAddEdit = false)
+      (comp) => (comp.comingFromAddEdit = false),
     );
-
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    this.modal.onClosed.subscribe(() => {
-      this.modal = null;
-    });
-  }
-
-  async openLoginApproval(notificationId: string) {
-    this.modalService.closeAll();
-
-    this.modal = await this.modalService.open(LoginApprovalComponent, {
-      data: { notificationId: notificationId },
-    });
 
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     this.modal.onClosed.subscribe(() => {
@@ -493,10 +488,14 @@ export class AppComponent implements OnInit, OnDestroy {
     } else {
       const accounts: { [userId: string]: MenuAccount } = {};
       for (const i in stateAccounts) {
-        if (i != null && stateAccounts[i]?.profile?.userId != null) {
+        if (
+          i != null &&
+          stateAccounts[i]?.profile?.userId != null &&
+          !this.isAccountCleanUpInProgress(stateAccounts[i].profile.userId) // skip accounts that are being cleaned up
+        ) {
           const userId = stateAccounts[i].profile.userId;
           const availableTimeoutActions = await firstValueFrom(
-            this.vaultTimeoutSettingsService.availableVaultTimeoutActions$(userId)
+            this.vaultTimeoutSettingsService.availableVaultTimeoutActions$(userId),
           );
 
           accounts[userId] = {
@@ -523,22 +522,31 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private async logOut(expired: boolean, userId?: string) {
     const userBeingLoggedOut = await this.stateService.getUserId({ userId: userId });
-    await Promise.all([
-      this.eventUploadService.uploadEvents(userBeingLoggedOut),
-      this.syncService.setLastSync(new Date(0), userBeingLoggedOut),
-      this.cryptoService.clearKeys(userBeingLoggedOut),
-      this.settingsService.clear(userBeingLoggedOut),
-      this.cipherService.clear(userBeingLoggedOut),
-      this.folderService.clear(userBeingLoggedOut),
-      this.collectionService.clear(userBeingLoggedOut),
-      this.passwordGenerationService.clear(userBeingLoggedOut),
-      this.vaultTimeoutSettingsService.clear(userBeingLoggedOut),
-      this.policyService.clear(userBeingLoggedOut),
-      this.keyConnectorService.clear(),
-    ]);
 
-    const preLogoutActiveUserId = this.activeUserId;
-    await this.stateService.clean({ userId: userBeingLoggedOut });
+    // Mark account as being cleaned up so that the updateAppMenu logic (executed on syncCompleted)
+    // doesn't attempt to update a user that is being logged out as we will manually
+    // call updateAppMenu when the logout is complete.
+    this.startAccountCleanUp(userBeingLoggedOut);
+
+    let preLogoutActiveUserId;
+    try {
+      await this.eventUploadService.uploadEvents(userBeingLoggedOut);
+      await this.syncService.setLastSync(new Date(0), userBeingLoggedOut);
+      await this.cryptoService.clearKeys(userBeingLoggedOut);
+      await this.settingsService.clear(userBeingLoggedOut);
+      await this.cipherService.clear(userBeingLoggedOut);
+      await this.folderService.clear(userBeingLoggedOut);
+      await this.collectionService.clear(userBeingLoggedOut);
+      await this.passwordGenerationService.clear(userBeingLoggedOut);
+      await this.vaultTimeoutSettingsService.clear(userBeingLoggedOut);
+      await this.policyService.clear(userBeingLoggedOut);
+      await this.keyConnectorService.clear();
+
+      preLogoutActiveUserId = this.activeUserId;
+      await this.stateService.clean({ userId: userBeingLoggedOut });
+    } finally {
+      this.finishAccountCleanUp(userBeingLoggedOut);
+    }
 
     if (this.activeUserId == null) {
       this.router.navigate(["login"]);
@@ -557,7 +565,7 @@ export class AppComponent implements OnInit, OnDestroy {
           this.platformUtilsService.showToast(
             "warning",
             this.i18nService.t("loggedOut"),
-            this.i18nService.t("loginExpired")
+            this.i18nService.t("loginExpired"),
           );
         }
       });
@@ -625,7 +633,7 @@ export class AppComponent implements OnInit, OnDestroy {
     } else {
       msg.text.forEach(
         (t: string) =>
-          (message += "<p>" + this.sanitizer.sanitize(SecurityContext.HTML, t) + "</p>")
+          (message += "<p>" + this.sanitizer.sanitize(SecurityContext.HTML, t) + "</p>"),
       );
       options.enableHtml = true;
     }
@@ -672,5 +680,20 @@ export class AppComponent implements OnInit, OnDestroy {
     const timeout = await this.stateService.getVaultTimeout({ userId: userId });
     const action = await this.stateService.getVaultTimeoutAction({ userId: userId });
     return [timeout, action];
+  }
+
+  // Mark an account's clean up as started
+  private startAccountCleanUp(userId: string): void {
+    this.accountCleanUpInProgress[userId] = true;
+  }
+
+  // Mark an account's clean up as finished
+  private finishAccountCleanUp(userId: string): void {
+    this.accountCleanUpInProgress[userId] = false;
+  }
+
+  // Check if an account's clean up is in progress
+  private isAccountCleanUpInProgress(userId: string): boolean {
+    return this.accountCleanUpInProgress[userId] === true;
   }
 }

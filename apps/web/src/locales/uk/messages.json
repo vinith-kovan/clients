@@ -611,8 +611,23 @@
   "loginWithMasterPassword": {
     "message": "Увійти з головним паролем"
   },
+  "readingPasskeyLoading": {
+    "message": "Читання ключа доступу..."
+  },
+  "readingPasskeyLoadingInfo": {
+    "message": "Не закривайте це вікно та дотримуйтесь підказок у браузері."
+  },
+  "useADifferentLogInMethod": {
+    "message": "Використати інший спосіб входу"
+  },
   "loginWithPasskey": {
     "message": "Увійти з ключем доступу"
+  },
+  "invalidPasskeyPleaseTryAgain": {
+    "message": "Недійсний ключ доступу. Повторіть спробу."
+  },
+  "twoFactorForPasskeysNotSupportedOnClientUpdateToLogIn": {
+    "message": "2FA для ключів доступу не підтримується. Оновіть програму, щоб увійти."
   },
   "loginWithPasskeyInfo": {
     "message": "Використовуйте згенерований ключ доступу для автоматичного входу без пароля. Ваша авторизація відбуватиметься з використанням біометрії, як-от розпізнавання обличчя чи відбитків пальців, або іншого методу безпеки FIDO2."
@@ -659,8 +674,8 @@
   "encryptionNotSupported": {
     "message": "Шифрування не підтримується"
   },
-  "encryptionNotEnabled": {
-    "message": "Шифрування не увімкнено"
+  "enablePasskeyEncryption": {
+    "message": "Налаштувати шифрування"
   },
   "usedForEncryption": {
     "message": "Використовується для шифрування"
@@ -1059,6 +1074,9 @@
   "export": {
     "message": "Експорт"
   },
+  "exportFrom": {
+    "message": "Експортувати з"
+  },
   "exportVault": {
     "message": "Експортувати сховище"
   },
@@ -1134,6 +1152,9 @@
   },
   "length": {
     "message": "Довжина"
+  },
+  "passwordMinLength": {
+    "message": "Мінімальна довжина пароля"
   },
   "uppercase": {
     "message": "Верхній регістр (A-Z)",
@@ -2320,7 +2341,7 @@
     "message": "Щоб оновити обліковий запис до Premium, вам необхідно вивантажити дійсний файл ліцензії."
   },
   "uploadLicenseFileOrg": {
-    "message": "Для створення організації, розміщеної на локальному хостингу, вам необхідно вивантажити дійсний файл ліцензії."
+    "message": "Для створення організації з локальним хостингом вам необхідно вивантажити дійсний файл ліцензії."
   },
   "accountEmailMustBeVerified": {
     "message": "Необхідно підтвердити адресу електронної пошти вашого облікового запису."
@@ -2475,7 +2496,7 @@
     }
   },
   "onPremHostingOptional": {
-    "message": "Попереднє розміщення (необов'язково)"
+    "message": "Локальний хостинг (необов'язково)"
   },
   "usersGetPremium": {
     "message": "Користувачі отримують доступ до можливостей Premium"
@@ -3527,12 +3548,12 @@
       }
     }
   },
-  "subscriptionFamiliesPlan": {
-    "message": "Ви не можете запросити більш як $COUNT$ учасників, не підвищивши свій тарифний план. Будь ласка, зверніться до служби підтримки для оновлення.",
+  "subscriptionUpgrade": {
+    "message": "Ви не можете запросити більш як $COUNT$ учасників, не підвищивши свій тарифний план.",
     "placeholders": {
       "count": {
         "content": "$1",
-        "example": "6"
+        "example": "2"
       }
     }
   },
@@ -6647,7 +6668,7 @@
     }
   },
   "teamsStarterPlanInvLimitReachedManageBilling": {
-    "message": "Плани Teams Starter можуть мати до $SEATCOUNT$ учасників. Зверніться до служби підтримки, щоб підвищити рівень тарифного плану та запросити більше учасників.",
+    "message": "Плани Teams Starter можуть мати до $SEATCOUNT$ учасників. Передплатіть тарифний план вищого рівня, щоб запросити більше учасників.",
     "placeholders": {
       "seatcount": {
         "content": "$1",
@@ -7307,6 +7328,9 @@
   "limitCollectionCreationDeletionDesc": {
     "message": "Дозволити створення та видалення збірок лише власникам та адміністраторам"
   },
+  "allowAdminAccessToAllCollectionItemsDesc": {
+    "message": "Власники та адміністратори можуть керувати всіма збірками та записами"
+  },
   "collectionManagementUpdated": {
     "message": "Налаштування керування збірками збережено"
   },
@@ -7371,6 +7395,9 @@
   "alreadyHaveAccount": {
     "message": "Вже маєте обліковий запис?"
   },
+  "skipToContent": {
+    "message": "Перейти до вмісту"
+  },
   "customBillingStart": {
     "message": "Власний рахунок не відображений. Відвідайте "
   },
@@ -7389,6 +7416,15 @@
   "passkeyNotCopiedAlert": {
     "message": "Ключ доступу не буде скопійовано до клонованого запису. Хочете продовжити клонування цього запису?"
   },
+  "modifiedCollectionManagement": {
+    "message": "Змінено налаштування керування збіркою $ID$.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "Unique ID"
+      }
+    }
+  },
   "seeDetailedInstructions": {
     "message": "Перегляньте докладні інструкції на нашому довідковому сайті",
     "description": "This is followed a by a hyperlink to the help website."
@@ -7398,5 +7434,20 @@
   },
   "unexpectedErrorSend": {
     "message": "Під час завантаження цього відправлення сталася неочікувана помилка. Повторіть спробу пізніше."
+  },
+  "seatLimitReached": {
+    "message": "Досягнуто обмеження кількості місць"
+  },
+  "contactYourProvider": {
+    "message": "Зверніться до свого провайдера для придбання додаткових місць."
+  },
+  "seatLimitReachedContactYourProvider": {
+    "message": "Досягнуто обмеження кількості місць. Зверніться до свого провайдера для придбання додаткових місць."
+  },
+  "collectionAccessRestricted": {
+    "message": "Доступ до збірки обмежено"
+  },
+  "serviceAccountAccessUpdated": {
+    "message": "Доступ до службового облікового запису оновлено"
   }
 }

@@ -1,4 +1,4 @@
-import { Location } from "@angular/common";
+import { DatePipe, Location } from "@angular/common";
 import { ChangeDetectorRef, Component, NgZone } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subject, firstValueFrom, takeUntil } from "rxjs";
@@ -8,7 +8,6 @@ import { ViewComponent as BaseViewComponent } from "@bitwarden/angular/vault/com
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -20,7 +19,8 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
+import { CipherType } from "@bitwarden/common/vault/enums";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { DialogService } from "@bitwarden/components";
@@ -95,7 +95,8 @@ export class ViewComponent extends BaseViewComponent {
     passwordRepromptService: PasswordRepromptService,
     logService: LogService,
     fileDownloadService: FileDownloadService,
-    dialogService: DialogService
+    dialogService: DialogService,
+    datePipe: DatePipe,
   ) {
     super(
       cipherService,
@@ -116,7 +117,8 @@ export class ViewComponent extends BaseViewComponent {
       logService,
       stateService,
       fileDownloadService,
-      dialogService
+      dialogService,
+      datePipe,
     );
   }
 
@@ -249,7 +251,7 @@ export class ViewComponent extends BaseViewComponent {
           this.platformUtilsService.showToast(
             "success",
             null,
-            this.i18nService.t("autoFillSuccessAndSavedUri")
+            this.i18nService.t("autoFillSuccessAndSavedUri"),
           );
           return;
         }
@@ -265,7 +267,7 @@ export class ViewComponent extends BaseViewComponent {
         this.platformUtilsService.showToast(
           "success",
           null,
-          this.i18nService.t("autoFillSuccessAndSavedUri")
+          this.i18nService.t("autoFillSuccessAndSavedUri"),
         );
         this.messagingService.send("editedCipher");
       } catch {

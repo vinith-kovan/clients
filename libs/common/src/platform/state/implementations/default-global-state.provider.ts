@@ -15,11 +15,11 @@ export class DefaultGlobalStateProvider implements GlobalStateProvider {
 
   constructor(
     private memoryStorage: AbstractMemoryStorageService & ObservableStorageService,
-    private diskStorage: AbstractStorageService & ObservableStorageService
+    private diskStorage: AbstractStorageService & ObservableStorageService,
   ) {}
 
   get<T>(keyDefinition: KeyDefinition<T>): GlobalState<T> {
-    const cacheKey = keyDefinition.buildCacheKey();
+    const cacheKey = keyDefinition.buildCacheKey("global");
     const existingGlobalState = this.globalStateCache[cacheKey];
     if (existingGlobalState != null) {
       // The cast into the actual generic is safe because of rules around key definitions
@@ -29,7 +29,7 @@ export class DefaultGlobalStateProvider implements GlobalStateProvider {
 
     const newGlobalState = new DefaultGlobalState<T>(
       keyDefinition,
-      this.getLocation(keyDefinition.stateDefinition.storageLocation)
+      this.getLocation(keyDefinition.stateDefinition.storageLocation),
     );
 
     this.globalStateCache[cacheKey] = newGlobalState;

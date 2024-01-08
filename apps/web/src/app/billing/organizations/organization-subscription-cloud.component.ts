@@ -51,7 +51,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private route: ActivatedRoute,
-    private dialogService: DialogService
+    private dialogService: DialogService,
   ) {}
 
   async ngOnInit() {
@@ -66,7 +66,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
           await this.load();
           this.firstLoaded = true;
         }),
-        takeUntil(this.destroy$)
+        takeUntil(this.destroy$),
       )
       .subscribe();
   }
@@ -101,10 +101,10 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     }
 
     const apiKeyResponse = await this.organizationApiService.getApiKeyInformation(
-      this.organizationId
+      this.organizationId,
     );
     this.hasBillingSyncToken = apiKeyResponse.data.some(
-      (i) => i.keyType === OrganizationApiKeyType.BillingSync
+      (i) => i.keyType === OrganizationApiKeyType.BillingSync,
     );
 
     this.showSecretsManagerSubscribe =
@@ -197,7 +197,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
         this.sub.smServiceAccounts - this.sub.plan.SecretsManager.baseServiceAccount,
       interval: this.sub.plan.isAnnual ? "year" : "month",
       additionalServiceAccountPrice: this.discountPrice(
-        this.sub.plan.SecretsManager.additionalPricePerServiceAccount
+        this.sub.plan.SecretsManager.additionalPricePerServiceAccount,
       ),
       baseServiceAccountCount: this.sub.plan.SecretsManager.baseServiceAccount,
     };
@@ -242,12 +242,13 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       return this.i18nService.t("subscriptionFreePlan", this.sub.seats.toString());
     } else if (
       this.sub.planType === PlanType.FamiliesAnnually ||
-      this.sub.planType === PlanType.FamiliesAnnually2019
+      this.sub.planType === PlanType.FamiliesAnnually2019 ||
+      this.sub.planType === PlanType.TeamsStarter
     ) {
       if (this.isSponsoredSubscription) {
         return this.i18nService.t("subscriptionSponsoredFamiliesPlan", this.sub.seats.toString());
       } else {
-        return this.i18nService.t("subscriptionFamiliesPlan", this.sub.seats.toString());
+        return this.i18nService.t("subscriptionUpgrade", this.sub.seats.toString());
       }
     } else if (this.sub.maxAutoscaleSeats === this.sub.seats && this.sub.seats != null) {
       return this.i18nService.t("subscriptionMaxReached", this.sub.seats.toString());
@@ -258,7 +259,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     } else {
       return this.i18nService.t(
         "subscriptionUserSeatsLimitedAutoscale",
-        this.sub.maxAutoscaleSeats.toString()
+        this.sub.maxAutoscaleSeats.toString(),
       );
     }
   }
@@ -289,7 +290,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("canceledSubscription")
+        this.i18nService.t("canceledSubscription"),
       );
       this.load();
     } catch (e) {
@@ -380,7 +381,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("removeSponsorshipSuccess")
+        this.i18nService.t("removeSponsorshipSuccess"),
       );
       await this.load();
     } catch (e) {
@@ -398,7 +399,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   };
 
   get showChangePlanButton() {
-    return this.subscription == null && this.sub.planType === PlanType.Free && !this.showChangePlan;
+    return this.sub.plan.product !== ProductType.Enterprise && !this.showChangePlan;
   }
 }
 
@@ -407,7 +408,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
  */
 function sortSubscriptionItems(
   a: BillingSubscriptionItemResponse,
-  b: BillingSubscriptionItemResponse
+  b: BillingSubscriptionItemResponse,
 ) {
   if (a.productName == b.productName) {
     if (a.addonSubscriptionItem == b.addonSubscriptionItem) {

@@ -611,8 +611,23 @@
   "loginWithMasterPassword": {
     "message": "Войти с мастер-паролем"
   },
+  "readingPasskeyLoading": {
+    "message": "Чтение ключа доступа..."
+  },
+  "readingPasskeyLoadingInfo": {
+    "message": "Не закрывайте это окно и следуйте запросам браузера."
+  },
+  "useADifferentLogInMethod": {
+    "message": "Использовать другой способ авторизации"
+  },
   "loginWithPasskey": {
     "message": "Войти с ключом доступа"
+  },
+  "invalidPasskeyPleaseTryAgain": {
+    "message": "Неверный ключ доступа. Попробуйте снова."
+  },
+  "twoFactorForPasskeysNotSupportedOnClientUpdateToLogIn": {
+    "message": "2FA для ключей доступа не поддерживается. Для авторизации обновите приложение."
   },
   "loginWithPasskeyInfo": {
     "message": "Используйте сгенерированный ключ доступа для автоматической авторизации без пароля. Ваша личность будет подтверждена биометрическими данными (распознаванием лица, отпечатком пальца или другим методом безопасности FIDO2)."
@@ -659,8 +674,8 @@
   "encryptionNotSupported": {
     "message": "Шифрование не поддерживается"
   },
-  "encryptionNotEnabled": {
-    "message": "Шифрование не включено"
+  "enablePasskeyEncryption": {
+    "message": "Настройка шифрования"
   },
   "usedForEncryption": {
     "message": "Используется для шифрования"
@@ -1059,6 +1074,9 @@
   "export": {
     "message": "Экспорт"
   },
+  "exportFrom": {
+    "message": "Экспорт из"
+  },
   "exportVault": {
     "message": "Экспорт хранилища"
   },
@@ -1134,6 +1152,9 @@
   },
   "length": {
     "message": "Длина"
+  },
+  "passwordMinLength": {
+    "message": "Минимальная длина пароля"
   },
   "uppercase": {
     "message": "Прописные буквы (A-Z)",
@@ -3527,12 +3548,12 @@
       }
     }
   },
-  "subscriptionFamiliesPlan": {
-    "message": "Вы не можете пригласить более $COUNT$ пользователей без обновления вашего плана. Для обновления обратитесь в службу поддержки клиентов.",
+  "subscriptionUpgrade": {
+    "message": "Вы не можете пригласить более $COUNT$ пользователей без обновления вашего плана.",
     "placeholders": {
       "count": {
         "content": "$1",
-        "example": "6"
+        "example": "2"
       }
     }
   },
@@ -6647,7 +6668,7 @@
     }
   },
   "teamsStarterPlanInvLimitReachedManageBilling": {
-    "message": "На тарифных планах Teams Starter может быть до $SEATCOUNT$ участников. Обратитесь в службу поддержки клиентов, чтобы перейти на новый тарифный план и пригласить больше участников.",
+    "message": "Teams Starter plans may have up to $SEATCOUNT$ members. Upgrade to your plan to invite more members.",
     "placeholders": {
       "seatcount": {
         "content": "$1",
@@ -7307,6 +7328,9 @@
   "limitCollectionCreationDeletionDesc": {
     "message": "Ограничить создание и удаление коллекций владельцам и администраторам"
   },
+  "allowAdminAccessToAllCollectionItemsDesc": {
+    "message": "Владельцы и администраторы могут управлять всеми коллекциями и элементами"
+  },
   "collectionManagementUpdated": {
     "message": "Настройки управления коллекциями сохранены"
   },
@@ -7371,6 +7395,9 @@
   "alreadyHaveAccount": {
     "message": "Уже зарегистрированы?"
   },
+  "skipToContent": {
+    "message": "Перейти к содержимому"
+  },
   "customBillingStart": {
     "message": "Пользовательские счета не отображаются. Посетите страницу "
   },
@@ -7389,6 +7416,15 @@
   "passkeyNotCopiedAlert": {
     "message": "Ключ доступа не будет скопирован в клонированный элемент. Продолжить клонирование этого элемента?"
   },
+  "modifiedCollectionManagement": {
+    "message": "Изменена настройка управления коллекцией $ID$.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "Unique ID"
+      }
+    }
+  },
   "seeDetailedInstructions": {
     "message": "Подробные инструкции см. на нашем справочном сайте по адресу",
     "description": "This is followed a by a hyperlink to the help website."
@@ -7398,5 +7434,20 @@
   },
   "unexpectedErrorSend": {
     "message": "При загрузке этой Send произошла непредвиденная ошибка. Повторите попытку позже."
+  },
+  "seatLimitReached": {
+    "message": "Лимит мест исчерпан"
+  },
+  "contactYourProvider": {
+    "message": "Свяжитесь с вашим провайдером для покупки дополнительных мест."
+  },
+  "seatLimitReachedContactYourProvider": {
+    "message": "Лимит мест исчерпан. Свяжитесь с вашим провайдером для покупки дополнительных мест."
+  },
+  "collectionAccessRestricted": {
+    "message": "Доступ к коллекции ограничен"
+  },
+  "serviceAccountAccessUpdated": {
+    "message": "Доступ сервисного аккаунта изменен"
   }
 }

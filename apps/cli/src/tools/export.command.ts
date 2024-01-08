@@ -10,7 +10,6 @@ import {
   ExportFormat,
   EXPORT_FORMATS,
   VaultExportServiceAbstraction,
-  OrgVaultExportServiceAbstraction,
 } from "@bitwarden/exporter/vault-export";
 
 import { Response } from "../models/response";
@@ -21,7 +20,6 @@ export class ExportCommand {
     private exportService: VaultExportServiceAbstraction,
     private policyService: PolicyService,
     private eventCollectionService: EventCollectionService,
-    private orgExportService: OrgVaultExportServiceAbstraction,
   ) {}
 
   async run(options: program.OptionValues): Promise<Response> {
@@ -69,18 +67,18 @@ export class ExportCommand {
     if (password == null) {
       return organizationId == null
         ? await this.exportService.getExport("encrypted_json")
-        : await this.orgExportService.getOrganizationExport(organizationId, "encrypted_json");
+        : await this.exportService.getOrganizationExport(organizationId, "encrypted_json");
     } else {
       return organizationId == null
         ? await this.exportService.getPasswordProtectedExport(password)
-        : await this.orgExportService.getPasswordProtectedExport(password, organizationId);
+        : await this.exportService.getOrgnizationPasswordProtectedExport(password, organizationId);
     }
   }
 
   private async getUnprotectedExport(format: ExportFormat, organizationId?: string) {
     return organizationId == null
       ? this.exportService.getExport(format)
-      : this.orgExportService.getOrganizationExport(organizationId, format);
+      : this.exportService.getOrganizationExport(organizationId, format);
   }
 
   private async saveFile(

@@ -170,7 +170,9 @@ import {
   VaultExportService,
   VaultExportServiceAbstraction,
   OrganizationVaultExportService,
-  OrgVaultExportServiceAbstraction,
+  OrganizationVaultExportServiceAbstraction,
+  IndividualVaultExportService,
+  IndividualVaultExportServiceAbstraction,
 } from "@bitwarden/exporter/vault-export";
 import {
   ImportApiService,
@@ -537,19 +539,18 @@ import { ModalService } from "./modal.service";
       ],
     },
     {
-      provide: VaultExportServiceAbstraction,
-      useClass: VaultExportService,
+      provide: IndividualVaultExportServiceAbstraction,
+      useClass: IndividualVaultExportService,
       deps: [
         FolderServiceAbstraction,
         CipherServiceAbstraction,
-        ApiServiceAbstraction,
         CryptoServiceAbstraction,
         CryptoFunctionServiceAbstraction,
         StateServiceAbstraction,
       ],
     },
     {
-      provide: OrgVaultExportServiceAbstraction,
+      provide: OrganizationVaultExportServiceAbstraction,
       useClass: OrganizationVaultExportService,
       deps: [
         CipherServiceAbstraction,
@@ -558,6 +559,11 @@ import { ModalService } from "./modal.service";
         CryptoFunctionServiceAbstraction,
         StateServiceAbstraction,
       ],
+    },
+    {
+      provide: VaultExportServiceAbstraction,
+      useClass: VaultExportService,
+      deps: [IndividualVaultExportServiceAbstraction, OrganizationVaultExportServiceAbstraction],
     },
     {
       provide: SearchServiceAbstraction,

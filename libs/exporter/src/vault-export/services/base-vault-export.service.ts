@@ -18,7 +18,7 @@ export class BaseVaultExportService {
     private stateService: StateService,
   ) {}
 
-  async buildPasswordExport(clearText: string, password: string): Promise<string> {
+  protected async buildPasswordExport(clearText: string, password: string): Promise<string> {
     const kdfType: KdfType = await this.stateService.getKdfType();
     const kdfConfig: KdfConfig = await this.stateService.getKdfConfig();
 
@@ -47,7 +47,10 @@ export class BaseVaultExportService {
     return ExportHelper.getFileName(prefix, extension);
   }
 
-  buildCommonCipher(cipher: BitwardenCsvExportType, c: CipherView): BitwardenCsvExportType {
+  protected buildCommonCipher(
+    cipher: BitwardenCsvExportType,
+    c: CipherView,
+  ): BitwardenCsvExportType {
     cipher.type = null;
     cipher.name = c.name;
     cipher.notes = c.notes;

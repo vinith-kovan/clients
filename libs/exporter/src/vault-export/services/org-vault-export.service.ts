@@ -23,12 +23,12 @@ import {
 } from "../bitwarden-json-export-types";
 
 import { BaseVaultExportService } from "./base-vault-export.service";
-import { OrgVaultExportServiceAbstraction } from "./org-vault-export.service.abstraction";
+import { OrganizationVaultExportServiceAbstraction } from "./org-vault-export.service.abstraction";
 import { ExportFormat } from "./vault-export.service.abstraction";
 
 export class OrganizationVaultExportService
   extends BaseVaultExportService
-  implements OrgVaultExportServiceAbstraction
+  implements OrganizationVaultExportServiceAbstraction
 {
   constructor(
     private cipherService: CipherService,

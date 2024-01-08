@@ -6923,12 +6923,6 @@
   "selectionIsRequired": {
     "message": "Selection is required."
   },
-  "secretsManagerSubscriptionDesc": {
-    "message": "Turn on organization access to the Secrets Manager at no charge during the Beta program. Users can be granted access to the Beta in Members."
-  },
-  "secretsManagerEnable": {
-    "message": "Enable Secrets Manager Beta"
-  },
   "saPeopleWarningTitle": {
     "message": "Access tokens still available"
   },

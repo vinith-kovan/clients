@@ -42,32 +42,32 @@ export class SsoLoginService {
     this.activeUserOrgIdentifierState = this.stateProvider.getActive(ORGANIZATION_IDENTIFIER);
   }
 
-  async getCodeVerifier(): Promise<string> {
-    return await firstValueFrom(this.codeVerifierState.state$);
+  getCodeVerifier(): Promise<string> {
+    return firstValueFrom(this.codeVerifierState.state$);
   }
 
   async setCodeVerifier(codeVerifier: string): Promise<void> {
     await this.codeVerifierState.update((_) => codeVerifier);
   }
 
-  async getSsoState(): Promise<string> {
-    return await firstValueFrom(this.ssoState.state$);
+  getSsoState(): Promise<string> {
+    return firstValueFrom(this.ssoState.state$);
   }
 
   async setSsoState(ssoState: string): Promise<void> {
     await this.ssoState.update((_) => ssoState);
   }
 
-  async getOrganizationIdentifier(): Promise<string> {
-    return await firstValueFrom(this.orgIdentifierState.state$);
+  getOrganizationIdentifier(): Promise<string> {
+    return firstValueFrom(this.orgIdentifierState.state$);
   }
 
   async setOrganizationIdentifier(organizationIdentifier: string): Promise<void> {
     await this.orgIdentifierState.update((_) => organizationIdentifier);
   }
 
-  async getActiveUserOrganizationIdentifier(): Promise<string> {
-    return await firstValueFrom(this.activeUserOrgIdentifierState.state$);
+  getActiveUserOrganizationIdentifier(): Promise<string> {
+    return firstValueFrom(this.activeUserOrgIdentifierState.state$);
   }
 
   async setActiveUserOrganizationIdentifier(organizationIdentifier: string): Promise<void> {

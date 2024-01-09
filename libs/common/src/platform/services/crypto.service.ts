@@ -178,7 +178,8 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async hasUserKeyInMemory(userId?: UserId): Promise<boolean> {
-    return (await this.stateService.getUserKey({ userId: userId })) != null;
+    const userKey = await this.getUserKey(userId);
+    return userKey != null;
   }
 
   async hasUserKeyStored(keySuffix: KeySuffixOptions, userId?: UserId): Promise<boolean> {
@@ -196,7 +197,11 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async clearUserKey(clearStoredKeys = true, userId?: UserId): Promise<void> {
-    await this.stateService.setUserKey(null, { userId: userId });
+    // TODO: make this non-nullable in signature
+    userId ??= (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    this.stateProvider.getUser(userId, USER_EVER_HAD_USER_KEY).update(() => true);
+    await this.userKeys.update((x) => ({ ...(x ?? {}), [userId]: null }));
+
     if (clearStoredKeys) {
       await this.clearAllStoredUserKeys(userId);
     }

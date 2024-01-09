@@ -111,7 +111,7 @@ export class DeviceTrustCryptoService implements DeviceTrustCryptoServiceAbstrac
     }
 
     // At this point of rotating their keys, they should still have their old user key in state
-    const oldUserKey = await this.stateService.getUserKey();
+    const oldUserKey = await this.cryptoService.getUserKey();
 
     const deviceIdentifier = await this.appIdService.getAppId();
     const secretVerificationRequest = new SecretVerificationRequest();

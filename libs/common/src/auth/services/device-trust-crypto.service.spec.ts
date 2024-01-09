@@ -524,7 +524,7 @@ describe("deviceTrustCryptoService", () => {
           fakeOldUserKeyData.fill(FakeOldUserKeyMarker, 0, 1);
 
           // Mock the retrieval of a user key that differs from the new one passed into the method
-          stateService.getUserKey.mockResolvedValue(
+          cryptoService.getUserKey.mockResolvedValue(
             new SymmetricCryptoKey(fakeOldUserKeyData) as UserKey,
           );
 

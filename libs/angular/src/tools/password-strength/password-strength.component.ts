@@ -7,6 +7,7 @@ export interface PasswordColorText {
   color: string;
   text: string;
 }
+type BackgroundTypes = "danger" | "primary" | "success" | "warning";
 
 @Component({
   selector: "app-password-strength",
@@ -24,7 +25,7 @@ export class PasswordStrengthComponent implements OnChanges {
 
   masterPasswordScore: number;
   scoreWidth = 0;
-  color = "bg-danger";
+  color: BackgroundTypes = "danger";
   text: string;
 
   private masterPasswordStrengthTimeout: any;
@@ -68,19 +69,19 @@ export class PasswordStrengthComponent implements OnChanges {
 
       switch (this.masterPasswordScore) {
         case 4:
-          this.color = "bg-success";
+          this.color = "success";
           this.text = this.i18nService.t("strong");
           break;
         case 3:
-          this.color = "bg-primary";
+          this.color = "primary";
           this.text = this.i18nService.t("good");
           break;
         case 2:
-          this.color = "bg-warning";
+          this.color = "warning";
           this.text = this.i18nService.t("weak");
           break;
         default:
-          this.color = "bg-danger";
+          this.color = "danger";
           this.text = this.masterPasswordScore != null ? this.i18nService.t("weak") : null;
           break;
       }

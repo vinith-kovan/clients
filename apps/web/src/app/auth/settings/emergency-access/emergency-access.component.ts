@@ -18,9 +18,9 @@ import {
   GrantorEmergencyAccess,
 } from "../../emergency-access/models/emergency-access";
 
-import { EmergencyAccessConfirmComponent } from "./confirm/emergency-access-confirm.component";
-import { EmergencyAccessAddEditComponent } from "./emergency-access-add-edit.component";
-import { EmergencyAccessTakeoverComponent } from "./takeover/emergency-access-takeover.component";
+import { openEmergencyAccessConfirmDialog } from "./confirm/emergency-access-confirm.component";
+import { openEmergencyAccessAddEditDialog } from "./emergency-access-add-edit.component";
+import { openEmergencyAccessTakeoverComponent } from "./takeover/emergency-access-takeover.component";
 
 @Component({
   selector: "emergency-access",
@@ -76,31 +76,27 @@ export class EmergencyAccessComponent implements OnInit {
     }
   }
 
-  async edit(details: GranteeEmergencyAccess) {
-    const [modal] = await this.modalService.openViewRef(
-      EmergencyAccessAddEditComponent,
-      this.addEditModalRef,
-      (comp) => {
-        comp.name = this.userNamePipe.transform(details);
-        comp.emergencyAccessId = details?.id;
-        comp.readOnly = !this.canAccessPremium;
-        // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-        comp.onSaved.subscribe(() => {
-          modal.close();
+  edit = async (details: GranteeEmergencyAccess) => {
+    openEmergencyAccessAddEditDialog(this.dialogService, {
+      data: {
+        name: this.userNamePipe.transform(details),
+        emergencyAccessId: details?.id,
+        readOnly: !this.canAccessPremium,
+        onSaved: () => {
+          this.dialogService.closeAll();
           this.load();
-        });
-        // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-        comp.onDeleted.subscribe(() => {
-          modal.close();
+        },
+        onDeleted: () => {
+          this.dialogService.closeAll();
           this.remove(details);
-        });
+        },
       },
-    );
-  }
+    });
+  };
 
-  invite() {
+  invite = () => {
     this.edit(null);
-  }
+  };
 
   async reinvite(contact: GranteeEmergencyAccess) {
     if (this.actionPromise != null) {
@@ -127,29 +123,47 @@ export class EmergencyAccessComponent implements OnInit {
 
     const autoConfirm = await this.stateService.getAutoConfirmFingerPrints();
     if (autoConfirm == null || !autoConfirm) {
-      const [modal] = await this.modalService.openViewRef(
-        EmergencyAccessConfirmComponent,
-        this.confirmModalRef,
-        (comp) => {
-          comp.name = this.userNamePipe.transform(contact);
-          comp.emergencyAccessId = contact.id;
-          comp.userId = contact?.granteeId;
-          // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
-          comp.onConfirmed.subscribe(async () => {
-            modal.close();
-
-            comp.formPromise = this.emergencyAccessService.confirm(contact.id, contact.granteeId);
-            await comp.formPromise;
-
+      openEmergencyAccessConfirmDialog(this.dialogService, {
+        data: {
+          name: this.userNamePipe.transform(contact),
+          emergencyAccessId: contact.id,
+          userId: contact?.granteeId,
+          onConfirmed: async (formPromise: Promise<any>) => {
+            this.dialogService.closeAll();
+            formPromise = this.emergencyAccessService.confirm(contact.id, contact.granteeId);
+            await formPromise;
             updateUser();
             this.platformUtilsService.showToast(
               "success",
               null,
               this.i18nService.t("hasBeenConfirmed", this.userNamePipe.transform(contact)),
             );
-          });
+          },
         },
-      );
+      });
+      // const [modal] = await this.modalService.openViewRef(
+      //   EmergencyAccessConfirmComponent,
+      //   this.confirmModalRef,
+      //   (comp) => {
+      //     comp.name = this.userNamePipe.transform(contact);
+      //     comp.emergencyAccessId = contact.id;
+      //     comp.userId = contact?.granteeId;
+      //     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
+      //     comp.onConfirmed.subscribe(async () => {
+      //       modal.close();
+
+      //       comp.formPromise = this.emergencyAccessService.confirm(contact.id, contact.granteeId);
+      //       await comp.formPromise;
+
+      //       updateUser();
+      //       this.platformUtilsService.showToast(
+      //         "success",
+      //         null,
+      //         this.i18nService.t("hasBeenConfirmed", this.userNamePipe.transform(contact)),
+      //       );
+      //     });
+      //   },
+      // );
       return;
     }
 
@@ -260,25 +274,21 @@ export class EmergencyAccessComponent implements OnInit {
   }
 
   async takeover(details: GrantorEmergencyAccess) {
-    const [modal] = await this.modalService.openViewRef(
-      EmergencyAccessTakeoverComponent,
-      this.takeoverModalRef,
-      (comp) => {
-        comp.name = this.userNamePipe.transform(details);
-        comp.email = details.email;
-        comp.emergencyAccessId = details != null ? details.id : null;
-
-        // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-        comp.onDone.subscribe(() => {
-          modal.close();
+    openEmergencyAccessTakeoverComponent(this.dialogService, {
+      data: {
+        name: this.userNamePipe.transform(details),
+        email: details.email,
+        emergencyAccessId: details != null ? details.id : null,
+        onDone: () => {
+          this.dialogService.closeAll();
           this.platformUtilsService.showToast(
             "success",
             null,
             this.i18nService.t("passwordResetFor", this.userNamePipe.transform(details)),
           );
-        });
+        },
       },
-    );
+    });
   }
 
   private removeGrantee(details: GranteeEmergencyAccess) {

@@ -1,10 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { DialogConfig, DIALOG_DATA } from "@angular/cdk/dialog";
+import { Component, EventEmitter, Input, OnInit, Output, Inject } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { DialogService } from "@bitwarden/components";
 
 @Component({
   selector: "emergency-access-confirm",
@@ -17,16 +20,24 @@ export class EmergencyAccessConfirmComponent implements OnInit {
   @Input() formPromise: Promise<any>;
   @Output() onConfirmed = new EventEmitter();
 
-  dontAskAgain = false;
   loading = true;
   fingerprint: string;
+  confirmForm = this.formBuilder.group({
+    dontAskAgain: [null as boolean, [Validators.required]],
+  });
 
   constructor(
+    @Inject(DIALOG_DATA) protected params: any,
+    private formBuilder: FormBuilder,
     private apiService: ApiService,
     private cryptoService: CryptoService,
     private stateService: StateService,
     private logService: LogService,
-  ) {}
+  ) {
+    this.name = params.name;
+    this.userId = params.userId;
+    this.emergencyAccessId = params.emergencyAccessId;
+  }
 
   async ngOnInit() {
     try {
@@ -44,19 +55,26 @@ export class EmergencyAccessConfirmComponent implements OnInit {
     this.loading = false;
   }
 
-  async submit() {
+  submit = async () => {
     if (this.loading) {
       return;
     }
 
-    if (this.dontAskAgain) {
+    if (this.confirmForm.get("dontAskAgain").value) {
       await this.stateService.setAutoConfirmFingerprints(true);
     }
 
     try {
-      this.onConfirmed.emit();
+      this.params.onConfirmed(this.formPromise);
     } catch (e) {
       this.logService.error(e);
     }
-  }
+  };
+}
+
+export function openEmergencyAccessConfirmDialog(
+  dialogService: DialogService,
+  config: DialogConfig<any>,
+) {
+  return dialogService.open<any, any>(EmergencyAccessConfirmComponent, config);
 }

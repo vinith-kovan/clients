@@ -1,6 +1,6 @@
-import { DialogConfig, DIALOG_DATA } from "@angular/cdk/dialog";
-import { Component, EventEmitter, Input, OnInit, Output, Inject } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
+import { DialogConfig, DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
+import { Component, OnInit, Inject } from "@angular/core";
+import { FormBuilder } from "@angular/forms";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -9,21 +9,23 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { DialogService } from "@bitwarden/components";
 
+export enum EmergencyAccessConfirmResultType {
+  Confirmed = "confirmed",
+}
+type EmergencyAccessConfirmParams = {
+  name: string;
+  userId: string;
+  emergencyAccessId: string;
+};
 @Component({
   selector: "emergency-access-confirm",
   templateUrl: "emergency-access-confirm.component.html",
 })
 export class EmergencyAccessConfirmComponent implements OnInit {
-  @Input() name: string;
-  @Input() userId: string;
-  @Input() emergencyAccessId: string;
-  @Input() formPromise: Promise<any>;
-  @Output() onConfirmed = new EventEmitter();
-
   loading = true;
   fingerprint: string;
   confirmForm = this.formBuilder.group({
-    dontAskAgain: [null as boolean, [Validators.required]],
+    dontAskAgain: [false as boolean],
   });
 
   constructor(
@@ -33,18 +35,15 @@ export class EmergencyAccessConfirmComponent implements OnInit {
     private cryptoService: CryptoService,
     private stateService: StateService,
     private logService: LogService,
-  ) {
-    this.name = params.name;
-    this.userId = params.userId;
-    this.emergencyAccessId = params.emergencyAccessId;
-  }
+    private dialogRef: DialogRef<EmergencyAccessConfirmResultType>,
+  ) {}
 
   async ngOnInit() {
     try {
-      const publicKeyResponse = await this.apiService.getUserPublicKey(this.userId);
+      const publicKeyResponse = await this.apiService.getUserPublicKey(this.params.userId);
       if (publicKeyResponse != null) {
         const publicKey = Utils.fromB64ToArray(publicKeyResponse.publicKey);
-        const fingerprint = await this.cryptoService.getFingerprint(this.userId, publicKey);
+        const fingerprint = await this.cryptoService.getFingerprint(this.params.userId, publicKey);
         if (fingerprint != null) {
           this.fingerprint = fingerprint.join("-");
         }
@@ -65,16 +64,15 @@ export class EmergencyAccessConfirmComponent implements OnInit {
     }
 
     try {
-      this.params.onConfirmed(this.formPromise);
+      this.dialogRef.close(EmergencyAccessConfirmResultType.Confirmed);
     } catch (e) {
       this.logService.error(e);
     }
   };
-}
-
-export function openEmergencyAccessConfirmDialog(
-  dialogService: DialogService,
-  config: DialogConfig<any>,
-) {
-  return dialogService.open<any, any>(EmergencyAccessConfirmComponent, config);
+  static open(dialogService: DialogService, config: DialogConfig<EmergencyAccessConfirmParams>) {
+    return dialogService.open<EmergencyAccessConfirmResultType, EmergencyAccessConfirmParams>(
+      EmergencyAccessConfirmComponent,
+      config,
+    );
+  }
 }

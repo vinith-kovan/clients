@@ -1,28 +1,27 @@
 <div
   class="tw-mb-2 tw-border-b tw-border-x-0 tw-border-t-0 tw-border-solid tw-border-secondary-300"
 >
-  <h1>{{ "emergencyAccess" | i18n }}</h1>
+  <h1 bitTypography="h1">{{ "emergencyAccess" | i18n }}</h1>
 </div>
-<p>
+<p bitTypography="body1">
   <span class="tw-text-main">{{ "emergencyAccessDesc" | i18n }}</span>
   <a href="https://bitwarden.com/help/emergency-access/" target="_blank" rel="noopener">
     {{ "learnMore" | i18n }}.
   </a>
 </p>
 
-<p *ngIf="isOrganizationOwner">
+<p *ngIf="isOrganizationOwner" bitTypography="body1">
   <b>{{ "warning" | i18n }}:</b> {{ "emergencyAccessOwnerWarning" | i18n }}
 </p>
 
 <div
   class="tw-mb-2 tw-flex tw-pb-2 tw-border-b tw-border-x-0 tw-border-t-0 tw-border-solid tw-border-secondary-300"
 >
-  <h2>
+  <h2 bitTypography="h2">
     {{ "trustedEmergencyContacts" | i18n }}
     <app-premium-badge></app-premium-badge>
   </h2>
   <div class="tw-ml-auto tw-flex">
-    <!-- class="btn btn-sm btn-outline-primary ml-3" -->
     <button
       type="button"
       bitButton
@@ -35,10 +34,6 @@
     </button>
   </div>
 </div>
-
-<!-- <table class="table table-hover table-list mb-0" *ngIf="trustedContacts && trustedContacts.length"> -->
-
-<!-- <tbody> -->
 <bit-table *ngIf="trustedContacts && trustedContacts.length">
   <ng-template body>
     <tr bitRow *ngFor="let c of trustedContacts; let i = index">
@@ -78,12 +73,11 @@
       <td bitCell class="tw-p-3 tw-h-12 tw-max-w-20 tw-text-right tw-w-20">
         <button
           [bitMenuTriggerFor]="trustedContactOptions"
-          class="tw-border-none tw-bg-transparent tw-text-main"
           type="button"
           appA11yTitle="{{ 'options' | i18n }}"
-        >
-          <i class="bwi bwi-ellipsis-v bwi-lg" aria-hidden="true"></i>
-        </button>
+          bitIconButton="bwi-ellipsis-v"
+          buttonType="main"
+        ></button>
         <bit-menu #trustedContactOptions>
           <button
             type="button"
@@ -133,9 +127,6 @@
     </tr>
   </ng-template>
 </bit-table>
-<!-- </tbody> -->
-<!-- </table> -->
-
 <ng-container *ngIf="!trustedContacts || !trustedContacts.length">
   <p *ngIf="loaded">{{ "noTrustedContacts" | i18n }}</p>
   <ng-container *ngIf="!loaded">
@@ -151,14 +142,14 @@
 <div
   class="tw-mt-16 tw-pb-2 tw-mb-2 tw-border-b tw-border-x-0 tw-border-t-0 tw-border-solid tw-border-secondary-300"
 >
-  <h2>{{ "designatedEmergencyContacts" | i18n }}</h2>
+  <h2 bitTypography="h2">{{ "designatedEmergencyContacts" | i18n }}</h2>
 </div>
 
 <!-- <table class="table table-hover table-list mb-0" *ngIf="grantedContacts && grantedContacts.length"> -->
 <bit-table *ngIf="grantedContacts && grantedContacts.length">
   <ng-template body>
     <tr bitRow *ngFor="let c of grantedContacts; let i = index">
-      <td bitCell width="30" class="tw-p-3">
+      <td bitCell width="30">
         <bit-avatar
           [text]="c | userName"
           [id]="c.grantorId"
@@ -194,15 +185,14 @@
 
         <small class="tw-text-muted tw-block" *ngIf="c.name">{{ c.name }}</small>
       </td>
-      <td bitCell class="tw-p-3 tw-h-12 tw-max-w-20 tw-text-right tw-w-20">
+      <td bitCell class="tw-p-3 tw-h-12 tw-text-right tw-w-20">
         <button
           [bitMenuTriggerFor]="grantedContactOptions"
-          class="tw-border-none tw-bg-transparent tw-text-main"
           type="button"
           appA11yTitle="{{ 'options' | i18n }}"
-        >
-          <i class="bwi bwi-ellipsis-v bwi-lg" aria-hidden="true"></i>
-        </button>
+          bitIconButton="bwi-ellipsis-v"
+          buttonType="main"
+        ></button>
         <bit-menu #grantedContactOptions>
           <button
             type="button"
@@ -255,7 +245,7 @@
       title="{{ 'loading' | i18n }}"
       aria-hidden="true"
     ></i>
-    <span class="sr-only">{{ "loading" | i18n }}</span>
+    <span class="tw-sr-only">{{ "loading" | i18n }}</span>
   </ng-container>
 </ng-container>
 

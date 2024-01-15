@@ -1,19 +1,17 @@
-<form [formGroup]="confirmForm" [bitSubmit]="submit" [appApiAction]="formPromise">
-  <bit-dialog dialogSize="large" class="tw-m-auto" [loading]="loading">
-    <h1 bitDialogTitle class="tw-text-[1.3rem]" id="confirmUserTitle">
-      <span class="">
-        {{ "confirmUser" | i18n }}
-      </span>
-      <small class="tw-text-muted">{{ name }}</small>
+<form [formGroup]="confirmForm" [bitSubmit]="submit">
+  <bit-dialog dialogSize="large" [loading]="loading">
+    <h1 bitTypography="h1" bitDialogTitle>
+      {{ "confirmUser" | i18n }}
+      <small class="tw-text-muted">{{ params.name }}</small>
     </h1>
     <div bitDialogContent>
-      <p>
+      <p bitTypography="body1">
         {{ "fingerprintEnsureIntegrityVerify" | i18n }}
         <a href="https://bitwarden.com/help/fingerprint-phrase/" target="_blank" rel="noopener">
           {{ "learnMore" | i18n }}</a
         >
       </p>
-      <p>
+      <p bitTypography="body1">
         <code>{{ fingerprint }}</code>
       </p>
 
@@ -25,10 +23,10 @@
       </ng-container>
     </div>
     <div bitDialogFooter>
-      <button type="submit" buttonType="primary" bitButton [disabled]="loading" [loading]="loading">
+      <button type="submit" buttonType="primary" bitButton bitFormButton>
         <span>{{ "confirm" | i18n }}</span>
       </button>
-      <button bitButton buttonType="secondary" type="button" [bitDialogClose]>
+      <button bitButton bitFormButton buttonType="secondary" type="button" bitDialogClose>
         {{ "cancel" | i18n }}
       </button>
     </div>

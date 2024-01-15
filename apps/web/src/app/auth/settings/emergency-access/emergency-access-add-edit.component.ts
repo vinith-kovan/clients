@@ -1,4 +1,4 @@
-import { DialogConfig, DIALOG_DATA } from "@angular/cdk/dialog";
+import { DialogConfig, DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
@@ -14,9 +14,13 @@ export type AddEditDialogParams = {
   name: string;
   emergencyAccessId: string;
   readOnly: boolean;
-  onSaved: () => void;
-  onDeleted: () => void;
 };
+
+export enum EmergencyAccessAddEditResultType {
+  Saved = "saved",
+  Canceled = "canceled",
+  Deleted = "deleted",
+}
 @Component({
   selector: "emergency-access-add-edit",
   templateUrl: "emergency-access-add-edit.component.html",
@@ -25,16 +29,13 @@ export class EmergencyAccessAddEditComponent implements OnInit {
   loading = true;
   readOnly = false;
   editMode = false;
-  name: string;
   title: string;
-  // email: string;
   type: EmergencyAccessType = EmergencyAccessType.View;
 
   formPromise: Promise<any>;
 
   emergencyAccessType = EmergencyAccessType;
   waitTimes: { name: string; value: number }[];
-  // waitTime: number;
 
   addEditForm = this.formBuilder.group({
     email: ["", [Validators.email, Validators.required]],
@@ -48,10 +49,11 @@ export class EmergencyAccessAddEditComponent implements OnInit {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private logService: LogService,
+    private dialogRef: DialogRef<EmergencyAccessAddEditResultType>,
   ) {}
   async ngOnInit() {
     this.editMode = this.loading = this.params.emergencyAccessId != null;
-    this.name = this.params.name;
+    this.params.name;
     this.waitTimes = [
       { name: this.i18nService.t("oneDay"), value: 1 },
       { name: this.i18nService.t("days", "2"), value: 2 },
@@ -109,25 +111,25 @@ export class EmergencyAccessAddEditComponent implements OnInit {
         null,
         this.i18nService.t(this.editMode ? "editedUserId" : "invitedUsers", this.params.name),
       );
-      this.params.onSaved();
+      this.dialogRef.close(EmergencyAccessAddEditResultType.Saved);
     } catch (e) {
       this.logService.error(e);
     }
   };
 
   delete = async () => {
-    this.params.onDeleted();
+    this.dialogRef.close(EmergencyAccessAddEditResultType.Deleted);
+  };
+  /**
+   * Strongly typed helper to open a UserDialog
+   * @param dialogService Instance of the dialog service that will be used to open the dialog
+   * @param config Configuration for the dialog
+   */
+
+  static open = (dialogService: DialogService, config: DialogConfig<AddEditDialogParams>) => {
+    return dialogService.open<EmergencyAccessAddEditResultType, AddEditDialogParams>(
+      EmergencyAccessAddEditComponent,
+      config,
+    );
   };
 }
-/**
- * Strongly typed helper to open a UserDialog
- * @param dialogService Instance of the dialog service that will be used to open the dialog
- * @param config Configuration for the dialog
- */
-
-export const openEmergencyAccessAddEditDialog = (
-  dialogService: DialogService,
-  config: DialogConfig<AddEditDialogParams>,
-) => {
-  return dialogService.open<void, any>(EmergencyAccessAddEditComponent, config);
-};

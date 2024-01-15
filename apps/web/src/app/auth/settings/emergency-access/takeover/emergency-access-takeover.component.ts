@@ -1,4 +1,4 @@
-import { DialogConfig, DIALOG_DATA } from "@angular/cdk/dialog";
+import { DialogConfig, DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, OnDestroy, OnInit, Inject, Input } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { takeUntil } from "rxjs";
@@ -17,6 +17,14 @@ import { DialogService } from "@bitwarden/components";
 
 import { EmergencyAccessService } from "../../../emergency-access";
 
+export enum EmergencyAccessTakeoverResultType {
+  Done = "done",
+}
+type EmergencyAccessTakeoverParams = {
+  name: string;
+  email: string;
+  emergencyAccessId: string;
+};
 @Component({
   selector: "emergency-access-takeover",
   templateUrl: "emergency-access-takeover.component.html",
@@ -28,7 +36,6 @@ export class EmergencyAccessTakeoverComponent
 {
   @Input() kdf: KdfType;
   @Input() kdfIterations: number;
-  name: string;
   formPromise: Promise<any>;
 
   takeoverForm = this.formBuilder.group({
@@ -49,6 +56,7 @@ export class EmergencyAccessTakeoverComponent
     private emergencyAccessService: EmergencyAccessService,
     private logService: LogService,
     dialogService: DialogService,
+    private dialogRef: DialogRef<EmergencyAccessTakeoverResultType>,
   ) {
     super(
       i18nService,
@@ -63,7 +71,6 @@ export class EmergencyAccessTakeoverComponent
   }
 
   async ngOnInit() {
-    this.name = this.params.name;
     const policies = await this.emergencyAccessService.getGrantorPolicies(
       this.params.emergencyAccessId,
     );
@@ -95,7 +102,6 @@ export class EmergencyAccessTakeoverComponent
         this.masterPassword,
         this.params.email,
       );
-      this.params.onDone();
     } catch (e) {
       this.logService.error(e);
       this.platformUtilsService.showToast(
@@ -104,18 +110,21 @@ export class EmergencyAccessTakeoverComponent
         this.i18nService.t("unexpectedError"),
       );
     }
+    this.dialogRef.close(EmergencyAccessTakeoverResultType.Done);
+  };
+  /**
+   * Strongly typed helper to open a UserDialog
+   * @param dialogService Instance of the dialog service that will be used to open the dialog
+   * @param config Configuration for the dialog
+   */
+
+  static open = (
+    dialogService: DialogService,
+    config: DialogConfig<EmergencyAccessTakeoverParams>,
+  ) => {
+    return dialogService.open<EmergencyAccessTakeoverResultType, EmergencyAccessTakeoverParams>(
+      EmergencyAccessTakeoverComponent,
+      config,
+    );
   };
 }
-
-/**
- * Strongly typed helper to open a UserDialog
- * @param dialogService Instance of the dialog service that will be used to open the dialog
- * @param config Configuration for the dialog
- */
-
-export const openEmergencyAccessTakeoverComponent = (
-  dialogService: DialogService,
-  config: DialogConfig<any>,
-) => {
-  return dialogService.open<void, any>(EmergencyAccessTakeoverComponent, config);
-};

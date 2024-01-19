@@ -236,7 +236,7 @@
   </ng-template>
 </bit-table>
 
-<ng-container *ngIf="!grantedContacts || !grantedContacts?.length">
+<ng-container *ngIf="!grantedContacts || !grantedContacts.length">
   <p *ngIf="loaded">{{ "noGrantedAccess" | i18n }}</p>
   <ng-container *ngIf="!loaded">
     <i

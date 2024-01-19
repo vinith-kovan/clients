@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
-import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -56,7 +55,6 @@ export class EmergencyAccessComponent implements OnInit {
   constructor(
     private emergencyAccessService: EmergencyAccessService,
     private i18nService: I18nService,
-    private modalService: ModalService,
     private platformUtilsService: PlatformUtilsService,
     private messagingService: MessagingService,
     private userNamePipe: UserNamePipe,

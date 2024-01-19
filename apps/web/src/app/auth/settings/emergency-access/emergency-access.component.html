@@ -5,7 +5,7 @@
 </div>
 <p bitTypography="body1">
   <span class="tw-text-main">{{ "emergencyAccessDesc" | i18n }}</span>
-  <a href="https://bitwarden.com/help/emergency-access/" target="_blank" rel="noopener">
+  <a bitLink href="https://bitwarden.com/help/emergency-access/" target="_blank" rel="noopener">
     {{ "learnMore" | i18n }}.
   </a>
 </p>
@@ -37,7 +37,7 @@
 <bit-table *ngIf="trustedContacts && trustedContacts.length">
   <ng-template body>
     <tr bitRow *ngFor="let c of trustedContacts; let i = index">
-      <td bitCell width="30" class="tw-p-3">
+      <td bitCell>
         <bit-avatar
           [text]="c | userName"
           [id]="c.granteeId"
@@ -46,7 +46,7 @@
         ></bit-avatar>
       </td>
       <td>
-        <a href="#" appStopClick (click)="edit(c)">{{ c.email }}</a>
+        <a bitLink href="#" appStopClick (click)="edit(c)">{{ c.email }}</a>
         <span bitBadge variant="secondary" *ngIf="c.status === emergencyAccessStatusType.Invited">{{
           "invited" | i18n
         }}</span>
@@ -145,11 +145,10 @@
   <h2 bitTypography="h2">{{ "designatedEmergencyContacts" | i18n }}</h2>
 </div>
 
-<!-- <table class="table table-hover table-list mb-0" *ngIf="grantedContacts && grantedContacts.length"> -->
 <bit-table *ngIf="grantedContacts && grantedContacts.length">
   <ng-template body>
     <tr bitRow *ngFor="let c of grantedContacts; let i = index">
-      <td bitCell width="30">
+      <td bitCell>
         <bit-avatar
           [text]="c | userName"
           [id]="c.grantorId"
@@ -237,7 +236,7 @@
   </ng-template>
 </bit-table>
 
-<ng-container *ngIf="!grantedContacts || !grantedContacts.length">
+<ng-container *ngIf="!grantedContacts || !grantedContacts?.length">
   <p *ngIf="loaded">{{ "noGrantedAccess" | i18n }}</p>
   <ng-container *ngIf="!loaded">
     <i

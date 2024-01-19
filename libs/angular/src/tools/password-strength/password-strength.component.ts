@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnChanges, Output } from "@angular/core
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
-import { ProgressModule, TypographyModule } from "@bitwarden/components";
+import { ProgressModule } from "@bitwarden/components";
 
 export interface PasswordColorText {
   color: string;
@@ -14,7 +14,7 @@ type BackgroundTypes = "danger" | "primary" | "success" | "warning";
 @Component({
   selector: "app-password-strength",
   templateUrl: "password-strength.component.html",
-  imports: [ProgressModule, TypographyModule, CommonModule],
+  imports: [ProgressModule, CommonModule],
   standalone: true,
 })
 export class PasswordStrengthComponent implements OnChanges {

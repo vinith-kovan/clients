@@ -12,9 +12,14 @@
             <app-vault-icon [cipher]="c"></app-vault-icon>
           </td>
           <td bitCell class="tw-leading-4">
-            <a href="#" appStopClick (click)="selectCipher(c)" title="{{ 'editItem' | i18n }}">{{
-              c.name
-            }}</a>
+            <a
+              bitLink
+              href="#"
+              appStopClick
+              (click)="selectCipher(c)"
+              title="{{ 'editItem' | i18n }}"
+              >{{ c.name }}</a
+            >
             <ng-container *ngIf="c.organizationId">
               <i
                 class="bwi bwi-collection"
@@ -34,18 +39,18 @@
               <span class="tw-sr-only">{{ "attachments" | i18n }}</span>
             </ng-container>
             <br />
-            <small class="tw-text-[80%]">{{ c.subTitle }}</small>
+            <small class="tw-text-xs">{{ c.subTitle }}</small>
           </td>
-          <td bitCell class="tw-h-[50px] tw-max-w-[76px] tw-text-right tw-w-[76px]">
+          <td bitCell>
             <div *ngIf="c.hasAttachments">
               <button
-                [bitMenuTriggerFor]="dropdownMenuButton"
+                [bitMenuTriggerFor]="optionsMenu"
                 type="button"
                 buttonType="secondary"
                 bitIconButton="bwi-cog"
                 appA11yTitle="{{ 'options' | i18n }}"
               ></button>
-              <bit-menu #dropdownMenuButton>
+              <bit-menu #optionsMenu>
                 <button type="button" bitMenuItem appStopClick (click)="viewAttachments(c)">
                   <i class="bwi bwi-fw bwi-paperclip" aria-hidden="true"></i>
                   {{ "attachments" | i18n }}

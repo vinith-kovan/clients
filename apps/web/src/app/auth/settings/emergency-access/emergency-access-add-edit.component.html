@@ -1,10 +1,10 @@
 <form [formGroup]="addEditForm" [bitSubmit]="submit">
   <bit-dialog dialogSize="large" [loading]="loading">
-    <h1 bitTypography="h1" bitDialogTitle>
+    <span bitDialogTitle>
       <app-premium-badge *ngIf="readOnly"></app-premium-badge>
       {{ title }}
       <small class="tw-text-muted" *ngIf="params.name">{{ params.name }}</small>
-    </h1>
+    </span>
     <ng-container bitDialogContent>
       <ng-container *ngIf="!editMode">
         <p bitTypography="body1">{{ "inviteEmergencyContactDesc" | i18n }}</p>

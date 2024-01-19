@@ -25,11 +25,11 @@ export class EmergencyAccessConfirmComponent implements OnInit {
   loading = true;
   fingerprint: string;
   confirmForm = this.formBuilder.group({
-    dontAskAgain: [false as boolean],
+    dontAskAgain: [false],
   });
 
   constructor(
-    @Inject(DIALOG_DATA) protected params: any,
+    @Inject(DIALOG_DATA) protected params: EmergencyAccessConfirmParams,
     private formBuilder: FormBuilder,
     private apiService: ApiService,
     private cryptoService: CryptoService,
@@ -69,6 +69,12 @@ export class EmergencyAccessConfirmComponent implements OnInit {
       this.logService.error(e);
     }
   };
+  /**
+   * Strongly typed helper to open a EmergencyAccessConfirmComponent
+   * @param dialogService Instance of the dialog service that will be used to open the dialog
+   * @param config Configuration for the dialog
+   */
+
   static open(dialogService: DialogService, config: DialogConfig<EmergencyAccessConfirmParams>) {
     return dialogService.open<EmergencyAccessConfirmResultType, EmergencyAccessConfirmParams>(
       EmergencyAccessConfirmComponent,

@@ -44,7 +44,7 @@ export class EmergencyAccessTakeoverComponent
   });
 
   constructor(
-    @Inject(DIALOG_DATA) protected params: any,
+    @Inject(DIALOG_DATA) protected params: EmergencyAccessTakeoverParams,
     private formBuilder: FormBuilder,
     i18nService: I18nService,
     cryptoService: CryptoService,
@@ -113,7 +113,7 @@ export class EmergencyAccessTakeoverComponent
     this.dialogRef.close(EmergencyAccessTakeoverResultType.Done);
   };
   /**
-   * Strongly typed helper to open a UserDialog
+   * Strongly typed helper to open a EmergencyAccessTakeoverComponent
    * @param dialogService Instance of the dialog service that will be used to open the dialog
    * @param config Configuration for the dialog
    */

@@ -53,7 +53,6 @@ export class EmergencyAccessAddEditComponent implements OnInit {
   ) {}
   async ngOnInit() {
     this.editMode = this.loading = this.params.emergencyAccessId != null;
-    this.params.name;
     this.waitTimes = [
       { name: this.i18nService.t("oneDay"), value: 1 },
       { name: this.i18nService.t("days", "2"), value: 2 },
@@ -121,7 +120,7 @@ export class EmergencyAccessAddEditComponent implements OnInit {
     this.dialogRef.close(EmergencyAccessAddEditResultType.Deleted);
   };
   /**
-   * Strongly typed helper to open a UserDialog
+   * Strongly typed helper to open a EmergencyAccessAddEditComponent
    * @param dialogService Instance of the dialog service that will be used to open the dialog
    * @param config Configuration for the dialog
    */

@@ -1,8 +1,5 @@
-<div
-  class="tw-mb-2 tw-border-b tw-border-x-0 tw-border-t-0 tw-border-solid tw-border-secondary-300"
->
-  <h1 bitTypography="h1">{{ "emergencyAccess" | i18n }}</h1>
-</div>
+<h1 bitTypography="h1">{{ "emergencyAccess" | i18n }}</h1>
+
 <p bitTypography="body1">
   <span class="tw-text-main">{{ "emergencyAccessDesc" | i18n }}</span>
   <a bitLink href="https://bitwarden.com/help/emergency-access/" target="_blank" rel="noopener">
@@ -14,9 +11,7 @@
   <b>{{ "warning" | i18n }}:</b> {{ "emergencyAccessOwnerWarning" | i18n }}
 </p>
 
-<div
-  class="tw-mb-2 tw-flex tw-pb-2 tw-border-b tw-border-x-0 tw-border-t-0 tw-border-solid tw-border-secondary-300"
->
+<div class="tw-flex">
   <h2 bitTypography="h2">
     {{ "trustedEmergencyContacts" | i18n }}
     <app-premium-badge></app-premium-badge>
@@ -45,7 +40,7 @@
           size="small"
         ></bit-avatar>
       </td>
-      <td>
+      <td class="tw-w-full">
         <a bitLink href="#" appStopClick (click)="edit(c)">{{ c.email }}</a>
         <span bitBadge variant="secondary" *ngIf="c.status === emergencyAccessStatusType.Invited">{{
           "invited" | i18n
@@ -70,7 +65,7 @@
 
         <small class="tw-text-muted tw-block" *ngIf="c.name">{{ c.name }}</small>
       </td>
-      <td bitCell class="tw-p-3 tw-h-12 tw-max-w-20 tw-text-right tw-w-20">
+      <td bitCell>
         <button
           [bitMenuTriggerFor]="trustedContactOptions"
           type="button"
@@ -139,11 +134,7 @@
   </ng-container>
 </ng-container>
 
-<div
-  class="tw-mt-16 tw-pb-2 tw-mb-2 tw-border-b tw-border-x-0 tw-border-t-0 tw-border-solid tw-border-secondary-300"
->
-  <h2 bitTypography="h2">{{ "designatedEmergencyContacts" | i18n }}</h2>
-</div>
+<h2 bitTypography="h2">{{ "designatedEmergencyContacts" | i18n }}</h2>
 
 <bit-table *ngIf="grantedContacts && grantedContacts.length">
   <ng-template body>
@@ -156,7 +147,7 @@
           size="small"
         ></bit-avatar>
       </td>
-      <td>
+      <td class="tw-w-full">
         <span>{{ c.email }}</span>
         <span bitBadge *ngIf="c.status === emergencyAccessStatusType.Invited">{{
           "invited" | i18n
@@ -184,7 +175,7 @@
 
         <small class="tw-text-muted tw-block" *ngIf="c.name">{{ c.name }}</small>
       </td>
-      <td bitCell class="tw-p-3 tw-h-12 tw-text-right tw-w-20">
+      <td bitCell>
         <button
           [bitMenuTriggerFor]="grantedContactOptions"
           type="button"

@@ -32,8 +32,6 @@ export class EmergencyAccessAddEditComponent implements OnInit {
   title: string;
   type: EmergencyAccessType = EmergencyAccessType.View;
 
-  formPromise: Promise<any>;
-
   emergencyAccessType = EmergencyAccessType;
   waitTimes: { name: string; value: number }[];
 
@@ -103,8 +101,6 @@ export class EmergencyAccessAddEditComponent implements OnInit {
           this.addEditForm.value.waitTime,
         );
       }
-
-      await this.formPromise;
       this.platformUtilsService.showToast(
         "success",
         null,

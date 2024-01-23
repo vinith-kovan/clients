@@ -36,8 +36,6 @@ export class EmergencyAccessTakeoverComponent
 {
   @Input() kdf: KdfType;
   @Input() kdfIterations: number;
-  formPromise: Promise<any>;
-
   takeoverForm = this.formBuilder.group({
     masterPassword: ["", [Validators.required]],
     masterPasswordRetype: ["", [Validators.required]],

@@ -1,17 +1,14 @@
-<div
-  class="tw-mb-2 tw-border-b tw-border-x-0 tw-border-t-0 tw-border-solid tw-border-secondary-300"
->
-  <h1 bitTypography="h1">{{ "vault" | i18n }}</h1>
-</div>
+<h1 bitTypography="h1">{{ "vault" | i18n }}</h1>
+
 <div class="tw-mt-6">
   <ng-container *ngIf="ciphers.length">
     <bit-table>
       <ng-template body>
         <tr bitRow *ngFor="let c of ciphers">
-          <td bitCell class="tw-max-w-11 tw-text-center tw-w-11">
+          <td bitCell>
             <app-vault-icon [cipher]="c"></app-vault-icon>
           </td>
-          <td bitCell class="tw-leading-4">
+          <td bitCell class="tw-w-full">
             <a
               bitLink
               href="#"

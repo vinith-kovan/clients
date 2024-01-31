@@ -4,20 +4,20 @@
   <ng-container *ngIf="ciphers.length">
     <bit-table>
       <ng-template body>
-        <tr bitRow *ngFor="let c of ciphers">
+        <tr bitRow *ngFor="let currentCipher of ciphers">
           <td bitCell>
-            <app-vault-icon [cipher]="c"></app-vault-icon>
+            <app-vault-icon [cipher]="currentCipher"></app-vault-icon>
           </td>
           <td bitCell class="tw-w-full">
             <a
               bitLink
               href="#"
               appStopClick
-              (click)="selectCipher(c)"
+              (click)="selectCipher(currentCipher)"
               title="{{ 'editItem' | i18n }}"
-              >{{ c.name }}</a
+              >{{ currentCipher.name }}</a
             >
-            <ng-container *ngIf="c.organizationId">
+            <ng-container *ngIf="currentCipher.organizationId">
               <i
                 class="bwi bwi-collection"
                 appStopProp
@@ -26,7 +26,7 @@
               ></i>
               <span class="tw-sr-only">{{ "shared" | i18n }}</span>
             </ng-container>
-            <ng-container *ngIf="c.hasAttachments">
+            <ng-container *ngIf="currentCipher.hasAttachments">
               <i
                 class="bwi bwi-paperclip"
                 appStopProp
@@ -36,19 +36,24 @@
               <span class="tw-sr-only">{{ "attachments" | i18n }}</span>
             </ng-container>
             <br />
-            <small class="tw-text-xs">{{ c.subTitle }}</small>
+            <small class="tw-text-xs">{{ currentCipher.subTitle }}</small>
           </td>
           <td bitCell>
-            <div *ngIf="c.hasAttachments">
+            <div *ngIf="currentCipher.hasAttachments">
               <button
                 [bitMenuTriggerFor]="optionsMenu"
                 type="button"
-                buttonType="secondary"
-                bitIconButton="bwi-cog"
+                buttonType="main"
+                bitIconButton="bwi-ellipsis-v"
                 appA11yTitle="{{ 'options' | i18n }}"
               ></button>
               <bit-menu #optionsMenu>
-                <button type="button" bitMenuItem appStopClick (click)="viewAttachments(c)">
+                <button
+                  type="button"
+                  bitMenuItem
+                  appStopClick
+                  (click)="viewAttachments(currentCipher)"
+                >
                   <i class="bwi bwi-fw bwi-paperclip" aria-hidden="true"></i>
                   {{ "attachments" | i18n }}
                 </button>

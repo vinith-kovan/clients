@@ -115,12 +115,11 @@ export class EmergencyAccessTakeoverComponent
    * @param dialogService Instance of the dialog service that will be used to open the dialog
    * @param config Configuration for the dialog
    */
-
   static open = (
     dialogService: DialogService,
     config: DialogConfig<EmergencyAccessTakeoverParams>,
   ) => {
-    return dialogService.open<EmergencyAccessTakeoverResultType, EmergencyAccessTakeoverParams>(
+    return dialogService.open<EmergencyAccessTakeoverResultType>(
       EmergencyAccessTakeoverComponent,
       config,
     );

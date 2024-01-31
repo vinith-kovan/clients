@@ -10,13 +10,13 @@ import { DialogService } from "@bitwarden/components";
 import { EmergencyAccessService } from "../../emergency-access";
 import { EmergencyAccessType } from "../../emergency-access/enums/emergency-access-type";
 
-export type AddEditDialogParams = {
+export type EmergencyAccessAddEditDialogData = {
   name: string;
   emergencyAccessId: string;
   readOnly: boolean;
 };
 
-export enum EmergencyAccessAddEditResultType {
+export enum EmergencyAccessAddEditDialogResult {
   Saved = "saved",
   Canceled = "canceled",
   Deleted = "deleted",
@@ -41,13 +41,13 @@ export class EmergencyAccessAddEditComponent implements OnInit {
     waitTime: [{ value: null, disabled: this.readOnly }, [Validators.required]],
   });
   constructor(
-    @Inject(DIALOG_DATA) protected params: AddEditDialogParams,
+    @Inject(DIALOG_DATA) protected params: EmergencyAccessAddEditDialogData,
     private formBuilder: FormBuilder,
     private emergencyAccessService: EmergencyAccessService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private logService: LogService,
-    private dialogRef: DialogRef<EmergencyAccessAddEditResultType>,
+    private dialogRef: DialogRef<EmergencyAccessAddEditDialogResult>,
   ) {}
   async ngOnInit() {
     this.editMode = this.loading = this.params.emergencyAccessId != null;
@@ -106,23 +106,25 @@ export class EmergencyAccessAddEditComponent implements OnInit {
         null,
         this.i18nService.t(this.editMode ? "editedUserId" : "invitedUsers", this.params.name),
       );
-      this.dialogRef.close(EmergencyAccessAddEditResultType.Saved);
+      this.dialogRef.close(EmergencyAccessAddEditDialogResult.Saved);
     } catch (e) {
       this.logService.error(e);
     }
   };
 
   delete = async () => {
-    this.dialogRef.close(EmergencyAccessAddEditResultType.Deleted);
+    this.dialogRef.close(EmergencyAccessAddEditDialogResult.Deleted);
   };
   /**
    * Strongly typed helper to open a EmergencyAccessAddEditComponent
    * @param dialogService Instance of the dialog service that will be used to open the dialog
    * @param config Configuration for the dialog
    */
-
-  static open = (dialogService: DialogService, config: DialogConfig<AddEditDialogParams>) => {
-    return dialogService.open<EmergencyAccessAddEditResultType, AddEditDialogParams>(
+  static open = (
+    dialogService: DialogService,
+    config: DialogConfig<EmergencyAccessAddEditDialogData>,
+  ) => {
+    return dialogService.open<EmergencyAccessAddEditDialogResult>(
       EmergencyAccessAddEditComponent,
       config,
     );

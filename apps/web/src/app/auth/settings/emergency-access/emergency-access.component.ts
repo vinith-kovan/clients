@@ -20,11 +20,11 @@ import {
 
 import {
   EmergencyAccessConfirmComponent,
-  EmergencyAccessConfirmResultType,
+  EmergencyAccessConfirmDialogResult,
 } from "./confirm/emergency-access-confirm.component";
 import {
   EmergencyAccessAddEditComponent,
-  EmergencyAccessAddEditResultType,
+  EmergencyAccessAddEditDialogResult,
 } from "./emergency-access-add-edit.component";
 import {
   EmergencyAccessTakeoverComponent,
@@ -94,10 +94,9 @@ export class EmergencyAccessComponent implements OnInit {
     });
 
     const result = await lastValueFrom(dialogRef.closed);
-    if (result === EmergencyAccessAddEditResultType.Saved) {
+    if (result === EmergencyAccessAddEditDialogResult.Saved) {
       this.load();
-    }
-    if (result === EmergencyAccessAddEditResultType.Deleted) {
+    } else if (result === EmergencyAccessAddEditDialogResult.Deleted) {
       this.remove(details);
     }
   };
@@ -139,7 +138,7 @@ export class EmergencyAccessComponent implements OnInit {
         },
       });
       const result = await lastValueFrom(dialogRef.closed);
-      if (result === EmergencyAccessConfirmResultType.Confirmed) {
+      if (result === EmergencyAccessConfirmDialogResult.Confirmed) {
         await this.emergencyAccessService.confirm(contact.id, contact.granteeId);
         updateUser();
         this.platformUtilsService.showToast(
@@ -262,7 +261,7 @@ export class EmergencyAccessComponent implements OnInit {
       data: {
         name: this.userNamePipe.transform(details),
         email: details.email,
-        emergencyAccessId: details != null ? details.id : null,
+        emergencyAccessId: details.id ?? null,
       },
     });
     const result = await lastValueFrom(dialogRef.closed);

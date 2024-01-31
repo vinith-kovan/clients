@@ -9,10 +9,10 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { DialogService } from "@bitwarden/components";
 
-export enum EmergencyAccessConfirmResultType {
+export enum EmergencyAccessConfirmDialogResult {
   Confirmed = "confirmed",
 }
-type EmergencyAccessConfirmParams = {
+type EmergencyAccessConfirmDialogData = {
   name: string;
   userId: string;
   emergencyAccessId: string;
@@ -29,13 +29,13 @@ export class EmergencyAccessConfirmComponent implements OnInit {
   });
 
   constructor(
-    @Inject(DIALOG_DATA) protected params: EmergencyAccessConfirmParams,
+    @Inject(DIALOG_DATA) protected params: EmergencyAccessConfirmDialogData,
     private formBuilder: FormBuilder,
     private apiService: ApiService,
     private cryptoService: CryptoService,
     private stateService: StateService,
     private logService: LogService,
-    private dialogRef: DialogRef<EmergencyAccessConfirmResultType>,
+    private dialogRef: DialogRef<EmergencyAccessConfirmDialogResult>,
   ) {}
 
   async ngOnInit() {
@@ -64,7 +64,7 @@ export class EmergencyAccessConfirmComponent implements OnInit {
     }
 
     try {
-      this.dialogRef.close(EmergencyAccessConfirmResultType.Confirmed);
+      this.dialogRef.close(EmergencyAccessConfirmDialogResult.Confirmed);
     } catch (e) {
       this.logService.error(e);
     }
@@ -74,9 +74,11 @@ export class EmergencyAccessConfirmComponent implements OnInit {
    * @param dialogService Instance of the dialog service that will be used to open the dialog
    * @param config Configuration for the dialog
    */
-
-  static open(dialogService: DialogService, config: DialogConfig<EmergencyAccessConfirmParams>) {
-    return dialogService.open<EmergencyAccessConfirmResultType, EmergencyAccessConfirmParams>(
+  static open(
+    dialogService: DialogService,
+    config: DialogConfig<EmergencyAccessConfirmDialogData>,
+  ) {
+    return dialogService.open<EmergencyAccessConfirmDialogResult>(
       EmergencyAccessConfirmComponent,
       config,
     );

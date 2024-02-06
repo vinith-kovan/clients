@@ -22,6 +22,7 @@ import { BroadcasterService as BroadcasterServiceAbstraction } from "@bitwarden/
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
 import {
@@ -33,17 +34,24 @@ import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwar
 import { StateService as StateServiceAbstraction } from "@bitwarden/common/platform/abstractions/state.service";
 import { AbstractStorageService } from "@bitwarden/common/platform/abstractions/storage.service";
 import { SystemService as SystemServiceAbstraction } from "@bitwarden/common/platform/abstractions/system.service";
+import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
 import { SystemService } from "@bitwarden/common/platform/services/system.service";
+import { StateProvider } from "@bitwarden/common/platform/state";
+// eslint-disable-next-line import/no-restricted-paths -- Implementation for memory storage
+import { MemoryStorageService as MemoryStorageServiceForStateProviders } from "@bitwarden/common/platform/state/storage/memory-storage.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { DialogService } from "@bitwarden/components";
 
 import { LoginGuard } from "../../auth/guards/login.guard";
 import { Account } from "../../models/account";
-import { ElectronCryptoService } from "../../platform/services/electron-crypto.service";
+import {
+  DefaultElectronCryptoService,
+  ElectronCryptoService,
+} from "../../platform/services/electron-crypto.service";
 import { ElectronLogService } from "../../platform/services/electron-log.service";
 import { ElectronPlatformUtilsService } from "../../platform/services/electron-platform-utils.service";
 import { ElectronRendererMessagingService } from "../../platform/services/electron-renderer-messaging.service";
@@ -105,7 +113,7 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
     { provide: AbstractStorageService, useClass: ElectronRendererStorageService },
     { provide: SECURE_STORAGE, useClass: ElectronRendererSecureStorageService },
     { provide: MEMORY_STORAGE, useClass: MemoryStorageService },
-    { provide: OBSERVABLE_MEMORY_STORAGE, useExisting: MEMORY_STORAGE },
+    { provide: OBSERVABLE_MEMORY_STORAGE, useClass: MemoryStorageServiceForStateProviders },
     { provide: OBSERVABLE_DISK_STORAGE, useExisting: AbstractStorageService },
     {
       provide: SystemServiceAbstraction,
@@ -128,6 +136,7 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         LogService,
         STATE_FACTORY,
         AccountServiceAbstraction,
+        EnvironmentService,
         STATE_SERVICE_USE_CACHE,
       ],
     },
@@ -173,13 +182,20 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
     },
     {
       provide: CryptoServiceAbstraction,
-      useClass: ElectronCryptoService,
+      useExisting: ElectronCryptoService,
+    },
+    {
+      provide: ElectronCryptoService,
+      useClass: DefaultElectronCryptoService,
       deps: [
         CryptoFunctionServiceAbstraction,
         EncryptService,
         PlatformUtilsServiceAbstraction,
         LogService,
         StateServiceAbstraction,
+        AccountServiceAbstraction,
+        StateProvider,
+        BiometricStateService,
       ],
     },
   ],

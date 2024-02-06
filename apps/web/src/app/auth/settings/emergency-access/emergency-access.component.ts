@@ -68,6 +68,8 @@ export class EmergencyAccessComponent implements OnInit {
     this.canAccessPremium = await this.stateService.getCanAccessPremium();
     const orgs = await this.organizationService.getAll();
     this.isOrganizationOwner = orgs.some((o) => o.isOwner);
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.load();
   }
 
@@ -95,14 +97,14 @@ export class EmergencyAccessComponent implements OnInit {
 
     const result = await lastValueFrom(dialogRef.closed);
     if (result === EmergencyAccessAddEditDialogResult.Saved) {
-      this.load();
+      await this.load();
     } else if (result === EmergencyAccessAddEditDialogResult.Deleted) {
-      this.remove(details);
+      await this.remove(details);
     }
   };
 
-  invite = () => {
-    this.edit(null);
+  invite = async () => {
+    await this.edit(null);
   };
 
   async reinvite(contact: GranteeEmergencyAccess) {

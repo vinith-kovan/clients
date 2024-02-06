@@ -11,8 +11,11 @@ import { EmergencyAccessService } from "../../emergency-access";
 import { EmergencyAccessType } from "../../emergency-access/enums/emergency-access-type";
 
 export type EmergencyAccessAddEditDialogData = {
+  /** display name of the account requesting emergency access */
   name: string;
+  /** traces a unique emergency request  */
   emergencyAccessId: string;
+  /** A boolean indicating whether the emergency access request is in read-only mode (true for view-only, false for editing). */
   readOnly: boolean;
 };
 

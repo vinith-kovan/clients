@@ -20,9 +20,12 @@ import { EmergencyAccessService } from "../../../emergency-access";
 export enum EmergencyAccessTakeoverResultType {
   Done = "done",
 }
-type EmergencyAccessTakeoverParams = {
+type EmergencyAccessTakeoverDialogData = {
+  /** display name of the account requesting emergency access takeover */
   name: string;
+  /** email of the account requesting emergency access takeover */
   email: string;
+  /** traces a unique emergency request  */
   emergencyAccessId: string;
 };
 @Component({
@@ -42,7 +45,7 @@ export class EmergencyAccessTakeoverComponent
   });
 
   constructor(
-    @Inject(DIALOG_DATA) protected params: EmergencyAccessTakeoverParams,
+    @Inject(DIALOG_DATA) protected params: EmergencyAccessTakeoverDialogData,
     private formBuilder: FormBuilder,
     i18nService: I18nService,
     cryptoService: CryptoService,
@@ -117,7 +120,7 @@ export class EmergencyAccessTakeoverComponent
    */
   static open = (
     dialogService: DialogService,
-    config: DialogConfig<EmergencyAccessTakeoverParams>,
+    config: DialogConfig<EmergencyAccessTakeoverDialogData>,
   ) => {
     return dialogService.open<EmergencyAccessTakeoverResultType>(
       EmergencyAccessTakeoverComponent,

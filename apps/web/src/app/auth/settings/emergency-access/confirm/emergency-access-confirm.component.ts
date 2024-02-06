@@ -13,8 +13,11 @@ export enum EmergencyAccessConfirmDialogResult {
   Confirmed = "confirmed",
 }
 type EmergencyAccessConfirmDialogData = {
+  /** display name of the account requesting emergency access */
   name: string;
+  /** identifies the account requesting emergency access */
   userId: string;
+  /** traces a unique emergency request  */
   emergencyAccessId: string;
 };
 @Component({
